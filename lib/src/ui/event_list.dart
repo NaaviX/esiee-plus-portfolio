@@ -7,12 +7,9 @@ class EventList extends StatelessWidget {
   final log = Logger('eventList');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     bloc.fetchAllEvents();
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Evènements'),
-      ),
       body: StreamBuilder(
         stream: bloc.allEvents,
         builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
@@ -24,6 +21,13 @@ class EventList extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      )
     );
   }
 
@@ -47,4 +51,5 @@ class EventList extends StatelessWidget {
       return Text("${e.place}\n${e.start} - ${e.end}\n${e.end}");
     }
   }
+
 }

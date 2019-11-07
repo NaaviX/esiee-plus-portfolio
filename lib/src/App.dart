@@ -13,9 +13,7 @@ class App extends StatelessWidget {
 
     //Base de l'application
     final _title = "BDE ESIEE Paris";
-    return MaterialApp(
-        title: _title,
-        home: Base());
+    return MaterialApp(title: _title, home: Base());
   }
 }
 
@@ -30,18 +28,11 @@ class Base extends StatefulWidget {
 
 class _Base extends State<Base> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
-  Text(
-  'Home',
-  style: optionStyle,
-  ),
-    Text(
-      'EDT',
-      style: optionStyle,
-    ),
-  EventList(),
+    Center(child: Text('Home', style: optionStyle)),
+    Center(child: Text('EDT', style: optionStyle)),
+    EventList()
   ];
 
   void _onItemTapped(int index) {
@@ -54,7 +45,7 @@ class _Base extends State<Base> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_title)),
+      appBar: AppBar(title: Text("BDE ESIEE Paris")),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -77,17 +68,17 @@ class _Base extends State<Base> {
       ),
       drawer: Drawer(
           child: ListView(children: <Widget>[
-            DrawerHeader(
-              child: Text("Drawer Header"),
-              decoration: BoxDecoration(color: Colors.blueGrey),
-            ),
-            ListTile(
-              title: Text("item 1"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            )
-          ])),
+        DrawerHeader(
+          child: Text("Drawer Header"),
+          decoration: BoxDecoration(color: Colors.blueGrey),
+        ),
+        ListTile(
+          title: Text("item 1"),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        )
+      ])),
     );
   }
 }

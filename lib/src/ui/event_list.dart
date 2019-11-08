@@ -1,7 +1,10 @@
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import '../App.dart';
+import '../TopBar.dart';
 import '../blocs/events_bloc.dart';
+
 
 class EventList extends StatelessWidget {
   final log = Logger('eventList');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'old/Login.dart';
 import 'ui/event_list.dart';
 
 class App extends StatelessWidget {
@@ -12,12 +13,9 @@ class App extends StatelessWidget {
     });
 
     //Base de l'application
-    final _title = "BDE ESIEE Paris";
-    return MaterialApp(title: _title, home: Base());
+    return MaterialApp(home: Base());
   }
 }
-
-
 
 class Base extends StatefulWidget {
   Base({Key key}) : super(key: key);
@@ -28,11 +26,24 @@ class Base extends StatefulWidget {
 
 class _Base extends State<Base> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
-    Center(child: Text('Home', style: optionStyle)),
-    Center(child: Text('EDT', style: optionStyle)),
-    EventList()
+    Text(
+      'Home',
+      style: optionStyle,
+    ),
+    Text(
+      'EDT',
+      style: optionStyle,
+    ),
+    EventList(),
+  ];
+
+  static List<String> _selectedAppbarTitle = [
+    'BDE ESIEE Paris',
+    'Emploi du temps',
+    'Evenements',
   ];
 
   void _onItemTapped(int index) {
@@ -41,44 +52,51 @@ class _Base extends State<Base> {
     });
   }
 
-  final _title = "BDE ESIEE Paris";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("BDE ESIEE Paris")),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            title: Text('EDT'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            title: Text('Event'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[800],
-        onTap: _onItemTapped,
+        appBar:
+            AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
+        body: _widgetOptions.elementAt(_selectedIndex),
+        bottomNavigationBar: getBottomNavigationBar(),
+        drawer: getDrawer());
+  }
+
+  Widget getDrawer() {
+    return Drawer(
+        child: ListView(children: <Widget>[
+      DrawerHeader(
+        child: Text("Drawer Header"),
+        decoration: BoxDecoration(color: Colors.blueGrey),
       ),
-      drawer: Drawer(
-          child: ListView(children: <Widget>[
-        DrawerHeader(
-          child: Text("Drawer Header"),
-          decoration: BoxDecoration(color: Colors.blueGrey),
+      ListTile(
+        title: Text("item 1"),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      )
+    ]));
+  }
+
+  Widget getBottomNavigationBar() {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Home'),
         ),
-        ListTile(
-          title: Text("item 1"),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        )
-      ])),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.access_time),
+          title: Text('EDT'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.event),
+          title: Text('Event'),
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      selectedItemColor: Colors.blue[800],
+      onTap: _onItemTapped,
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'old/Login.dart';
 import 'ui/event_list.dart';
 
 class App extends StatelessWidget {

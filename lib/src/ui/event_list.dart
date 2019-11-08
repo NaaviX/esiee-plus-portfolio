@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import '../App.dart';
+import '../TopBar.dart';
 import '../blocs/events_bloc.dart';
 
 
@@ -9,7 +10,7 @@ class EventList extends StatelessWidget {
   final log = Logger('eventList');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     bloc.fetchAllEvents();
     return Scaffold(
       body: StreamBuilder(
@@ -23,6 +24,13 @@ class EventList extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      )
     );
   }
 
@@ -46,4 +54,5 @@ class EventList extends StatelessWidget {
       return Text("${e.place}\n${e.start} - ${e.end}\n${e.end}");
     }
   }
+
 }

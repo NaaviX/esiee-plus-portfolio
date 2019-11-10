@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import '../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
-import 'event_create.dart';
+
+import 'event_creation.dart';
 
 class EventList extends StatelessWidget {
   final log = Logger('eventList');
@@ -27,7 +28,7 @@ class EventList extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventCreationPage()),
+            MaterialPageRoute(builder: (context) => EventCreation()),
           );
         },
         child: Icon(Icons.add),
@@ -41,18 +42,26 @@ class EventList extends StatelessWidget {
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(snapshot.data[index].image),
-            ),
-            title: Text(snapshot.data[index].title),
+          return GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
               );
             },
-          );
+            child: Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Image.network(
+              snapshot.data[index].image,
+              fit: BoxFit.fill,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.all(10),
+          ));
         });
   }
 
@@ -89,72 +98,6 @@ class EventInfoPage extends StatelessWidget{
           color: Colors.white,
         )
       )
-    );
-  }
-}
-
-//When user (Club) click on add button
-class EventCreationPage extends StatelessWidget{
-
-  @override Widget build(BuildContext context){
-    return new Scaffold(
-      body : Text("text")
-    );
-  }
-}
-
-
-// Create a Form widget.
-class MyCustomForm extends StatefulWidget {
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-// Create a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false
-                // otherwise.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

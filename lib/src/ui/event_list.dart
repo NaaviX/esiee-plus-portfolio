@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import '../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
+import 'event_create.dart';
 
 class EventList extends StatelessWidget {
   final log = Logger('eventList');
@@ -24,6 +25,10 @@ class EventList extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventCreationPage()),
+          );
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
@@ -51,25 +56,19 @@ class EventList extends StatelessWidget {
         });
   }
 
-  Text createEvent(EventModel e) {
-    if(e.place != null) {
-      return Text(
-          "${formatDate(e.start)}\n"
-          "${e.place}");
-    }
-  }
-
   String formatDate(DateTime date){
     return new DateFormat('yyyy MMMM dd').format(date);
   }
 
-
+  String getMonth(DateTime date){
+    return new DateFormat('MMMM').format(date);
+  }
 
 }
 
 //When user click on an event
 class EventInfoPage extends StatelessWidget{
-
+  /// TODO : Affichage des infos de l'event
   final EventModel event;
   EventInfoPage({this.event});
 
@@ -78,11 +77,18 @@ class EventInfoPage extends StatelessWidget{
       appBar: AppBar(
         title: Text(event.title),
       ),
-      body: Center(
-        child: Image.network(
-        event.image,
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 150.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(event.image)
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.white,
         )
-      ),
+      )
     );
   }
 }
@@ -90,17 +96,64 @@ class EventInfoPage extends StatelessWidget{
 //When user (Club) click on add button
 class EventCreationPage extends StatelessWidget{
 
-  final EventModel event = new EventModel();
-
   @override Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(event.title),
-      ),
-      body: Center(
-          child: Image.network(
-            event.image,
-          )
+    return new Scaffold(
+      body : Text("text")
+    );
+  }
+}
+
+
+// Create a Form widget.
+class MyCustomForm extends StatefulWidget {
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+// Create a corresponding State class.
+// This class holds data related to the form.
+class MyCustomFormState extends State<MyCustomForm> {
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  //
+  // Note: This is a GlobalKey<FormState>,
+  // not a GlobalKey<MyCustomFormState>.
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // Build a Form widget using the _formKey created above.
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: RaisedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false
+                // otherwise.
+                if (_formKey.currentState.validate()) {
+                  // If the form is valid, display a Snackbar.
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ),
+        ],
       ),
     );
   }

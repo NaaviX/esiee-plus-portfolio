@@ -11,6 +11,7 @@ class EventList extends StatelessWidget {
   Widget build(BuildContext context){
     bloc.fetchAllEvents();
     return Scaffold(
+
       body: StreamBuilder(
         stream: bloc.allEvents,
         builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {

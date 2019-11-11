@@ -7,8 +7,8 @@ class EventModel {
 
   int id;
   String title;
-  String start;
-  String end;
+  DateTime start;
+  DateTime end;
   String place;
   String image;
   String content;
@@ -41,8 +41,8 @@ class EventModel {
     }
 
     if (parsedJson["event"] != null) {
-      e.start = parsedJson["event"]["start"];
-      e.end = parsedJson["event"]["end"];
+      e.start = DateTime.parse(parsedJson["event"]["start"]);
+      e.end = DateTime.parse(parsedJson["event"]["end"]);
       e.place = parsedJson["event"]["place"];
     }
 

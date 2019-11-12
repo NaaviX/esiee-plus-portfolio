@@ -11,6 +11,7 @@ class EventsBloc {
 
   fetchAllEvents() async {
     List<EventModel> eventmodel = await _repository.fetchAllEvents();
+    eventmodel = sort(eventmodel);
     _eventsFetcher.sink.add(eventmodel);
   }
 
@@ -20,3 +21,9 @@ class EventsBloc {
 }
 
 final bloc = EventsBloc();
+
+List<EventModel> sort(List<EventModel> list){
+  list.sort((a, b) => a.start.toString().compareTo(b.start.toString()));
+  return list;
+
+}

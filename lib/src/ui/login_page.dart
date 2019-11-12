@@ -9,8 +9,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   @override
   Widget build(BuildContext context) {
+    if(user != null) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return App();
+      }));
+    }
     return Scaffold(
       body: Container(
         color: Colors.white,

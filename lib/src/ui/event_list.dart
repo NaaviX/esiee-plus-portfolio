@@ -4,6 +4,9 @@ import 'package:logging/logging.dart';
 import '../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
 
+import 'event_creation.dart';
+import 'event_info.dart';
+
 class EventList extends StatelessWidget {
   final log = Logger('eventList');
 
@@ -25,6 +28,10 @@ class EventList extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventCreation()),
+          );
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
@@ -33,77 +40,59 @@ class EventList extends StatelessWidget {
   }
 
   Widget buildList(AsyncSnapshot<List<EventModel>> snapshot) {
-
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(snapshot.data[index].image),
-            ),
-            title: Text(snapshot.data[index].title),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
-              );
-            },
-          );
+          return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
+                  );
+                },
+                child: Center(
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.all(12.0),
+                            child: Center(
+                                child : Text(
+                                    getTitle(snapshot.data[index]),/*snapshot.data[index].title,formatDate(snapshot.data[index].start),*/
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0))),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0),topRight: Radius.circular(10.0)),
+                                color: Colors.blueAccent),
+                          ),
+                          padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
+                      Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image.network(
+                          snapshot.data[index].image,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width, height: 150,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
+                        elevation: 5,
+                        margin: EdgeInsets.only(bottom : 10.0,left: 15.0, right: 15.0),
+                      )
+                  ]))
+            );
         });
   }
 
-  Text createEvent(EventModel e) {
-    if(e.place != null) {
-      return Text(
-          "${formatDate(e.start)}\n"
-          "${e.place}");
-    }
+  String getTitle(EventModel event){
+    String result = event.title;
+    if(event.start != null)  result += '  -  '+DateFormat('dd MMM').format(event.start)+'.';
+    return result;
   }
-
-  String formatDate(DateTime date){
-    return new DateFormat('yyyy MMMM dd').format(date);
-  }
-
-
 
 }
 
-//When user click on an event
-class EventInfoPage extends StatelessWidget{
 
-  final EventModel event;
-  EventInfoPage({this.event});
-
-  @override Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(event.title),
-      ),
-      body: Center(
-        child: Image.network(
-        event.image,
-        )
-      ),
-    );
-  }
-}
-
-//When user (Club) click on add button
-class EventCreationPage extends StatelessWidget{
-
-  final EventModel event = new EventModel();
-
-  @override Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(event.title),
-      ),
-      body: Center(
-          child: Image.network(
-            event.image,
-          )
-      ),
-    );
-  }
-}
 

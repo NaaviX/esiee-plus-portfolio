@@ -75,10 +75,10 @@ class _Base extends State<Base> {
             title: Text("Deconnexion"),
             onTap: () {
               signOutGoogle();
-              /*Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 _selectedIndex = 0;
-                return MaterialApp(home: LoginPage());
-              }));*/
+                return MaterialApp(home: App());
+              }));
             },
           ),
       ListTile(

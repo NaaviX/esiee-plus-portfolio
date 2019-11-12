@@ -71,6 +71,16 @@ class _Base extends State<Base> {
         child: Text("BDE ESIEE PARIS"),
         decoration: BoxDecoration(color: Colors.blueGrey),
       ),
+          ListTile(
+            title: Text("Deconnexion"),
+            onTap: () {
+              signOutGoogle();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                _selectedIndex = 0;
+                return MaterialApp(home: App());
+              }));
+            },
+          ),
       ListTile(
         title: Text("Clubs"),
         onTap: () {

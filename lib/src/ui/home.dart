@@ -7,8 +7,13 @@ import 'package:flutter/material.dart';
 import 'event_list.dart';
 
 class Home extends StatelessWidget {
+  String photoUrl;
   @override
   Widget build(BuildContext context) {
+    photoUrl = user.photoUrl;
+    if(photoUrl == null) {
+      photoUrl = "https://bde.esiee.fr/logo-white.png";
+    }
     //prof
     if(user.email.endsWith("gmail.com")) {//change to @esiee.fr
       return _homeProf();
@@ -79,7 +84,7 @@ class Home extends StatelessWidget {
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(
-                                        user.photoUrl)
+                                        photoUrl)
                                 )
                             )),
                         //Flexible(child: Image.network(user.photoUrl)),
@@ -113,7 +118,7 @@ class Home extends StatelessWidget {
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(
-                                        user.photoUrl)
+                                        photoUrl)
                                 )
                             )),
                         //Flexible(child: Image.network(user.photoUrl)),
@@ -128,12 +133,14 @@ class Home extends StatelessWidget {
   }
 
   bool isClub(String email) {
-    List<ClubModel> clubs = bloc.fetchAllClubs();
+    /*bloc.fetchAllClubs();
+    List<ClubModel> clubs = bloc.allClubs;
     for(ClubModel c in clubs) {
       if(c.email.contains(email)) {
         return true;
       }
     }
+    return false;*/
     return false;
   }
 

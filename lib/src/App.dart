@@ -1,6 +1,10 @@
+import 'package:bde_esiee_mobile/src/ui/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'ui/event_list.dart';
+import 'ui/home.dart';
+import 'ui/timecalendar.dart';
 
 class App extends StatelessWidget {
   @override
@@ -25,17 +29,12 @@ class Base extends StatefulWidget {
 
 class _Base extends State<Base> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+
+
+
   static List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home',
-      style: optionStyle,
-    ),
-    Text(
-      'EDT',
-      style: optionStyle,
-    ),
+    Home(),
+    Timecalendar(),
     EventList(),
   ];
 

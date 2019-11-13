@@ -8,6 +8,8 @@ import 'ui/home.dart';
 import 'ui/timecalendar.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 
+//so1Sw1nS
+
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -75,6 +77,7 @@ class _Base extends State<Base> {
             title: Text("Deconnexion"),
             onTap: () {
               signOutGoogle();
+              user = null;
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 _selectedIndex = 0;
                 return MaterialApp(home: App());

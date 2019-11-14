@@ -3,8 +3,6 @@ import 'package:logging/logging.dart';
 class GradesModel {
   final log = Logger('Grades');
 
-
-
   int id;
   String schoolCode;
   String name;

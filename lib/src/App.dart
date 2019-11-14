@@ -1,11 +1,10 @@
 import 'package:bde_esiee_mobile/src/ui/club_list.dart';
+import 'package:bde_esiee_mobile/src/ui/grades_list.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'ui/event_list.dart';
 import 'ui/home.dart';
-import 'ui/timecalendar.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 
 //so1Sw1nS
@@ -40,7 +39,7 @@ class _Base extends State<Base> {
 
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Timecalendar(),
+    GradesList(),
     EventList(),
   ];
 

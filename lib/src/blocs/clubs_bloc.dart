@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/event_model.dart';
 
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';

@@ -13,7 +13,6 @@ class EventApiProvider {
     final response = await client.get("https://bde.esiee.fr/api/posts.json");
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
-      log.fine(json.decode(response.body)["entries"][0]["id"]);
       return EventModel.allEventsFromJson(
           json.decode(response.body)["entries"]);
     } else {

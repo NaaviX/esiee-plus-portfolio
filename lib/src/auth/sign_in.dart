@@ -7,7 +7,7 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 
 final log = Logger('signin');
 
-FirebaseUser user;
+FirebaseUser user = null;
 
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -28,5 +28,6 @@ Future<String> signInWithGoogle() async {
 
 void signOutGoogle() async {
   await googleSignIn.signOut();
+  user = null;
   print("User Sign Out");
 }

@@ -11,6 +11,7 @@ class EventsBloc {
 
   fetchAllEvents() async {
     List<EventModel> eventmodel = await _repository.fetchAllEvents();
+    eventmodel = sort(eventmodel);
     _eventsFetcher.sink.add(eventmodel);
   }
 
@@ -20,3 +21,11 @@ class EventsBloc {
 }
 
 final bloc = EventsBloc();
+
+List<EventModel> sort(List<EventModel> list){
+  List<EventModel> oldEvents = List.from(list);
+  List<EventModel> newEvents = List.from(list);
+  oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
+  newEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()));
+  return newEvents+oldEvents;
+}

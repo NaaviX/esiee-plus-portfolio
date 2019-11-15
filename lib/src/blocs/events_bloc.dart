@@ -23,7 +23,9 @@ class EventsBloc {
 final bloc = EventsBloc();
 
 List<EventModel> sort(List<EventModel> list){
-  list.sort((a, b) => a.start.toString().compareTo(b.start.toString()));
-  return list;
-
+  List<EventModel> oldEvents = List.from(list);
+  List<EventModel> newEvents = List.from(list);
+  oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
+  newEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()));
+  return newEvents+oldEvents;
 }

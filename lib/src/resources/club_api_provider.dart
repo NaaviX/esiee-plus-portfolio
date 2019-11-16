@@ -10,7 +10,6 @@ class ClubApiProvider {
   Client client = Client();
 
   Future<List<ClubModel>> fetchClubList() async {
-    ClubModel clubModel = null;
     final response = await client.get("https://bde.esiee.fr/clubs.json");
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON

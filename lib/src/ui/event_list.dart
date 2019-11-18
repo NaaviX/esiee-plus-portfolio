@@ -9,12 +9,32 @@ import 'package:intl/intl.dart';
 import 'event_creation.dart';
 import 'event_info.dart';
 
-class EventList extends StatelessWidget {
+class EventList extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return EventListState();
+  }
+}
+
+class EventListState extends State<EventList> {
+  final bloc = EventsBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.fetchAllEvents();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   final log = Logger('eventList');
 
   @override
   Widget build(BuildContext context){
-    bloc.fetchAllEvents();
     return Scaffold(
 
       body: StreamBuilder(

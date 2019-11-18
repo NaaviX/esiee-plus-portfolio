@@ -11,12 +11,17 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if(user != null) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
         return App();
       }));
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -42,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text("Se connecter avec Google"),
         onPressed: () {
           signInWithGoogle().whenComplete(() {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
               return App();
             }));
           });

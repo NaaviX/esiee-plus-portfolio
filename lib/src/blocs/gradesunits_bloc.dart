@@ -4,8 +4,6 @@ import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class GradesUnitBloc {
-  static String gradesID;
-  GradesUnitBloc({gradesID});
 
   final _repository = Repository();
 
@@ -13,8 +11,8 @@ class GradesUnitBloc {
 
   Observable<List<GradesUnitModel>> get allGradesUnit => _gradesUnitFetcher.stream;
 
-  fetchAllGradesUnit(String gradesID) async {
-    List<GradesUnitModel> gradesUnitModel = await _repository.fetchAllGradesUnit();
+  fetchAllGradesUnit(gradesID) async {
+    List<GradesUnitModel> gradesUnitModel = await _repository.fetchAllGradesUnit(gradesID);
     _gradesUnitFetcher.sink.add(gradesUnitModel);
   }
 
@@ -22,5 +20,3 @@ class GradesUnitBloc {
     _gradesUnitFetcher.close();
   }
 }
-
-final bloc = GradesUnitBloc();

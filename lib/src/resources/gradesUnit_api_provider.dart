@@ -6,12 +6,11 @@ import 'dart:convert';
 
 class GradesUnitApiProvider {
   final log = Logger('TimeCalendar_API_gradesUnit');
-  final String gradesID;
-  GradesUnitApiProvider({this.gradesID});
+
   Client client = Client();
 
-  Future<List<GradesUnitModel>> fetchGradesUnitList() async {
-    final response = await client.get("https://api.timecalendar.app/schools/esiee/grades/0/gradeunits");
+  Future<List<GradesUnitModel>> fetchGradesUnitList(String gradesID) async {
+    final response = await client.get("https://api.timecalendar.app/schools/esiee/grades/$gradesID/gradeunits");
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       return GradesUnitModel.allGradesUnitFromJson(

@@ -28,10 +28,10 @@ class GradesList extends StatelessWidget {
   Widget buildList(AsyncSnapshot<List<GradesModel>> snapshot) {
     return ListView.builder(
         itemCount: snapshot.data.length,
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (BuildContext context, int index){
           return GestureDetector(
               onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => GradesUnitList(grades: snapshot.data[index]) ));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GradesUnitList( grades: snapshot.data[index] )));
           },
           child: Padding(
               padding: EdgeInsets.only(top:4.0,bottom: 4.0,left: 10.0,right: 10.0),

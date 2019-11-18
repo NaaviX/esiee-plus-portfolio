@@ -6,12 +6,16 @@ import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 
 class GradesUnitList extends StatelessWidget {
   final log = Logger('GradesUnit_List');
+
   final GradesModel grades;
   GradesUnitList({this.grades});
 
   @override
   Widget build(BuildContext context){
+
+    final bloc = GradesUnitBloc();
     bloc.fetchAllGradesUnit(this.grades.id.toString());
+
     return Scaffold(
       appBar: AppBar(
         title: Text(grades.name),

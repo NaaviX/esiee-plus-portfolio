@@ -10,6 +10,9 @@ import 'event_api_provider.dart';
 import 'gradesUnit_api_provider.dart';
 
 class Repository {
+  static String gradesID;
+  Repository({gradesID});
+
   final eventsApiProvider = EventApiProvider();
   Future<List<EventModel>> fetchAllEvents() =>
       eventsApiProvider.fetchEventList();
@@ -23,6 +26,6 @@ class Repository {
       gradesApiProvider.fetchGradesList();
 
   final gradesUnitApiProvider = GradesUnitApiProvider();
-  Future<List<GradesUnitModel>> fetchAllGradesUnit() =>
-      gradesUnitApiProvider.fetchGradesUnitList();
+  Future<List<GradesUnitModel>> fetchAllGradesUnit(String gradesID) =>
+      gradesUnitApiProvider.fetchGradesUnitList(gradesID);
 }

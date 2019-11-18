@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/models/gradesUnit_model.dart';
 import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 import 'package:bde_esiee_mobile/src/resources/grades_api_provider.dart';
 import 'club_api_provider.dart';
 import 'event_api_provider.dart';
+import 'gradesUnit_api_provider.dart';
 
 class Repository {
   final eventsApiProvider = EventApiProvider();
@@ -19,4 +21,8 @@ class Repository {
   final gradesApiProvider = GradesApiProvider();
   Future<List<GradesModel>> fetchAllGrades() =>
       gradesApiProvider.fetchGradesList();
+
+  final gradesUnitApiProvider = GradesUnitApiProvider();
+  Future<List<GradesUnitModel>> fetchAllGradesUnit() =>
+      gradesUnitApiProvider.fetchGradesUnitList();
 }

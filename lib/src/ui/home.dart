@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
-import 'event_list.dart';
+import 'event/event_list.dart';
 import 'login_page.dart';
 
 class Home extends StatefulWidget {

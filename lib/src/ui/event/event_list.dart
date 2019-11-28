@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../blocs/events_bloc.dart';
+import '../../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'event_creation.dart';
@@ -73,25 +73,27 @@ class EventListState extends State<EventList> {
                   );
                 },
                 child: Center(
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(12.0),
-                            child: Center(
-                                child : Text(
-                                    getTitle(snapshot.data[index]),
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0))),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0),topRight: Radius.circular(10.0)),
-                                color: Colors.blueAccent),
-                          ),
-                          padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
-                      getEventCover(snapshot.data[index], context)
-                  ]))
-            );
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.all(12.0),
+                                child: Center(
+                                    child : Text(
+                                        getTitle(snapshot.data[index]),
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0))),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0),topRight: Radius.circular(10.0)),
+                                    color: Colors.blueAccent
+                                )
+                              ),
+                              padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
+                          getEventCover(snapshot.data[index], context)
+                    ])
+            )));
         });
   }
 
@@ -102,7 +104,7 @@ class EventListState extends State<EventList> {
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
-    if(event.end != null && event.end.isAfter(DateTime.now())) {
+    if(event.start != null && event.start.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -121,7 +123,7 @@ class EventListState extends State<EventList> {
         margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0),
       );
     }
-    else{
+    else if(event.end != null && event.end.isBefore(DateTime.now())){
       return Stack(children: <Widget>[
           Container(
           height: 150,
@@ -146,9 +148,30 @@ class EventListState extends State<EventList> {
         ),
       ]);
     }
+    else {
+      return Container(
+          height: 150,
+          width: MediaQuery.of(context).size.width,
+          decoration: new BoxDecoration(
+            color: Colors.black,
+            border: getBorder(),
+          ),
+          margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0)
+      );
+    }
+  }
+
+  BoxDecoration getDecoration(){
+    return BoxDecoration(
+      border: getBorder()
+    );
+  }
+
+  Border getBorder(){
+    return Border.all(
+        color: Colors.greenAccent, //<--- border color
+        width: 3.0,
+    );
   }
 
 }
-
-
-

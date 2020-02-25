@@ -1,6 +1,10 @@
 //When user click on an event
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import 'package:html/parser.dart' show parse;
+//import 'package:html/dom.dart';
 
 class EventInfoPage extends StatelessWidget{
   final EventModel event;
@@ -11,7 +15,8 @@ class EventInfoPage extends StatelessWidget{
         appBar: AppBar(
           title: Text(event.title),
         ),
-        body: Container(
+        body: ListView(children : <Widget>[
+          Container(
             width: MediaQuery.of(context).size.width,
             height: 150.0,
             decoration: BoxDecoration(
@@ -20,7 +25,30 @@ class EventInfoPage extends StatelessWidget{
                   image: NetworkImage(event.image)
               ),
               color: Colors.white,
+            )),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: <Widget>[
+                getDate(),
+                ListTile(
+                  leading: Icon(Icons.check_circle,color: Colors.green, size: 30.0,),
+                  title: Text('CLUB organisateur : '),
+                ),
+                ListTile(
+                  leading: Icon(Icons.home,color: Colors.green, size: 30.0,),
+                  title: Text(event.place),
+                ),
+                ListTile(
+                  leading: Icon(Icons.monetization_on,color: Colors.green, size: 30.0,),
+                  title: Text('LIEN VENTE : '),
+                ),
+                ListTile(
+                  leading: Icon(Icons.textsms,color: Colors.green, size: 30.0,),
+                  title: Text('DESCRIPTION : ' + event.content.replaceAll(RegExp('<[^>]*>'), ""))
+                )
+            ],)
             )
+        ]
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -30,4 +58,30 @@ class EventInfoPage extends StatelessWidget{
         )
     );
   }
+
+  Widget getDate()
+  {
+    if( formatDate(event.end) == formatDate(event.start))
+      {
+        return ListTile(
+          leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
+          title: Text('Le ' + formatDate(event.start)),
+        );
+      }
+    else
+      {
+        return ListTile(
+          leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
+          title: Text('Du ' + formatDate(event.start)),
+          subtitle: Text('Au ' + formatDate(event.end)),
+        );
+      }
+  }
+
+  String formatDate(DateTime date)
+  {
+    return DateFormat('dd MMMM').format(date);
+  }
+
+
 }

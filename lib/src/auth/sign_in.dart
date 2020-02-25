@@ -9,7 +9,7 @@ final log = Logger('signin');
 
 FirebaseUser user = null;
 
-Future<String> signInWithGoogle() async {
+Future<FirebaseUser> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
@@ -23,7 +23,7 @@ Future<String> signInWithGoogle() async {
   assert(await user.getIdToken() != null);
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
-  return 'signInWithGoogle succeeded: $user';
+  return user;
 }
 
 void signOutGoogle() async {

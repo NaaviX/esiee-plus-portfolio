@@ -18,14 +18,16 @@ class EventsBloc {
   dispose() {
     _eventsFetcher.close();
   }
+
+  List<EventModel> sort(List<EventModel> list){
+    List<EventModel> oldEvents = List.from(list);
+    List<EventModel> newEvents = List.from(list);
+    oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
+    newEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()));
+    return newEvents+oldEvents;
+  }
 }
 
-final bloc = EventsBloc();
 
-List<EventModel> sort(List<EventModel> list){
-  List<EventModel> oldEvents = List.from(list);
-  List<EventModel> newEvents = List.from(list);
-  oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
-  newEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()));
-  return newEvents+oldEvents;
-}
+
+

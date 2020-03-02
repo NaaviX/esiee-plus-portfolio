@@ -10,11 +10,9 @@ class ClubApiProvider {
   Client client = Client();
 
   Future<List<ClubModel>> fetchClubList() async {
-    ClubModel clubModel = null;
-    final response = await client.get("https://bde.esiee.fr/clubs.json");
+    final response = await client.get("https://bde.esiee.fr/app_dev.php/clubs.json");
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
-      log.fine(json.decode(response.body)["Clubs du BDE"][0]["title"]);
       List<dynamic> clubs = json.decode(response.body)["Clubs du BDE"];
       clubs.addAll(json.decode(response.body)["Clubs du BDS"]);
       clubs.addAll(json.decode(response.body)["Associations"]);

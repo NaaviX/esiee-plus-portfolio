@@ -4,12 +4,31 @@ import 'package:logging/logging.dart';
 import '../blocs/clubs_bloc.dart';
 import 'package:intl/intl.dart';
 
-class ClubList extends StatelessWidget {
+class ClubList extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ClubListState();
+  }
+}
+
+class ClubListState extends State<ClubList> {
+  final bloc = ClubsBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.fetchAllClubs();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
   final log = Logger('clubList');
 
   @override
   Widget build(BuildContext context){
-    bloc.fetchAllClubs();
     return Scaffold(
         appBar: AppBar(
           title: Text("Les clubs"),

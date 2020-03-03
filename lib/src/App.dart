@@ -93,7 +93,7 @@ class _Base extends State<Base> {
     return Drawer(
         child: ListView(children: <Widget>[
       DrawerHeader(
-        child: Text("BDE ESIEE PARIS"),
+        child: new Text(Translations.of(context).text("bde")),
         decoration: BoxDecoration(color: Colors.blueGrey),
       ),
           ListTile(
@@ -108,7 +108,7 @@ class _Base extends State<Base> {
             },
           ),
       ListTile(
-        title: Text("Clubs"),
+        title: new Text(Translations.of(context).text("clubs")),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             _selectedIndex = 0;
@@ -121,18 +121,18 @@ class _Base extends State<Base> {
 
   Widget getBottomNavigationBar() {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items:  <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          title: Text('Home'),
+          title: new Text(Translations.of(context).text("home")),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.access_time),
-          title: Text('EDT'),
+          title: new Text(Translations.of(context).text("edt")),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.event),
-          title: Text('Event'),
+          title: new Text(Translations.of(context).text("events")),
         ),
       ],
       currentIndex: _selectedIndex,

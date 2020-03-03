@@ -1,5 +1,6 @@
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/resources/translations.dart';
 import 'package:bde_esiee_mobile/src/ui/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,8 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "BDE ESIEE PARIS",
+              new Text(
+                Translations.of(context).text("bde"),
                 style: TextStyle(
                     fontSize: 30,
                     color: Colors.lightGreen,

@@ -1,5 +1,8 @@
 {
-  "app_title": "Le titre de mon application",
-  "main_title": "Mon titre principal",
-  "deco": "Déconnexion"
+  "bde": "BDE ESIEE PARIS",
+  "deco": "Déconnexion",
+  "clubs": "Clubs",
+  "home": "Accueil",
+  "edt": "Emploi du temps",
+  "events": "Evénements"
 }

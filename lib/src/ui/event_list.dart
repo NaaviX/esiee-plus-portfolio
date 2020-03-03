@@ -35,7 +35,6 @@ class EventListState extends State<EventList> {
 
   @override
   Widget build(BuildContext context){
-    bloc.fetchAllEvents();
     return Scaffold(
 
       body: StreamBuilder(

@@ -1,8 +1,17 @@
 {
-  "bde": "BDE ESIEE PARIS",
+  "bde": "BDE ESIEE Paris",
   "deco": "Déconnexion",
   "clubs": "Clubs",
   "home": "Accueil",
   "edt": "Emploi du temps",
-  "events": "Evénements"
+  "events": "Evénements",
+  "google": "Se connecter avec Google",
+  "cotisant": "Cotisant ?",
+  "roles": "Rôles",
+  "over": "terminé",
+  "cluborga": "Club organisateur : ",
+  "salelink": "Lien vente : ",
+  "eventdescri": "Description : ",
+  "newevent": "Nouvel événement",
+  "theclubs": "Les clubs"
 }

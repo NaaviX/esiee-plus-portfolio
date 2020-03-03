@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/resources/translations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -150,8 +151,8 @@ class HomeState extends State<Home> {
                           Text(user.displayName,
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text("Cotisant ?"),
-                          Text("Roles")
+                          new Text(Translations.of(context).text("cotisant")),
+                          new Text(Translations.of(context).text("roles"))
                         ],
                       ),
                     )

@@ -1,8 +1,17 @@
 {
-  "bde": "ESIEE PARIS STUDENT UNION",
+  "bde": "ESIEE Paris Student Union",
   "deco": "Sign out",
   "clubs": "Clubs",
   "home": "Home",
   "edt": "Schedule",
-  "events": "Events"
+  "events": "Events",
+  "google": "Sign in with Google",
+  "cotisant": "Contributor ?",
+  "roles": "Roles",
+  "over": "over",
+  "cluborga": "Organizing club : ",
+  "salelink": "Sale link : ",
+  "eventdescri": "Description : ",
+  "newevent": "New event",
+  "theclubs": "The clubs"
 }

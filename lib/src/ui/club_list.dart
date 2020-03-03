@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/resources/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import '../blocs/clubs_bloc.dart';
@@ -31,7 +32,7 @@ class ClubListState extends State<ClubList> {
   Widget build(BuildContext context){
     return Scaffold(
         appBar: AppBar(
-          title: Text("Les clubs"),
+          title: new Text(Translations.of(context).text("theclubs")),
         ),
       body: StreamBuilder(
         stream: bloc.allClubs,

@@ -1,5 +1,6 @@
 //When user click on an event
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/resources/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -28,7 +29,7 @@ class EventInfoPage extends StatelessWidget{
                 getDate(),
                 ListTile(
                   leading: Icon(Icons.check_circle,color: Colors.green, size: 30.0,),
-                  title: Text('CLUB organisateur : '),
+                  title: new Text(Translations.of(context).text("cluborga")),
                 ),
                 ListTile(
                   leading: Icon(Icons.home,color: Colors.green, size: 30.0,),
@@ -36,11 +37,11 @@ class EventInfoPage extends StatelessWidget{
                 ),
                 ListTile(
                   leading: Icon(Icons.monetization_on,color: Colors.green, size: 30.0,),
-                  title: Text('LIEN VENTE : '),
+                  title: new Text(Translations.of(context).text("salelink")),
                 ),
                 ListTile(
                   leading: Icon(Icons.textsms,color: Colors.green, size: 30.0,),
-                  title: Text('DESCRIPTION : ' + event.description.replaceAll(RegExp('<[^>]*>'), ""))
+                  title: new Text(Translations.of(context).text("eventdescri") + event.description.replaceAll(RegExp('<[^>]*>'), ""))
                 )
             ],)
             )]

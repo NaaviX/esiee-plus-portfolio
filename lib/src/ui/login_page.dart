@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton() {
     return RaisedButton(
-        child: Text("Se connecter avec Google"),
+        child: new Text(Translations.of(context).text("google")),
         onPressed: () async {
           setState(() => _isLoading = true);
           FirebaseUser user = await signInWithGoogle();

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/resources/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import '../blocs/events_bloc.dart';
@@ -141,7 +142,7 @@ class EventListState extends State<EventList> {
         Container(
             height: 150,
             width: MediaQuery.of(context).size.width,
-            child : Center( child : Text( ("terminé").toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8), fontSize: 30.0))),
+            child : Center( child : Text( Translations.of(context).text("over").toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8), fontSize: 30.0))),
             margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0)
         ),
       ]);

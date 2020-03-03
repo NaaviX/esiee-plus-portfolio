@@ -14,8 +14,7 @@ class EventModel {
   DateTime endDate;             //endDate
   String place;             //place
   String backgroundUrl;             //backgroundUrl
-  String description;           //description
-  String slug;              //
+  String description;           //description   //
   String publicationDate;   //publicationDate
   String link;              //
 
@@ -27,7 +26,6 @@ class EventModel {
     this.place,
     this.backgroundUrl,
     this.description,
-    this.slug,
     this.publicationDate,
     this.link,
   });
@@ -38,22 +36,33 @@ class EventModel {
     if (parsedJson != null) {
       e.idEvent = parsedJson["idEvent"];
       e.name = parsedJson["name"];
-      e.description = parse(parsedJson["description"]).outerHtml;
+      e.description = parsedJson["description"];
 
-      e.slug = parsedJson["slug"];
-      e.publicationDate = parsedJson["created_at"];
+      e.publicationDate = parsedJson["publicationDate"];
+
+      e.startDate = DateTime.parse(parsedJson["startDate"]);
+      e.endDate = DateTime.parse(parsedJson["endDate"]);
+      e.place = parsedJson["place"];
+
+      e.backgroundUrl = parsedJson["backgroundUrl"];
+      if(e.backgroundUrl == null) {
+        e.backgroundUrl = "";
+      }
+      e.link = parsedJson["sellLink"];
+      if(e.name == null) {
+        e.name = "";
+      }
+      if(e.link == null) {
+        e.link = "";
+      }
+
+      if(e.description == null) {
+        e.description = "";
+      }
+      if(e.place == null) {
+        e.place = "";
+      }
     }
-
-    if (parsedJson["event"] != null) {
-      e.startDate = DateTime.parse(parsedJson["event"]["start"]);
-      e.endDate = DateTime.parse(parsedJson["event"]["end"]);
-      e.place = parsedJson["event"]["place"];
-    }
-
-    if (parsedJson["photo"] != null) {
-      e.backgroundUrl = parsedJson["photo"]["url"];
-    }
-
     return e;
   }
 

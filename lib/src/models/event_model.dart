@@ -8,25 +8,25 @@ import 'package:logging/logging.dart';
 class EventModel {
   final log = Logger('eventModel');
 
-  int id;
-  String title;
-  DateTime start;
-  DateTime end;
-  String place;
-  String image;
-  String content;
-  String slug;
-  String publicationDate;
-  String link;
+  int idEvent;                   //idEvent
+  String name;             //name
+  DateTime startDate;           //startDate
+  DateTime endDate;             //endDate
+  String place;             //place
+  String backgroundUrl;             //backgroundUrl
+  String description;           //description
+  String slug;              //
+  String publicationDate;   //publicationDate
+  String link;              //
 
   EventModel({
-    this.id,
-    this.title,
-    this.start,
-    this.end,
+    this.idEvent,
+    this.name,
+    this.startDate,
+    this.endDate,
     this.place,
-    this.image,
-    this.content,
+    this.backgroundUrl,
+    this.description,
     this.slug,
     this.publicationDate,
     this.link,
@@ -36,22 +36,22 @@ class EventModel {
     EventModel e = new EventModel();
 
     if (parsedJson != null) {
-      e.id = parsedJson["id"];
-      e.title = parsedJson["title"];
-      e.content = parse(parsedJson["content"]).outerHtml;
+      e.idEvent = parsedJson["idEvent"];
+      e.name = parsedJson["name"];
+      e.description = parse(parsedJson["description"]).outerHtml;
 
       e.slug = parsedJson["slug"];
       e.publicationDate = parsedJson["created_at"];
     }
 
     if (parsedJson["event"] != null) {
-      e.start = DateTime.parse(parsedJson["event"]["start"]);
-      e.end = DateTime.parse(parsedJson["event"]["end"]);
+      e.startDate = DateTime.parse(parsedJson["event"]["start"]);
+      e.endDate = DateTime.parse(parsedJson["event"]["end"]);
       e.place = parsedJson["event"]["place"];
     }
 
     if (parsedJson["photo"] != null) {
-      e.image = parsedJson["photo"]["url"];
+      e.backgroundUrl = parsedJson["photo"]["url"];
     }
 
     return e;

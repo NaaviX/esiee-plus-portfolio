@@ -13,7 +13,7 @@ class EventInfoPage extends StatelessWidget{
   @override Widget build(BuildContext context){
     return Scaffold(
         appBar: AppBar(
-          title: Text(event.title),
+          title: Text(event.name),
         ),
         body: ListView(children : <Widget>[
           Container(
@@ -22,7 +22,7 @@ class EventInfoPage extends StatelessWidget{
             decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(event.image)
+                  image: NetworkImage(event.backgroundUrl)
               ),
               color: Colors.white,
             )),
@@ -44,7 +44,7 @@ class EventInfoPage extends StatelessWidget{
                 ),
                 ListTile(
                   leading: Icon(Icons.textsms,color: Colors.green, size: 30.0,),
-                  title: Text('DESCRIPTION : ' + event.content.replaceAll(RegExp('<[^>]*>'), ""))
+                  title: Text('DESCRIPTION : ' + event.description.replaceAll(RegExp('<[^>]*>'), ""))
                 )
             ],)
             )
@@ -60,19 +60,19 @@ class EventInfoPage extends StatelessWidget{
 
   Widget getDate()
   {
-    if( formatDate(event.end) == formatDate(event.start))
+    if( formatDate(event.endDate) == formatDate(event.startDate))
       {
         return ListTile(
           leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
-          title: Text('Le ' + formatDate(event.start)),
+          title: Text('Le ' + formatDate(event.startDate)),
         );
       }
     else
       {
         return ListTile(
           leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
-          title: Text('Du ' + formatDate(event.start)),
-          subtitle: Text('Au ' + formatDate(event.end)),
+          title: Text('Du ' + formatDate(event.startDate)),
+          subtitle: Text('Au ' + formatDate(event.endDate)),
         );
       }
   }

@@ -1,6 +1,7 @@
 //When user click on an event
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EventInfoPage extends StatelessWidget{
   final EventModel event;
@@ -11,7 +12,7 @@ class EventInfoPage extends StatelessWidget{
         appBar: AppBar(
           title: Text(event.name),
         ),
-        body: Container(
+        body: Column(children : [Container(
             width: MediaQuery.of(context).size.width,
             height: 150.0,
             decoration: BoxDecoration(
@@ -42,7 +43,7 @@ class EventInfoPage extends StatelessWidget{
                   title: Text('DESCRIPTION : ' + event.description.replaceAll(RegExp('<[^>]*>'), ""))
                 )
             ],)
-            )
+            )]
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

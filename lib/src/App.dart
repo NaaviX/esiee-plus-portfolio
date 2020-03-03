@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/ui/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/grades_list.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'ui/event_list.dart';
 import 'ui/home.dart';
@@ -23,9 +24,27 @@ class AppState extends State<App> {
   void initState() {
     super.initState();
     if (user == null) {
-        app = MaterialApp(home: LoginPage());
+        app = MaterialApp(home: LoginPage(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ]);
     } else {
-        app = MaterialApp(home: Base());
+        app = MaterialApp(home: Base(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ]);
     }
     }
 

@@ -22,8 +22,8 @@ class EventsBloc {
   List<EventModel> sort(List<EventModel> list){
     List<EventModel> oldEvents = List.from(list);
     List<EventModel> newEvents = List.from(list);
-    oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
-    newEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()));
+    oldEvents.removeWhere((item) => item.endDate == null || item.endDate.isAfter(DateTime.now()));
+    newEvents.removeWhere((item) => item.endDate == null || item.endDate.isBefore(DateTime.now()));
     return newEvents+oldEvents;
   }
 }

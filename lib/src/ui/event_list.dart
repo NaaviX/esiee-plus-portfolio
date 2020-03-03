@@ -96,21 +96,18 @@ class EventListState extends State<EventList> {
   }
 
   String getTitle(EventModel event){
-    String result = event.title;
-    if(event.start != null)  result += '  -  '+DateFormat('dd MMM').format(event.start)+'.';
+    String result = event.name;
+    if(event.startDate != null)  result += '  -  '+DateFormat('dd MMM').format(event.startDate)+'.';
     return result;
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
-    if(event.image == null) {
-      event.image = "";
-    }
-    if(event.end != null && event.end.isAfter(DateTime.now())) {
+    if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Image.network(
-          event.image,
+          event.backgroundUrl,
           fit: BoxFit.cover,
           width: MediaQuery
               .of(context)
@@ -135,7 +132,7 @@ class EventListState extends State<EventList> {
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
               image: new NetworkImage(
-                event.image,
+                event.backgroundUrl,
               ),
             ),
           ),

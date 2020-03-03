@@ -48,7 +48,7 @@ class EventInfoPage extends StatelessWidget{
                 )
             ],)
             )
-        ),
+        ]),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
           },

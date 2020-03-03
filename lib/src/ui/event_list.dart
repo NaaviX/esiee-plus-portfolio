@@ -18,12 +18,15 @@ class EventList extends StatefulWidget {
 
 class EventListState extends State<EventList> {
   final bloc = EventsBloc();
+  final log = Logger('eventList');
 
   @override
   void initState() {
     super.initState();
     bloc.fetchAllEvents();
-  }
+    }
+
+
 
   @override
   void dispose() {
@@ -31,7 +34,6 @@ class EventListState extends State<EventList> {
     super.dispose();
   }
 
-  final log = Logger('eventList');
 
   @override
   Widget build(BuildContext context){

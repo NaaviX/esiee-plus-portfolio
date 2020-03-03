@@ -73,7 +73,9 @@ class _Base extends State<Base> {
     return Scaffold(
         appBar:
             AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
-        body: _widgetOptions.elementAt(_selectedIndex),
+        body: IndexedStack(
+            index : _selectedIndex,
+            children : _widgetOptions),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: getDrawer());
   }

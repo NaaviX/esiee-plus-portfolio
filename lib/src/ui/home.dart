@@ -44,7 +44,7 @@ class HomeState extends State<Home> {
       builder: (context, AsyncSnapshot<ClubModel> snapshot) {
         if (snapshot.hasData) {
           return _homeClub(snapshot.data);
-        } else if (user.email.endsWith("gmail.com")) {
+        } else if (user.email.endsWith("gmail.com")) { //changer en @esiee.fr
           //change to @esiee.fr
           return _homeProf();
         } else if (user.email.endsWith("edu.esiee.fr")) {

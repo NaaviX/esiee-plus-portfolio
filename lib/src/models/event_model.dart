@@ -42,8 +42,8 @@ class EventModel {
       e.place = parsedJson["place"];
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
-      if(e.backgroundUrl == null) {
-        e.backgroundUrl = "";
+      if(e.backgroundUrl == null || e.backgroundUrl == "null") {
+        e.backgroundUrl = "https://bde.esiee.fr/bundles/applicationbde/img/couverture.png";
       }
       e.link = parsedJson["sellLink"];
       if(e.name == null) {

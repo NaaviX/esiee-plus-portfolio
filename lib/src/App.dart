@@ -35,7 +35,16 @@ class AppState extends State<App> {
               const Locale('fr', ''),
             ]);
     } else {
-        app = MaterialApp(home: Base());
+        app = MaterialApp(home: Base(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ]);
     }
     }
 

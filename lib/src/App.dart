@@ -7,6 +7,7 @@ import 'ui/event_list.dart';
 import 'ui/home.dart';
 import 'ui/timecalendar.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'resources/translations.dart';
 
 //so1Sw1nS
 
@@ -74,7 +75,7 @@ class _Base extends State<Base> {
         decoration: BoxDecoration(color: Colors.blueGrey),
       ),
           ListTile(
-            title: Text("Deconnexion"),
+            title: new Text(Translations.of(context).text("deco")),
             onTap: () {
               signOutGoogle();
               user = null;

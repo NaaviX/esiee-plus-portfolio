@@ -9,7 +9,7 @@ class EventInfoPage extends StatelessWidget{
   @override Widget build(BuildContext context){
     return Scaffold(
         appBar: AppBar(
-          title: Text(event.title),
+          title: Text(event.name),
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
@@ -17,9 +17,31 @@ class EventInfoPage extends StatelessWidget{
             decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(event.image)
+                  image: NetworkImage(event.backgroundUrl)
               ),
               color: Colors.white,
+            )),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: <Widget>[
+                getDate(),
+                ListTile(
+                  leading: Icon(Icons.check_circle,color: Colors.green, size: 30.0,),
+                  title: Text('CLUB organisateur : '),
+                ),
+                ListTile(
+                  leading: Icon(Icons.home,color: Colors.green, size: 30.0,),
+                  title: Text(event.place),
+                ),
+                ListTile(
+                  leading: Icon(Icons.monetization_on,color: Colors.green, size: 30.0,),
+                  title: Text('LIEN VENTE : '),
+                ),
+                ListTile(
+                  leading: Icon(Icons.textsms,color: Colors.green, size: 30.0,),
+                  title: Text('DESCRIPTION : ' + event.description.replaceAll(RegExp('<[^>]*>'), ""))
+                )
+            ],)
             )
         ),
         floatingActionButton: FloatingActionButton(
@@ -30,4 +52,30 @@ class EventInfoPage extends StatelessWidget{
         )
     );
   }
+
+  Widget getDate()
+  {
+    if( formatDate(event.endDate) == formatDate(event.startDate))
+      {
+        return ListTile(
+          leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
+          title: Text('Le ' + formatDate(event.startDate)),
+        );
+      }
+    else
+      {
+        return ListTile(
+          leading: Icon(Icons.calendar_today,color: Colors.green, size: 30.0,),
+          title: Text('Du ' + formatDate(event.startDate)),
+          subtitle: Text('Au ' + formatDate(event.endDate)),
+        );
+      }
+  }
+
+  String formatDate(DateTime date)
+  {
+    return DateFormat('dd MMMM').format(date);
+  }
+
+
 }

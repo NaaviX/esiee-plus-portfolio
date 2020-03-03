@@ -76,11 +76,7 @@ class _Base extends State<Base> {
     EventList(),
   ];
 
-  static List<String> _selectedAppbarTitle = [
-    'BDE ESIEE Paris',
-    'Emploi du temps',
-    'Evenements',
-  ];
+  static List<String> _selectedAppbarTitle;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -90,6 +86,11 @@ class _Base extends State<Base> {
 
   @override
   Widget build(BuildContext context) {
+    _selectedAppbarTitle = [
+      Translations.of(context).text("bde"),
+      Translations.of(context).text("edt"),
+      Translations.of(context).text("events"),
+    ];
     return Scaffold(
         appBar:
             AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),

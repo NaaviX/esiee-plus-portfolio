@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart';
-
 import 'package:logging/logging.dart';
 
 class EventModel {
@@ -38,8 +35,7 @@ class EventModel {
     if (parsedJson != null) {
       e.id = parsedJson["id"];
       e.title = parsedJson["title"];
-      e.content = parse(parsedJson["content"]).outerHtml;
-
+      e.content = parsedJson["content"];
       e.slug = parsedJson["slug"];
       e.publicationDate = parsedJson["created_at"];
     }

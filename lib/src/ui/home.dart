@@ -6,36 +6,53 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
 import 'event_list.dart';
+import 'login_page.dart';
 
-class Home extends StatelessWidget {
-  String photoUrl;
+class Home extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> {
+  final bloc = ClubsBloc();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if (user == null) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
         return App();
       }));
     }
-    photoUrl = user.photoUrl;
-    if (photoUrl == null) {
-      photoUrl = "https://bde.esiee.fr/logo-white.png";
-    }
-    //prof
-    return FutureBuilder<ClubModel>(
-        future: bloc.getClub(user.email),
-        builder: (context, snapshot) {
-          log.fine(snapshot.data);
-          if(snapshot.data != null) {
-            return _homeClub(snapshot.data);
-          }
-            if (user.email.endsWith("gmail.com")) {
-              //change to @esiee.fr
-              return _homeProf();
-            }
-            return _homeStudent();
-          }
-        );
+    super.initState();
+    bloc.fetchClub(user.email);
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    //club
+    return StreamBuilder(
+      stream: bloc.thisClub,
+      builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+        if (snapshot.hasData) {
+          return _homeClub(snapshot.data);
+        } else if (user.email.endsWith("gmail.com")) {
+          //change to @esiee.fr
+          return _homeProf();
+        } else if (user.email.endsWith("edu.esiee.fr")) {
+          return _homeStudent();
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   Widget _homeClub(ClubModel club) {
@@ -51,25 +68,22 @@ class Home extends StatelessWidget {
                   child: Row(children: <Widget>[
                     Expanded(
                         child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Container(
-                                      width: 150.0,
-                                      height: 150.0,
-                                      decoration: new BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: new DecorationImage(
-                                              fit: BoxFit.fill,
-                                              image: new NetworkImage(
-                                                  club.logoUrl)))),
-                                  //Flexible(child: Image.network(user.photoUrl)),
-                                  Text(club.title,
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              )
-                            )
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                            width: 150.0,
+                            height: 150.0,
+                            decoration: new BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new NetworkImage(club.logoUrl)))),
+                        //Flexible(child: Image.network(user.photoUrl)),
+                        Text(club.title,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ))
                   ])))),
       Expanded(child: EventList())
     ]);
@@ -97,7 +111,7 @@ class Home extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: new NetworkImage(photoUrl)))),
+                                      image: new NetworkImage(user.photoUrl)))),
                           //Flexible(child: Image.network(user.photoUrl)),
                           Text(user.displayName,
                               style: TextStyle(
@@ -131,7 +145,7 @@ class Home extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: new NetworkImage(photoUrl)))),
+                                      image: new NetworkImage(user.photoUrl)))),
                           //Flexible(child: Image.network(user.photoUrl)),
                           Text(user.displayName,
                               style: TextStyle(

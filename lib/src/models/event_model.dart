@@ -5,26 +5,24 @@ import 'package:logging/logging.dart';
 class EventModel {
   final log = Logger('eventModel');
 
-  int id;
-  String title;
-  DateTime start;
-  DateTime end;
-  String place;
-  String image;
-  String content;
-  String slug;
-  String publicationDate;
-  String link;
+  int idEvent;                   //idEvent
+  String name;             //name
+  DateTime startDate;           //startDate
+  DateTime endDate;             //endDate
+  String place;             //place
+  String backgroundUrl;             //backgroundUrl
+  String description;           //description   //
+  String publicationDate;   //publicationDate
+  String link;              //
 
   EventModel({
-    this.id,
-    this.title,
-    this.start,
-    this.end,
+    this.idEvent,
+    this.name,
+    this.startDate,
+    this.endDate,
     this.place,
-    this.image,
-    this.content,
-    this.slug,
+    this.backgroundUrl,
+    this.description,
     this.publicationDate,
     this.link,
   });
@@ -33,23 +31,35 @@ class EventModel {
     EventModel e = new EventModel();
 
     if (parsedJson != null) {
-      e.id = parsedJson["id"];
-      e.title = parsedJson["title"];
-      e.content = parsedJson["content"];
-      e.slug = parsedJson["slug"];
-      e.publicationDate = parsedJson["created_at"];
-    }
+      e.idEvent = parsedJson["idEvent"];
+      e.name = parsedJson["name"];
+      e.description = parsedJson["description"];
 
-    if (parsedJson["event"] != null) {
-      e.start = DateTime.parse(parsedJson["event"]["start"]);
-      e.end = DateTime.parse(parsedJson["event"]["end"]);
-      e.place = parsedJson["event"]["place"];
-    }
+      e.publicationDate = parsedJson["publicationDate"];
 
-    if (parsedJson["photo"] != null) {
-      e.image = parsedJson["photo"]["url"];
-    }
+      e.startDate = DateTime.parse(parsedJson["startDate"]);
+      e.endDate = DateTime.parse(parsedJson["endDate"]);
+      e.place = parsedJson["place"];
 
+      e.backgroundUrl = parsedJson["backgroundUrl"];
+      if(e.backgroundUrl == null) {
+        e.backgroundUrl = "";
+      }
+      e.link = parsedJson["sellLink"];
+      if(e.name == null) {
+        e.name = "";
+      }
+      if(e.link == null) {
+        e.link = "";
+      }
+
+      if(e.description == null) {
+        e.description = "";
+      }
+      if(e.place == null) {
+        e.place = "";
+      }
+    }
     return e;
   }
 

@@ -1,16 +1,33 @@
 import 'package:bde_esiee_mobile/src/ui/club_list.dart';
+import 'package:bde_esiee_mobile/src/ui/grades_list.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'ui/event_list.dart';
 import 'ui/home.dart';
-import 'ui/timecalendar.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 
 //so1Sw1nS
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return AppState();
+  }
+}
+
+class AppState extends State<App> {
+  Widget app;
+  @override
+  void initState() {
+    super.initState();
+    if (user == null) {
+        app = MaterialApp(home: LoginPage());
+    } else {
+        app = MaterialApp(home: Base());
+    }
+    }
+
   @override
   Widget build(BuildContext context) {
     //logs de l'aplication ex: Log.i("titre", "texte");
@@ -19,12 +36,7 @@ class App extends StatelessWidget {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
 
-    //Base de l'application
-    if (user != null) {
-      return MaterialApp(home: Base());
-    } else {
-      return MaterialApp(home: LoginPage());
-    }
+    return app;
   }
 }
 
@@ -40,7 +52,7 @@ class _Base extends State<Base> {
 
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Timecalendar(),
+    GradesList(),
     EventList(),
   ];
 
@@ -78,16 +90,15 @@ class _Base extends State<Base> {
             onTap: () {
               signOutGoogle();
               user = null;
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
                 _selectedIndex = 0;
-                return MaterialApp(home: App());
+                return App();
               }));
             },
           ),
       ListTile(
         title: Text("Clubs"),
         onTap: () {
-          Navigator.of(context).popUntil((r) => r.settings.isInitialRoute);
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             _selectedIndex = 0;
             return ClubList();

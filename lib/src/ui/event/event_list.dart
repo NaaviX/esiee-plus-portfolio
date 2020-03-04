@@ -102,6 +102,9 @@ class EventListState extends State<EventList> {
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
+    if(event.image == null) {
+      event.image = "";
+    }
     if(event.end != null && event.end.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,

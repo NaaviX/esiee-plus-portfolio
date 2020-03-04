@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 class EventsBloc {
   final _repository = Repository();
   final _eventsFetcher = PublishSubject<List<EventModel>>();
+  final _title = BehaviorSubject<String>();
 
   Observable<List<EventModel>> get allEvents => _eventsFetcher.stream;
 
@@ -13,6 +14,10 @@ class EventsBloc {
     List<EventModel> eventmodel = await _repository.fetchAllEvents();
     eventmodel = sort(eventmodel);
     _eventsFetcher.sink.add(eventmodel);
+  }
+
+  addSaveEvent() {
+    _repository.addSaveEvent(_title.value);
   }
 
   dispose() {
@@ -23,9 +28,9 @@ class EventsBloc {
     List<EventModel> oldEvents = List.from(list);
     List<EventModel> newEvents = List.from(list);
     List<EventModel> currentEvents = List.from(list);
-    oldEvents.removeWhere((item) => item.end == null || item.end.isAfter(DateTime.now()));
-    newEvents.removeWhere((item) => item.end == null || item.start.isBefore(DateTime.now()));
-    currentEvents.removeWhere((item) => item.end == null || item.end.isBefore(DateTime.now()) || item.start.isAfter(DateTime.now()));
+    oldEvents.removeWhere((item) => item.endDate == null || item.endDate.isAfter(DateTime.now()));
+    newEvents.removeWhere((item) => item.startDate == null || item.startDate.isBefore(DateTime.now()));
+    currentEvents.removeWhere((item) => item.endDate == null || item.endDate.isBefore(DateTime.now()) || item.startDate.isAfter(DateTime.now()));
     return currentEvents+newEvents+oldEvents;
   }
 }

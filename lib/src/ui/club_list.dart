@@ -25,6 +25,7 @@ class ClubListState extends State<ClubList> {
     bloc.dispose();
     super.dispose();
   }
+
   final log = Logger('clubList');
 
   @override

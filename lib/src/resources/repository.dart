@@ -16,12 +16,11 @@ class Repository {
   Repository({gradesID});
 
   final eventsApiProvider = EventApiProvider();
-  Future<List<EventModel>> fetchAllEvents() =>
-      eventsApiProvider.fetchEventList();
+  Future<List<EventModel>> fetchAllEvents() => eventsApiProvider.fetchEventList();
+  Future addSaveEvent(String title) => eventsApiProvider.addEvent(title);
 
   final clubsApiProvider = ClubApiProvider();
-  Future<List<ClubModel>> fetchAllClubs() =>
-      clubsApiProvider.fetchClubList();
+  Future<List<ClubModel>> fetchAllClubs() => clubsApiProvider.fetchClubList();
 
   final studentApiProvider = StudentApiProvider();
   Future<List<StudentModel>> fetchAllStudents() =>
@@ -30,10 +29,9 @@ class Repository {
       studentApiProvider.fetchStudent(mailEsiee);
 
   final gradesApiProvider = GradesApiProvider();
-  Future<List<GradesModel>> fetchAllGrades() =>
-      gradesApiProvider.fetchGradesList();
+  Future<List<GradesModel>> fetchAllGrades() => gradesApiProvider.fetchGradesList();
 
   final gradesUnitApiProvider = GradesUnitApiProvider();
-  Future<List<GradesUnitModel>> fetchAllGradesUnit(String gradesID) =>
-      gradesUnitApiProvider.fetchGradesUnitList(gradesID);
+  Future<List<GradesUnitModel>> fetchAllGradesUnit(String gradesID) => gradesUnitApiProvider.fetchGradesUnitList(gradesID);
+
 }

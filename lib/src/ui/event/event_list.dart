@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../blocs/events_bloc.dart';
+import '../../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'event_creation.dart';
@@ -56,7 +57,7 @@ class EventListState extends State<EventList> {
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue
       )
     );
   }
@@ -96,21 +97,21 @@ class EventListState extends State<EventList> {
   }
 
   String getTitle(EventModel event){
-    String result = event.title;
-    if(event.start != null)  result += '  -  '+DateFormat('dd MMM').format(event.start)+'.';
+    String result = event.name;
+    if(event.startDate != null)  result += '  -  '+DateFormat('dd MMM').format(event.startDate)+'.';
     return result;
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
-    if(event.image == null) {
-      event.image = "";
+    if(event.backgroundUrl == null) {
+      event.backgroundUrl = "";
     }
-    if(event.end != null && event.end.isAfter(DateTime.now())) {
+    if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Image.network(
-          event.image,
+          event.backgroundUrl,
           fit: BoxFit.cover,
           width: MediaQuery
               .of(context)
@@ -135,7 +136,7 @@ class EventListState extends State<EventList> {
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
               image: new NetworkImage(
-                event.image,
+                event.backgroundUrl,
               ),
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:bde_esiee_mobile/src/ui/club_list.dart';
-import 'package:bde_esiee_mobile/src/ui/grades/grades_list.dart';
+import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,7 +46,7 @@ class AppState extends State<App> {
               const Locale('fr', ''),
             ]);
     }
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,6 @@ class AppState extends State<App> {
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
-
     return app;
   }
 }
@@ -72,7 +71,7 @@ class _Base extends State<Base> {
 
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
-    GradesList(),
+    Agenda(),
     EventList(),
   ];
 

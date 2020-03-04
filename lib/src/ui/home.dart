@@ -1,12 +1,10 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
 import 'event/event_list.dart';
-import 'login_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -156,7 +154,7 @@ class HomeState extends State<Home> {
                       ),
                     )
                   ])))),
-      Expanded(child: EventList())
+      //Expanded(child: EventList())
     ]);
   }
 }

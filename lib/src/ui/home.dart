@@ -149,7 +149,7 @@ class HomeState extends State<Home>{
                       ),
                     )
                   ])))),
-      //Expanded(child: EventList())
+      Expanded(child: EventList())
     ]);
   }
 

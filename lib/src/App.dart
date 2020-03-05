@@ -9,7 +9,7 @@ import 'package:bde_esiee_mobile/src/ui/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/free_rooms.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda.dart';
+import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/prof_list.dart';

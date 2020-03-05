@@ -28,6 +28,7 @@ import 'ui/home.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'resources/translations.dart';
 
+
 //so1Sw1nS
 
 class App extends StatefulWidget {
@@ -97,6 +98,10 @@ class _Base extends State<Base>  {
 
   int _selectedIndex = 0;
 
+  PageController pageController = PageController();
+
+
+
   static List<Widget> _widgetOptions = <Widget>[
     Home(thisUser, thisClub),
     Agenda(),
@@ -123,7 +128,17 @@ class _Base extends State<Base>  {
     super.dispose();
   }
 
+  /*void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }*/
+
   void _onItemTapped(int index) {
+    pageController.jumpToPage(index);
+  }
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -166,7 +181,11 @@ class _Base extends State<Base>  {
     return Scaffold(
         appBar:
         AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
-        body: _widgetOptions.elementAt(_selectedIndex),
+        body: PageView(
+          controller: pageController,
+          onPageChanged: _onPageChanged,
+          children: _widgetOptions,
+        ),//_widgetOptions.elementAt(_selectedIndex),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: _getDrawer());
   }

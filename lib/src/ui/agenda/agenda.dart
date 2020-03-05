@@ -10,7 +10,9 @@ class Agenda extends StatefulWidget {
   }
 }
 
-class AgendaState extends State<Agenda> {
+class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {

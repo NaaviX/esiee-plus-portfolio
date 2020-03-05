@@ -20,7 +20,9 @@ class Home extends StatefulWidget {
   }
 }
 
-class HomeState extends State<Home>{
+class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {

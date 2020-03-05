@@ -17,7 +17,9 @@ class EventList extends StatefulWidget {
   }
 }
 
-class EventListState extends State<EventList> {
+class EventListState extends State<EventList>  with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   final bloc = EventsBloc();
 
   @override

@@ -19,20 +19,7 @@ class AgendaState extends State<Agenda> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        DayBar(
-            date: DateTime.now()
-        ),
-        DayView(),
-        Positioned(
-          top: 0,
-          left: 0,
-          child: HourBar(),
-        ),
-      ],
-    );
-
+    return weekView();
   }
 
   String f(int a, int b, int c){

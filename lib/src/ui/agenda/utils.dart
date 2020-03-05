@@ -4,17 +4,18 @@ class AgendaUtils{
 
   static bool sameDay(DateTime date, [DateTime target]) {
     target = target ?? DateTime.now();
-    return target.year == date.year && target.month == date.month && target.day == date.day;
+    return date != null && target.year == date.year && target.month == date.month && target.day == date.day;
   }
   static addLeadingZero(int number) => (number < 10 ? '0' : '') + number.toString();
-  static dateFormatter(int year, int month, int day) => year.toString() + '-' + addLeadingZero(month) + '-' + addLeadingZero(day);
+  static dateFormatter(int year, int month, int day) => addLeadingZero(day);
   static hourFormatter(int hour, int minute) => addLeadingZero(hour) + ':' + addLeadingZero(minute);
 }
 
 class DayBar extends StatelessWidget{
-  final DateTime date;
+  DateTime date;
+
   DayBar({
-  @required DateTime date
+    @required DateTime date
   }) : date = DateTime(date.year, date.month, date.day);
 
   Color backgroundColor = Colors.white70;
@@ -28,27 +29,24 @@ class DayBar extends StatelessWidget{
       left: 0,
       right: 0,
       child: _DayBar(
-          date: DateTime.now()
-      ),
+          date: this.date
+      )
     );
   }
   
   Widget _DayBar({DateTime date}){
-    TextStyle textStyle = TextStyle(
-        color: AgendaUtils.sameDay(date ?? today) ? Colors.blue[800] : Colors.black54,
-        fontWeight: FontWeight.bold
-    );
+
     return Container(
       height: 40,
+      width: 100,
       color: backgroundColor,
       child: Center(
         child: Text(
-          AgendaUtils.dateFormatter(today.year, today.month, today.day),
-          style: textStyle ??
-              TextStyle(
-                color: AgendaUtils.sameDay(today) ? Colors.blue[800] : Colors.black54,
-                fontWeight: FontWeight.bold,
-              ),
+          AgendaUtils.dateFormatter(date.year, date.month, date.day),
+          style: TextStyle(
+            color: AgendaUtils.sameDay(date) ? Colors.blue[800] : Colors.black54,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -123,6 +121,14 @@ class EventsColumnBackgroundPainter extends CustomPainter {
 
 class DayView extends StatelessWidget {
 
+  final double hourBarWidth;
+  final DateTime dayDate;
+
+  DayView({
+    @required double hourBarWidth,
+    DateTime dayDate
+  }) : hourBarWidth = 50, dayDate = DateTime(dayDate.year, dayDate.month, dayDate.day);
+
   static DateTime now = DateTime.now();
   static DateTime date = DateTime(now.year, now.month, now.day);
 
@@ -136,45 +142,93 @@ class DayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 40),
-      child: SizedBox(
-        height: calculateHeight(),
-        child: Stack(
-            children: [
-              Positioned.fill(
-                  child: CustomPaint(
-                      painter: eventsColumnBackgroundPainter
-                  )
-              ),
-              Positioned(
-                top: calculateTopOffset(now.hour, now.minute),
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 1,
-                  color: Colors.pink,
-                ),
-              ),
-              Positioned(
-                top: calculateTopOffset(now.hour, now.minute) - (15 / 2),
-                right: 0,
-                child: Container(
-                  height: 15,
-                  width: 15,
-                  decoration: BoxDecoration(
-                    color: Colors.pink,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ]
-        ),
-      ),
+    List<Widget> children = List();
+    children.add(
+      Positioned.fill(
+          child: CustomPaint(
+              painter: eventsColumnBackgroundPainter
+          )
+      )
     );
+    if (dayDate != null && AgendaUtils.sameDay(dayDate)){
+      children.add(
+        Positioned(
+          top: calculateTopOffset(now.hour, now.minute),
+          left: 0,
+          right: 0,
+          child: Container(
+            height: 1,
+            color: Colors.pink,
+          ),
+        ),
+      );
+      children.add(
+        Positioned(
+          top: calculateTopOffset(now.hour, now.minute) - (15 / 2),
+          left: 0,
+          child: Container(
+            height: 15,
+            width: 15,
+            decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+    children: [
+      Padding(
+        padding: EdgeInsets.only(top: 40),
+          child: SizedBox(
+            width: (MediaQuery.of(context).size.width - 50) / 5,
+            height: calculateHeight(),
+            child: Stack(
+                children: children
+            ),
+          ),
+        ),
+        DayBar(
+          date: this.dayDate
+      )]);
   }
 }
 
+class weekView extends StatelessWidget {
 
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+            top: 0,
+            left: 50,
+            child: new DayView(dayDate: DateTime.now().subtract(Duration(days: 1)))),
+        Positioned(
+        top: 0,
+        left: ((MediaQuery.of(context).size.width - 50) / 5)+50,
+        child: new DayView(dayDate: DateTime.now())),
+        Positioned(
+        top: 0,
+        left: 2*((MediaQuery.of(context).size.width - 50) / 5)+50,
+        child: new DayView(dayDate: DateTime.now().add(Duration(days: 1)))),
+        Positioned(
+            top: 0,
+            left: 3*((MediaQuery.of(context).size.width - 50) / 5)+50,
+            child: new DayView(dayDate: DateTime.now().add(Duration(days: 2)))),
+        Positioned(
+            top: 0,
+            left: 4*((MediaQuery.of(context).size.width - 50) / 5)+50,
+            child: new DayView(dayDate: DateTime.now().add(Duration(days: 3)))),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: HourBar(),
+        ),
+      ],
+    );
+  }
 
-
+}

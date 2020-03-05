@@ -1,6 +1,8 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/role_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +11,17 @@ import 'event_list.dart';
 import 'login_page.dart';
 
 class Home extends StatefulWidget {
+  final StudentModel thisUser;
+  final ClubModel thisClub;
+  const Home(this.thisUser, this.thisClub);
+
   @override
   State<StatefulWidget> createState() {
     return HomeState();
   }
 }
 
-class HomeState extends State<Home> {
-  final bloc = ClubsBloc();
+class HomeState extends State<Home>{
 
   @override
   void initState() {
@@ -26,36 +31,25 @@ class HomeState extends State<Home> {
       }));
     }
     super.initState();
-    bloc.fetchClub(user.email);
   }
 
   @override
   void dispose() {
-    bloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    //club
-    return StreamBuilder(
-      stream: bloc.thisClub,
-      builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-        if (snapshot.hasData) {
-          return _homeClub(snapshot.data);
-        } else if (user.email.endsWith("gmail.com")) {
-          //change to @esiee.fr
-          return _homeProf();
-        } else if (user.email.endsWith("edu.esiee.fr")) {
-          return _homeStudent();
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+    if(widget.thisUser != null) {
+      return _homeStudent();
+    } else if(widget.thisClub != null) {
+      return _homeClub();
+    } else {
+      return _homeProf();
+    }
   }
 
-  Widget _homeClub(ClubModel club) {
+  Widget _homeClub() {
     return Column(children: <Widget>[
       Container(
           margin: EdgeInsets.all(10.0),
@@ -77,9 +71,9 @@ class HomeState extends State<Home> {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new NetworkImage(club.logoUrl)))),
+                                    image: new NetworkImage(widget.thisClub.logoUrl)))),
                         //Flexible(child: Image.network(user.photoUrl)),
-                        Text(club.title,
+                        Text(widget.thisClub.title,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
@@ -150,13 +144,21 @@ class HomeState extends State<Home> {
                           Text(user.displayName,
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text("Cotisant ?"),
-                          Text("Roles")
+                          Text(widget.thisUser.contributor ? "Cotisant" : "Non cotisant"),
+                          _getRoles()
                         ],
                       ),
                     )
                   ])))),
       Expanded(child: EventList())
     ]);
+  }
+
+  _getRoles() {
+    String roles = "";
+    for(var i = 0; i < widget.thisUser.roles.length; i++) {
+      roles += widget.thisUser.roles.elementAt(i).role+" ";
+    }
+    return Text(roles);
   }
 }

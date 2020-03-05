@@ -29,8 +29,8 @@ class StudentApiProvider {
       dynamic students = json.decode(response.body);
       return StudentModel.fromJson(students);
     } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to load student');
+      // If that call was not successful, return null;
+      return null;
     }
   }
 

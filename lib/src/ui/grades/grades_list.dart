@@ -1,7 +1,7 @@
 import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../blocs/grades_bloc.dart';
+import '../../blocs/grades_bloc.dart';
 import 'gradesUnit_list.dart';
 
 class GradesList extends StatelessWidget {

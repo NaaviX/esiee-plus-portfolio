@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../blocs/events_bloc.dart';
+import '../../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'event_creation.dart';
@@ -56,7 +57,7 @@ class EventListState extends State<EventList> {
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue
       )
     );
   }
@@ -102,6 +103,9 @@ class EventListState extends State<EventList> {
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
+    if(event.backgroundUrl == null) {
+      event.backgroundUrl = "";
+    }
     if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,

@@ -9,7 +9,7 @@ import 'package:bde_esiee_mobile/src/ui/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/free_rooms.dart';
-import 'package:bde_esiee_mobile/src/ui/grades_list.dart';
+import 'package:bde_esiee_mobile/src/ui/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/prof_list.dart';
@@ -23,7 +23,7 @@ import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'models/club_model.dart';
 import 'models/role_model.dart';
-import 'ui/event_list.dart';
+import 'ui/event/event_list.dart';
 import 'ui/home.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'resources/translations.dart';
@@ -99,7 +99,7 @@ class _Base extends State<Base>  {
 
   static List<Widget> _widgetOptions = <Widget>[
     Home(thisUser, thisClub),
-    GradesList(),
+    Agenda(),
     EventList(),
   ];
 

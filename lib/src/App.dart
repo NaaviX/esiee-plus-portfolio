@@ -20,6 +20,7 @@ import 'package:bde_esiee_mobile/src/ui/roles/treasury_dashboard.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/treasury_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/user_permissions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
@@ -147,6 +148,10 @@ class _Base extends State<Base>  {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return StreamBuilder(
       stream: studentBloc.thisStudent,
       builder: (context, AsyncSnapshot<StudentModel> snapshot) {
@@ -201,6 +206,7 @@ class _Base extends State<Base>  {
             subtitle: Text(user.email),
           ),
           ListTile(
+            leading: Icon(Icons.power_settings_new),
             title: new Text(Translations.of(context).text("deco")),
             onTap: () {
               signOutGoogle();
@@ -211,15 +217,7 @@ class _Base extends State<Base>  {
               }));
             },
           ),
-          Divider(),
-          ListTile(
-            title: Text("Clubs"),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ClubList();
-              }));
-            },
-          ),
+
           _clubMenu(),
           _studentMenu(),
           _profMenu(),
@@ -243,6 +241,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
+          leading: Icon(Icons.import_contacts),
           title: Text("Cours"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -251,6 +250,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.group),
           title: Text("Notification classe"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -259,6 +259,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.chat),
           title: Text("Messenger"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -268,6 +269,7 @@ class _Base extends State<Base>  {
         )
       ]);
     }
+    return Column();
   }
 
   Widget _clubMenu() {
@@ -282,6 +284,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
+          leading: Icon(Icons.account_balance_wallet),
           title: Text("Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -290,6 +293,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.group_add),
           title: Text("Gestion des membres"),
           onTap: () {
 
@@ -300,6 +304,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
+          leading: Icon(Icons.chat),
           title: Text("Messenger"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -321,8 +326,18 @@ class _Base extends State<Base>  {
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
           ),
         ),
+        ListTile(
+          leading: Icon(Icons.group),
+          title: Text("Clubs"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ClubList();
+            }));
+          },
+        ),
 
         ListTile(
+          leading: Icon(Icons.contacts),
           title: Text("Salles libres"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -331,6 +346,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.contacts),
           title: Text("Liste des professeurs"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -339,6 +355,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.import_contacts),
           title: Text("Cours"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -347,6 +364,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.class_),
           title: Text("Annales"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -356,6 +374,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
+          leading: Icon(Icons.chat),
           title: Text("Messenger"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -380,6 +399,7 @@ class _Base extends State<Base>  {
           ),
         ),
         ListTile(
+          leading: Icon(Icons.info_outline),
           title: Text("Informations importantes"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -388,6 +408,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.account_balance),
           title: Text("Dashboard trésorerie"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -396,6 +417,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.group_add),
           title: Text("Droits utilisateurs"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -423,6 +445,7 @@ class _Base extends State<Base>  {
           ),
         ),
         ListTile(
+          leading: Icon(Icons.date_range),
           title: Text("Gestion évènements"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -445,6 +468,7 @@ class _Base extends State<Base>  {
           ),
         ),
         ListTile(
+          leading: Icon(Icons.euro_symbol),
           title: Text("Gestion trésorerie"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -453,6 +477,7 @@ class _Base extends State<Base>  {
           },
         ),
         ListTile(
+          leading: Icon(Icons.equalizer),
           title: Text("Gestion Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -475,6 +500,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
+          leading: Icon(Icons.local_grocery_store),
           title: Text("Réserve"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {

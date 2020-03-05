@@ -1,28 +1,29 @@
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/ui/annals.dart';
-import 'package:bde_esiee_mobile/src/ui/bde_infos.dart';
-import 'package:bde_esiee_mobile/src/ui/class_document.dart';
-import 'package:bde_esiee_mobile/src/ui/club_list.dart';
-import 'package:bde_esiee_mobile/src/ui/club_member_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/event_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/fairpay.dart';
-import 'package:bde_esiee_mobile/src/ui/fairpay_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/free_rooms.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
+import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
+import 'package:bde_esiee_mobile/src/ui/student/class_document.dart';
+import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
+import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/club/fairpay.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/fairpay_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger.dart';
-import 'package:bde_esiee_mobile/src/ui/prof_list.dart';
-import 'package:bde_esiee_mobile/src/ui/stock.dart';
-import 'package:bde_esiee_mobile/src/ui/treasury_dashboard.dart';
-import 'package:bde_esiee_mobile/src/ui/treasury_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/user_permissions.dart';
+import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/stock.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/treasury_dashboard.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/treasury_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/user_permissions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'models/club_model.dart';
-import 'models/role_model.dart';
 import 'ui/event/event_list.dart';
 import 'ui/home.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
@@ -163,7 +164,7 @@ class _Base extends State<Base>  {
                 return _getApp();
               } else {
                 //C'est un prof
-                return Column();
+                return Center(child: new CircularProgressIndicator());
               }
             },
           );
@@ -221,7 +222,7 @@ class _Base extends State<Base>  {
           ),
           _clubMenu(),
           _studentMenu(),
-          //_profMenu(),
+          _profMenu(),
           _adminMenu(),
           _modoMenu(),
           _trezMenu(),
@@ -229,6 +230,45 @@ class _Base extends State<Base>  {
         ]));
   }
 
+  Widget _profMenu() {
+    if(false) {
+      return Column(children: [
+        Divider(),
+        RichText(
+          text: TextSpan(
+              text: user.displayName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
+          ),
+        ),
+
+        ListTile(
+          title: Text("Cours"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ClassDocumentUpload();
+            }));
+          },
+        ),
+        ListTile(
+          title: Text("Notification classe"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ClassNotification();
+            }));
+          },
+        ),
+        ListTile(
+          title: Text("Messenger"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return Messenger();
+            }));
+          },
+        )
+      ]);
+    }
+  }
 
   Widget _clubMenu() {
     if(thisClub!=null) {
@@ -252,6 +292,7 @@ class _Base extends State<Base>  {
         ListTile(
           title: Text("Gestion des membres"),
           onTap: () {
+
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return ClubMemberManager();
             }));

@@ -52,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton() {
     return RaisedButton(
+
         child: Text("Se connecter avec Google"),
         onPressed: () async {
           setState(() => _isLoading = true);

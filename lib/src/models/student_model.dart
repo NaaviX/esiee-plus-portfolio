@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:logging/logging.dart';
 
 class StudentModel {
@@ -15,6 +16,13 @@ class StudentModel {
   String phone;
   bool contributor;
   String urlPhoto;
+  List<RoleModel> roles;
+  bool isAdmin;
+  bool isModo;
+  bool isLog;
+  bool isTrez;
+
+
 
 
   StudentModel({
@@ -25,7 +33,12 @@ class StudentModel {
     this.promo,
     this.phone,
     this.contributor,
-    this.urlPhoto
+    this.urlPhoto,
+    this.roles,
+    this.isAdmin,
+    this.isLog,
+    this.isModo,
+    this.isTrez
   });
 
   factory StudentModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -33,8 +46,6 @@ class StudentModel {
 
     if (parsedJson != null) {
       e.id_student = parsedJson["id_student"];
-
-
       e.mailEsiee = parsedJson["mailEsiee"];
       e.firstname = parsedJson["firstname"];
       e.lastname = parsedJson["lastname"];
@@ -42,6 +53,24 @@ class StudentModel {
       e.phone = parsedJson["phone"];
       e.contributor = parsedJson["contributor"];
       e.urlPhoto = parsedJson["urlPhoto"];
+      e.roles = new List<RoleModel>();
+      e.isAdmin = false;
+      e.isTrez = false;
+      e.isModo = false;
+      e.isLog = false;
+      for(dynamic roleFromJson in parsedJson["roles"]) {
+        RoleModel role = RoleModel.roleFromJson(roleFromJson);
+        e.roles.add(role);
+        if(role.role == "admin") {
+          e.isAdmin = true;
+        } else if(role.role == "trez") {
+          e.isTrez = true;
+        } else if(role.role == "mod") {
+          e.isModo = true;
+        } else if(role.role == "log") {
+          e.isLog = true;
+        }
+      }
     }
 
     return e;

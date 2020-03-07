@@ -151,7 +151,6 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                       ),
                     )
                   ])))),
-      Expanded(child: EventList())
     ]);
   }
 

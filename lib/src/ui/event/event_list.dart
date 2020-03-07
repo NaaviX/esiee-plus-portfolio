@@ -69,7 +69,7 @@ class EventListState extends State<EventList>  with AutomaticKeepAliveClientMixi
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-                onTap: () {
+                  onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
@@ -99,14 +99,18 @@ class EventListState extends State<EventList>  with AutomaticKeepAliveClientMixi
   }
 
   String getTitle(EventModel event){
-    String result = event.name;
-    if(event.startDate != null)  result += '  -  '+DateFormat('dd MMM').format(event.startDate)+'.';
-    return result;
+      String result = event.name;
+      if (event.startDate != null)
+        result += '  -  ' + DateFormat('dd MMM').format(event.startDate) + '.';
+      return result;
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
     if(event.backgroundUrl == null) {
       event.backgroundUrl = "";
+    }
+    if(event.enable != true) {
+      return Container();
     }
     if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(

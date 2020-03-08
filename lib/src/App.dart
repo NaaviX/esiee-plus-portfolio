@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
+import 'package:bde_esiee_mobile/src/ui/settings.dart';
 import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
 import 'package:bde_esiee_mobile/src/ui/student/class_document.dart';
@@ -203,6 +204,16 @@ class _Base extends State<Base>  {
             leading: CircleAvatar(backgroundImage:  NetworkImage(user.photoUrl)),
             title: Text(user.displayName),
             subtitle: Text(user.email),
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: new Text("Paramètres"),
+            onTap: () {
+              user = null;
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                return Settings();
+              }));
+            },
           ),
           ListTile(
             leading: Icon(Icons.power_settings_new),

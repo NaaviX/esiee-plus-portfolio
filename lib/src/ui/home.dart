@@ -157,11 +157,11 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       if(widget.thisUser.roles.elementAt(i).role == 'mod')
         colors.add(Colors.blue);
       if(widget.thisUser.roles.elementAt(i).role == 'log')
-        colors.add(Colors.red);
+        colors.add(Colors.green);
       if(widget.thisUser.roles.elementAt(i).role == 'admin')
-        colors.add(Colors.yellow);
+        colors.add(Colors.red);
       if(widget.thisUser.roles.elementAt(i).role == 'trez')
-        colors.add(Colors.lightGreen);
+        colors.add(Colors.yellow);
     }
 
     return Wrap(
@@ -169,7 +169,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       runSpacing: 6.0,
       children: List<Widget>.generate(widget.thisUser.roles.length, (int index) {
         return Chip(
-          label: Text(widget.thisUser.roles.elementAt(index).role),
+          label: Text(widget.thisUser.roles.elementAt(index).role.toUpperCase()),
           backgroundColor: colors[index].shade50,
         );
       }),

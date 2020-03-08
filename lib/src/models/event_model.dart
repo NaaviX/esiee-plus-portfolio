@@ -14,6 +14,7 @@ class EventModel {
   String description;           //description   //
   String publicationDate;   //publicationDate
   String link;              //
+  bool enable;
 
   EventModel({
     this.idEvent,
@@ -25,6 +26,7 @@ class EventModel {
     this.description,
     this.publicationDate,
     this.link,
+    this.enable
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -59,6 +61,8 @@ class EventModel {
       if(e.place == null) {
         e.place = "";
       }
+
+      e.enable = parsedJson["enabled"];
     }
     return e;
   }

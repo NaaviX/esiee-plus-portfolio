@@ -120,7 +120,6 @@ class _Base extends State<Base>  {
   void initState() {
     super.initState();
     studentBloc.fetchStudent(user.email);
-    clubsBloc.fetchClub(user.email);
   }
 
   @override
@@ -218,13 +217,14 @@ class _Base extends State<Base>  {
             },
           ),
 
-          _clubMenu(),
-          _studentMenu(),
-          _profMenu(),
+
           _adminMenu(),
           _modoMenu(),
           _trezMenu(),
-          _logMenu()
+          _logMenu(),
+          _clubMenu(),
+          _studentMenu(),
+          _profMenu()
         ]));
   }
 
@@ -337,7 +337,7 @@ class _Base extends State<Base>  {
         ),
 
         ListTile(
-          leading: Icon(Icons.contacts),
+          leading: Icon(Icons.location_on),
           title: Text("Salles libres"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -528,6 +528,8 @@ class _Base extends State<Base>  {
           title: Text('Event'),
         ),
       ],
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
       currentIndex: _selectedIndex,
       selectedItemColor: Colors.blue[800],
       onTap: _onItemTapped,

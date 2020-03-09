@@ -1,10 +1,8 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
@@ -158,10 +156,27 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   }
 
   _getRoles() {
-    String roles = "";
+    List<MaterialColor> colors = [];
     for(var i = 0; i < widget.thisUser.roles.length; i++) {
-      roles += widget.thisUser.roles.elementAt(i).role+" ";
+      if(widget.thisUser.roles.elementAt(i).role == 'mod')
+        colors.add(Colors.blue);
+      if(widget.thisUser.roles.elementAt(i).role == 'log')
+        colors.add(Colors.green);
+      if(widget.thisUser.roles.elementAt(i).role == 'admin')
+        colors.add(Colors.red);
+      if(widget.thisUser.roles.elementAt(i).role == 'trez')
+        colors.add(Colors.yellow);
     }
-    return Text(roles);
+
+    return Wrap(
+      spacing: 6.0,
+      runSpacing: 6.0,
+      children: List<Widget>.generate(widget.thisUser.roles.length, (int index) {
+        return Chip(
+          label: Text(widget.thisUser.roles.elementAt(index).role.toUpperCase()),
+          backgroundColor: colors[index].shade50,
+        );
+      }),
+    );
   }
 }

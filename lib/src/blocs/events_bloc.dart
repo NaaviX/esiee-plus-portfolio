@@ -10,6 +10,7 @@ class EventsBloc {
   final _title = BehaviorSubject<String>();
 
   Observable<List<EventModel>> get allEvents => _eventsFetcher.stream;
+  Observable<EventModel> get event => _eventFetcher.stream;
 
   fetchAllEvents() async {
     List<EventModel> eventmodel = await _repository.fetchAllEvents();
@@ -21,8 +22,8 @@ class EventsBloc {
     EventModel eventmodel = await _repository.updateEvent(event);
   }
 
-  addSaveEvent() {
-    _repository.addSaveEvent(_title.value);
+  addSaveEvent(EventModel event) async {
+    EventModel eventmodel = await _repository.addSaveEvent(event);
   }
 
   dispose() {

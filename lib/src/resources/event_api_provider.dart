@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:http/http.dart' show Client;
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
 
@@ -21,22 +22,22 @@ class EventApiProvider {
     }
   }
 
-  Future addEvent(EventModel event) async {
+  Future<EventModel> addEvent(EventModel event) async {
     final response = await client.post(
         "http://137.74.197.140:8080/api-1-SNAPSHOT/event/add",
         body: {
-          'id_event': 0,
-          'enabled': event.enable,
-          'publication_date': event.publicationDate,
-          'start_date': event.startDate,
-          'end_date': event.endDate,
+          'id_event': "0",
+          'enabled': event.enable.toString(),
+          'publication_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate),
+          'start_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate),
+          'end_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.endDate),
           'name': event.name,
           'description': event.description,
           'place': event.place,
-          'price': event.price,
+          'price': event.price.toString(),
           'sell_link': event.link,
           'facebook_link': event.facebookLink,
-          'id_club_ref': event.idClubRef,
+          'id_club_ref': event.idClubRef.toString(),
           'background_url': event.backgroundUrl,
 
         });

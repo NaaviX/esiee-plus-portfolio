@@ -12,7 +12,7 @@ class EventModel {
   String place;             //place
   String backgroundUrl;             //backgroundUrl
   String description;           //description   //
-  String publicationDate;   //publicationDate
+  DateTime publicationDate;   //publicationDate
   String link;              //
   String facebookLink;
   int idClubRef;
@@ -43,10 +43,14 @@ class EventModel {
       e.name = parsedJson["name"];
       e.description = parsedJson["description"];
 
-      e.publicationDate = parsedJson["publicationDate"];
+      try {
+        e.publicationDate = DateTime.parse(parsedJson["publicationDate"]);
 
-      e.startDate = DateTime.parse(parsedJson["startDate"]);
-      e.endDate = DateTime.parse(parsedJson["endDate"]);
+        e.startDate = DateTime.parse(parsedJson["startDate"]);
+        e.endDate = DateTime.parse(parsedJson["endDate"]);
+      } catch(e) {
+
+      }
       e.place = parsedJson["place"];
 
       e.backgroundUrl = parsedJson["backgroundUrl"];

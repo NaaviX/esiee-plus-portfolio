@@ -10,16 +10,21 @@ class ClubApiProvider {
   Client client = Client();
 
   Future<List<ClubModel>> fetchClubList() async {
-    final response = await client.get("https://bde.esiee.fr/app_dev.php/clubs.json");
+    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/club/clubs");
     if (response.statusCode == 200) {
-      // If the call to the server was successful, parse the JSON
-      List<dynamic> clubs = json.decode(response.body)["Clubs du BDE"];
-      clubs.addAll(json.decode(response.body)["Clubs du BDS"]);
-      clubs.addAll(json.decode(response.body)["Associations"]);
-      return ClubModel.allClubsFromJson(clubs);
+      return ClubModel.allClubsFromJson(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to load post');
     }
+  }
+
+  Future<ClubModel> fetchClubByMail(String mail) async {
+    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/club/club?mail="+Uri.encodeFull(mail));
+    log.fine(response.statusCode);
+    if (response.statusCode == 200) {
+      return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    }
+    return null;
   }
 }

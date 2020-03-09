@@ -14,7 +14,10 @@ class EventModel {
   String description;           //description   //
   String publicationDate;   //publicationDate
   String link;              //
+  String facebookLink;
+  int idClubRef;
   bool enable;
+  int price;
 
   EventModel({
     this.idEvent,
@@ -26,7 +29,10 @@ class EventModel {
     this.description,
     this.publicationDate,
     this.link,
-    this.enable
+    this.facebookLink,
+    this.idClubRef,
+    this.enable,
+    this.price
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -44,25 +50,31 @@ class EventModel {
       e.place = parsedJson["place"];
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
+      e.enable = parsedJson["enabled"];
+      e.price = parsedJson["price"];
+      e.link = parsedJson["sellLink"];
+      e.facebookLink = parsedJson["facebookLink"];
+      e.idClubRef = parsedJson["idClubRef"];
+
+
       if(e.backgroundUrl == null || e.backgroundUrl == "null") {
         e.backgroundUrl = "https://bde.esiee.fr/bundles/applicationbde/img/couverture.png";
       }
-      e.link = parsedJson["sellLink"];
       if(e.name == null) {
         e.name = "";
       }
       if(e.link == null) {
         e.link = "";
       }
-
+      if(e.facebookLink == null) {
+        e.facebookLink = "";
+      }
       if(e.description == null) {
         e.description = "";
       }
       if(e.place == null) {
         e.place = "";
       }
-
-      e.enable = parsedJson["enabled"];
     }
     return e;
   }

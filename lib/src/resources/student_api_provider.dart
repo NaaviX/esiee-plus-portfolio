@@ -23,7 +23,7 @@ class StudentApiProvider {
   }
 
   Future<StudentModel> fetchStudent(String mailEsiee) async {
-    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/student/student?mail_esiee="+mailEsiee);
+    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/student/student?mail_esiee="+Uri.encodeFull(mailEsiee));
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       dynamic students = json.decode(response.body);

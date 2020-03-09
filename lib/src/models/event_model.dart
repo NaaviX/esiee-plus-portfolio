@@ -13,7 +13,9 @@ class EventModel {
   String backgroundUrl;             //backgroundUrl
   String description;           //description   //
   String publicationDate;   //publicationDate
-  String link;              //
+  String link;              //link
+  int idClubRef;
+  int price;                //Price
 
   EventModel({
     this.idEvent,
@@ -25,6 +27,8 @@ class EventModel {
     this.description,
     this.publicationDate,
     this.link,
+    this.idClubRef,
+    this.price,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -40,6 +44,10 @@ class EventModel {
       e.startDate = DateTime.parse(parsedJson["startDate"]);
       e.endDate = DateTime.parse(parsedJson["endDate"]);
       e.place = parsedJson["place"];
+
+      e.idClubRef = parsedJson["idClubRef"];
+
+      e.price = parsedJson["price"];
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
       if(e.backgroundUrl == null || e.backgroundUrl == "null") {

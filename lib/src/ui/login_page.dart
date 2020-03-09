@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text("Se connecter avec Google"),
         onPressed: () async {
           setState(() => _isLoading = true);
-          FirebaseUser user = await signInWithGoogle();
+          user = await signInWithGoogle();
           setState(() => _isLoading = false);
           if (user != null) {
             Navigator.of(context)

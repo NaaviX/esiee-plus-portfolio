@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
@@ -26,6 +27,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'models/club_model.dart';
+import 'models/prof_model.dart';
 import 'ui/event/event_list.dart';
 import 'ui/home.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
@@ -93,9 +95,11 @@ class Base extends StatefulWidget {
 class _Base extends State<Base>  {
   final studentBloc = StudentsBloc();
   final clubsBloc = ClubsBloc();
+  final profsBloc = ProfsBloc();
 
   static dynamic thisUser;
   static dynamic thisClub;
+  static dynamic thisProf;
 
   final log = Logger('BASE');
 
@@ -106,7 +110,7 @@ class _Base extends State<Base>  {
 
 
   static List<Widget> _widgetOptions = <Widget>[
-    Home(thisUser, thisClub),
+    Home(thisUser, thisClub, thisProf),
     Agenda(),
     EventList(),
   ];
@@ -121,12 +125,15 @@ class _Base extends State<Base>  {
   void initState() {
     super.initState();
     studentBloc.fetchStudent(user.email);
+    clubsBloc.fetchClub(user.email);
+    profsBloc.fetchProf(user.email);
   }
 
   @override
   void dispose() {
     studentBloc.dispose();
     clubsBloc.dispose();
+    profsBloc.dispose();
     super.dispose();
   }
 
@@ -152,11 +159,13 @@ class _Base extends State<Base>  {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    log.fine("base");
     return StreamBuilder(
       stream: studentBloc.thisStudent,
       builder: (context, AsyncSnapshot<StudentModel> snapshot) {
         if (snapshot.hasData) {
           //isStudent
+          log.fine("student");
           thisUser = snapshot.data;
           return _getApp();
         } else {
@@ -165,11 +174,25 @@ class _Base extends State<Base>  {
             stream: clubsBloc.thisClub,
             builder: (context, AsyncSnapshot<ClubModel> snapshot) {
               if (snapshot.hasData) {
+                log.fine("club");
                 thisClub = snapshot.data;
                 return _getApp();
               } else {
                 //C'est un prof
-                return Center(child: new CircularProgressIndicator());
+                log.fine("prof");
+                return StreamBuilder(
+                  stream: profsBloc.thisProf,
+                  builder: (context, AsyncSnapshot<ProfModel> snapshot) {
+                    if (snapshot.hasData) {
+                      log.fine("prof");
+                      thisProf = snapshot.data;
+                      return _getApp();
+                    } else {
+                      log.fine("loading");
+                      return Center(child: new CircularProgressIndicator());
+                    }
+                  },
+                );
               }
             },
           );
@@ -199,7 +222,6 @@ class _Base extends State<Base>  {
   Widget _getDrawer() {
     return Drawer(
         child: ListView(children: <Widget>[
-
           ListTile(
             leading: CircleAvatar(backgroundImage:  NetworkImage(user.photoUrl)),
             title: Text(user.displayName),
@@ -240,7 +262,7 @@ class _Base extends State<Base>  {
   }
 
   Widget _profMenu() {
-    if(false) {
+    if(thisProf!=null) {
       return Column(children: [
         Divider(),
         RichText(
@@ -289,7 +311,7 @@ class _Base extends State<Base>  {
         Divider(),
         RichText(
           text: TextSpan(
-              text: thisClub.title,
+              text: thisClub.name,
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
           ),
         ),

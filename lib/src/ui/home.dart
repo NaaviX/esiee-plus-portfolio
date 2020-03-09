@@ -1,5 +1,7 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/prof_model.dart';
+import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,8 @@ import 'event/event_list.dart';
 class Home extends StatefulWidget {
   final StudentModel thisUser;
   final ClubModel thisClub;
-  const Home(this.thisUser, this.thisClub);
+  final ProfModel thisProf;
+  const Home(this.thisUser, this.thisClub, this.thisProf);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,8 +45,10 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       return _homeStudent();
     } else if(widget.thisClub != null) {
       return _homeClub();
-    } else {
+    } else if(widget.thisProf != null) {
       return _homeProf();
+    } else {
+      return Center(child: CircularProgressIndicator());
     }
   }
 
@@ -69,15 +74,14 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new NetworkImage(widget.thisClub.logoUrl)))),
+                                    image: new NetworkImage(widget.thisClub.urlPhoto)))),
                         //Flexible(child: Image.network(user.photoUrl)),
-                        Text(widget.thisClub.title,
+                        Text(widget.thisClub.name,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ))
                   ])))),
-      Expanded(child: EventList())
     ]);
   }
 

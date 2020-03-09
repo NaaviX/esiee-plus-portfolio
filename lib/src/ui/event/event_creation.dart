@@ -1,7 +1,6 @@
+import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:intl/intl.dart';
 
 class EventCreation extends StatelessWidget {
@@ -18,7 +17,6 @@ class EventCreation extends StatelessWidget {
 
 // Create a Form widget.
 class createEventForm extends StatefulWidget {
-
   @override
   createEventFormState createState() {
     return createEventFormState();
@@ -39,15 +37,21 @@ class createEventFormState extends State<createEventForm> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.only(left:20, top:0, right:20, bottom:0),
           child: ConstrainedBox(
               constraints: BoxConstraints(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  newTextInput(
-                      'Intitulé de l\'évenement', 'Please enter some text',
-                      Icon(Icons.calendar_today)),
-                  newLongTextInput('Description', 'Please enter some text'),
+                  SizedBox(height: 15.0),
+                  _titreInputFiled(),
+                  SizedBox(height: 15.0),
+                  _descriptionInputFiled(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  //newLongTextInput('Description', 'Please enter some text'),
                   Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Center(
@@ -85,105 +89,130 @@ class createEventFormState extends State<createEventForm> {
                           )
                       )
                   ),
-                  newTextInput(
-                      'Lieu', 'Please enter some text', Icon(Icons.person)),
-                  newNumberInput('Prix', 'Please enter some text',
-                      Icon(Icons.attach_money)),
-                  SizedBox(height: 20.0),
-                  newTextInput('Lien Vente', 'Please enter some text',
-                      Icon(Icons.payment)),
-                  SizedBox(height: 20.0),
-                  newTextInput('Lien Event Facebook', 'Please enter some text',
-                      Icon(Icons.link)),
-                  SizedBox(height: 20.0),
-                  newTextInput(
-                      'id club', 'Please enter some text', Icon(Icons.person)),
-                  SizedBox(height: 20.0),
-                  newTextInput('Background url', 'Please enter some text',
-                      Icon(Icons.image)),
+                  SizedBox(height: 10.0),
+                  _placeInputFiled(),
+                  SizedBox(height: 10.0),
+                  _prixInputFiled(),
+                  SizedBox(height: 10.0),
+                  _venteInputFiled(),
+                  SizedBox(height: 10.0),
+                  _fbInputFiled(),
                   Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: RaisedButton(
-                          color: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                          ),
+                          color: Colors.blue,
                           child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 'CREER',
-                                style: TextStyle(color: Colors.white,
-                                    fontSize: 20),
+                                style: TextStyle(color: Colors.white, fontSize: 20),
                               )),
                           splashColor: Colors.white,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text('Processing Data')));
+                              Scaffold.of(context)
+                                  .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
                             }
                           },
                         ),
                       ))
                 ],
-              ))),
+              )))),
     );
   }
 
-  Widget newTextInput(String hintText, String ifEmpty, Icon icon) {
-    return new Padding(
-        padding: EdgeInsets.all(4.0),
-        child: TextFormField(
-            decoration: new InputDecoration(
-              icon: icon,
-              labelText: hintText,
-              fillColor: Colors.white70,
-              //fillColor: Colors.green
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return ifEmpty;
-              }
-              return null;
-            }
-        ));
+  _titreInputFiled() => TextFormField(
+    decoration: _inputDecoration("Nom de l'événement", "Intitulé de l\'évenement", Icons.calendar_today),
+    validator: (val) => _ifNull(val),
+    style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+    maxLines: 1,
+    keyboardType: TextInputType.text,
+    textAlignVertical: TextAlignVertical.top,
+  );
+
+  _descriptionInputFiled() => TextFormField(
+    decoration: _inputDescDecoration("Description"),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 5,
+    keyboardType: TextInputType.multiline,
+  );
+
+  _placeInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lieu", "Lieu de l'événement", Icons.place),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.text,
+  );
+
+  _prixInputFiled() => TextFormField(
+    decoration: _inputDecoration("Prix", "0", Icons.euro_symbol),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.number,
+  );
+
+  _venteInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lien de vente", "Lien de vente des places", Icons.payment),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.url,
+  );
+
+  _fbInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lien Facebook", "Lien de l'événement sur facebook", Icons.link),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.url,
+  );
+
+  _inputDecoration(label, hint, icon) => InputDecoration(
+    labelText: label,
+    fillColor: Colors.white,
+    border: new OutlineInputBorder(
+        borderRadius: new BorderRadius.circular(10.0),
+        borderSide: new BorderSide()),
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(0.0),
+      child: Icon(icon, color: Colors.black54,),
+    ),
+    hintText:hint,
+    hintStyle: _hinttextStyle(),
+  );
+
+  _inputDescDecoration(label) => InputDecoration(
+      labelText: label,
+      fillColor: Colors.white,
+      border: new OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(18.0),
+          borderSide: new BorderSide()),
+      hintText:"BlaBlaBla",
+      hintStyle: _hinttextStyle(),
+  );
+
+  _ifNull(val) {
+    if (val.isEmpty) {
+      return '*Champs requis';
+    }
+    return null;
   }
 
-  Widget newLongTextInput(String hintText, String ifEmpty) {
-    return new TextFormField(
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        decoration: InputDecoration(
-            hintText: hintText
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return ifEmpty;
-          }
-          return null;
-        }
-    );
-  }
-
-  Widget newNumberInput(String hintText, String ifEmpty, Icon icon) {
-    return new TextFormField(
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ],
-        decoration: InputDecoration(
-            icon: icon,
-            hintText: hintText
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return ifEmpty;
-          }
-          return null;
-        }
-    );
-  }
+  _textStyle() => TextStyle(color: Colors.black, fontSize: 15.0,);
+  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
 
   void callDatePickerStart() async {
     var order = await getDate();
+    var startTime = await getTime();
     setState(() {
+      order = new DateTime(order.year, order.month, order.day, startTime.hour, startTime.minute);
       if(order.isAfter(DateTime.now()))
         startdate = order;
     });
@@ -191,15 +220,20 @@ class createEventFormState extends State<createEventForm> {
 
   void callDatePickerEnd() async {
     var order = await getDate();
+    var endTime = await getTime();
     setState(() {
+      order = new DateTime(order.year, order.month, order.day, endTime.hour, endTime.minute);
       if(order.isAfter(startdate))
         enddate = order;
     });
+
   }
 
   void callDatePickerPub() async {
     var order = await getDate();
+    var pubTime = await getTime();
     setState(() {
+      order = new DateTime(order.year, order.month, order.day, pubTime.hour, pubTime.minute);
       if(order.isAfter(DateTime.now()) && order.isBefore(enddate))
         pubdate = order;
     });
@@ -220,22 +254,36 @@ class createEventFormState extends State<createEventForm> {
     );
   }
 
-  datetimeButton(String type) {
+  Future<TimeOfDay> getTime(){
+    return showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(hour: 0, minute: 0),
+        builder: (BuildContext context, Widget child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child,
+          );
+        },
+    );
+
+  }
+
+  Container datetimeButton(String type) {
     String date;
     var color;
     var icon = Icons.access_time;
 
     if (type == 'start') {
       color = Colors.green;
-      date = "  " + DateFormat("EEE dd MMM yyyy","fr_FR").format(startdate);
+      date = "  Début : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(startdate);
     }
     else if (type == 'end') {
       color = Colors.red;
-      date =  "  " + DateFormat("EEE dd MMM yyyy","fr_FR").format(enddate);
+      date =  "  Fin : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(enddate);
     }
     else if (type == 'publication') {
       color = Colors.orange;
-      date =  "  " + DateFormat("EEE dd MMM yyyy","fr_FR").format(pubdate);
+      date =  "  Publication : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(pubdate);
       icon = Icons.timer;
     }
 
@@ -272,4 +320,5 @@ class createEventFormState extends State<createEventForm> {
       ),
     );
   }
+
 }

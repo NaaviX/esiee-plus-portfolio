@@ -1,9 +1,21 @@
-import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 
-class EventCreation extends StatelessWidget {
+class EventCreation extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return EventCreationState();
+  }
+}
+
+class EventCreationState extends State<EventCreation> {
+
+
+  final log = Logger('eventCreation');
 
   @override Widget build(BuildContext context) {
     return new Scaffold(
@@ -25,6 +37,27 @@ class createEventForm extends StatefulWidget {
 }
 
 class createEventFormState extends State<createEventForm> {
+
+  final bloc = EventsBloc();
+  final titre = TextEditingController();
+  final place = TextEditingController();
+  final description = TextEditingController();
+  final link = TextEditingController();
+  final fblink = TextEditingController();
+  final price = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    titre.dispose();
+    super.dispose();
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   var startdate = DateTime.now();
@@ -114,8 +147,26 @@ class createEventFormState extends State<createEventForm> {
                           splashColor: Colors.white,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
+                              bloc.addSaveEvent(
+                                  new EventModel(
+                                      idEvent: 0,
+                                      name: titre.text,
+                                      startDate: startdate,
+                                      endDate: enddate,
+                                      place: place.text,
+                                      backgroundUrl: "",
+                                      description: description.text,
+                                      publicationDate: pubdate,
+                                      link: link.text,
+                                      facebookLink: fblink.text,
+                                      idClubRef: 100,
+                                      enable:true,
+                                      price: int.parse(price.text)
+                                  )
+                              );
                               Scaffold.of(context)
                                   .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
+                              Navigator.of(context).pop();
                             }
                           },
                         ),
@@ -131,7 +182,7 @@ class createEventFormState extends State<createEventForm> {
     style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
     maxLines: 1,
     keyboardType: TextInputType.text,
-    textAlignVertical: TextAlignVertical.top,
+    controller: titre,
   );
 
   _descriptionInputFiled() => TextFormField(
@@ -140,6 +191,7 @@ class createEventFormState extends State<createEventForm> {
     style: _textStyle(),
     maxLines: 5,
     keyboardType: TextInputType.multiline,
+    controller: description,
   );
 
   _placeInputFiled() => TextFormField(
@@ -148,6 +200,7 @@ class createEventFormState extends State<createEventForm> {
     style: _textStyle(),
     maxLines: 1,
     keyboardType: TextInputType.text,
+    controller: place,
   );
 
   _prixInputFiled() => TextFormField(
@@ -156,6 +209,7 @@ class createEventFormState extends State<createEventForm> {
     style: _textStyle(),
     maxLines: 1,
     keyboardType: TextInputType.number,
+    controller: price,
   );
 
   _venteInputFiled() => TextFormField(
@@ -164,6 +218,7 @@ class createEventFormState extends State<createEventForm> {
     style: _textStyle(),
     maxLines: 1,
     keyboardType: TextInputType.url,
+    controller: link,
   );
 
   _fbInputFiled() => TextFormField(
@@ -172,6 +227,7 @@ class createEventFormState extends State<createEventForm> {
     style: _textStyle(),
     maxLines: 1,
     keyboardType: TextInputType.url,
+    controller: fblink,
   );
 
   _inputDecoration(label, hint, icon) => InputDecoration(

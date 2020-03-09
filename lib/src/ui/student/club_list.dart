@@ -56,9 +56,9 @@ class ClubListState extends State<ClubList> {
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(snapshot.data[index].logoUrl),
+              backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
             ),
-            title: Text(snapshot.data[index].title),
+            title: Text(snapshot.data[index].name),
             onTap: () {
               Navigator.push(
                 context,
@@ -86,11 +86,11 @@ class ClubInfoPage extends StatelessWidget{
   @override Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text(club.title),
+        title: Text(club.name),
       ),
       body: Center(
         child: Image.network(
-        club.logoUrl,
+        club.urlPhoto,
         )
       ),
     );

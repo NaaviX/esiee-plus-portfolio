@@ -29,4 +29,30 @@ class EventApiProvider {
       throw Exception('Failed to add data');
     }
   }
+
+
+  Future<EventModel> updateEvent(EventModel event) async {
+    final response = await client.post(
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/update",
+        body: {
+          'id_event': event.idEvent,
+          'enabled': event.enable,
+          'publication_date': event.publicationDate,
+          'start_date': event.startDate,
+          'end_date': event.endDate,
+          'name': event.name,
+          'description': event.description,
+          'place': event.place,
+          'price': event.price,
+          'sell_link': event.link,
+          'facebook_link': event.facebookLink,
+          'id_club_ref': event.idClubRef,
+          'background_url': event.backgroundUrl,
+        });
+    if (response.statusCode == 200) {
+      return EventModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      throw Exception('Failed to update data');
+    }
+  }
 }

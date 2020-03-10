@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:logging/logging.dart';
 
 class ClubModel {
@@ -19,6 +20,7 @@ class ClubModel {
   String description;
   String urlPhoto;
   List<RoleModel> roles;
+  List<StudentModel> students;
 
   bool isAdmin;
   bool isModo;
@@ -35,7 +37,8 @@ class ClubModel {
     this.solde,
     this.description,
     this.urlPhoto,
-    this.roles
+    this.roles,
+    this.students
   });
 
   factory ClubModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -56,6 +59,7 @@ class ClubModel {
       }
 
       e.roles = new List<RoleModel>();
+      e.students = new List<StudentModel>();
       e.isAdmin = false;
       e.isTrez = false;
       e.isModo = false;
@@ -72,6 +76,10 @@ class ClubModel {
         } else if(role.role == "log") {
           e.isLog = true;
         }
+      }
+      for(dynamic studentFromJson in parsedJson["students"]) {
+        StudentModel student = StudentModel.fromJson(studentFromJson);
+        e.students.add(student);
       }
     }
 

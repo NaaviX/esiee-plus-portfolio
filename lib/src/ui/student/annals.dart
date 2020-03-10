@@ -1,13 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Annals extends StatelessWidget {
+class Annals extends StatefulWidget {
+  final databaseReference = Firestore.instance;
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-        title: Text("Annales"),
-    ),
-    body:Text("TO DO"));
+  State<StatefulWidget> createState() {
+    RaisedButton(
+      child: Text('Create Record'),
+      onPressed: () {
+        createRecord();
+      },
+    );
+    return null;
+  }
+
+  void createRecord() async {
+    await databaseReference.collection("cours")
+        .document("1")
+        .setData({
+      'unité': 'Mastering Flutter',
+      'description': 'Programming Guide for Dart'
+    });
+
+    DocumentReference ref = await databaseReference.collection("books")
+        .add({
+      'title': 'Flutter in Action',
+      'description': 'Complete Programming Guide to learn Flutter'
+    });
+    print(ref.documentID);
   }
 
 

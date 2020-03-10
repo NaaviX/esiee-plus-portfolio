@@ -25,6 +25,6 @@ class ClubApiProvider {
     if (response.statusCode == 200) {
       return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
     }
-    return null;
+      return null;
   }
 }

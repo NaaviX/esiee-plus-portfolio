@@ -331,7 +331,7 @@ class _Base extends State<Base>  {
           onTap: () {
 
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ClubMemberManager();
+              return ClubMemberManager(thisClub);
             }));
           },
         ),

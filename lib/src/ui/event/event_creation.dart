@@ -164,6 +164,7 @@ class createEventFormState extends State<createEventForm> {
                                       price: int.parse(price.text)
                                   )
                               );
+
                               Scaffold.of(context)
                                   .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
                               Navigator.of(context).pop();

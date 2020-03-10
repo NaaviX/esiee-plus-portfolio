@@ -154,7 +154,7 @@ class createEventFormState extends State<createEventForm> {
                                       startDate: startdate,
                                       endDate: enddate,
                                       place: place.text,
-                                      backgroundUrl: "",
+                                      backgroundUrl: "null",
                                       description: description.text,
                                       publicationDate: pubdate,
                                       link: link.text,

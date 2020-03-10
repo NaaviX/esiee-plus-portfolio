@@ -21,7 +21,16 @@ class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    return weekView();
+    return Stack(
+      children: <Widget>[
+        weekView(date: DateTime.now()),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: HourBar(),
+        )
+      ],
+    );
   }
 
   String f(int a, int b, int c){

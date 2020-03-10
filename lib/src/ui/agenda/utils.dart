@@ -125,7 +125,7 @@ class DayView extends StatelessWidget {
   final DateTime dayDate;
 
   DayView({
-    @required double hourBarWidth,
+    double hourBarWidth,
     DateTime dayDate
   }) : hourBarWidth = 50, dayDate = DateTime(dayDate.year, dayDate.month, dayDate.day);
 
@@ -157,7 +157,7 @@ class DayView extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            height: 1,
+            height: 2,
             color: Colors.pink,
           ),
         ),
@@ -197,38 +197,35 @@ class DayView extends StatelessWidget {
 }
 
 class weekView extends StatelessWidget {
+  DateTime date;
+
+  weekView({
+    @required DateTime date
+  }) : date = DateTime(date.year, date.month, date.day);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
-        Positioned(
-            top: 0,
-            left: 50,
-            child: new DayView(dayDate: DateTime.now().subtract(Duration(days: 1)))),
-        Positioned(
-        top: 0,
-        left: ((MediaQuery.of(context).size.width - 50) / 5)+50,
-        child: new DayView(dayDate: DateTime.now())),
-        Positioned(
-        top: 0,
-        left: 2*((MediaQuery.of(context).size.width - 50) / 5)+50,
-        child: new DayView(dayDate: DateTime.now().add(Duration(days: 1)))),
-        Positioned(
-            top: 0,
-            left: 3*((MediaQuery.of(context).size.width - 50) / 5)+50,
-            child: new DayView(dayDate: DateTime.now().add(Duration(days: 2)))),
-        Positioned(
-            top: 0,
-            left: 4*((MediaQuery.of(context).size.width - 50) / 5)+50,
-            child: new DayView(dayDate: DateTime.now().add(Duration(days: 3)))),
-        Positioned(
-          top: 0,
-          left: 0,
-          child: HourBar(),
-        ),
-      ],
+      children: createWeek(context),
     );
+  }
+
+  List<Widget> createWeek(BuildContext context){
+    DateTime monday = date.subtract(Duration(days: date.weekday-1));
+    print(monday);
+    double dayWidth = ((MediaQuery.of(context).size.width - 50) / 5);
+    List<Widget> children = List();
+
+    for(var i=0;i<5;i++){
+      children.add(
+        Positioned(
+            top: 0,
+            left: dayWidth*i + 50,
+            child: new DayView(dayDate: monday.add(Duration(days: i)))),
+      );
+    }
+
+    return children;
   }
 
 }

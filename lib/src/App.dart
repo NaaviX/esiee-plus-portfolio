@@ -11,7 +11,7 @@ import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/club/fairpay.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/fairpay_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/fairPay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
@@ -321,7 +321,7 @@ class _Base extends State<Base>  {
           title: Text("Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Fairpay();
+              return Fairpay(thisClub);
             }));
           },
         ),
@@ -331,7 +331,7 @@ class _Base extends State<Base>  {
           onTap: () {
 
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ClubMemberManager();
+              return ClubMemberManager(thisClub);
             }));
           },
         ),
@@ -514,7 +514,7 @@ class _Base extends State<Base>  {
           title: Text("Gestion Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return FairpayManager();
+              return FairPayManager();
             }));
           },
         )]);

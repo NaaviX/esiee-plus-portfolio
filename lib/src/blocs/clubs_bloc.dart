@@ -17,12 +17,8 @@ class ClubsBloc {
   }
 
   fetchClub(String email) async {
-    List<ClubModel> clubModel = await _repository.fetchAllClubs();
-    for(ClubModel c in clubModel) {
-      if(c.email.contains(email)) {
-        _clubFetcher..sink.add(c);
-      }
-    }
+    ClubModel clubModel = await _repository.fetchClubByMail(email);
+    _clubFetcher..sink.add(clubModel);
   }
 
   fetchClubById(int id) async {

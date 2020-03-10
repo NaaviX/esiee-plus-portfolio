@@ -12,10 +12,12 @@ class EventModel {
   String place;             //place
   String backgroundUrl;             //backgroundUrl
   String description;           //description   //
-  String publicationDate;   //publicationDate
-  String link;              //link
+  DateTime publicationDate;   //publicationDate
+  String link;              //
+  String facebookLink;
   int idClubRef;
-  int price;                //Price
+  bool enable;
+  int price;
 
   EventModel({
     this.idEvent,
@@ -27,8 +29,10 @@ class EventModel {
     this.description,
     this.publicationDate,
     this.link,
+    this.facebookLink,
     this.idClubRef,
-    this.price,
+    this.enable,
+    this.price
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -39,10 +43,14 @@ class EventModel {
       e.name = parsedJson["name"];
       e.description = parsedJson["description"];
 
-      e.publicationDate = parsedJson["publicationDate"];
+      try {
+        e.publicationDate = DateTime.parse(parsedJson["publicationDate"]);
 
-      e.startDate = DateTime.parse(parsedJson["startDate"]);
-      e.endDate = DateTime.parse(parsedJson["endDate"]);
+        e.startDate = DateTime.parse(parsedJson["startDate"]);
+        e.endDate = DateTime.parse(parsedJson["endDate"]);
+      } catch(e) {
+
+      }
       e.place = parsedJson["place"];
 
       e.idClubRef = parsedJson["idClubRef"];
@@ -50,17 +58,25 @@ class EventModel {
       e.price = parsedJson["price"];
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
+      e.enable = parsedJson["enabled"];
+      e.price = parsedJson["price"];
+      e.link = parsedJson["sellLink"];
+      e.facebookLink = parsedJson["facebookLink"];
+      e.idClubRef = parsedJson["idClubRef"];
+
+
       if(e.backgroundUrl == null || e.backgroundUrl == "null") {
         e.backgroundUrl = "https://bde.esiee.fr/bundles/applicationbde/img/couverture.png";
       }
-      e.link = parsedJson["sellLink"];
       if(e.name == null) {
         e.name = "";
       }
       if(e.link == null) {
         e.link = "";
       }
-
+      if(e.facebookLink == null) {
+        e.facebookLink = "";
+      }
       if(e.description == null) {
         e.description = "";
       }

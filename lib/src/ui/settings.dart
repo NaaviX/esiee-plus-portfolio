@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Fairpay extends StatelessWidget {
+class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Fairpay"),
-    ),
-    body:Text("TO DO"));
+          title: Text("Paramètres"),
+        ),
+        body:Text("TO DO"));
   }
 
 

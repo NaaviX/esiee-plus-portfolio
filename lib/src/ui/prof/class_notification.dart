@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Annals extends StatelessWidget {
+class ClassNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Annales"),
+        title: Text("Notification classe"),
     ),
     body:Text("TO DO"));
   }

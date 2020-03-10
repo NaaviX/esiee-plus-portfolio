@@ -1,6 +1,5 @@
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/ui/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -52,10 +51,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton() {
     return RaisedButton(
+
         child: Text("Se connecter avec Google"),
         onPressed: () async {
           setState(() => _isLoading = true);
-          FirebaseUser user = await signInWithGoogle();
+          user = await signInWithGoogle();
           setState(() => _isLoading = false);
           if (user != null) {
             Navigator.of(context)

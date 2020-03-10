@@ -1,9 +1,21 @@
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 
-class EventCreation extends StatelessWidget {
+class EventCreation extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return EventCreationState();
+  }
+}
+
+class EventCreationState extends State<EventCreation> {
+
+
+  final log = Logger('eventCreation');
 
   @override Widget build(BuildContext context) {
     return new Scaffold(
@@ -17,7 +29,6 @@ class EventCreation extends StatelessWidget {
 
 // Create a Form widget.
 class createEventForm extends StatefulWidget {
-
   @override
   createEventFormState createState() {
     return createEventFormState();
@@ -26,11 +37,32 @@ class createEventForm extends StatefulWidget {
 }
 
 class createEventFormState extends State<createEventForm> {
+
+  final bloc = EventsBloc();
+  final titre = TextEditingController();
+  final place = TextEditingController();
+  final description = TextEditingController();
+  final link = TextEditingController();
+  final fblink = TextEditingController();
+  final price = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    titre.dispose();
+    super.dispose();
+  }
+
   final _formKey = GlobalKey<FormState>();
-  //String _date = "Enter date";
-  String _time = "Enter time";
-  String _start = "Event Start At";
-  String _end = "Event End At";
+
+  var startdate = DateTime.now();
+  var enddate = DateTime.now();
+  var pubdate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -38,256 +70,311 @@ class createEventFormState extends State<createEventForm> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
-        child: ConstrainedBox(
-        constraints: BoxConstraints(),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              newTextInput('Intitulé de l\'évenement','Please enter some text',Icon(Icons.calendar_today)),
-              newLongTextInput('Description','Please enter some text'),
-              datetimeButton(Colors.teal, this._start),
-              datetimeButton(Colors.redAccent, _end),
-              newTextInput('Lieu','Please enter some text',Icon(Icons.person)),
-              newNumberInput('Prix','Please enter some text',Icon(Icons.attach_money)),
-              SizedBox(height: 20.0),
-              newTextInput('Lien Vente','Please enter some text',Icon(Icons.payment)),
-              SizedBox(height: 20.0),
-              newTextInput('Lien Event Facebook','Please enter some text',Icon(Icons.link)),
-              SizedBox(height: 20.0),
-              newTextInput('id club','Please enter some text',Icon(Icons.person)),
-              SizedBox(height: 20.0),
-              newTextInput('Background url','Please enter some text',Icon(Icons.image)),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: RaisedButton(
-                    color: Colors.teal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                      'CREER',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    )),
-                    splashColor: Colors.white,
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
-                      }
-                    },
+        child: Padding(
+            padding: EdgeInsets.only(left:20, top:0, right:20, bottom:0),
+          child: ConstrainedBox(
+              constraints: BoxConstraints(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: 15.0),
+                  _titreInputFiled(),
+                  SizedBox(height: 15.0),
+                  _descriptionInputFiled(),
+                  SizedBox(
+                    height: 10.0,
                   ),
-                ))
-            ],
-          ))),
+                  //newLongTextInput('Description', 'Please enter some text'),
+                  Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Center(
+                          child: new RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            elevation: 4.0,
+                            onPressed: callDatePickerStart,
+                            child: datetimeButton("start"),
+                            color: Colors.white,
+                          )
+                      )),
+                  Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Center(
+                          child: new RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            elevation: 4.0,
+                            onPressed: callDatePickerEnd,
+                            child: datetimeButton("end"),
+                            color: Colors.white,
+                          )
+                      )),
+                  Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Center(
+                          child: new RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            elevation: 4.0,
+                            onPressed: callDatePickerPub,
+                            child: datetimeButton("publication"),
+                            color: Colors.white,
+                          )
+                      )
+                  ),
+                  SizedBox(height: 10.0),
+                  _placeInputFiled(),
+                  SizedBox(height: 10.0),
+                  _prixInputFiled(),
+                  SizedBox(height: 10.0),
+                  _venteInputFiled(),
+                  SizedBox(height: 10.0),
+                  _fbInputFiled(),
+                  Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                          ),
+                          color: Colors.blue,
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                'CREER',
+                                style: TextStyle(color: Colors.white, fontSize: 20),
+                              )),
+                          splashColor: Colors.white,
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              bloc.addSaveEvent(
+                                  new EventModel(
+                                      idEvent: 0,
+                                      name: titre.text,
+                                      startDate: startdate,
+                                      endDate: enddate,
+                                      place: place.text,
+                                      backgroundUrl: "null",
+                                      description: description.text,
+                                      publicationDate: pubdate,
+                                      link: link.text,
+                                      facebookLink: fblink.text,
+                                      idClubRef: 100,
+                                      enable:true,
+                                      price: int.parse(price.text)
+                                  )
+                              );
+                              Scaffold.of(context)
+                                  .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        ),
+                      ))
+                ],
+              )))),
     );
   }
 
-  Widget newTextInput(String hintText, String ifEmpty, Icon icon){
-    return new Padding(
-        padding: EdgeInsets.all(4.0),
-        child: TextFormField(
-            decoration: new InputDecoration(
-              icon: icon,
-              labelText: hintText,
-              fillColor: Colors.white70,
-              //fillColor: Colors.green
-            ),
-          validator: (value) {
-            if (value.isEmpty) {
-              return ifEmpty;
-            }
-            return null;
-          }
-    ));
+  _titreInputFiled() => TextFormField(
+    decoration: _inputDecoration("Nom de l'événement", "Intitulé de l\'évenement", Icons.calendar_today),
+    validator: (val) => _ifNull(val),
+    style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+    maxLines: 1,
+    keyboardType: TextInputType.text,
+    controller: titre,
+  );
+
+  _descriptionInputFiled() => TextFormField(
+    decoration: _inputDescDecoration("Description"),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 5,
+    keyboardType: TextInputType.multiline,
+    controller: description,
+  );
+
+  _placeInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lieu", "Lieu de l'événement", Icons.place),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.text,
+    controller: place,
+  );
+
+  _prixInputFiled() => TextFormField(
+    decoration: _inputDecoration("Prix", "0", Icons.euro_symbol),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.number,
+    controller: price,
+  );
+
+  _venteInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lien de vente", "Lien de vente des places", Icons.payment),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.url,
+    controller: link,
+  );
+
+  _fbInputFiled() => TextFormField(
+    decoration: _inputDecoration("Lien Facebook", "Lien de l'événement sur facebook", Icons.link),
+    validator: (val) => _ifNull(val),
+    style: _textStyle(),
+    maxLines: 1,
+    keyboardType: TextInputType.url,
+    controller: fblink,
+  );
+
+  _inputDecoration(label, hint, icon) => InputDecoration(
+    labelText: label,
+    fillColor: Colors.white,
+    border: new OutlineInputBorder(
+        borderRadius: new BorderRadius.circular(10.0),
+        borderSide: new BorderSide()),
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(0.0),
+      child: Icon(icon, color: Colors.black54,),
+    ),
+    hintText:hint,
+    hintStyle: _hinttextStyle(),
+  );
+
+  _inputDescDecoration(label) => InputDecoration(
+      labelText: label,
+      fillColor: Colors.white,
+      border: new OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(18.0),
+          borderSide: new BorderSide()),
+      hintText:"BlaBlaBla",
+      hintStyle: _hinttextStyle(),
+  );
+
+  _ifNull(val) {
+    if (val.isEmpty) {
+      return '*Champs requis';
+    }
+    return null;
   }
 
-  Widget newLongTextInput(String hintText, String ifEmpty){
-    return new TextFormField(
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        decoration: InputDecoration(
-            hintText: hintText
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return ifEmpty;
-          }
-          return null;
-        }
-    );
+  _textStyle() => TextStyle(color: Colors.black, fontSize: 15.0,);
+  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+
+  void callDatePickerStart() async {
+    var order = await getDate();
+    var startTime = await getTime();
+    setState(() {
+      order = new DateTime(order.year, order.month, order.day, startTime.hour, startTime.minute);
+      if(order.isAfter(DateTime.now()))
+        startdate = order;
+    });
   }
 
-  Widget newNumberInput(String hintText, String ifEmpty, Icon icon){
-    return new TextFormField(
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ],
-        decoration: InputDecoration(
-            icon: icon,
-            hintText: hintText
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return ifEmpty;
-          }
-          return null;
-        }
-    );
+  void callDatePickerEnd() async {
+    var order = await getDate();
+    var endTime = await getTime();
+    setState(() {
+      order = new DateTime(order.year, order.month, order.day, endTime.hour, endTime.minute);
+      if(order.isAfter(startdate))
+        enddate = order;
+    });
+
   }
 
-  Widget newDatePickerInput(String value){
-    addLeadingZero(int number) => (number < 10 ? '0' : '') + number.toString();
-    dateFormatter(int year, int month, int day) => '${addLeadingZero(day)} ${addLeadingZero(month)} ${year.toString()}';
-
-    return new Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        DatePickerTimeline(
-          DateTime.now(),
-          onDateChange: (date) {
-            // New date selected
-            print(date.toString());
-            _start = value == _start ? dateFormatter(date.year, date.month, date.day) : _start;
-            _end = value == _end ? dateFormatter(date.year, date.month, date.day) : _end;
-            setState(() {});
-          },
-        ),
-      ],
-    );
+  void callDatePickerPub() async {
+    var order = await getDate();
+    var pubTime = await getTime();
+    setState(() {
+      order = new DateTime(order.year, order.month, order.day, pubTime.hour, pubTime.minute);
+      if(order.isAfter(DateTime.now()) && order.isBefore(enddate))
+        pubdate = order;
+    });
   }
 
-  Widget newTimePickerInput(){
-
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0)),
-      elevation: 4.0,
-      onPressed: () {
-        DatePicker.showTimePicker(context,
-            theme: DatePickerTheme(
-              containerHeight: 210.0,
-            ),
-            showTitleActions: true, onConfirm: (time) {
-              print('confirm $time');
-              _time = '${time.hour} : ${time.minute} : ${time.second}';
-            }, currentTime: DateTime.now(), locale: LocaleType.en);
-        setState(() {});
+  Future<DateTime> getDate() {
+    return showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2018),
+      lastDate: DateTime(2030),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light(),
+          child: child,
+        );
       },
-      child: Container(
-        alignment: Alignment.center,
-        height: 50.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.access_time,
-                        size: 18.0,
-                        color: Colors.teal,
-                      ),
-                      Text(
-                        " $_time",
-                        style: TextStyle(
-                            color: Colors.teal,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Text(
-              "  Change",
-              style: TextStyle(
-                  color: Colors.teal,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0),
-            ),
-          ],
-        ),
-      ),
-      color: Colors.white,
     );
   }
 
-  Widget datetimeButton(Color color, String value){
-    // user defined function
-    void _showDialog() {
-      // flutter defined function
-      showDialog(
+  Future<TimeOfDay> getTime(){
+    return showTimePicker(
         context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(20.0)), //this right here
-            child: Container(
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    newDatePickerInput(value)
-                  ],
-                ),
-              ),
-            ),
+        initialTime: TimeOfDay(hour: 0, minute: 0),
+        builder: (BuildContext context, Widget child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child,
           );
         },
-      );
-    }
+    );
 
-    return new Padding(
-        padding: EdgeInsets.all(5.0),
-        child: Center(
-          child: new RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)),
-            elevation: 4.0,
-            onPressed: _showDialog,
-            child: Container(
-              alignment: Alignment.center,
-              height: 50.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.access_time,
-                              size: 18.0,
-                              color: color,
-                            ),
-                            Text(
-                              " $value",
-                              style: TextStyle(
-                                  color: color,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            color: Colors.white,
-          )
-        ));
   }
 
+  Container datetimeButton(String type) {
+    String date;
+    var color;
+    var icon = Icons.access_time;
+
+    if (type == 'start') {
+      color = Colors.green;
+      date = "  Début : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(startdate);
+    }
+    else if (type == 'end') {
+      color = Colors.red;
+      date =  "  Fin : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(enddate);
+    }
+    else if (type == 'publication') {
+      color = Colors.orange;
+      date =  "  Publication : " + DateFormat("EEE dd MMM yyyy - HH:mm","fr_FR").format(pubdate);
+      icon = Icons.timer;
+    }
+
+    return Container(
+      alignment: Alignment.center,
+      height: 50.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      icon,
+                      size: 18.0,
+                      color: color,
+                    ),
+                    Text(
+                      date,
+                      textScaleFactor: 2.0,
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 8.0),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
 }

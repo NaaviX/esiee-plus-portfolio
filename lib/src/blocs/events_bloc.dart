@@ -6,9 +6,11 @@ import 'package:rxdart/rxdart.dart';
 class EventsBloc {
   final _repository = Repository();
   final _eventsFetcher = PublishSubject<List<EventModel>>();
+  final _eventFetcher = PublishSubject<EventModel>();
   final _title = BehaviorSubject<String>();
 
   Observable<List<EventModel>> get allEvents => _eventsFetcher.stream;
+  Observable<EventModel> get event => _eventFetcher.stream;
 
   fetchAllEvents() async {
     List<EventModel> eventmodel = await _repository.fetchAllEvents();
@@ -16,12 +18,17 @@ class EventsBloc {
     _eventsFetcher.sink.add(eventmodel);
   }
 
-  addSaveEvent() {
-    _repository.addSaveEvent(_title.value);
+  updateEvent(EventModel event) async {
+    EventModel eventmodel = await _repository.updateEvent(event);
+  }
+
+  addSaveEvent(EventModel event) async {
+    EventModel eventmodel = await _repository.addSaveEvent(event);
   }
 
   dispose() {
     _eventsFetcher.close();
+    _eventFetcher.close();
   }
 
   List<EventModel> sort(List<EventModel> list){

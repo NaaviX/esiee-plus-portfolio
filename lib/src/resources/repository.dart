@@ -48,5 +48,6 @@ class Repository {
 
   final fairpayLogApiProvider = FairpayLogApiProvider();
   Future<List<FairpayLogModel>> fetchFairpayLogs() => fairpayLogApiProvider.fetchFairpayLogList();
+  Future<List<FairpayLogModel>> fetchLogsByClub(String id) => fairpayLogApiProvider.fetchLogsByClub(id);
 
 }

@@ -62,7 +62,7 @@ class EventInfoState extends State<EventInfoPage> {
                           getDate(),
                           ListTile(
                           leading: Icon(Icons.business_center, color: Colors.green, size: 30.0,),
-                          title: Text(snapshot.data.title),
+                          title: Text(snapshot.data.name),
                           ),
                           ListTile(
                           leading: Icon(Icons.place,color: Colors.green, size: 30.0,),

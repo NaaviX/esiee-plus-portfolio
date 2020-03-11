@@ -38,6 +38,4 @@ class FairpayLogModel {
         jsonData.map((x) => FairpayLogModel.fromJson(x)));
   }
 
-
-
 }

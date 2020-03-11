@@ -24,7 +24,7 @@ class ClubsBloc {
   fetchClubById(int id) async {
     List<ClubModel> clubModel = await _repository.fetchAllClubs();
     for(ClubModel c in clubModel) {
-      if(c.id == id) {
+      if(c.idClubRef == id) {
         _clubFetcher..sink.add(c);
       }
     }

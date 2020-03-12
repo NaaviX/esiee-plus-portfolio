@@ -15,6 +15,7 @@ class StudentApiProvider {
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       List<dynamic> students = json.decode(response.body);
+      log.fine(students);
       return StudentModel.allStudentsFromJson(students);
     } else {
       // If that call was not successful, throw an error.

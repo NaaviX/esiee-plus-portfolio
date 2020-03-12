@@ -401,7 +401,7 @@ class _Base extends State<Base>  {
           title: Text("Annales"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Annals();
+              return AnnalsList();
             }));
           },
         ),

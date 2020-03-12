@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as Path;
 
 class EventCreation extends StatefulWidget {
   @override
@@ -29,6 +34,7 @@ class EventCreationState extends State<EventCreation> {
 }
 
 // Create a Form widget.
+// ignore: camel_case_types
 class createEventForm extends StatefulWidget {
   @override
   createEventFormState createState() {
@@ -65,6 +71,9 @@ class createEventFormState extends State<createEventForm> {
   var enddate = DateTime.now();
   var pubdate = DateTime.now();
 
+  File _image;
+  String _uploadedFileURL;
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -79,15 +88,12 @@ class createEventFormState extends State<createEventForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 15.0),
-                  CustomTextFormField(
-                      "Nom de l'événement",
-                      "Intitulé de l\'évenement",
-                      Icons.calendar_today,
-                      titre
-                  ),
+                  _titreInputFiled(),
                   SizedBox(height: 15.0),
                   _descriptionInputFiled(),
-                  SizedBox(height: 10.0,),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   //newLongTextInput('Description', 'Please enter some text'),
                   Padding(
                       padding: EdgeInsets.all(5.0),
@@ -127,12 +133,6 @@ class createEventFormState extends State<createEventForm> {
                       )
                   ),
                   SizedBox(height: 10.0),
-                  CustomTextFormField(
-                      "Lieu",
-                      "Lieu de l'événement",
-                      Icons.place,
-                      titre
-                  ),
                   _placeInputFiled(),
                   SizedBox(height: 10.0),
                   _prixInputFiled(),
@@ -140,6 +140,8 @@ class createEventFormState extends State<createEventForm> {
                   _venteInputFiled(),
                   SizedBox(height: 10.0),
                   _fbInputFiled(),
+                  SizedBox(height: 10.0),
+                  _downloadImage(),
                   Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -164,7 +166,7 @@ class createEventFormState extends State<createEventForm> {
                                       startDate: startdate,
                                       endDate: enddate,
                                       place: place.text,
-                                      backgroundUrl: "null",
+                                      backgroundUrl: _uploadedFileURL,
                                       description: description.text,
                                       publicationDate: pubdate,
                                       link: link.text,
@@ -186,6 +188,28 @@ class createEventFormState extends State<createEventForm> {
               )))),
     );
   }
+
+  _downloadImage() => ButtonTheme(
+    minWidth:MediaQuery.of(context).size.width,
+    height: 50.0,
+    child: RaisedButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0)),
+      elevation: 3.0,
+      onPressed: chooseFile,
+      child: Text("Importer la couverture de l'événement", style: TextStyle(color: Colors.black38, fontSize: 15)),
+      color: Colors.grey,
+    )
+  );
+
+  _titreInputFiled() => TextFormField(
+    decoration: _inputDecoration("Nom de l'événement", "Intitulé de l\'évenement", Icons.calendar_today),
+    validator: (val) => _ifNull(val),
+    style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+    maxLines: 1,
+    keyboardType: TextInputType.text,
+    controller: titre,
+  );
 
   _descriptionInputFiled() => TextFormField(
     decoration: _inputDescDecoration("Description"),
@@ -252,7 +276,7 @@ class createEventFormState extends State<createEventForm> {
       border: new OutlineInputBorder(
           borderRadius: new BorderRadius.circular(18.0),
           borderSide: new BorderSide()),
-      hintText:"BlaBlaBla",
+      hintText:"Description de votre événement",
       hintStyle: _hinttextStyle(),
   );
 
@@ -377,6 +401,29 @@ class createEventFormState extends State<createEventForm> {
         ],
       ),
     );
+  }
+
+  Future chooseFile() async {
+    await FilePicker.getFile(type: FileType.ANY).then((file) {
+      setState(() {
+        _image = file;
+      });
+      uploadFile();
+    });
+  }
+
+  Future uploadFile() async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('couv_event/${Path.basename(_image.path)}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
   }
 
 }

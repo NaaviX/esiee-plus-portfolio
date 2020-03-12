@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
   String label, hint;
+
   IconData icon;
   TextEditingController controller;
   CustomTextFormField(this.label, this.hint, this.icon, this.controller);
@@ -19,7 +20,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           widget.icon),
       validator: (val) => _ifNull(val),
       style: TextStyle(
-          color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+          color: Colors.black, fontSize: 18.0,),
       maxLines: 1,
       keyboardType: TextInputType.text,
       controller: widget.controller,

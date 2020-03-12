@@ -108,8 +108,8 @@ class EventInfoState extends State<EventInfoPage> {
                       child: list(null,widget.event.description),
                     ),
                     getDate(),
-                    list(Icons.place,'Lieu : ' +widget.event.place),
-                    list(Icons.euro_symbol,'Prix : ' + widget.event.price.toString() + ' €'),
+                    list(Icons.place,widget.event.place),
+                    list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
                     list(Icons.payment, widget.event.link),
                     list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
                   ]
@@ -134,13 +134,13 @@ class EventInfoState extends State<EventInfoPage> {
     else {
       return list(
           Icons.access_time,
-          'Début : ' + formatDate(widget.event.startDate) + ' \nFin : ' + formatDate(widget.event.endDate));
+          'Du ' + formatDate(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate));
     }
   }
 
   Container list(IconData icon, String text)
   {
-    if(text == "Prix : 0 €") text = "Gratuit";
+    if(text == "0 €") text = "Gratuit";
     if(text != null && text !="") {
       return Container(
         padding: EdgeInsets.fromLTRB(10, 0, 0, 15),

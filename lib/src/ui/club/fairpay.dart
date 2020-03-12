@@ -23,7 +23,7 @@ class FairpayState extends State<Fairpay>{
   @override
   void initState() {
     super.initState();
-    Logbloc.fetchAllLogs();
+    Logbloc.fetchClubLogs(widget.thisClub.idClubRef.toString());
   }
 
   @override
@@ -41,7 +41,7 @@ class FairpayState extends State<Fairpay>{
           title: Text("Fairpay"),
         ),
         body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
+          stream: Logbloc.ClubFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(

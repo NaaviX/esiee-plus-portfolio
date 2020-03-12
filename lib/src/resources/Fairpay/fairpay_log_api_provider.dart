@@ -18,4 +18,15 @@ class FairpayLogApiProvider {
       throw Exception('Failed to load post');
     }
   }
+
+  Future<List<FairpayLogModel>> fetchLogsByClub(String id) async {
+    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/fairpay/log/"+id);
+    log.fine(response.statusCode);
+    if (response.statusCode == 200) {
+      return FairpayLogModel.allFairpayLogFromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
 }

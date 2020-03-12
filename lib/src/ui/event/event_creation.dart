@@ -172,7 +172,7 @@ class createEventFormState extends State<createEventForm> {
                                       link: link.text,
                                       facebookLink: fblink.text,
                                       idClubRef: 100,
-                                      enable:true,
+                                      enable:false,
                                       price: int.parse(price.text)
                                   )
                               );

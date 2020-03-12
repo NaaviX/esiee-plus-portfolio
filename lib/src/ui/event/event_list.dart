@@ -109,9 +109,6 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
     if(event.backgroundUrl == null) {
       event.backgroundUrl = "";
     }
-    if(event.enable != true) {
-      return Container();
-    }
     if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,

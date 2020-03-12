@@ -24,7 +24,9 @@ class ClubApiProvider {
     log.fine(response.statusCode);
     if (response.statusCode == 200) {
       return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
     }
-      return null;
   }
 }

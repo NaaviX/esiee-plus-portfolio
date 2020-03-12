@@ -91,6 +91,4 @@ class ClubModel {
         jsonData.map((x) => ClubModel.fromJson(x)));
   }
 
-
-
 }

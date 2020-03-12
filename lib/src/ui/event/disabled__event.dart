@@ -10,14 +10,14 @@ import 'package:intl/intl.dart';
 import 'event_creation.dart';
 import 'event_info.dart';
 
-class UnabledEventList extends StatefulWidget {
+class DisabledEventList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return EnabledEventListState();
+    return DisabledEventListState();
   }
 }
 
-class EnabledEventListState extends State<UnabledEventList>  with AutomaticKeepAliveClientMixin {
+class DisabledEventListState extends State<DisabledEventList>  with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   final bloc = EventsBloc();

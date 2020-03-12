@@ -116,7 +116,7 @@ class FairpayState2 extends State<Fairpay2>{
   @override
   void initState() {
     super.initState();
-    Logbloc.fetchAllLogs();
+    Logbloc.fetchClubLogs(widget.thisClub.idClubRef.toString());
   }
 
   @override
@@ -131,10 +131,10 @@ class FairpayState2 extends State<Fairpay2>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Fairpay"),
+          title: Text(widget.thisClub.name.toString()),
         ),
         body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
+          stream: Logbloc.ClubFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(

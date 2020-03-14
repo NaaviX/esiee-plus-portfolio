@@ -1,20 +1,43 @@
 import 'dart:ui';
 
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../blocs/events_bloc.dart';
+import '../../blocs/events_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'event_creation.dart';
 import 'event_info.dart';
 
-class EventList extends StatelessWidget {
+class EventList extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return EventListState();
+  }
+}
+
+class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
+  @override
+  bool get wantKeepAlive => true;
+  final bloc = EventsBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.fetchAllEvents();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   final log = Logger('eventList');
 
   @override
   Widget build(BuildContext context){
-    bloc.fetchAllEvents();
     return Scaffold(
 
       body: StreamBuilder(
@@ -36,7 +59,7 @@ class EventList extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue
       )
     );
   }
@@ -46,7 +69,7 @@ class EventList extends StatelessWidget {
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-                onTap: () {
+                  onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
@@ -76,18 +99,22 @@ class EventList extends StatelessWidget {
   }
 
   String getTitle(EventModel event){
-    String result = event.title;
-    if(event.start != null)  result += '  -  '+DateFormat('dd MMM').format(event.start)+'.';
-    return result;
+      String result = event.name;
+      if (event.startDate != null)
+        result += '  -  ' + DateFormat('dd MMM').format(event.startDate) + '.';
+      return result;
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
-    if(event.end != null && event.end.isAfter(DateTime.now())) {
+    if(event.backgroundUrl == null) {
+      event.backgroundUrl = "";
+    }
+    if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Image.network(
-          event.image,
+          event.backgroundUrl,
           fit: BoxFit.cover,
           width: MediaQuery
               .of(context)
@@ -112,7 +139,7 @@ class EventList extends StatelessWidget {
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
               image: new NetworkImage(
-                event.image,
+                event.backgroundUrl,
               ),
             ),
           ),

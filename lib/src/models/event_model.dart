@@ -5,51 +5,85 @@ import 'package:logging/logging.dart';
 class EventModel {
   final log = Logger('eventModel');
 
-  int id;
-  String title;
-  DateTime start;
-  DateTime end;
-  String place;
-  String image;
-  String content;
-  String slug;
-  String publicationDate;
-  String link;
+  int idEvent;                   //idEvent
+  String name;             //name
+  DateTime startDate;           //startDate
+  DateTime endDate;             //endDate
+  String place;             //place
+  String backgroundUrl;             //backgroundUrl
+  String description;           //description   //
+  DateTime publicationDate;   //publicationDate
+  String link;              //
+  String facebookLink;
+  int idClubRef;
+  bool enable;
+  int price;
 
   EventModel({
-    this.id,
-    this.title,
-    this.start,
-    this.end,
+    this.idEvent,
+    this.name,
+    this.startDate,
+    this.endDate,
     this.place,
-    this.image,
-    this.content,
-    this.slug,
+    this.backgroundUrl,
+    this.description,
     this.publicationDate,
     this.link,
+    this.facebookLink,
+    this.idClubRef,
+    this.enable,
+    this.price
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
     EventModel e = new EventModel();
 
     if (parsedJson != null) {
-      e.id = parsedJson["id"];
-      e.title = parsedJson["title"];
-      e.content = parsedJson["content"];
-      e.slug = parsedJson["slug"];
-      e.publicationDate = parsedJson["created_at"];
-    }
+      e.idEvent = parsedJson["idEvent"];
+      e.name = parsedJson["name"];
+      e.description = parsedJson["description"];
 
-    if (parsedJson["event"] != null) {
-      e.start = DateTime.parse(parsedJson["event"]["start"]);
-      e.end = DateTime.parse(parsedJson["event"]["end"]);
-      e.place = parsedJson["event"]["place"];
-    }
+      try {
+        e.publicationDate = DateTime.parse(parsedJson["publicationDate"]);
 
-    if (parsedJson["photo"] != null) {
-      e.image = parsedJson["photo"]["url"];
-    }
+        e.startDate = DateTime.parse(parsedJson["startDate"]);
+        e.endDate = DateTime.parse(parsedJson["endDate"]);
+      } catch(e) {
 
+      }
+      e.place = parsedJson["place"];
+
+      e.idClubRef = parsedJson["idClubRef"];
+
+      e.price = parsedJson["price"];
+
+      e.backgroundUrl = parsedJson["backgroundUrl"];
+      e.enable = parsedJson["enabled"];
+      e.price = parsedJson["price"];
+      e.link = parsedJson["sellLink"];
+      e.facebookLink = parsedJson["facebookLink"];
+      e.idClubRef = parsedJson["idClubRef"];
+
+
+      if(e.backgroundUrl == null || e.backgroundUrl == "null") {
+        e.backgroundUrl = "https://bde.esiee.fr/bundles/applicationbde/img/couverture.png";
+      }
+      if(e.name == null) {
+        e.name = "";
+      }
+      if(e.link == null) {
+        e.link = "";
+      }
+      if(e.facebookLink == null) {
+        e.facebookLink = "";
+      }
+      if(e.description == null) {
+        e.description = "";
+      }
+      if(e.place == null) {
+        e.place = "";
+      }
+    }
     return e;
   }
 

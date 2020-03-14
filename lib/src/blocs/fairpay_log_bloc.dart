@@ -1,0 +1,28 @@
+import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+
+import '../resources/repository.dart';
+import 'package:rxdart/rxdart.dart';
+
+class FairpayLogBloc {
+  final _repository = Repository();
+  final _fpAllLogFetcher = PublishSubject<List<FairpayLogModel>>();
+  final _fpLogFetcher =PublishSubject<List<FairpayLogModel>>();
+
+  Observable<List<FairpayLogModel>> get allFairpayLog => _fpAllLogFetcher.stream;
+  Observable<List<FairpayLogModel>> get ClubFairpayLog => _fpLogFetcher.stream;
+
+  fetchAllLogs() async {
+    List<FairpayLogModel> fairpaylogmodel = await _repository.fetchFairpayLogs();
+    _fpAllLogFetcher.sink.add(fairpaylogmodel);
+  }
+
+  fetchClubLogs(String id) async {
+    List<FairpayLogModel> fairpaylogmodel = await _repository.fetchLogsByClub(id);
+    _fpLogFetcher.sink.add(fairpaylogmodel);
+  }
+
+  dispose() {
+    _fpAllLogFetcher.close();
+    _fpLogFetcher.close();
+  }
+}

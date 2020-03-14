@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:bde_esiee_mobile/src/models/role_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:logging/logging.dart';
 
 class ClubModel {
@@ -7,42 +9,78 @@ class ClubModel {
 
 
 
-  int id;
-  String category;
-  String title;
-  String abstract;
-  String logoUrl;
-  String email;
-  int points;
+  int idClubRef;
+  String idClub;
+  String name;
+  String mail;
+
+  int price;
+  String contact;
+  int solde;
+  String description;
+  String urlPhoto;
+  List<RoleModel> roles;
+  List<StudentModel> students;
+
+  bool isAdmin;
+  bool isModo;
+  bool isTrez;
+  bool isLog;
 
   ClubModel({
-    this.id,
-    this.category,
-    this.title,
-    this.abstract,
-    this.logoUrl,
-    this.email,
-    this.points
+    this.idClubRef,
+    this.idClub,
+    this.name,
+    this.mail,
+    this.price,
+    this.contact,
+    this.solde,
+    this.description,
+    this.urlPhoto,
+    this.roles,
+    this.students
   });
 
   factory ClubModel.fromJson(Map<String, dynamic> parsedJson) {
     ClubModel e = new ClubModel();
 
     if (parsedJson != null) {
-      e.id = parsedJson["id"];
-      if(parsedJson["category_id"] == 2) {
-        e.category = "Clubs du BDE";
-      } else if(parsedJson["category_id"] == 3) {
-        e.category = "Clubs du BDS";
-      } else if(parsedJson["category_id"] == 4) {
-        e.category = "Associations";
+      e.idClubRef = parsedJson["idClubRef"];
+      e.idClub = parsedJson["idClub"];
+      e.name = parsedJson["name"];
+      e.mail = parsedJson["mail"];
+      e.price = parsedJson["price"];
+      e.contact = parsedJson["contact"];
+      e.solde = parsedJson["solde"];
+      e.description = parsedJson["description"];
+      e.urlPhoto = parsedJson["url_photo"];
+      if(e.urlPhoto == null) {
+        e.urlPhoto = "";
       }
 
-      e.title = parsedJson["title"];
-      e.abstract = parsedJson["abstract"];
-      e.logoUrl = parsedJson["logo_url"];
-      e.email = parsedJson["email"];
-      e.points = parsedJson["points"];
+      e.roles = new List<RoleModel>();
+      e.students = new List<StudentModel>();
+      e.isAdmin = false;
+      e.isTrez = false;
+      e.isModo = false;
+      e.isLog = false;
+      for(dynamic roleFromJson in parsedJson["roles"]) {
+        RoleModel role = RoleModel.roleFromJson(roleFromJson);
+        e.roles.add(role);
+        if(role.role == "admin") {
+          e.isAdmin = true;
+        } else if(role.role == "trez") {
+          e.isTrez = true;
+        } else if(role.role == "mod") {
+          e.isModo = true;
+        } else if(role.role == "log") {
+          e.isLog = true;
+        }
+      }
+      for(dynamic studentFromJson in parsedJson["students"]) {
+        StudentModel student = StudentModel.fromJson(studentFromJson);
+        e.students.add(student);
+      }
     }
 
     return e;
@@ -52,7 +90,5 @@ class ClubModel {
     return new List<ClubModel>.from(
         jsonData.map((x) => ClubModel.fromJson(x)));
   }
-
-
 
 }

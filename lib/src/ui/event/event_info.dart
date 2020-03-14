@@ -1,4 +1,5 @@
 //When user click on an event
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -58,44 +59,7 @@ class EventInfoState extends State<EventInfoPage> {
                           color: Colors.white,
                         )
                     ),
-                    Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.fromLTRB(5, 15, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
-                                  Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
-                                ],
-                              ),),
-                            Container(
-                                padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
-                                child: Wrap(
-                                    direction: Axis.vertical,
-                                    alignment: WrapAlignment.start,
-                                    children : <Widget>[
-                                      Text(
-                                        widget.event.name.toUpperCase(),
-                                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
-                                      ),
-                                      Row(children: <Widget>[
-                                        Text("Organisé par "),
-                                        Text(
-                                            snapshot.data.name,
-                                            style: TextStyle(fontWeight: FontWeight.bold)
-                                        )
-                                      ]
-                                      ),
-
-                                    ]
-                                )
-                            ),
-                          ]
-                      ),
-                    ),
+                    _header(snapshot),
                     Container(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
                       child: Divider(
@@ -179,5 +143,46 @@ class EventInfoState extends State<EventInfoPage> {
   String formatDay(DateTime date)
   {
     return  DateFormat('d','fr_FR').format(date);
+  }
+
+  _header(AsyncSnapshot<ClubModel> snapshot) {
+    return Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
+                Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
+              ],
+            ),),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children : <Widget>[
+                      AutoSizeText(
+                        widget.event.name.toUpperCase(),
+                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(children: <Widget>[
+                        Text("Organisé par "),
+                        Text(
+                            snapshot.data.name,
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        )
+                      ]
+                      ),
+
+                    ]
+                )
+            ),
+          ),
+        ]
+    );
   }
 }

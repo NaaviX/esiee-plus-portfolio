@@ -17,8 +17,8 @@ class Hyperlink extends StatelessWidget {
           msg: "Ce lien ne fonctionne pas",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 2,
-          backgroundColor: Colors.red,
+          timeInSecForIos:1,
+          backgroundColor: Colors.red.withOpacity(0.75),
           textColor: Colors.white,
           fontSize: 16.0,
       );

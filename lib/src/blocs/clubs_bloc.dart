@@ -30,7 +30,7 @@ class ClubsBloc {
     }
   }
 
-  Future<int> fetchTotalAmount() async {
+  fetchTotalAmount() async {
     List<ClubModel> clubModel = await _repository.fetchAllClubs();
     int total = 0;
     for(ClubModel c in clubModel){

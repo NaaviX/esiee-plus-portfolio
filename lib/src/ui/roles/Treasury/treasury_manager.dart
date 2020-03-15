@@ -1,7 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-//import 'package:fl_chart/fl_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-//import './indicator.dart';
+import './indicator.dart';
 
 class TreasuryManager extends StatefulWidget {
 
@@ -13,11 +13,15 @@ class TreasuryManager extends StatefulWidget {
 
 class TreasuryManagerState extends State<TreasuryManager>{
   int touchedIndex;
-  final bloc = ClubsBloc();
 
   @override
   Widget build(BuildContext context) {
-    return topArea();
+    return Scaffold(
+        appBar: AppBar(
+        title: Text("Dashboard Trésorerie"),
+    ),
+    body: topArea()
+    );
   }
 
   Card topArea() => Card(

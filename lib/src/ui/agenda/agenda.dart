@@ -1,4 +1,4 @@
-import 'package:bde_esiee_mobile/src/ui/agenda/course.dart';
+import 'package:bde_esiee_mobile/src/ui/agenda/agenda_event_view.dart';
 import 'package:bde_esiee_mobile/src/ui/agenda/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,37 +38,37 @@ class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
     return DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase()+DateFormat('\nd/MM').format(DateTime(a, b, c));
   }
 
-  List<CourseView> getCourses(){
+  List<AgendaEventView> getCourses(){
     DateTime now = DateTime.now().subtract(Duration(days: 5));
     DateTime date = DateTime(now.year, now.month, now.day);
     return [
-      CourseView(
+      AgendaEventView(
         title: 'An event 1',
         description: 'A description 1',
         start: date.add(const Duration(hours: 8, minutes: 00)),
         end: date.add(const Duration(hours: 10, minutes: 00)),
         backgroundColor: Colors.blueAccent
       ),
-      CourseView(
+      AgendaEventView(
         title: 'An event 2',
         description: 'A description 2',
         start: date.add(const Duration(hours: 10, minutes: 00)),
         end: date.add(const Duration(hours: 12, minutes: 00)),
         backgroundColor: Colors.amber
       ),
-      CourseView(
+      AgendaEventView(
         title: 'An event 3',
         description: 'A description 3',
         start: date.add(const Duration(hours: 13, minutes: 00)),
         end: date.add(const Duration(hours: 17, minutes: 00)),
       ),
-      CourseView(
+      AgendaEventView(
         title: 'An event 4',
         description: 'A description 4',
         start: date.add(const Duration(days: 1, hours: 8, minutes: 00)),
         end: date.add(const Duration(days: 1, hours: 12, minutes: 00)),
       ),
-      CourseView(
+      AgendaEventView(
         title: 'An event 5',
         description: 'A description 5',
         start: date.add(const Duration(days: 2, hours: 8, minutes: 00)),

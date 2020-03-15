@@ -299,7 +299,7 @@ class HoursColumn extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         foregroundDecoration: new BoxDecoration(
             border: Border(
-                right: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.1))
+                //right: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.1))
             )
         ),
         height: 24 * hourRowHeight,

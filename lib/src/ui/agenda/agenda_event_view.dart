@@ -6,7 +6,7 @@ import 'day_view.dart';
 import 'utils.dart';
 
 /// Represents a flutter week view event.
-class CourseView extends Comparable<CourseView> {
+class AgendaEventView extends Comparable<AgendaEventView> {
   /// The event title.
   final String title;
 
@@ -44,7 +44,7 @@ class CourseView extends Comparable<CourseView> {
   final EventTextBuilder eventTextBuilder;
 
   /// Creates a new flutter week view event instance.
-  CourseView({
+  AgendaEventView({
     @required this.title,
     @required this.description,
     @required DateTime start,
@@ -92,7 +92,7 @@ class CourseView extends Comparable<CourseView> {
   }
 
   @override
-  int compareTo(CourseView other) {
+  int compareTo(AgendaEventView other) {
     int result = start.compareTo(other.start);
     if (result != 0) {
       return result;

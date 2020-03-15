@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'controller.dart';
 import 'day_view.dart';
-import 'course.dart';
+import 'agenda_event_view.dart';
 import 'headers.dart';
 
 /// Builds a day view.
@@ -22,7 +22,7 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
   final DateCreator dateCreator;
 
   /// The events.
-  final List<CourseView> events;
+  final List<AgendaEventView> events;
 
   /// The day view builder.
   final DayViewBuilder dayViewBuilder;
@@ -32,7 +32,7 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   /// Creates a new week view instance.
   WeekView({
-    List<CourseView> events,
+    List<AgendaEventView> events,
     @required List<DateTime> dates,
     this.dayViewBuilder = DefaultBuilders.defaultDayViewBuilder,
     this.dayViewWidth,
@@ -76,7 +76,7 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   /// Creates a new week view instance.
   WeekView.builder({
-    List<CourseView> events,
+    List<AgendaEventView> events,
     this.dateCount,
     @required this.dateCreator,
     this.dayViewBuilder = DefaultBuilders.defaultDayViewBuilder,

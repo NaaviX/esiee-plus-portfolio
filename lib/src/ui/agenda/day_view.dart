@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'controller.dart';
-import 'course.dart';
+import 'agenda_event_view.dart';
 import 'headers.dart';
 import 'utils.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ typedef TopOffsetCalculator = double Function(int hour);
 /// A (scrollable) day view which is able to display events, zoom and un-zoom and more !
 class DayView extends ZoomableHeadersWidget<DayViewController> {
   /// The events.
-  final List<CourseView> events;
+  final List<AgendaEventView> events;
 
   /// The day view date.
   final DateTime date;
@@ -37,7 +37,7 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
 
   /// Creates a new day view instance.
   DayView({
-    List<CourseView> events,
+    List<AgendaEventView> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
     this.currentTimeRuleColor = Colors.pink,
@@ -86,10 +86,10 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
 /// The day view state.
 class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewController> {
   /// Contains all events draw properties.
-  final Map<CourseView, _EventDrawProperties> eventsDrawProperties = HashMap();
+  final Map<AgendaEventView, _EventDrawProperties> eventsDrawProperties = HashMap();
 
   /// The flutter week view events.
-  List<CourseView> events;
+  List<AgendaEventView> events;
 
   @override
   void initState() {
@@ -238,7 +238,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
   /// Creates the events draw properties and add them to the current list.
   void createEventsDrawProperties() {
     _EventsGrid eventsGrid = _EventsGrid();
-    for (CourseView event in List.of(events)) {
+    for (AgendaEventView event in List.of(events)) {
       _EventDrawProperties drawProperties = eventsDrawProperties[event] ?? _EventDrawProperties(widget, event);
       if (!drawProperties.shouldDraw) {
         events.remove(event);
@@ -399,7 +399,7 @@ class _EventDrawProperties {
   DateTime end;
 
   /// Creates a new flutter week view event draw properties from the specified day view and the specified day view event.
-  _EventDrawProperties(DayView dayView, CourseView event) {
+  _EventDrawProperties(DayView dayView, AgendaEventView event) {
     if (shouldDraw || (!Utils.sameDay(event.start, dayView.date) && !Utils.sameDay(event.end, dayView.date))) {
       return;
     }
@@ -436,7 +436,7 @@ class _EventDrawProperties {
   }
 
   /// Creates the event widget.
-  Widget createWidget(BuildContext context, DayView dayView, CourseView event) => Positioned(
+  Widget createWidget(BuildContext context, DayView dayView, AgendaEventView event) => Positioned(
         top: top,
         height: height,
         left: left,

@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'controller.dart';
 import 'day_view.dart';
-import 'course.dart';
+import 'agenda_event_view.dart';
 import 'headers.dart';
 import 'week_view.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class DefaultBuilders {
   static String defaultHourFormatter(int hour, int minute) => Utils.addLeadingZero(hour) + ':' + Utils.addLeadingZero(minute);
 
   /// Builds an event text widget in order to put it in a week view.
-  static Widget defaultEventTextBuilder(CourseView event, BuildContext context, DayView dayView, double height, double width) {
+  static Widget defaultEventTextBuilder(AgendaEventView event, BuildContext context, DayView dayView, double height, double width) {
     List<TextSpan> text = [
       TextSpan(
         text: event.title,

@@ -1,12 +1,14 @@
 import 'dart:math' as math;
 
+import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:flutter/material.dart';
 
+import 'course_info.dart';
 import 'day_view.dart';
 import 'utils.dart';
 
 /// Represents a flutter week view event.
-class CourseView extends Comparable<CourseView> {
+class AgendaEventView extends Comparable<AgendaEventView> {
   /// The event title.
   final String title;
 
@@ -34,9 +36,6 @@ class CourseView extends Comparable<CourseView> {
   /// The event widget margin.
   final EdgeInsets margin;
 
-  /// The event widget tap event.
-  final VoidCallback onTap;
-
   /// The event widget long press event.
   final VoidCallback onLongPress;
 
@@ -44,7 +43,7 @@ class CourseView extends Comparable<CourseView> {
   final EventTextBuilder eventTextBuilder;
 
   /// Creates a new flutter week view event instance.
-  CourseView({
+  AgendaEventView({
     @required this.title,
     @required this.description,
     @required DateTime start,
@@ -54,7 +53,6 @@ class CourseView extends Comparable<CourseView> {
     this.textStyle = const TextStyle(color: Colors.white),
     this.padding = const EdgeInsets.all(5),
     this.margin,
-    this.onTap,
     this.onLongPress,
     this.eventTextBuilder,
   })  : start = DateTime(start.year, start.month, start.day, start.hour, start.minute),
@@ -70,7 +68,20 @@ class CourseView extends Comparable<CourseView> {
     width = width - (padding?.left ?? 0.0) - (padding?.right ?? 0.0);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CourseInfoPage(course: new CourseModel(
+          title: this.title,
+          start: this.start,
+          end: this.end,
+          type: "TD",
+          location: "5301V, 5308, 5309V",
+          description: "2I\n1I\n4I-RV1",
+          updated: DateTime.now()
+        ))),
+        );
+      },
       onLongPress: onLongPress,
       child: Container(
         decoration: decoration ?? (backgroundColor != null ? BoxDecoration(
@@ -92,7 +103,7 @@ class CourseView extends Comparable<CourseView> {
   }
 
   @override
-  int compareTo(CourseView other) {
+  int compareTo(AgendaEventView other) {
     int result = start.compareTo(other.start);
     if (result != 0) {
       return result;

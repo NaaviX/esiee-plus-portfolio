@@ -1,12 +1,12 @@
 import 'dart:math' as math;
 
-import 'package:bde_esiee_mobile/src/ui/agenda/week_view.dart';
 import 'package:flutter/material.dart';
 
 import 'day_view.dart';
+import 'utils.dart';
 
 /// Represents a flutter week view event.
-class FlutterWeekViewEvent {
+class CourseView extends Comparable<CourseView> {
   /// The event title.
   final String title;
 
@@ -44,7 +44,7 @@ class FlutterWeekViewEvent {
   final EventTextBuilder eventTextBuilder;
 
   /// Creates a new flutter week view event instance.
-  FlutterWeekViewEvent({
+  CourseView({
     @required this.title,
     @required this.description,
     @required DateTime start,
@@ -52,7 +52,7 @@ class FlutterWeekViewEvent {
     this.backgroundColor = const Color(0xCC2196F3),
     this.decoration,
     this.textStyle = const TextStyle(color: Colors.white),
-    this.padding = const EdgeInsets.all(10),
+    this.padding = const EdgeInsets.all(5),
     this.margin,
     this.onTap,
     this.onLongPress,
@@ -73,7 +73,11 @@ class FlutterWeekViewEvent {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Container(
-        decoration: decoration ?? (backgroundColor != null ? BoxDecoration(color: backgroundColor) : null),
+        decoration: decoration ?? (backgroundColor != null ? BoxDecoration(
+            color: backgroundColor, borderRadius: BorderRadius.circular(10), border: Border.all(
+            color: Colors.white, width: 0.3, style: BorderStyle.solid
+        )) : null
+        ),
         margin: margin,
         padding: padding,
         child: (eventTextBuilder ?? DefaultBuilders.defaultEventTextBuilder)(
@@ -85,5 +89,14 @@ class FlutterWeekViewEvent {
         ),
       ),
     );
+  }
+
+  @override
+  int compareTo(CourseView other) {
+    int result = start.compareTo(other.start);
+    if (result != 0) {
+      return result;
+    }
+    return end.compareTo(other.end);
   }
 }

@@ -52,7 +52,7 @@ class AnnalsListState extends State<AnnalsList> {
   }
 
   Future chooseFile() async {
-    await FilePicker.getFile(type: FileType.ANY).then((file) {
+    await FilePicker.getFile(type: FileType.any).then((file) {
       setState(() {
         _image = file;
       });

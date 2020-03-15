@@ -1,9 +1,8 @@
 import 'dart:math' as math;
-import 'package:bde_esiee_mobile/src/ui/agenda/day_view.dart';
 import 'package:flutter/material.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/controller.dart';
-
-import 'week_view.dart';
+import 'controller.dart';
+import 'day_view.dart';
+import 'utils.dart';
 
 /// A widget which is showing both headers and can be zoomed.
 abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulWidget {
@@ -37,6 +36,12 @@ abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulW
   /// Whether the widget should automatically be placed in a scrollable widget.
   final bool inScrollableWidget;
 
+  /// The initial visible hour.
+  final int initialHour;
+
+  /// The initial visible minute.
+  final int initialMinute;
+
   /// Whether the widget should automatically scroll to the current time (hour and minute).
   final bool scrollToCurrentTime;
 
@@ -59,6 +64,8 @@ abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulW
     this.hoursColumnBackgroundColor,
     double hourRowHeight = 60,
     @required this.inScrollableWidget,
+    int initialHour,
+    int initialMinute,
     @required this.scrollToCurrentTime,
     @required this.userZoomable,
   })  : assert(dateFormatter != null),
@@ -66,6 +73,8 @@ abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulW
         dayBarHeight = math.max(0, dayBarHeight ?? 40),
         hoursColumnWidth = math.max(0, hoursColumnWidth ?? 60),
         hourRowHeight = math.max(0, hourRowHeight ?? 60),
+        initialHour = math.min(23, math.max(0, initialHour ?? 0)),
+        initialMinute = math.min(59, math.max(0, initialMinute ?? 0)),
         assert(inScrollableWidget != null),
         assert(scrollToCurrentTime != null),
         assert(userZoomable != null);
@@ -84,12 +93,6 @@ abstract class ZoomableHeadersWidgetState<W extends ZoomableHeadersWidget<C>, C 
     super.initState();
     hourRowHeight = widget._calculateHourRowHeight();
     widget.controller.addListener(this);
-
-    if (shouldScrollToCurrentTime) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollToCurrentTime();
-      });
-    }
   }
 
   @override
@@ -135,25 +138,46 @@ abstract class ZoomableHeadersWidgetState<W extends ZoomableHeadersWidget<C>, C 
     super.dispose();
   }
 
+  /// Schedules both scroll if needed.
+  void scheduleScrolls() {
+    if (!scheduleScrollToCurrentTimeIfNeeded()) {
+      scheduleScrollToInitialHour();
+    }
+  }
+
   /// Schedules a scroll to the current time if needed.
-  void scheduleScrollToCurrentTimeIfNeeded() {
+  bool scheduleScrollToCurrentTimeIfNeeded() {
     if (shouldScrollToCurrentTime) {
       WidgetsBinding.instance.addPostFrameCallback((_) => scrollToCurrentTime());
+      return true;
+    }
+    return false;
+  }
+
+  /// Schedules a scroll to the default hour.
+  void scheduleScrollToInitialHour() {
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => scrollToTime(widget.initialHour, widget.initialMinute));
     }
   }
 
   /// Checks whether the widget should scroll to current time.
-  bool get shouldScrollToCurrentTime => widget.scrollToCurrentTime && widget.inScrollableWidget;
+  bool get shouldScrollToCurrentTime => widget.scrollToCurrentTime;
 
   /// Scrolls to current time.
   void scrollToCurrentTime() {
-    if (!mounted) {
-      return;
+    if (mounted) {
+      DateTime now = DateTime.now();
+      scrollToTime(now.hour, now.minute);
     }
+  }
 
-    DateTime now = DateTime.now();
-    double topOffset = calculateTopOffset(now.hour, now.minute);
-    widget.controller.verticalScrollController.jumpTo(math.min(topOffset, widget.controller.verticalScrollController.position.maxScrollExtent));
+  /// Scrolls to a given time if possible.
+  void scrollToTime(int hour, int minute) {
+    if (widget.inScrollableWidget) {
+      double topOffset = calculateTopOffset(hour, minute);
+      widget.controller.verticalScrollController.jumpTo(math.min(topOffset, widget.controller.verticalScrollController.position.maxScrollExtent));
+    }
   }
 
   /// Returns whether this widget should be zoomable.
@@ -203,7 +227,7 @@ class DayBar extends StatelessWidget {
   }) : this(
           date: date ?? DateTime.now(),
           height: parent.dayBarHeight,
-          backgroundColor: parent.dayBarBackgroundColor ?? const Color(0xFFEBEBEB),
+          backgroundColor: parent.dayBarBackgroundColor ?? Colors.white,
           textStyle: parent.dayBarTextStyle,
           dateFormatter: parent.dateFormatter,
         );
@@ -212,6 +236,12 @@ class DayBar extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         height: height,
         color: backgroundColor,
+        foregroundDecoration: new BoxDecoration(
+          border: Border(
+              bottom: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.2)),
+              //right: BorderSide(width: 0.5, color: Colors.grey.withOpacity(0.1))
+          )
+        ),
         child: Center(
           child: Text(
             dateFormatter(date.year, date.month, date.day),
@@ -220,6 +250,7 @@ class DayBar extends StatelessWidget {
                   color: Utils.sameDay(date) ? Colors.blue[800] : Colors.black54,
                   fontWeight: FontWeight.bold,
                 ),
+            textAlign: TextAlign.center,
           ),
         ),
       );
@@ -266,6 +297,11 @@ class HoursColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+        foregroundDecoration: new BoxDecoration(
+            border: Border(
+                right: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.1))
+            )
+        ),
         height: 24 * hourRowHeight,
         width: width,
         color: backgroundColor,

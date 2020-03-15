@@ -90,15 +90,21 @@ class EventInfoState extends State<EventInfoPage> {
   {
     if( formatDate(widget.event.endDate) == formatDate(widget.event.startDate))
     {
-      return list(
+      if( widget.event.endDate == widget.event.startDate)
+        return list(
+            Icons.access_time,
+            'Le ' + formatDate(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate)
+        );
+      else
+        return list(
           Icons.access_time,
-          'Le ' + formatDate(widget.event.startDate)
+          'Le ' + formatDate(widget.event.startDate) + ' de' + DateFormat(' HH:mm','fr_FR').format(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.endDate)
       );
     }
     else {
       return list(
           Icons.access_time,
-          'Du ' + formatDate(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate));
+          'Du ' + formatDate(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate));
     }
   }
 
@@ -117,9 +123,9 @@ class EventInfoState extends State<EventInfoPage> {
               if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare)
                 Hyperlink(text,text),
               if(icon != Icons.payment && icon != FontAwesomeIcons.facebookSquare)
-                Text(text, style: TextStyle(fontSize: 18,),
-                  textAlign: TextAlign.justify,),
-            ]),
+                Text(text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
+            ]
+        ),
       );
     }
     else {
@@ -131,7 +137,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   String formatDate(DateTime date)
   {
-    return DateFormat('EEE','fr_FR').format(date) + ' ' + formatDay(date) + ' ' + formatMonth(date) + DateFormat(' à HH:mm','fr_FR').format(date);
+    return DateFormat('EEE ','fr_FR').format(date) + formatDay(date) + DateFormat(' MMMM','fr_FR').format(date);
   }
 
   String formatMonth(DateTime date)
@@ -156,7 +162,8 @@ class EventInfoState extends State<EventInfoPage> {
                 Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
                 Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
               ],
-            ),),
+            ),
+          ),
           Expanded(
             child: Container(
                 margin: EdgeInsets.fromLTRB(10, 15, 10, 0),

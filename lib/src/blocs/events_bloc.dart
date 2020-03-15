@@ -33,7 +33,7 @@ class EventsBloc {
 
   List<EventModel> sort(List<EventModel> events){
     List<EventModel> list = events;
-    list.removeWhere((item) => !item.enable);
+    list.removeWhere((item) => !item.enable && item.publicationDate.isBefore(DateTime.now()));
     List<EventModel> oldEvents = List.from(list);
     List<EventModel> newEvents = List.from(list);
     List<EventModel> currentEvents = List.from(list);

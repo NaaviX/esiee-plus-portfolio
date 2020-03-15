@@ -71,12 +71,9 @@ class createEventFormState extends State<createEventForm> {
   var start = DateTime.now();
   var end = DateTime.now();
   var pub = DateTime.now();
-  var startdate = DateTime.now();
-  var enddate = DateTime.now();
-  var pubdate = DateTime.now();
 
   File _image;
-  String _uploadedFileURL;
+  String _uploadedFileURL = "null";
 
   @override
   Widget build(BuildContext context) {
@@ -92,135 +89,140 @@ class createEventFormState extends State<createEventForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 10.0),
+                      //Titre
                       CustomTextFormField(
-                          "Nom de l'événement",
-                          "Intitulé de l'évenement",
-                          Icons.calendar_today,
-                          titre,
-                          type: "titre",
+                        "Nom de l'événement",
+                        "Intitulé de l'évenement",
+                        Icons.calendar_today,
+                        titre,
+                        type: "titre",
+                        requiredField: true,
+                        maxLength: 100,
                       ),
                       SizedBox(height: 10.0),
+                      //Description
                       CustomTextFormField(
                         "Description",
                         "Description de votre évenement",
                         null,
                         description,
                         type: "desc",
+                        requiredField: true,
                       ),
                       SizedBox(height: 10.0,),
-                      Padding(
-                        padding: EdgeInsets.only(bottom : 5),
-                        child: Row(
+                      //Dates
+                      Container(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[ new RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(200.0)),
-                              elevation: 2.0,
-                              onPressed: callDatePickerStart,
-                              child: dateButton("start"),
-                              color: Colors.white,
-                            ),
-                              SizedBox(
-                                height: 10.0,
-                                width: 10,
+                            children: <Widget>[
+                              IntrinsicWidth(
+                                child: Column(
+                                  children: <Widget>[
+                                    RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(200.0)),
+                                      elevation: 2.0,
+                                      onPressed: callDatePickerStart,
+                                      child: dateButton("start"),
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: 10.0,),
+                                    RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(200.0)),
+                                      elevation: 2.0,
+                                      onPressed: callDatePickerEnd,
+                                      child: dateButton("end"),
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: 10.0,),
+                                    RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(200.0)),
+                                      elevation: 2.0,
+                                      onPressed: callDatePickerPub,
+                                      child: dateButton("publication"),
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              new RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(200.0)),
-                                elevation: 2.0,
-                                onPressed: callTimePickerStart,
-                                child: timeButton("start"),
-                                color: Colors.white,
-                              )
-                            ]
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom : 5, top: 10),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[ new RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(200.0)),
-                              elevation: 2.0,
-                              onPressed: callDatePickerEnd,
-                              child: dateButton("end"),
-                              color: Colors.white,
-                            ),
-                              SizedBox(
-                                height: 10.0,
-                                width: 10,
+                              IntrinsicWidth(
+                                child: Column(
+                                    children: <Widget>[
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(200.0)),
+                                        elevation: 2.0,
+                                        onPressed: callTimePickerStart,
+                                        child: timeButton("start"),
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(height: 10.0,),
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(200.0)),
+                                        elevation: 2.0,
+                                        onPressed: callTimePickerEnd,
+                                        child: timeButton("end"),
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(height: 10.0,),
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(200.0)),
+                                        elevation: 2.0,
+                                        onPressed: callTimePickerPub,
+                                        child: timeButton("publication"),
+                                        color: Colors.white,
+                                      ),
+                                    ]
+                                ),
                               ),
-                              new RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(200.0)),
-                                elevation: 2.0,
-                                onPressed: callTimePickerEnd,
-                                child: timeButton("end"),
-                                color: Colors.white,
-                              )
-                            ]
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom : 5, top:10),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[ new RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(200.0)),
-                              elevation: 2.0,
-                              onPressed: callDatePickerPub,
-                              child: dateButton("start"),
-                              color: Colors.white,
-                            ),
-                              SizedBox(
-                                height: 10.0,
-                                width: 10,
-                              ),
-                              new RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(200.0)),
-                                elevation: 2.0,
-                                onPressed: callTimePickerPub,
-                                child: timeButton("start"),
-                                color: Colors.white,
-                              )
-                            ]
-                        ),
+                            ],
+                          )
                       ),
                       SizedBox(height: 10.0),
+                      //Lieu
                       CustomTextFormField(
                         "Lieu",
                         "Lieu de l'évenement",
                         Icons.place,
                         place,
+                        requiredField: true,
                       ),
                       SizedBox(height: 10.0),
+                      //Prix
                       CustomTextFormField(
                         "Prix",
                         "0",
                         Icons.euro_symbol,
                         price,
                         keyboard : TextInputType.number,
+                        requiredField: true,
                       ),
                       SizedBox(height: 10.0),
+                      //Lien de vente
                       CustomTextFormField(
                         "Lien de vente",
                         "Lien de vente des places",
                         Icons.credit_card,
                         link,
                         keyboard : TextInputType.url,
+                        maxLength: 500,
                       ),
                       SizedBox(height: 10.0),
+                      //Lien facebook
                       CustomTextFormField(
                         "Lien Facebook",
                         "Lien de l'évent sur facebook",
                         FontAwesomeIcons.facebookSquare,
                         fblink,
                         keyboard : TextInputType.url,
+                        maxLength: 500,
                       ),
                       SizedBox(height: 10.0),
+                      //Image
                       _downloadImage(),
                       Center(
                           child: Padding(
@@ -243,20 +245,19 @@ class createEventFormState extends State<createEventForm> {
                                       new EventModel(
                                           idEvent: 0,
                                           name: titre.text,
-                                          startDate: startdate,
-                                          endDate: enddate,
+                                          startDate: start,
+                                          endDate: end,
                                           place: place.text,
                                           backgroundUrl: _uploadedFileURL,
                                           description: description.text,
-                                          publicationDate: pubdate,
+                                          publicationDate: pub,
                                           link: link.text,
                                           facebookLink: fblink.text,
                                           idClubRef: 100,
-                                          enable:false,
+                                          enable: true,
                                           price: int.parse(price.text)
                                       )
                                   );
-
                                   Scaffold.of(context)
                                       .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
                                   Navigator.of(context).pop();
@@ -287,12 +288,42 @@ class createEventFormState extends State<createEventForm> {
               ]
           ),
         ),
-        color: Colors.grey.withOpacity(0.7),
+        color: _verifImage(),
       )
   );
 
+  Color _verifImage(){
+    if(_image==null) return Colors.grey.withOpacity(0.7);
+    else return Colors.green.withOpacity(0.7);
+  }
+
+  Future chooseFile() async {
+    _image = null;
+    _uploadedFileURL = null;
+    await FilePicker.getFile(type: FileType.IMAGE).then((file) {
+      setState(() {
+        _image = file;
+      });
+      uploadFile();
+    });
+  }
+
+  Future uploadFile() async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('couv_event/${start.year}/${titre.text..replaceAll(' ', '_')}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
+  }
+
   callDatePickerStart() async {
-    var order = await getDate();
+    var order = await getDate(start);
     setState(() {
       order = new DateTime(order.year, order.month, order.day, start.hour, start.minute);
       if(order.isAfter(DateTime.now())) {
@@ -304,8 +335,8 @@ class createEventFormState extends State<createEventForm> {
   }
 
   callTimePickerStart() async {
-    var order = await getTime();
-    var date = startdate;
+    var order = await getTime(start);
+    var date = start;
     setState(() {
       order = new TimeOfDay(hour: order.hour, minute: order.minute);
       date = DateTime(start.year, start.month, start.day, order.hour, order.minute);
@@ -318,7 +349,7 @@ class createEventFormState extends State<createEventForm> {
   }
 
   callDatePickerEnd() async {
-    var order = await getDate();
+    var order = await getDate(end);
     setState(() {
       order = new DateTime(order.year, order.month, order.day, end.hour, end.minute);
       if(order.isAfter(start)) {
@@ -330,7 +361,7 @@ class createEventFormState extends State<createEventForm> {
   }
 
   callTimePickerEnd() async {
-    var order = await getTime();
+    var order = await getTime(end);
     var date = end;
     setState(() {
       order = new TimeOfDay(hour: order.hour, minute: order.minute);
@@ -344,35 +375,31 @@ class createEventFormState extends State<createEventForm> {
   }
 
   callDatePickerPub() async {
-    var order = await getDate();
+    var order = await getDate(pub);
     setState(() {
       order = new DateTime(order.year, order.month, order.day, start.hour, start.minute);
-      if(order.isAfter(DateTime.now())) {
-        start = order;
-        if(end.isBefore(start))
-          end = start;
+      if(order.isBefore(start)) {
+        pub = order;
       }
     });
   }
 
   callTimePickerPub() async {
-    var order = await getTime();
-    var date = startdate;
+    var order = await getTime(pub);
+    var date = pub;
     setState(() {
       order = new TimeOfDay(hour: order.hour, minute: order.minute);
-      date = DateTime(start.year, start.month, start.day, order.hour, order.minute);
-      if(date.isAfter(DateTime.now())) {
-        start = date;
-        if (end.isBefore(date))
-          end = date;
+      date = DateTime(pub.year, pub.month, pub.day, order.hour, order.minute);
+      if(date.isBefore(start)) {
+        pub = date;
       }
     });
   }
 
-  Future<DateTime> getDate() {
+  Future<DateTime> getDate(DateTime date) {
     return showDatePicker(
       context: context,
-      initialDate: startdate,
+      initialDate: date,
       firstDate: DateTime(2018),
       lastDate: DateTime(2030),
       builder: (BuildContext context, Widget child) {
@@ -384,10 +411,10 @@ class createEventFormState extends State<createEventForm> {
     );
   }
 
-  Future<TimeOfDay> getTime(){
+  Future<TimeOfDay> getTime(DateTime date){
     return showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: 0, minute: 0),
+      initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
       builder: (BuildContext context, Widget child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -398,63 +425,10 @@ class createEventFormState extends State<createEventForm> {
 
   }
 
-  Container datetimeButton(String type) {
-    String date;
-    var color;
-    var icon = Icons.access_time;
-
-    if (type == 'start') {
-      color = Colors.green;
-      date = "  Début : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(start);
-    }
-    else if (type == 'end') {
-      color = Colors.red;
-      date =  "  Fin : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(enddate);
-    }
-    else if (type == 'publication') {
-      color = Colors.orange;
-      date =  "  Publication : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(pubdate);
-      icon = Icons.timer;
-    }
-
-    return Container(
-      alignment: Alignment.center,
-      height: 50.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    Icon(
-                      icon,
-                      size: 18.0,
-                      color: color,
-                    ),
-                    Text(
-                      date,
-                      textScaleFactor: 2.0,
-                      style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 8.0),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   Container dateButton(String type) {
     String date;
     var color;
-    var icon = Icons.calendar_today;
+    var icon = Icons.event;
 
     if (type == 'start') {
       color = Colors.green;
@@ -462,11 +436,11 @@ class createEventFormState extends State<createEventForm> {
     }
     else if (type == 'end') {
       color = Colors.red;
-      date =  "  Fin : " + DateFormat("EEE dd MMM yyyy     ","fr_FR").format(end);
+      date =  "  Fin : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(end);
     }
     else if (type == 'publication') {
       color = Colors.orange;
-      date =  "  Publication : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(pub);
+      date =  "  Publi : " + DateFormat("EEE dd MMM yyyy","fr_FR").format(pub);
       icon = Icons.timer;
     }
 
@@ -555,29 +529,6 @@ class createEventFormState extends State<createEventForm> {
         ],
       ),
     );
-  }
-
-  Future chooseFile() async {
-    await FilePicker.getFile(type: FileType.IMAGE).then((file) {
-      setState(() {
-        _image = file;
-      });
-      uploadFile();
-    });
-  }
-
-  Future uploadFile() async {
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('couv_event/${Path.basename(_image.path)}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
-    print('File Uploaded');
-    storageReference.getDownloadURL().then((fileURL) {
-      setState(() {
-        _uploadedFileURL = fileURL;
-      });
-    });
   }
 
 }

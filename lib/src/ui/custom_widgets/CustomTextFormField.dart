@@ -10,6 +10,8 @@ class CustomTextFormField extends StatefulWidget {
   TextStyle textstyle;
   int maxlines;
   TextInputType keyboard;
+  bool requiredField;
+  int maxLength;
 
   InputDecoration decoration;
 
@@ -38,7 +40,7 @@ class CustomTextFormField extends StatefulWidget {
   );
 
 
-  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard})
+  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.maxLength})
   {
     if(this.textstyle != null) this.textstyle = this.textstyle;
     else this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
@@ -48,6 +50,12 @@ class CustomTextFormField extends StatefulWidget {
 
     if(this.keyboard != null) this.keyboard = this.keyboard;
     else this.keyboard = TextInputType.text;
+
+    if(this.requiredField != null) this.requiredField = this.requiredField;
+    else this.requiredField = false;
+
+    if(this.maxLength != null) this.maxLength = this.maxLength;
+    else this.maxLength = 1000000000;
 
     this.decoration = _inputDecoration(label, hint, icon);
 
@@ -86,8 +94,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   _ifNull(val) {
-    if (val.isEmpty) {
+    if (val.isEmpty && widget.requiredField == true) {
       return '*Champs requis';
+    }
+    else if (val.toString().length > widget.maxLength) {
+      return 'La longueur maximun du champs est de ' + widget.maxLength.toString() + ' charactère(s)';
     }
     return null;
   }

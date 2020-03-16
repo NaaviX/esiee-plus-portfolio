@@ -1,231 +1,345 @@
+import 'dart:math' as math;
+
+import 'package:flutter/rendering.dart';
+import 'controller.dart';
+import 'day_view.dart';
+import 'agenda_event_view.dart';
+import 'headers.dart';
+import 'week_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
-class AgendaUtils{
+/// Contains some useful methods.
+class Utils {
+  /// Makes the specified number to have at least two digits by adding a leading zero if needed.
+  static String addLeadingZero(int number) => (number < 10 ? '0' : '') + number.toString();
 
+  /// Checks whether the provided date is the same year, month and day than the target date.
   static bool sameDay(DateTime date, [DateTime target]) {
     target = target ?? DateTime.now();
-    return date != null && target.year == date.year && target.month == date.month && target.day == date.day;
+    return target.year == date.year && target.month == date.month && target.day == date.day;
   }
-  static addLeadingZero(int number) => (number < 10 ? '0' : '') + number.toString();
-  static dateFormatter(int year, int month, int day) => addLeadingZero(day);
-  static hourFormatter(int hour, int minute) => addLeadingZero(hour) + ':' + addLeadingZero(minute);
-}
 
-class DayBar extends StatelessWidget{
-  DateTime date;
-
-  DayBar({
-    @required DateTime date
-  }) : date = DateTime(date.year, date.month, date.day);
-
-  Color backgroundColor = Colors.white70;
-  static DateTime now = DateTime.now();
-  static DateTime today = DateTime(now.year, now.month, now.day);
-
-  @override
-  Widget build(BuildContext context){
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: _DayBar(
-          date: this.date
-      )
-    );
-  }
-  
-  Widget _DayBar({DateTime date}){
-
-    return Container(
-      height: 40,
-      width: 100,
-      color: backgroundColor,
-      child: Center(
-        child: Text(
-          AgendaUtils.dateFormatter(date.year, date.month, date.day),
-          style: TextStyle(
-            color: AgendaUtils.sameDay(date) ? Colors.blue[800] : Colors.black54,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HourBar extends StatelessWidget{
-  Color backgroundColor = Colors.white70;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 24*60.0,
-    width: 50,
-    color: backgroundColor,
-    child: Stack(
-      children: List.generate(
-        13, (hour) => Positioned(
-          top: (hour + 1) * 50 - ((TextStyle(color: Colors.black54)?.fontSize ?? 14) / 2),
-          left: 0,
-          right: 0,
-          child: Text(
-            AgendaUtils.hourFormatter(7 + hour + 1, 0),
-            style: TextStyle(color: Colors.black54),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-typedef TopOffsetCalculator = double Function(int hour);
-class EventsColumnBackgroundPainter extends CustomPainter {
-  /// The color.
-  final Color backgroundColor;
-
-  /// The rules color.
-  final Color rulesColor;
-
-  /// The top offset calculator.
-  /// The day view state will give it its real value.
-  TopOffsetCalculator topOffsetCalculator = defaultTopOffsetCalculator;
-
-  /// Creates a new events column background painter.
-  EventsColumnBackgroundPainter({
-    this.backgroundColor,
-    this.rulesColor = const Color(0x1A000000),
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (backgroundColor != null) {
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), Paint()..color = backgroundColor);
+  /// Removes the last word from a string.
+  static String removeLastWord(String string) {
+    List<String> words = string.split(' ');
+    if (words.isEmpty) {
+      return '';
     }
 
-    if (rulesColor != null) {
-      for (int hour = 1; hour < 24; hour++) {
-        double topOffset = topOffsetCalculator(hour);
-        canvas.drawLine(Offset(0, topOffset), Offset(size.width, topOffset), Paint()..color = rulesColor);
+    return words.getRange(0, words.length - 1).join(' ');
+  }
+}
+
+/// Contains default builders and formatters.
+class DefaultBuilders {
+  /// Formats a day.
+  static String defaultDateFormatter(int year, int month, int day) => year.toString() + '-' + Utils.addLeadingZero(month) + '-' + Utils.addLeadingZero(day);
+
+  /// Formats a hour.
+  static String defaultHourFormatter(int hour, int minute) => Utils.addLeadingZero(hour) + ':' + Utils.addLeadingZero(minute);
+
+  /// Builds an event text widget in order to put it in a week view.
+  static Widget defaultEventTextBuilder(AgendaEventView event, BuildContext context, DayView dayView, double height, double width) {
+    List<TextSpan> text = [
+      TextSpan(
+        text: event.title,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      TextSpan(
+        text: ' ' + dayView.hourFormatter(event.start.hour, event.start.minute) + '\n' + dayView.hourFormatter(event.end.hour, event.end.minute) + '\n\n',
+      ),
+      TextSpan(
+        text: event.description,
+      ),
+    ];
+
+    bool exceedHeight;
+    while (exceedHeight ?? true) {
+      exceedHeight = _exceedHeight(text, event.textStyle, height, width);
+      if (exceedHeight == null || !exceedHeight) {
+        if (exceedHeight == null) {
+          text.clear();
+        }
+        break;
+      }
+
+      if (!_ellipsize(text)) {
+        break;
       }
     }
-  }
 
-  @override
-  bool shouldRepaint(EventsColumnBackgroundPainter oldDayViewBackgroundPainter) {
-    return backgroundColor != oldDayViewBackgroundPainter.backgroundColor || rulesColor != oldDayViewBackgroundPainter.rulesColor || topOffsetCalculator != oldDayViewBackgroundPainter.topOffsetCalculator;
-  }
-
-  /// The default top offset calculator.
-  static double defaultTopOffsetCalculator(int hour) => hour * 60.0;
-}
-
-class DayView extends StatelessWidget {
-
-  final double hourBarWidth;
-  final DateTime dayDate;
-
-  DayView({
-    double hourBarWidth,
-    DateTime dayDate
-  }) : hourBarWidth = 50, dayDate = DateTime(dayDate.year, dayDate.month, dayDate.day);
-
-  static DateTime now = DateTime.now();
-  static DateTime date = DateTime(now.year, now.month, now.day);
-
-  double calculateTopOffset(int hour, [int minute = 0, double hourRowHeight]) => (hour - 9 + (minute / 60)) * (hourRowHeight ?? 60);
-  double calculateHeight([double hourRowHeight]) => calculateTopOffset(24, 0, hourRowHeight);
-  final EventsColumnBackgroundPainter eventsColumnBackgroundPainter = EventsColumnBackgroundPainter(
-      backgroundColor: AgendaUtils.sameDay(date)
-          ? const Color(0xFFE3F5FF)
-          : const Color(0xFFF2F2F2));
-
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = List();
-    children.add(
-      Positioned.fill(
-          child: CustomPaint(
-              painter: eventsColumnBackgroundPainter
-          )
-      )
-    );
-    if (dayDate != null && AgendaUtils.sameDay(dayDate)){
-      children.add(
-        Positioned(
-          top: calculateTopOffset(now.hour, now.minute),
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 2,
-            color: Colors.pink,
-          ),
-        ),
-      );
-      children.add(
-        Positioned(
-          top: calculateTopOffset(now.hour, now.minute) - (15 / 2),
-          left: 0,
-          child: Container(
-            height: 15,
-            width: 15,
-            decoration: BoxDecoration(
-              color: Colors.pink,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Stack(
-    children: [
-      Padding(
-        padding: EdgeInsets.only(top: 40),
-          child: SizedBox(
-            width: (MediaQuery.of(context).size.width - 50) / 5,
-            height: calculateHeight(),
-            child: Stack(
-                children: children
-            ),
-          ),
-        ),
-        DayBar(
-          date: this.dayDate
-      )]);
-  }
-}
-
-class weekView extends StatelessWidget {
-  DateTime date;
-
-  weekView({
-    @required DateTime date
-  }) : date = DateTime(date.year, date.month, date.day);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: createWeek(context),
+    return RichText(
+      text: TextSpan(
+        children: text,
+        style: event.textStyle,
+      ),
     );
   }
 
-  List<Widget> createWeek(BuildContext context){
-    DateTime monday = date.subtract(Duration(days: date.weekday-1));
-    print(monday);
-    double dayWidth = ((MediaQuery.of(context).size.width - 50) / 5);
-    List<Widget> children = List();
+  /// Builds a date according to a list.
+  static DateTime defaultDateCreator(List<DateTime> dates, int index) => dates[index];
 
-    for(var i=0;i<5;i++){
-      children.add(
-        Positioned(
-            top: 0,
-            left: dayWidth*i + 50,
-            child: new DayView(dayDate: monday.add(Duration(days: i)))),
+  /// Builds a day view in order to put it in a week view.
+  static DayView defaultDayViewBuilder(BuildContext context, WeekView weekView, DateTime date, DayViewController controller) => DayView(
+        date: date,
+        events: weekView.events,
+        hoursColumnWidth: 0,
+        controller: controller,
+        inScrollableWidget: false,
+        dayBarHeight: 0,
+        userZoomable: false,
+        scrollToCurrentTime: false,
+      );
+
+  /// Builds a day bar in order to put it in a week view.
+  static DayBar defaultDayBarBuilder(BuildContext context, WeekView weekView, DateTime date) => DayBar(
+        date: date,
+        height: weekView.dayBarHeight,
+        backgroundColor: weekView.dayBarBackgroundColor,
+      );
+
+  /// Builds a hours column widget in order to put it in a week view.
+  static HoursColumn defaultHoursColumnBuilder(BuildContext context, WeekView weekView, double hourRowHeight) => weekView.hoursColumnWidth <= 0
+      ? const SizedBox.shrink()
+      : HoursColumn(
+          hourRowHeight: hourRowHeight,
+          width: weekView.hoursColumnWidth,
+        );
+
+  /// Returns whether this input exceeds the specified height.
+  static bool _exceedHeight(List<TextSpan> input, TextStyle textStyle, double height, double width) {
+    double fontSize = textStyle?.fontSize ?? 14;
+    int maxLines = height ~/ ((textStyle?.height ?? 1.2) * fontSize);
+    if (maxLines == 0) {
+      return null;
+    }
+
+    TextPainter painter = TextPainter(
+      text: TextSpan(
+        children: input,
+        style: textStyle,
+      ),
+      maxLines: maxLines,
+      textDirection: TextDirection.ltr,
+    );
+    painter.layout(maxWidth: width);
+    return painter.didExceedMaxLines;
+  }
+
+  /// Ellipsizes the input.
+  static bool _ellipsize(List<TextSpan> input, [String ellipse = '…']) {
+    if (input.isEmpty) {
+      return false;
+    }
+
+    TextSpan last = input.last;
+    String text = last.text;
+    if (text.isEmpty || text == ellipse) {
+      input.removeLast();
+
+      if (text == ellipse) {
+        _ellipsize(input, ellipse);
+      }
+      return true;
+    }
+
+    String truncatedText;
+    if (text.endsWith('\n')) {
+      truncatedText = text.substring(0, text.length - 1) + ellipse;
+    } else {
+      truncatedText = Utils.removeLastWord(text);
+      truncatedText = truncatedText.substring(0, math.max(0, truncatedText.length - 2)) + ellipse;
+    }
+
+    input[input.length - 1] = TextSpan(
+      text: truncatedText,
+      style: last.style,
+    );
+
+    return true;
+  }
+}
+
+/// Allows to not show the glow effect in scrollable widgets.
+class NoGlowBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+
+  /// Applies this behavior to a scrollable widget.
+  static Widget noGlow({
+    Widget child,
+  }) =>
+      ScrollConfiguration(
+        behavior: NoGlowBehavior(),
+        child: child,
+      );
+}
+
+/// A scroll physics that always lands on specific points.
+class MagnetScrollPhysics extends ScrollPhysics {
+  /// The fixed item size.
+  final double itemSize;
+
+  /// Creates a new magnet scroll physics instance.
+  const MagnetScrollPhysics({
+    ScrollPhysics parent,
+    @required this.itemSize,
+  }) : super(parent: parent);
+
+  @override
+  MagnetScrollPhysics applyTo(ScrollPhysics ancestor) {
+    return MagnetScrollPhysics(
+      parent: buildParent(ancestor),
+      itemSize: itemSize,
+    );
+  }
+
+  @override
+  Simulation createBallisticSimulation(ScrollMetrics position, double velocity) {
+    // Scenario 1:
+    // If we're out of range and not headed back in range, defer to the parent
+    // ballistics, which should put us back in range at the scrollable's boundary.
+    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) || (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    // Create a test simulation to see where it would have ballistically fallen
+    // naturally without settling onto items.
+    final Simulation testFrictionSimulation = super.createBallisticSimulation(position, velocity);
+
+    // Scenario 2:
+    // If it was going to end up past the scroll extent, defer back to the
+    // parent physics' ballistics again which should put us on the scrollable's
+    // boundary.
+    if (testFrictionSimulation != null && (testFrictionSimulation.x(double.infinity) == position.minScrollExtent || testFrictionSimulation.x(double.infinity) == position.maxScrollExtent)) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    // From the natural final position, find the nearest item it should have
+    // settled to.
+    final int settlingItemIndex = _getItemFromOffset(
+      offset: testFrictionSimulation?.x(double.infinity) ?? position.pixels,
+      minScrollExtent: position.minScrollExtent,
+      maxScrollExtent: position.maxScrollExtent,
+    );
+
+    final double settlingPixels = settlingItemIndex * itemSize;
+
+    // Scenario 3:
+    // If there's no velocity and we're already at where we intend to land,
+    // do nothing.
+    if (velocity.abs() < tolerance.velocity && (settlingPixels - position.pixels).abs() < tolerance.distance) {
+      return null;
+    }
+
+    // Scenario 4:
+    // If we're going to end back at the same item because initial velocity
+    // is too low to break past it, use a spring simulation to get back.
+    if (settlingItemIndex ==
+        _getItemFromOffset(
+          offset: position.pixels,
+          minScrollExtent: position.minScrollExtent,
+          maxScrollExtent: position.maxScrollExtent,
+        )) {
+      return SpringSimulation(
+        spring,
+        position.pixels,
+        settlingPixels,
+        velocity,
+        tolerance: tolerance,
       );
     }
 
-    return children;
+    // Scenario 5:
+    // Create a new friction simulation except the drag will be tweaked to land
+    // exactly on the item closest to the natural stopping point.
+    return FrictionSimulation.through(
+      position.pixels,
+      settlingPixels,
+      velocity,
+      tolerance.velocity * velocity.sign,
+    );
   }
 
+  /// Returns the item index from the specified offset.
+  int _getItemFromOffset({
+    double offset,
+    double minScrollExtent,
+    double maxScrollExtent,
+  }) =>
+      (_clipOffsetToScrollableRange(offset, minScrollExtent, maxScrollExtent) / itemSize).round();
+
+  /// Clips the specified offset to the scrollable range.
+  double _clipOffsetToScrollableRange(
+    double offset,
+    double minScrollExtent,
+    double maxScrollExtent,
+  ) =>
+      math.min(math.max(offset, minScrollExtent), maxScrollExtent);
+}
+
+/// A scroll controller that allows to use the [silentJumpTo] method.
+class SilentScrollController extends ScrollController {
+  /// Creates a new silent scroll controller instance.
+  SilentScrollController({
+    double initialScrollOffset = 0.0,
+    bool keepScrollOffset = true,
+    String debugLabel,
+  }) : super(
+          initialScrollOffset: initialScrollOffset,
+          keepScrollOffset: keepScrollOffset,
+          debugLabel: debugLabel,
+        );
+
+  @override
+  _SilentScrollPosition createScrollPosition(
+    ScrollPhysics physics,
+    ScrollContext context,
+    ScrollPosition oldPosition,
+  ) {
+    return _SilentScrollPosition(
+      physics: physics,
+      context: context,
+      initialPixels: initialScrollOffset,
+      keepScrollOffset: keepScrollOffset,
+      oldPosition: oldPosition,
+      debugLabel: debugLabel,
+    );
+  }
+
+  /// Silently jumps to the specified position.
+  void silentJumpTo(double pixels) {
+    assert(positions.isNotEmpty, 'ScrollController not attached to any scroll views.');
+    List.from(positions).forEach((position) => position.silentJumpTo(pixels));
+  }
+}
+
+/// A scroll position that allows to use [silentJumpTo].
+class _SilentScrollPosition extends ScrollPositionWithSingleContext {
+  /// Creates a new scroll position instance.
+  _SilentScrollPosition({
+    @required ScrollPhysics physics,
+    @required ScrollContext context,
+    double initialPixels = 0.0,
+    bool keepScrollOffset = true,
+    ScrollPosition oldPosition,
+    String debugLabel,
+  }) : super(
+          physics: physics,
+          context: context,
+          initialPixels: initialPixels,
+          keepScrollOffset: keepScrollOffset,
+          oldPosition: oldPosition,
+          debugLabel: debugLabel,
+        );
+
+  /// Silently jumps to the specified position.
+  void silentJumpTo(double value) {
+    if (pixels != value) {
+      forcePixels(value);
+    }
+  }
 }

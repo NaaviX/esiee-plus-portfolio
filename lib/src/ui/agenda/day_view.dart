@@ -1,12 +1,10 @@
 import 'dart:collection';
-import 'dart:math' as math;
-
-import 'package:flutter/material.dart';
 
 import 'controller.dart';
-import 'event.dart';
+import 'agenda_event_view.dart';
 import 'headers.dart';
-import 'week_view.dart';
+import 'utils.dart';
+import 'package:flutter/material.dart';
 
 /// Returns a string from a specified date.
 typedef DateFormatter = String Function(int year, int month, int day);
@@ -23,7 +21,7 @@ typedef TopOffsetCalculator = double Function(int hour);
 /// A (scrollable) day view which is able to display events, zoom and un-zoom and more !
 class DayView extends ZoomableHeadersWidget<DayViewController> {
   /// The events.
-  final List<FlutterWeekViewEvent> events;
+  final List<AgendaEventView> events;
 
   /// The day view date.
   final DateTime date;
@@ -39,11 +37,11 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
 
   /// Creates a new day view instance.
   DayView({
-    List<FlutterWeekViewEvent> events,
+    List<AgendaEventView> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
     this.currentTimeRuleColor = Colors.pink,
-    this.currentTimeCircleColor,
+    this.currentTimeCircleColor = Colors.pink,
     DayViewController controller,
     DateFormatter dateFormatter,
     HourFormatter hourFormatter,
@@ -55,11 +53,13 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
     Color hoursColumnBackgroundColor,
     double hourRowHeight,
     bool inScrollableWidget = true,
+    int initialHour,
+    int initialMinute,
     bool scrollToCurrentTime = true,
-    bool userZoomable = false,
+    bool userZoomable = true,
   })  : assert(date != null),
         date = DateTime(date.year, date.month, date.day),
-        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? const Color(0xFFE3F5FF) : const Color(0xFFF2F2F2)),
+        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? const Color(0xFFE3F5FF) : Colors.white),
         events = events ?? [],
         super(
           controller: controller ?? DayViewController(),
@@ -73,32 +73,29 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
           hoursColumnBackgroundColor: hoursColumnBackgroundColor,
           hourRowHeight: hourRowHeight,
           inScrollableWidget: inScrollableWidget,
+          initialHour: initialHour,
+          initialMinute: initialMinute,
           scrollToCurrentTime: scrollToCurrentTime,
           userZoomable: userZoomable,
         );
 
   @override
-  State<StatefulWidget> createState() => _DayViewState(this);
+  State<StatefulWidget> createState() => _DayViewState();
 }
 
 /// The day view state.
 class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewController> {
   /// Contains all events draw properties.
-  final Map<FlutterWeekViewEvent, _EventDrawProperties> eventsDrawProperties = HashMap();
+  final Map<AgendaEventView, _EventDrawProperties> eventsDrawProperties = HashMap();
 
   /// The flutter week view events.
-  List<FlutterWeekViewEvent> events;
-
-  /// Creates a new day view state.
-  _DayViewState(DayView dayView)
-      : events = List.of(dayView.events);
+  List<AgendaEventView> events;
 
   @override
   void initState() {
     super.initState();
-    sortEvents();
-    widget.eventsColumnBackgroundPainter.topOffsetCalculator = calculateTopOffset;
-
+    scheduleScrolls();
+    reset();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => createEventsDrawProperties());
     });
@@ -108,10 +105,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
   void didUpdateWidget(DayView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    eventsDrawProperties.clear();
-    events = List.of(widget.events);
-    sortEvents();
-    widget.eventsColumnBackgroundPainter.topOffsetCalculator = calculateTopOffset;
+    reset();
     createEventsDrawProperties();
   }
 
@@ -122,12 +116,17 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
         createMainWidget(),
         Positioned(
           top: 0,
-          left: 0,
+          left: widget.hoursColumnWidth,
           right: 0,
           child: DayBar.fromHeadersWidget(
             parent: widget,
             date: widget.date,
           ),
+        ),
+        Container(
+          height: widget.dayBarHeight,
+          width: widget.hoursColumnWidth,
+          color: widget.dayBarBackgroundColor ?? Colors.white,
         ),
       ],
     );
@@ -144,7 +143,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
   }
 
   @override
-  void onZoomFactorChanged(ZoomController controller, ScaleUpdateDetails details) {
+  void onZoomFactorChanged(DayViewController controller, ScaleUpdateDetails details) {
     super.onZoomFactorChanged(controller, details);
 
     if (mounted) {
@@ -190,10 +189,56 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
     );
   }
 
+  /// Creates the background widgets that should be added to a stack.
+  Widget createBackground() => Positioned.fill(
+        child: CustomPaint(painter: widget.eventsColumnBackgroundPainter),
+      );
+
+  /// Creates a positioned horizontal rule in the hours column.
+  Widget createCurrentTimeRule() {
+    DateTime now = DateTime.now();
+    return Positioned(
+      top: calculateTopOffset(now.hour, now.minute),
+      left: widget.hoursColumnWidth,
+      right: 0,
+      child: Container(
+        height: 1.5,
+        color: widget.currentTimeRuleColor,
+      ),
+    );
+  }
+
+  /// Creates a positioned horizontal rule in the hours column.
+  Widget createCurrentTimeCircle([double radius = 10]) {
+    DateTime now = DateTime.now();
+    return Positioned(
+      top: calculateTopOffset(now.hour, now.minute) - (radius / 2),
+      left: 0,
+      child: Container(
+        height: radius,
+        width: radius,
+        decoration: BoxDecoration(
+          color: widget.currentTimeCircleColor,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool get shouldScrollToCurrentTime => super.shouldScrollToCurrentTime && Utils.sameDay(widget.date);
+
+  /// Resets the events positioning and background painter arguments.
+  void reset() {
+    eventsDrawProperties.clear();
+    events = List.of(widget.events)..sort();
+    widget.eventsColumnBackgroundPainter.topOffsetCalculator = calculateTopOffset;
+  }
+
   /// Creates the events draw properties and add them to the current list.
   void createEventsDrawProperties() {
     _EventsGrid eventsGrid = _EventsGrid();
-    for (FlutterWeekViewEvent event in List.of(events)) {
+    for (AgendaEventView event in List.of(events)) {
       _EventDrawProperties drawProperties = eventsDrawProperties[event] ?? _EventDrawProperties(widget, event);
       if (!drawProperties.shouldDraw) {
         events.remove(event);
@@ -213,48 +258,6 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
       eventsGrid.processEvents(widget.hoursColumnWidth, eventsColumnWidth);
     }
   }
-
-  /// Creates the background widgets that should be added to a stack.
-  Widget createBackground() => Positioned.fill(
-        child: CustomPaint(painter: widget.eventsColumnBackgroundPainter),
-      );
-
-  /// Creates a positioned horizontal rule in the hours column.
-  Widget createCurrentTimeRule() {
-    DateTime now = DateTime.now();
-    return Positioned(
-      top: calculateTopOffset(now.hour, now.minute),
-      left: widget.hoursColumnWidth,
-      right: 0,
-      child: Container(
-        height: 1,
-        color: widget.currentTimeRuleColor,
-      ),
-    );
-  }
-
-  /// Creates a positioned horizontal rule in the hours column.
-  Widget createCurrentTimeCircle([double radius = 15]) {
-    DateTime now = DateTime.now();
-    return Positioned(
-      top: calculateTopOffset(now.hour, now.minute) - (radius / 2),
-      right: 0,
-      child: Container(
-        height: radius,
-        width: radius,
-        decoration: BoxDecoration(
-          color: widget.currentTimeCircleColor,
-          shape: BoxShape.circle,
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool get shouldScrollToCurrentTime => super.shouldScrollToCurrentTime && Utils.sameDay(widget.date);
-
-  /// Sorts the events.
-  void sortEvents() => events.sort((a, b) => a.start.compareTo(b.start));
 }
 
 /// The events column background painter.
@@ -275,6 +278,8 @@ class EventsColumnBackgroundPainter extends CustomPainter {
     this.rulesColor = const Color(0x1A000000),
   });
 
+  double separationWidth = 2;
+
   @override
   void paint(Canvas canvas, Size size) {
     if (backgroundColor != null) {
@@ -284,7 +289,10 @@ class EventsColumnBackgroundPainter extends CustomPainter {
     if (rulesColor != null) {
       for (int hour = 1; hour < 24; hour++) {
         double topOffset = topOffsetCalculator(hour);
-        canvas.drawLine(Offset(0, topOffset), Offset(size.width, topOffset), Paint()..color = rulesColor);
+        canvas.drawLine(Offset(separationWidth, topOffset), Offset(size.width-separationWidth, topOffset), Paint()
+          ..color = rulesColor.withOpacity(0.05)
+          ..strokeWidth = 1.0
+        );
       }
     }
   }
@@ -299,60 +307,79 @@ class EventsColumnBackgroundPainter extends CustomPainter {
 }
 
 /// An utility class that allows to position events in a grid.
+/// Thanks to https://stackoverflow.com/a/11323909/3608831.
 class _EventsGrid {
-  /// The draw properties to handle.
+  /// Events draw properties added to the grid.
   List<_EventDrawProperties> drawPropertiesList = [];
 
-  /// A map containing all pairs (hour, hour draw properties).
-  HashMap<int, List<_EventDrawProperties>> hourDrawProperties = HashMap();
-
-  /// Columns count.
-  int columnsCount = 1;
-
   /// Adds a flutter week view event draw properties.
-  void add(_EventDrawProperties drawProperties) {
-    drawPropertiesList.add(drawProperties);
-    for (int hour in drawProperties.hours) {
-      List<_EventDrawProperties> events = (hourDrawProperties[hour] ?? [])..add(drawProperties);
-      hourDrawProperties[hour] = events;
-      columnsCount = math.max(columnsCount, events.length);
-    }
-  }
-
-  /// Returns whether there is enough space for the specified draw properties at the specified left offset.
-  bool hasRoom(_EventDrawProperties drawProperties, double left) {
-    for (int hour in drawProperties.hours) {
-      for (_EventDrawProperties drawProperties in hourDrawProperties[hour]) {
-        if (drawProperties.left == left) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /// Calculates the minimum left and width for the specified draw properties.
-  void calculateMinLeftAndWidth(_EventDrawProperties drawProperties, double hoursColumnWidth, double eventsColumnWidth) {
-    double eventWidth = eventsColumnWidth / columnsCount;
-    for (int column = 0; column < columnsCount; column++) {
-      drawProperties.width = eventWidth;
-      double left = hoursColumnWidth + column * eventWidth;
-      if (hasRoom(drawProperties, left)) {
-        drawProperties.left = left;
-        break;
-      }
-    }
-  }
+  void add(_EventDrawProperties drawProperties) => drawPropertiesList.add(drawProperties);
 
   /// Processes all display properties added to the grid.
-  void processEvents(double hoursColumnWidth, double eventsColumnWidth) => drawPropertiesList.forEach((drawProperties) => calculateMinLeftAndWidth(drawProperties, hoursColumnWidth, eventsColumnWidth));
+  void processEvents(double hoursColumnWidth, double eventsColumnWidth) {
+    List<List<_EventDrawProperties>> columns = [];
+    DateTime lastEventEnding;
+    for (_EventDrawProperties drawProperties in drawPropertiesList) {
+      if (lastEventEnding != null && drawProperties.start.isAfter(lastEventEnding)) {
+        packEvents(columns, hoursColumnWidth, eventsColumnWidth);
+        columns.clear();
+        lastEventEnding = null;
+      }
+
+      bool placed = false;
+      for (List<_EventDrawProperties> column in columns) {
+        if (!column.last.collidesWith(drawProperties)) {
+          column.add(drawProperties);
+          placed = true;
+          break;
+        }
+      }
+
+      if (!placed) {
+        columns.add([drawProperties]);
+      }
+
+      if (lastEventEnding == null || drawProperties.end.compareTo(lastEventEnding) > 0) {
+        lastEventEnding = drawProperties.end;
+      }
+    }
+
+    if (columns.isNotEmpty) {
+      packEvents(columns, hoursColumnWidth, eventsColumnWidth);
+    }
+  }
+
+  /// Sets the left and right positions for each event in the connected group.
+  void packEvents(List<List<_EventDrawProperties>> columns, double hoursColumnWidth, double eventsColumnWidth) {
+    for (int columnIndex = 0; columnIndex < columns.length; columnIndex++) {
+      List<_EventDrawProperties> column = columns[columnIndex];
+      for (_EventDrawProperties drawProperties in column) {
+        drawProperties.left = hoursColumnWidth + (columnIndex / columns.length) * eventsColumnWidth;
+        int colSpan = calculateColSpan(columns, drawProperties, columnIndex);
+        drawProperties.width = (eventsColumnWidth * colSpan) / (columns.length);
+      }
+    }
+  }
+
+  /// Checks how many columns the event can expand into, without colliding with other events.
+  int calculateColSpan(List<List<_EventDrawProperties>> columns, _EventDrawProperties drawProperties, int column) {
+    int colSpan = 1;
+    for (int columnIndex = column + 1; columnIndex < columns.length; columnIndex++) {
+      List<_EventDrawProperties> column = columns[columnIndex];
+      for (_EventDrawProperties other in column) {
+        if (drawProperties.collidesWith(other)) {
+          return colSpan;
+        }
+      }
+      colSpan++;
+    }
+
+    return colSpan;
+  }
 }
 
 /// An utility class that allows to display the events in the events column.
 class _EventDrawProperties {
-  /// Hours covered by the event.
-  List<int> hours;
-
   /// The top position.
   double top;
 
@@ -372,7 +399,7 @@ class _EventDrawProperties {
   DateTime end;
 
   /// Creates a new flutter week view event draw properties from the specified day view and the specified day view event.
-  _EventDrawProperties(DayView dayView, FlutterWeekViewEvent event) {
+  _EventDrawProperties(DayView dayView, AgendaEventView event) {
     if (shouldDraw || (!Utils.sameDay(event.start, dayView.date) && !Utils.sameDay(event.end, dayView.date))) {
       return;
     }
@@ -380,27 +407,18 @@ class _EventDrawProperties {
     start = event.start;
     end = event.end;
 
-    DateTime tomorrow = dayView.date.add(const Duration(days: 1));
-
     if (start.isBefore(dayView.date)) {
       start = dayView.date;
     }
 
+    DateTime tomorrow = dayView.date.add(const Duration(days: 1));
     if (end.isAfter(tomorrow)) {
       end = tomorrow;
-    }
-
-    DateTime hour = start.subtract(Duration(minutes: start.minute));
-    DateTime max = end.add(Duration(hours: end.minute == 0 ? 0 : 1)).subtract(Duration(minutes: end.minute));
-    hours = [];
-    while (hour.isBefore(max)) {
-      hours.add(hour.hour);
-      hour = hour.add(const Duration(hours: 1));
     }
   }
 
   /// Whether this event should be drawn.
-  bool get shouldDraw => hours != null && hours.isNotEmpty;
+  bool get shouldDraw => start != null && end != null;
 
   /// Calculates the top and the height of the event rectangle.
   void calculateTopAndHeight(_DayViewState state) {
@@ -408,8 +426,17 @@ class _EventDrawProperties {
     height = state.calculateTopOffset(0, end.difference(start).inMinutes) + 1;
   }
 
+  /// Returns whether this draw properties overlaps another.
+  bool collidesWith(_EventDrawProperties other) {
+    if (!shouldDraw || !other.shouldDraw) {
+      return false;
+    }
+
+    return end.isAfter(other.start) && start.isBefore(other.end);
+  }
+
   /// Creates the event widget.
-  Widget createWidget(BuildContext context, DayView dayView, FlutterWeekViewEvent event) => Positioned(
+  Widget createWidget(BuildContext context, DayView dayView, AgendaEventView event) => Positioned(
         top: top,
         height: height,
         left: left,

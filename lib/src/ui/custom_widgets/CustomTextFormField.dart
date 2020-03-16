@@ -1,39 +1,21 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
-  String label, hint;
+  @required String label, hint;
 
-  IconData icon;
-  TextEditingController controller;
-  CustomTextFormField(this.label, this.hint, this.icon, this.controller);
+  @required IconData icon;
+  @required TextEditingController controller;
 
-  @override
-  _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
-}
+  String type ;
+  TextStyle textstyle;
+  int maxlines;
+  TextInputType keyboard;
+  bool requiredField;
+  int maxLength;
 
-class _CustomTextFormFieldState extends State<CustomTextFormField> {
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: _inputDecoration(
-          widget.label, widget.hint,
-          widget.icon),
-      validator: (val) => _ifNull(val),
-      style: TextStyle(
-          color: Colors.black, fontSize: 18.0,),
-      maxLines: 1,
-      keyboardType: TextInputType.text,
-      controller: widget.controller,
-    );
-  }
+  InputDecoration decoration;
 
-  _ifNull(val) {
-    if (val.isEmpty) {
-      return '*Champs requis';
-    }
-    return null;
-  }
-
+  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
   _inputDecoration(label, hint, icon) => InputDecoration(
     labelText: label,
     fillColor: Colors.white,
@@ -47,6 +29,77 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     hintText:hint,
     hintStyle: _hinttextStyle(),
   );
+  _inputDescDecoration(label, hint) => InputDecoration(
+    labelText: label,
+    fillColor: Colors.white,
+    border: new OutlineInputBorder(
+        borderRadius: new BorderRadius.circular(18.0),
+        borderSide: new BorderSide()),
+    hintText:hint,
+    hintStyle: _hinttextStyle(),
+  );
 
-  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+
+  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.maxLength})
+  {
+    if(this.textstyle != null) this.textstyle = this.textstyle;
+    else this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
+
+    if(this.maxlines != null) this.maxlines = this.maxlines;
+    else this.maxlines = 1;
+
+    if(this.keyboard != null) this.keyboard = this.keyboard;
+    else this.keyboard = TextInputType.text;
+
+    if(this.requiredField != null) this.requiredField = this.requiredField;
+    else this.requiredField = false;
+
+    if(this.maxLength != null) this.maxLength = this.maxLength;
+    else this.maxLength = 1000000000;
+
+    this.decoration = _inputDecoration(label, hint, icon);
+
+    if(this.type == "titre") {
+      this.textstyle = TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold);
+      this.maxlines = 1;
+      this.keyboard = TextInputType.text;
+
+      this.decoration = _inputDecoration(label, hint, icon);
+    }
+    else if(this.type == "desc")
+    {
+      this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
+      this.maxlines = 5;
+      this.keyboard = TextInputType.multiline;
+
+      this.decoration = _inputDescDecoration(label, hint);
+    }
+  }
+
+  @override
+  _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: widget.decoration,
+      validator: (val) => _ifNull(val),
+      style: widget.textstyle,
+      maxLines: widget.maxlines,
+      keyboardType: widget.keyboard,
+      controller: widget.controller,
+    );
+  }
+
+  _ifNull(val) {
+    if (val.isEmpty && widget.requiredField == true) {
+      return '*Champs requis';
+    }
+    else if (val.toString().length > widget.maxLength) {
+      return 'La longueur maximun du champs est de ' + widget.maxLength.toString() + ' charactère(s)';
+    }
+    return null;
+  }
 }

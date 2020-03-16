@@ -1,8 +1,5 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as Path;
 
 class AnnalsList extends StatefulWidget {
   @override
@@ -59,31 +56,15 @@ class AnnalsListState extends State<AnnalsList> {
     });
   }
 
-  Future uploadFile() async {
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('annals/${Path.basename(_image.path)}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
-    print('File Uploaded');
-    storageReference.getDownloadURL().then((fileURL) {
-      setState(() {
-        _uploadedFileURL = fileURL;
-      });
-    });
+  add() {
+    Firestore.instance.collection('Message')
+        .document('message'+DateTime.now().microsecondsSinceEpoch.toString())
+        .setData(
+        { 'type':'msg',
+          'subject':'sub',
+          'description':'description',
+          'to':'user1',
+          'from':'uid',
+        });
   }
-
-  /*Future listFiles() async {
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('annals/${Path.basename(_image.path)}').listAll();
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
-    print('File Uploaded');
-    storageReference.getDownloadURL().then((fileURL) {
-      setState(() {
-        _uploadedFileURL = fileURL;
-      });
-    });
-  }*/
 }

@@ -1,12 +1,8 @@
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_add_member.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:search_widget/search_widget.dart';
 
 class ClubMemberManager extends StatefulWidget {
   final ClubModel thisClub;

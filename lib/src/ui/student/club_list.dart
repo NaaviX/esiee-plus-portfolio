@@ -31,7 +31,6 @@ class ClubListState extends State<ClubList> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-
         appBar: AppBar(
           title: Text("Les clubs"),
         ),

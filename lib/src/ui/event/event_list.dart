@@ -17,7 +17,7 @@ class EventList extends StatefulWidget {
   }
 }
 
-class EventListState extends State<EventList>  with AutomaticKeepAliveClientMixin {
+class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
   @override
   bool get wantKeepAlive => true;
   final bloc = EventsBloc();
@@ -108,9 +108,6 @@ class EventListState extends State<EventList>  with AutomaticKeepAliveClientMixi
   Widget getEventCover(EventModel event, BuildContext context){
     if(event.backgroundUrl == null) {
       event.backgroundUrl = "";
-    }
-    if(event.enable != true) {
-      return Container();
     }
     if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(

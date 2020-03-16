@@ -5,7 +5,6 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:search_widget/search_widget.dart';
 
 class ClubAddMember extends StatefulWidget {
   final ClubModel thisClub;
@@ -54,7 +53,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
                 children: <Widget>[
                   Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: SearchWidget(
+                      child: Column()/*SearchWidget(
                         dataList: snapshot.data,
                         hideSearchBoxWhenItemSelected: false,
                         listContainerHeight: MediaQuery.of(context).size.height / 4,
@@ -70,7 +69,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
                                             ),
                                           );
                                         },
-                                        /*selectedItemBuilder: (StudentModel selectedItem, VoidCallback deleteSelectedItem) {
+                                        selectedItemBuilder: (StudentModel selectedItem, VoidCallback deleteSelectedItem) {
 
                                           return; //SelectedItemWidget(selectedItem, deleteSelectedItem);
                                         },
@@ -81,8 +80,8 @@ class ClubAddMemberState extends State<ClubAddMember> {
                                             controller: controller,
                                             focusNode: focusNode,
                                           );
-                                        },*/
-                      )
+                                        },
+                      )*/
                     //CustomTextFormField("Eleve", "adresse email de l\'élève", Icons.email, email)
                   ),
                   Padding(

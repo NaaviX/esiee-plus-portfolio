@@ -21,6 +21,24 @@ class ClubsBloc {
     _clubFetcher..sink.add(clubModel);
   }
 
+  fetchClubById(int id) async {
+    List<ClubModel> clubModel = await _repository.fetchAllClubs();
+    for(ClubModel c in clubModel) {
+      if(c.idClubRef == id) {
+        _clubFetcher..sink.add(c);
+      }
+    }
+  }
+
+  Future<int> fetchTotalAmount() async {
+    List<ClubModel> clubModel = await _repository.fetchAllClubs();
+    int total = 0;
+    for(ClubModel c in clubModel){
+      total += c.solde;
+    }
+    return total;
+  }
+
   dispose() {
     _clubsFetcher.close();
     _clubFetcher.close();

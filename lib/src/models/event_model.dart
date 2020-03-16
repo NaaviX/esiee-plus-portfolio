@@ -53,6 +53,10 @@ class EventModel {
       }
       e.place = parsedJson["place"];
 
+      e.idClubRef = parsedJson["idClubRef"];
+
+      e.price = parsedJson["price"];
+
       e.backgroundUrl = parsedJson["backgroundUrl"];
       e.enable = parsedJson["enabled"];
       e.price = parsedJson["price"];

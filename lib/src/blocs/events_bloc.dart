@@ -31,7 +31,9 @@ class EventsBloc {
     _eventFetcher.close();
   }
 
-  List<EventModel> sort(List<EventModel> list){
+  List<EventModel> sort(List<EventModel> events){
+    List<EventModel> list = events;
+    list.removeWhere((item) => !item.enable);
     List<EventModel> oldEvents = List.from(list);
     List<EventModel> newEvents = List.from(list);
     List<EventModel> currentEvents = List.from(list);

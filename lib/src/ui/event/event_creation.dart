@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as Path;
 
 class EventCreation extends StatefulWidget {
   @override
@@ -28,6 +34,7 @@ class EventCreationState extends State<EventCreation> {
 }
 
 // Create a Form widget.
+// ignore: camel_case_types
 class createEventForm extends StatefulWidget {
   @override
   createEventFormState createState() {
@@ -63,6 +70,9 @@ class createEventFormState extends State<createEventForm> {
   var startdate = DateTime.now();
   var enddate = DateTime.now();
   var pubdate = DateTime.now();
+
+  File _image;
+  String _uploadedFileURL;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +140,8 @@ class createEventFormState extends State<createEventForm> {
                   _venteInputFiled(),
                   SizedBox(height: 10.0),
                   _fbInputFiled(),
+                  SizedBox(height: 10.0),
+                  _downloadImage(),
                   Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -154,13 +166,13 @@ class createEventFormState extends State<createEventForm> {
                                       startDate: startdate,
                                       endDate: enddate,
                                       place: place.text,
-                                      backgroundUrl: "",
+                                      backgroundUrl: _uploadedFileURL,
                                       description: description.text,
                                       publicationDate: pubdate,
                                       link: link.text,
                                       facebookLink: fblink.text,
                                       idClubRef: 100,
-                                      enable:true,
+                                      enable:false,
                                       price: int.parse(price.text)
                                   )
                               );
@@ -176,6 +188,19 @@ class createEventFormState extends State<createEventForm> {
               )))),
     );
   }
+
+  _downloadImage() => ButtonTheme(
+    minWidth:MediaQuery.of(context).size.width,
+    height: 50.0,
+    child: RaisedButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0)),
+      elevation: 3.0,
+      onPressed: chooseFile,
+      child: Text("Importer la couverture de l'événement", style: TextStyle(color: Colors.black38, fontSize: 15)),
+      color: Colors.grey,
+    )
+  );
 
   _titreInputFiled() => TextFormField(
     decoration: _inputDecoration("Nom de l'événement", "Intitulé de l\'évenement", Icons.calendar_today),
@@ -251,7 +276,7 @@ class createEventFormState extends State<createEventForm> {
       border: new OutlineInputBorder(
           borderRadius: new BorderRadius.circular(18.0),
           borderSide: new BorderSide()),
-      hintText:"BlaBlaBla",
+      hintText:"Description de votre événement",
       hintStyle: _hinttextStyle(),
   );
 
@@ -376,6 +401,29 @@ class createEventFormState extends State<createEventForm> {
         ],
       ),
     );
+  }
+
+  Future chooseFile() async {
+    await FilePicker.getFile(type: FileType.ANY).then((file) {
+      setState(() {
+        _image = file;
+      });
+      uploadFile();
+    });
+  }
+
+  Future uploadFile() async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('couv_event/${Path.basename(_image.path)}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
   }
 
 }

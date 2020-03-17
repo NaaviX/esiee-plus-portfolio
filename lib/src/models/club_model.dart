@@ -49,9 +49,18 @@ class ClubModel {
       e.idClub = parsedJson["idClub"];
       e.name = parsedJson["name"];
       e.mail = parsedJson["mail"];
-      e.price = parsedJson["price"];
+      if(parsedJson["price"] == null) {
+        e.price = 0;
+      } else {
+        e.price = parsedJson["price"];
+      }
       e.contact = parsedJson["contact"];
-      e.solde = parsedJson["solde"];
+      if(parsedJson["solde"] == null) {
+        e.solde = 0;
+      } else {
+        e.solde = parsedJson["solde"];
+      }
+
       e.description = parsedJson["description"];
       e.urlPhoto = parsedJson["url_photo"];
       if(e.urlPhoto == null) {

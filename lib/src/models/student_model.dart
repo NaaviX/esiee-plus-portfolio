@@ -8,7 +8,7 @@ class StudentModel {
 
 
 
-  int id_student;
+  int idStudent;
   String mailEsiee;
   String firstname;
   String lastname;
@@ -26,7 +26,7 @@ class StudentModel {
 
 
   StudentModel({
-    this.id_student,
+    this.idStudent,
     this.mailEsiee,
     this.firstname,
     this.lastname,
@@ -45,7 +45,7 @@ class StudentModel {
     StudentModel e = new StudentModel();
 
     if (parsedJson != null) {
-      e.id_student = parsedJson["id_student"];
+      e.idStudent = parsedJson["idStudent"];
       e.mailEsiee = parsedJson["mailEsiee"];
       e.firstname = parsedJson["firstname"];
       e.lastname = parsedJson["lastname"];

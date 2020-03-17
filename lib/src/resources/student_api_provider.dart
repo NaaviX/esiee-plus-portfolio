@@ -14,8 +14,7 @@ class StudentApiProvider {
     final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/student/students");
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
-      List<dynamic> students = json.decode(response.body);
-      log.fine(students);
+      List<dynamic> students = json.decode(utf8.decode(response.bodyBytes));
       return StudentModel.allStudentsFromJson(students);
     } else {
       // If that call was not successful, throw an error.
@@ -27,13 +26,15 @@ class StudentApiProvider {
     final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/student/student?mail_esiee="+Uri.encodeFull(mailEsiee));
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
-      dynamic students = json.decode(response.body);
+      dynamic students = json.decode(utf8.decode(response.bodyBytes));
       return StudentModel.fromJson(students);
     } else {
       // If that call was not successful, return null;
       return null;
     }
   }
+
+
 
 
 }

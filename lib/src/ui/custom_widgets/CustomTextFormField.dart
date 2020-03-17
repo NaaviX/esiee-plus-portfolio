@@ -4,8 +4,10 @@ class CustomTextFormField extends StatefulWidget {
   String label, hint;
 
   IconData icon;
+  FocusNode focusNode;
   TextEditingController controller;
-  CustomTextFormField(this.label, this.hint, this.icon, this.controller);
+
+  CustomTextFormField(this.label, this.hint, this.icon, this.controller, this.focusNode);
 
   @override
   _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
@@ -15,12 +17,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: _inputDecoration(
-          widget.label, widget.hint,
-          widget.icon),
+      focusNode: widget.focusNode,
+      decoration: _inputDecoration(widget.label, widget.hint, widget.icon),
       validator: (val) => _ifNull(val),
       style: TextStyle(
-          color: Colors.black, fontSize: 18.0,),
+        color: Colors.black,
+        fontSize: 18.0,
+      ),
       maxLines: 1,
       keyboardType: TextInputType.text,
       controller: widget.controller,
@@ -35,18 +38,24 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   _inputDecoration(label, hint, icon) => InputDecoration(
-    labelText: label,
-    fillColor: Colors.white,
-    border: new OutlineInputBorder(
-        borderRadius: new BorderRadius.circular(10.0),
-        borderSide: new BorderSide()),
-    prefixIcon: Padding(
-      padding: EdgeInsets.all(0.0),
-      child: Icon(icon, color: Colors.black54,),
-    ),
-    hintText:hint,
-    hintStyle: _hinttextStyle(),
-  );
+        labelText: label,
+        fillColor: Colors.white,
+        border: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(10.0),
+            borderSide: new BorderSide()),
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(0.0),
+          child: Icon(
+            icon,
+            color: Colors.black54,
+          ),
+        ),
+        hintText: hint,
+        hintStyle: _hinttextStyle(),
+      );
 
-  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+  _hinttextStyle() => TextStyle(
+        color: Colors.black12,
+        fontSize: 15.0,
+      );
 }

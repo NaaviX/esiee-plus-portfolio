@@ -181,7 +181,7 @@ class _Base extends State<Base>  {
                       return _getApp();
                     } else {
                       log.fine("loading");
-                      return Center(child: new CircularProgressIndicator());
+                      return LoginPage();
                     }
                   },
                 );

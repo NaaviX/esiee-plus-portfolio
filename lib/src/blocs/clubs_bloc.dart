@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -38,6 +39,17 @@ class ClubsBloc {
     }
     return total;
   }
+  addStudentToClub(StudentModel student, ClubModel club) async {
+    club.students.add(student);
+    await _repository.updateClub(club);
+  }
+  removeStudentFromClub(StudentModel student, ClubModel club) async {
+    club.students.remove(student);
+    await _repository.updateClub(club);
+  }
+
+
+
 
   dispose() {
     _clubsFetcher.close();

@@ -99,7 +99,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
                           textFieldBuilder: (TextEditingController controller,
                               FocusNode focusNode) {
                             focus = focusNode;
-                            return CustomTextFormField("Ajouter un membre", "Prenom ou nom de l'élève", Icons.search, controller, focusNode);
+                            return CustomTextFormField("Ajouter un membre", "Prenom ou nom de l'élève", Icons.search, controller, focusNode: focusNode);
 
                           },
                         )

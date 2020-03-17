@@ -127,12 +127,14 @@ class ClubAddMemberState extends State<ClubAddMember> {
             onPressed: () {
               if(!item.contributor) {
                 Scaffold.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
                   content: Text("Erreur : cet élève n'est pas cotisant au BDE"),
                   backgroundColor: Colors.red,
                 ));
               } else {
                 clubsBloc.addStudentToClub(item, widget.thisClub);
                 Scaffold.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
                   content: Text("Membre ajouté !"),
                   backgroundColor: Colors.green,
                 ));

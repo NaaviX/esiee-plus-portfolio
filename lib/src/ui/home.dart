@@ -11,6 +11,7 @@ import '../App.dart';
 import 'event/event_list.dart';
 
 class Home extends StatefulWidget {
+
   final StudentModel thisUser;
   final ClubModel thisClub;
   final ProfModel thisProf;
@@ -33,6 +34,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         return App();
       }));
     }
+
     super.initState();
   }
 
@@ -76,7 +78,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new NetworkImage(widget.thisClub.urlPhoto)))),
+                                    image: new NetworkImage(user.photoUrl)))),
                         //Flexible(child: Image.network(user.photoUrl)),
                         Text(widget.thisClub.name,
                             style: TextStyle(

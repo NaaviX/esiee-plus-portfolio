@@ -2,7 +2,7 @@ import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_add_member.dart';
-import 'package:bde_esiee_mobile/src/ui/club/student_detail.dart';
+import 'package:bde_esiee_mobile/src/ui/club/student_info.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -54,7 +54,13 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                           onPressed: () {
                             clubsBloc.removeStudentFromClub(
                                 student, widget.thisClub);
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              duration: Duration(seconds: 1),
+                              content: Text("Membre supprimé"),
+                              backgroundColor: Colors.green,
+                            ));
                             setState(() {});
+                            
                           },
                         ),
                         onTap: () {
@@ -68,7 +74,10 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                         });
                   },
                 )),
-                ClubAddMember(widget.thisClub, this)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 50),
+                  child: ClubAddMember(widget.thisClub, this),
+                )
               ],
             )));
   }

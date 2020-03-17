@@ -3,12 +3,14 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
 import 'event/event_list.dart';
 
 class Home extends StatefulWidget {
+
   final StudentModel thisUser;
   final ClubModel thisClub;
   final ProfModel thisProf;
@@ -31,6 +33,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         return App();
       }));
     }
+
     super.initState();
   }
 
@@ -74,11 +77,12 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new NetworkImage(widget.thisClub.urlPhoto)))),
+                                    image: new NetworkImage(user.photoUrl)))),
                         //Flexible(child: Image.network(user.photoUrl)),
                         Text(widget.thisClub.name,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
+                        RolesDisplay(widget.thisClub.roles),
                       ],
                     ))
                   ])))),
@@ -147,36 +151,11 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
                           Text(widget.thisUser.contributor ? "Cotisant" : "Non cotisant"),
-                          _getRoles()
+                          RolesDisplay(widget.thisUser.roles)
                         ],
                       ),
                     )
                   ])))),
     ]);
-  }
-
-  _getRoles() {
-    List<MaterialColor> colors = [];
-    for(var i = 0; i < widget.thisUser.roles.length; i++) {
-      if(widget.thisUser.roles.elementAt(i).role == 'mod')
-        colors.add(Colors.blue);
-      if(widget.thisUser.roles.elementAt(i).role == 'log')
-        colors.add(Colors.green);
-      if(widget.thisUser.roles.elementAt(i).role == 'admin')
-        colors.add(Colors.red);
-      if(widget.thisUser.roles.elementAt(i).role == 'trez')
-        colors.add(Colors.yellow);
-    }
-
-    return Wrap(
-      spacing: 6.0,
-      runSpacing: 6.0,
-      children: List<Widget>.generate(widget.thisUser.roles.length, (int index) {
-        return Chip(
-          label: Text(widget.thisUser.roles.elementAt(index).role.toUpperCase()),
-          backgroundColor: colors[index].shade50,
-        );
-      }),
-    );
   }
 }

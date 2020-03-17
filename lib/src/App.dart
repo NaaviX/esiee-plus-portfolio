@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
+import 'package:rxdart/rxdart.dart';
 import 'blocs/clubs_bloc.dart';
 import 'models/club_model.dart';
 import 'models/prof_model.dart';
@@ -97,9 +98,9 @@ class _Base extends State<Base>  {
   final clubsBloc = ClubsBloc();
   final profsBloc = ProfsBloc();
 
-  static dynamic thisUser;
-  static dynamic thisClub;
-  static dynamic thisProf;
+  StudentModel thisUser;
+  ClubModel thisClub;
+  ProfModel thisProf;
 
   final log = Logger('BASE');
 
@@ -109,11 +110,7 @@ class _Base extends State<Base>  {
 
 
 
-  static List<Widget> _widgetOptions = <Widget>[
-    Home(thisUser, thisClub, thisProf),
-    Agenda(),
-    EventList(),
-  ];
+  List<Widget> _widgetOptions;
 
   static List<String> _selectedAppbarTitle = [
     'BDE ESIEE Paris',
@@ -127,6 +124,8 @@ class _Base extends State<Base>  {
     studentBloc.fetchStudent(user.email);
     clubsBloc.fetchClub(user.email);
     profsBloc.fetchProf(user.email);
+
+
   }
 
   @override
@@ -136,12 +135,6 @@ class _Base extends State<Base>  {
     profsBloc.dispose();
     super.dispose();
   }
-
-  /*void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }*/
 
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
@@ -179,7 +172,6 @@ class _Base extends State<Base>  {
                 return _getApp();
               } else {
                 //C'est un prof
-                log.fine("prof");
                 return StreamBuilder(
                   stream: profsBloc.thisProf,
                   builder: (context, AsyncSnapshot<ProfModel> snapshot) {
@@ -207,6 +199,11 @@ class _Base extends State<Base>  {
   }
 
   Widget _getApp() {
+    _widgetOptions = <Widget>[
+      Home(thisUser, thisClub, thisProf),
+      Agenda(),
+      EventList(),
+    ];
     return Scaffold(
         appBar:
         AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
@@ -231,7 +228,7 @@ class _Base extends State<Base>  {
             leading: Icon(Icons.settings),
             title: new Text("Paramètres"),
             onTap: () {
-              user = null;
+
               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
                 return Settings();
               }));
@@ -401,7 +398,7 @@ class _Base extends State<Base>  {
           title: Text("Annales"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return AnnalsList();
+              return ;//AnnalsList();
             }));
           },
         ),

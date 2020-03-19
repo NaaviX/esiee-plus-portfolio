@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../custom_widgets/Hyperlink';
 
 class CustomItemWithIcon extends StatefulWidget {
   final IconData icon;
   final String text;
+  bool hyperlink;
 
-  CustomItemWithIcon(this.icon, this.text);
+  CustomItemWithIcon(this.icon, this.text, {this.hyperlink});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,12 +26,17 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
             alignment: WrapAlignment.start,
             children: <Widget>[
               Icon(widget.icon, size: 20.0, color: Colors.blue),
-              Text(widget.text, style: TextStyle(fontSize: 18,),
-                textAlign: TextAlign.justify,),
+              _type(),
             ]),
       );
     }
     return Container();
+  }
+
+  _type() {
+    if(!widget.hyperlink)
+      return Text(widget.text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,);
+    else return Hyperlink(widget.text, widget.text);
   }
 
 }

@@ -3,11 +3,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../custom_widgets/Hyperlink';
 
 class EventInfoPage extends StatefulWidget {
 
@@ -72,6 +72,15 @@ class EventInfoState extends State<EventInfoPage> {
                       child: list(null,widget.event.description),
                     ),
                     getDate(),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 5),
+                      child: Column(
+                          children: <Widget>[
+
+                          ]
+                      ),
+                    ),
+
                     list(Icons.place,widget.event.place),
                     list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
                     list(Icons.payment, widget.event.link),
@@ -104,29 +113,19 @@ class EventInfoState extends State<EventInfoPage> {
     else {
       return list(
           Icons.access_time,
-          'Du ' + formatDate(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate));
+          'Du ' + formatDate(widget.event.startDate) + DateFormat(' - HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(" - HH:mm",'fr_FR').format(widget.event.startDate));
     }
   }
 
   Container list(IconData icon, String text)
   {
+    bool hyperlink = false;
     if(text == "0 €") text = "Gratuit";
+    if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = true;
     if(text != null && text !="") {
       return Container(
         padding: EdgeInsets.fromLTRB(10, 0, 0, 15),
-        child: Wrap(
-            spacing: 10,
-            direction: Axis.horizontal,
-            alignment: WrapAlignment.start,
-            children: <Widget>[
-              if(icon != null) Icon(icon, size: 20.0, color: Colors.blue),
-              if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare)
-                Hyperlink(text,text),
-              if(icon != Icons.payment && icon != FontAwesomeIcons.facebookSquare)
-                Text(text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
-            ]
-        ),
-      );
+        child: CustomItemWithIcon(icon, text, hyperlink : hyperlink,),);
     }
     else {
       return Container(

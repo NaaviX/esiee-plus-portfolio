@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:logging/logging.dart';
 
@@ -59,15 +59,15 @@ class StudentModel {
       e.isModo = false;
       e.isLog = false;
       for(dynamic roleFromJson in parsedJson["roles"]) {
-        RoleModel role = RoleModel.roleFromJson(roleFromJson);
+        RoleModel role = RoleModel.fromJson(roleFromJson);
         e.roles.add(role);
-        if(role.role == "admin") {
+        if(describeEnum(role.role) == "admin") {
           e.isAdmin = true;
-        } else if(role.role == "trez") {
+        } else if(describeEnum(role.role) == "trez") {
           e.isTrez = true;
-        } else if(role.role == "mod") {
+        } else if(describeEnum(role.role) == "mod") {
           e.isModo = true;
-        } else if(role.role == "log") {
+        } else if(describeEnum(role.role) == "log") {
           e.isLog = true;
         }
       }

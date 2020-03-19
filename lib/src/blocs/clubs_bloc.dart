@@ -48,6 +48,10 @@ class ClubsBloc {
     await _repository.updateClub(club);
   }
 
+  updateClub(ClubModel club) async {
+    await _repository.updateClub(club);
+  }
+
 
 
 

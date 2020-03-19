@@ -22,6 +22,10 @@ class StudentsBloc {
     _studentFetcher.sink.add(studentModel);
   }
 
+  updateStudent(StudentModel student) async {
+    await _repository.updateStudent(student);
+  }
+
 
 
   dispose() {

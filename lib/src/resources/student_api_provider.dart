@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
@@ -31,6 +32,48 @@ class StudentApiProvider {
     } else {
       // If that call was not successful, return null;
       return null;
+    }
+  }
+
+  Future<StudentModel> updateStudent(StudentModel student) async {
+    int i = 0;
+    String lRoles = "";
+    for (RoleModel role in student.roles) {
+      if (i != 0) {
+        lRoles += ",";
+      }
+      lRoles += role.idRole.toString();
+      i++;
+    }
+
+    String url = Uri.encodeFull(
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/student/update?id_student=" +
+            student.idStudent.toString() +
+            "&mail_esiee=" +
+            student.mailEsiee.toString() +
+            "&firstname=" +
+            student.firstname.toString() +
+            "&lastname=" +
+            student.lastname.toString() +
+            "&promo=" +
+            student.promo.toString() +
+            "&phone=" +
+            student.phone.toString() +
+            "&is_contributor=" +
+            student.contributor.toString() +
+            "&url_photo=" +
+            student.urlPhoto.toString() +
+            "&classes=" +
+            "&roles=" +
+            lRoles);
+    log.fine(url);
+    final response = await client.post(
+      url,
+    );
+    if (response.statusCode == 200) {
+      return StudentModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      throw Exception('Failed to update data');
     }
   }
 

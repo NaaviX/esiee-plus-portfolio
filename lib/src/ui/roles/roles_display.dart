@@ -1,5 +1,7 @@
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
 
 class RolesDisplay extends StatefulWidget {
   final List<RoleModel> roles;
@@ -17,13 +19,13 @@ class RolesDisplayState extends State<RolesDisplay> {
   Widget build(BuildContext context) {
     List<MaterialColor> colors = [];
     for(RoleModel role in widget.roles) {
-      if(role.role == 'mod')
+      if(role.role == Role.mod)
         colors.add(Colors.blue);
-      if(role.role == 'log')
+      if(role.role == Role.log)
         colors.add(Colors.green);
-      if(role.role == 'admin')
+      if(role.role == Role.admin)
         colors.add(Colors.red);
-      if(role.role == 'trez')
+      if(role.role == Role.trez)
         colors.add(Colors.yellow);
     }
 
@@ -32,7 +34,7 @@ class RolesDisplayState extends State<RolesDisplay> {
       runSpacing: 6.0,
       children: List<Widget>.generate(widget.roles.length, (int index) {
         return Chip(
-          label: Text(widget.roles.elementAt(index).role.toUpperCase()),
+          label: Text(describeEnum(widget.roles.elementAt(index).role).toUpperCase()),
           backgroundColor: colors[index].shade50,
         );
       }),

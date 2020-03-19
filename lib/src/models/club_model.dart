@@ -74,7 +74,7 @@ class ClubModel {
       e.isModo = false;
       e.isLog = false;
       for(dynamic roleFromJson in parsedJson["roles"]) {
-        RoleModel role = RoleModel.roleFromJson(roleFromJson);
+        RoleModel role = RoleModel.fromJson(roleFromJson);
         e.roles.add(role);
         if(role.role == "admin") {
           e.isAdmin = true;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -159,6 +161,7 @@ class _Base extends State<Base> {
     return StreamBuilder(
       stream: studentBloc.thisStudent,
       builder: (context, AsyncSnapshot<StudentModel> snapshot) {
+        print("connection state student ${snapshot.connectionState}");
         if (snapshot.hasData) {
           //isStudent
           log.fine("student");
@@ -169,6 +172,7 @@ class _Base extends State<Base> {
           return StreamBuilder(
             stream: clubsBloc.thisClub,
             builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+              print("connection state club ${snapshot.connectionState}");
               if (snapshot.hasData) {
                 log.fine("club");
                 thisClub = snapshot.data;
@@ -178,15 +182,17 @@ class _Base extends State<Base> {
                 return StreamBuilder(
                   stream: profsBloc.thisProf,
                   builder: (context, AsyncSnapshot<ProfModel> snapshot) {
+                    print("connection state prof ${snapshot.connectionState}");
                     if (snapshot.hasData) {
                       log.fine("prof");
                       thisProf = snapshot.data;
                       return _getApp();
                     } else {
                       log.fine("loading");
-                      return LoginPage();
+                      return Center(child: new CircularProgressIndicator());
                     }
                   },
+
                 );
               }
             },

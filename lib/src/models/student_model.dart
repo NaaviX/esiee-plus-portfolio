@@ -17,10 +17,6 @@ class StudentModel {
   bool contributor;
   String urlPhoto;
   List<RoleModel> roles;
-  bool isAdmin;
-  bool isModo;
-  bool isLog;
-  bool isTrez;
 
 
 
@@ -35,10 +31,6 @@ class StudentModel {
     this.contributor,
     this.urlPhoto,
     this.roles,
-    this.isAdmin,
-    this.isLog,
-    this.isModo,
-    this.isTrez
   });
 
   factory StudentModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -53,24 +45,7 @@ class StudentModel {
       e.phone = parsedJson["phone"];
       e.contributor = parsedJson["contributor"];
       e.urlPhoto = parsedJson["urlPhoto"];
-      e.roles = new List<RoleModel>();
-      e.isAdmin = false;
-      e.isTrez = false;
-      e.isModo = false;
-      e.isLog = false;
-      for(dynamic roleFromJson in parsedJson["roles"]) {
-        RoleModel role = RoleModel.fromJson(roleFromJson);
-        e.roles.add(role);
-        if(describeEnum(role.role) == "admin") {
-          e.isAdmin = true;
-        } else if(describeEnum(role.role) == "trez") {
-          e.isTrez = true;
-        } else if(describeEnum(role.role) == "mod") {
-          e.isModo = true;
-        } else if(describeEnum(role.role) == "log") {
-          e.isLog = true;
-        }
-      }
+      e.roles = RoleModel.allRolesFromJson(parsedJson["roles"]);
     }
 
     return e;

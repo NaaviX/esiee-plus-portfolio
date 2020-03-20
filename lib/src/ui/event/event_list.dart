@@ -58,7 +58,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
               );
             },
             child: Icon(Icons.add),
-            backgroundColor: Colors.blue
+            backgroundColor: Theme.of(context).primaryColor,
         )
     );
   }
@@ -100,7 +100,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
         child: Column(
             children: <Widget>[
               Container(
@@ -128,7 +128,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
         child: Column(
             children: <Widget>[
               Container(

@@ -115,6 +115,9 @@ class ClubPermissionsState extends State<ClubPermissions>
   ListTile _clubTile(ClubModel club) {
     List<RoleModel> currentRoles = List.from(club.roles);
     return new ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(club.urlPhoto),
+      ),
       title: Text(
         club.name
 
@@ -239,7 +242,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                   padding: EdgeInsets.all(10),
                   child: CustomTextFormField(
                       "Rechercher...",
-                      "Prenom ou nom de l'élève",
+                      "Prenom et/ou nom de l'élève",
                       Icons.search,
                       searchController)),
               Expanded(

@@ -77,14 +77,12 @@ class ClubPermissions extends StatefulWidget {
 
 class ClubPermissionsState extends State<ClubPermissions>
     with AutomaticKeepAliveClientMixin {
-
   ClubsBloc clubsBloc = ClubsBloc();
 
   @override
   void initState() {
     clubsBloc.fetchAllClubs();
     super.initState();
-
   }
 
   @override
@@ -99,18 +97,16 @@ class ClubPermissionsState extends State<ClubPermissions>
         stream: clubsBloc.allClubs,
         builder: (context, AsyncSnapshot<List<ClubModel>> clubSnapshot) {
           if (clubSnapshot.hasData) {
-            return  ListView.builder(
-                    itemCount: clubSnapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      ClubModel club = clubSnapshot.data[index];
-                      return _clubTile(club);
-                    });
+            return ListView.builder(
+                itemCount: clubSnapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  ClubModel club = clubSnapshot.data[index];
+                  return _clubTile(club);
+                });
           }
           return Center(child: CircularProgressIndicator());
-        }  );
-
+        });
   }
-
 
   ListTile _clubTile(ClubModel club) {
     List<RoleModel> currentRoles = List.from(club.roles);
@@ -118,14 +114,10 @@ class ClubPermissionsState extends State<ClubPermissions>
       leading: CircleAvatar(
         backgroundImage: NetworkImage(club.urlPhoto),
       ),
-      title: Text(
-        club.name
-
-      ),
+      title: Text(club.name),
       subtitle: Text(
-
-      club.mail,
-    ),
+        club.mail,
+      ),
       onTap: () {
         showDialog<void>(
             context: context,
@@ -135,40 +127,41 @@ class ClubPermissionsState extends State<ClubPermissions>
                 title: Text(club.name),
                 content: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                      return SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              Divider(
-                                color: Colors.black,
-                              ),
-                              RolesDisplay(currentRoles),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 3,
-                                width: MediaQuery.of(context).size.width / 3,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: UserPermissionsState.allRoles.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      RoleModel thisRole = UserPermissionsState.allRoles[index];
-                                      return SwitchListTile(
-                                        title: Text(describeEnum(thisRole.role)),
-                                        value: currentRoles.contains(thisRole),
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            if (value) {
-                                              currentRoles.add(thisRole);
-                                            } else {
-                                              currentRoles.removeWhere(
-                                                      (element) => element == thisRole);
-                                            }
-                                          });
-                                        },
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ));
-                    }),
+                  return SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Divider(
+                        color: Colors.black,
+                      ),
+                      RolesDisplay(currentRoles),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 3,
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: UserPermissionsState.allRoles.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              RoleModel thisRole =
+                                  UserPermissionsState.allRoles[index];
+                              return SwitchListTile(
+                                title: Text(thisRole.toString()),
+                                value: currentRoles.contains(thisRole),
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    if (value) {
+                                      currentRoles.add(thisRole);
+                                    } else {
+                                      currentRoles.removeWhere(
+                                          (element) => element == thisRole);
+                                    }
+                                  });
+                                },
+                              );
+                            }),
+                      ),
+                    ],
+                  ));
+                }),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),
@@ -195,9 +188,8 @@ class ClubPermissionsState extends State<ClubPermissions>
     );
   }
 
-    @override
+  @override
   bool get wantKeepAlive => true;
-
 }
 
 class StudentPermissions extends StatefulWidget {
@@ -215,6 +207,9 @@ class StudentPermissionsState extends State<StudentPermissions>
 
   String filter = "";
 
+  List<String> dropDownRoles;
+  String selectedRole = "Tous";
+
   @override
   void initState() {
     super.initState();
@@ -223,6 +218,11 @@ class StudentPermissionsState extends State<StudentPermissions>
       setState(() {
         filter = searchController.text;
       });
+    });
+    dropDownRoles = new List();
+    dropDownRoles.add("Tous");
+    UserPermissionsState.allRoles.forEach((element) {
+      dropDownRoles.add(element.toString());
     });
   }
 
@@ -240,20 +240,52 @@ class StudentPermissionsState extends State<StudentPermissions>
         builder: (context, AsyncSnapshot<List<StudentModel>> studentSnapshot) {
           if (studentSnapshot.hasData) {
             return Column(children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.all(10),
-                  child: CustomTextFormField(
-                      "Rechercher...",
-                      "Prenom et/ou nom de l'élève",
-                      Icons.search,
-                      searchController)),
+              Container(
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                    Flexible(
+                        child: Container(
+                      margin: EdgeInsets.all(10),
+                  child:
+                        CustomTextFormField(
+                            "Rechercher...",
+                            "Prenom et/ou nom de l'élève",
+                            Icons.search,
+                            searchController))),
+                    Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1.0, color: Colors.black38),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: DropdownButton<String>(
+                          underline: Column(),
+                          value: selectedRole,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              selectedRole = newValue;
+                            });
+                          },
+                          style: TextStyle(color: Colors.black, fontSize: 18.0),
+                          items: dropDownRoles
+                              .map<DropdownMenuItem<String>>((String role) {
+                            return DropdownMenuItem<String>(
+                              value: role,
+                              child: Text(role),
+                            );
+                          }).toList(),
+                        )),
+                  ])),
               Expanded(
                   child: ListView.builder(
                       itemCount: studentSnapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         filter = searchController.text;
                         StudentModel student = studentSnapshot.data[index];
-                        return filter == null || filter == ""
+                        return (filter == null || filter == "") && selectedRole == "Tous"
                             ? _studentTile(student)
                             : (student.firstname
                                         .toLowerCase()
@@ -263,7 +295,8 @@ class StudentPermissionsState extends State<StudentPermissions>
                                         .startsWith(filter.toLowerCase()) ||
                                     (student.firstname + " " + student.lastname)
                                         .toLowerCase()
-                                        .startsWith(filter.toLowerCase()))
+                                        .startsWith(filter.toLowerCase())) &&
+                            (selectedRole != "Tous" && student.roles.contains(UserPermissionsState.allRoles.firstWhere((element) => element.toString() == selectedRole)))
                                 ? _studentTile(student)
                                 : new Container();
                       }))
@@ -307,9 +340,10 @@ class StudentPermissionsState extends State<StudentPermissions>
                             shrinkWrap: true,
                             itemCount: UserPermissionsState.allRoles.length,
                             itemBuilder: (BuildContext context, int index) {
-                              RoleModel thisRole = UserPermissionsState.allRoles[index];
+                              RoleModel thisRole =
+                                  UserPermissionsState.allRoles[index];
                               return SwitchListTile(
-                                title: Text(describeEnum(thisRole.role)),
+                                title: Text(thisRole.toString()),
                                 value: currentRoles.contains(thisRole),
                                 onChanged: (bool value) {
                                   setState(() {

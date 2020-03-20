@@ -7,7 +7,10 @@ class CustomItemWithIcon extends StatefulWidget {
   final String text;
   bool hyperlink;
 
-  CustomItemWithIcon(this.icon, this.text, {this.hyperlink = false});
+  CustomItemWithIcon(this.icon, this.text, {this.hyperlink}){
+    if(this.hyperlink != null) this.hyperlink = this.hyperlink;
+    else this.hyperlink = false;
+  }
 
   @override
   State<StatefulWidget> createState() {

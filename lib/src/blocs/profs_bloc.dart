@@ -14,7 +14,6 @@ class ProfsBloc {
 
   fetchAllProfs() async {
     List<ProfModel> profslist = await _repository.fetchAllProfs();
-    print(profslist);
     _profsFetcher.sink.add(profslist);
   }
 

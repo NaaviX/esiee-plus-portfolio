@@ -38,8 +38,6 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
             },
             child: Column(
               children: <Widget>[
-                ClubAddMember(widget.thisClub, this),
-
                 Expanded(
                     child: ListView.builder(
                   itemCount: widget.thisClub.students.length,
@@ -62,7 +60,6 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                               backgroundColor: Colors.green,
                             ));
                             setState(() {});
-                            
                           },
                         ),
                         onTap: () {
@@ -76,7 +73,10 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                         });
                   },
                 )),
-
+                Padding(
+                  padding: EdgeInsets.only(bottom: 50),
+                  child: ClubAddMember(widget.thisClub, this),
+                )
               ],
             )));
   }

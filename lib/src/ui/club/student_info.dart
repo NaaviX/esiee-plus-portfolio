@@ -25,18 +25,18 @@ class StudentDetailState extends State<StudentDetail> {
       title: Text(widget.student.firstname + " " + widget.student.lastname),
       content: SingleChildScrollView(
           child: ListBody(
-        children: <Widget>[
-          Divider(
-            color: Colors.black,
-          ),
-          CustomItemWithIcon(
-              Icons.contacts, widget.student.idStudent.toString()),
-          CustomItemWithIcon(Icons.email, widget.student.mailEsiee),
-          CustomItemWithIcon(Icons.phone, widget.student.phone),
-          CustomItemWithIcon(Icons.class_, widget.student.promo),
-          RolesDisplay(widget.student.roles),
-        ],
-      )),
+            children: <Widget>[
+              Divider(
+                color: Colors.black,
+              ),
+              CustomItemWithIcon(
+                  Icons.contacts, widget.student.idStudent.toString()),
+              CustomItemWithIcon(Icons.email, widget.student.mailEsiee),
+              CustomItemWithIcon(Icons.phone, widget.student.phone),
+              CustomItemWithIcon(Icons.class_, widget.student.promo),
+              RolesDisplay(widget.student.roles),
+            ],
+          )),
       actions: <Widget>[
         FlatButton(
           textColor: Theme.of(context).primaryColor,

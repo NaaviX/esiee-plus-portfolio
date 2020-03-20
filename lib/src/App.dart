@@ -64,7 +64,13 @@ class AppState extends State<App> {
           supportedLocales: [
             const Locale('en', ''),
             const Locale('fr', ''),
-          ]);
+          ],
+        theme: ThemeData(
+            primaryColor: Colors.green[800],
+            accentColor: Colors.black,
+            accentColorBrightness: Brightness.dark
+        ),
+      );
     } else {
       app = MaterialApp(home: Base(),
           localizationsDelegates: [
@@ -75,7 +81,12 @@ class AppState extends State<App> {
           supportedLocales: [
             const Locale('en', ''),
             const Locale('fr', ''),
-          ]);
+          ],
+        theme: ThemeData(
+            primaryColor: Colors.green[800],
+            accentColor: Colors.black,
+            accentColorBrightness: Brightness.dark
+        ),);
     }
   }
 
@@ -234,7 +245,7 @@ class _Base extends State<Base> {
             title: new Text("Paramètres"),
             onTap: () {
 
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return Settings();
               }));
             },

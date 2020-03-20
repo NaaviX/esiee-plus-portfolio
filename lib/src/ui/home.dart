@@ -3,18 +3,18 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../App.dart';
 import 'event/event_list.dart';
 
 class Home extends StatefulWidget {
-
   final StudentModel thisUser;
   final ClubModel thisClub;
   final ProfModel thisProf;
+
   const Home(this.thisUser, this.thisClub, this.thisProf);
 
   @override
@@ -30,7 +30,8 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     if (user == null) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) {
         return App();
       }));
     }
@@ -45,11 +46,11 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.thisUser != null) {
+    if (widget.thisUser != null) {
       return _homeStudent();
-    } else if(widget.thisClub != null) {
+    } else if (widget.thisClub != null) {
       return _homeClub();
-    } else if(widget.thisProf != null) {
+    } else if (widget.thisProf != null) {
       return _homeProf();
     } else {
       return Center(child: CircularProgressIndicator());
@@ -125,36 +126,121 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _homeStudent() {
-    return Column(children: <Widget>[
+    return SingleChildScrollView(
+        child: Column(children: <Widget>[
       Container(
           margin: EdgeInsets.all(10.0),
-          child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              elevation: 5,
-              child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                              width: 150.0,
-                              height: 150.0,
-                              decoration: new BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: new NetworkImage(user.photoUrl)))),
-                          //Flexible(child: Image.network(user.photoUrl)),
-                          Text(user.displayName,
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text(widget.thisUser.contributor ? "Cotisant" : "Non cotisant"),
-                          RolesDisplay(widget.thisUser.roles)
-                        ],
-                      ),
+          child: Column(children: <Widget>[
+            Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 5,
+                child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            //Avatar
+                            Container(
+                                width: 150.0,
+                                height: 150.0,
+                                decoration: new BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: new DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image:
+                                            new NetworkImage(user.photoUrl)))),
+                            //Nom
+                            Text(user.displayName,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            widget.thisUser.contributor
+                                ? Chip(
+                                    label: RichText(
+                                      text: TextSpan(
+                                          text: "Cotisant",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  )
+                                : Chip(
+                                    label: RichText(
+                                      text: TextSpan(
+                                          text: "Non Cotisant",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                            RolesDisplay(widget.thisUser.roles)
+                          ],
+                        ),
+                      )
+                    ]))),
+            _homeStudentUsefulLinks()
+          ])),
+    ]));
+  }
+
+  Widget _homeStudentUsefulLinks() {
+    return Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12)),
+        elevation: 5,
+        child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Row(children: <Widget>[
+              Expanded(
+                  child:
+                  Column(mainAxisSize: MainAxisSize.min, children: <
+                      Widget>[
+                    Container(
+                        width: 122.0,
+                        height: 60.0,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: NetworkImage(
+                                    "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png")))),
+                    Divider(),
+                    ListTile(
+                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
+                      title: Text("Webaurion"),
+                      leading: Icon(Icons.info),
+                      trailing: Icon(Icons.arrow_forward),
+                      onTap: () async {
+                        await launch("https://webaurion.esiee.fr/");
+                      },
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
+                      title: Text("Blackboard"),
+                      leading: Icon(Icons.info),
+                      trailing: Icon(Icons.arrow_forward),
+                      onTap: () async {
+                        await launch("https://esiee.blackboard.com/");
+                      },
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
+                      title: Text("Intra"),
+                      leading: Icon(Icons.info),
+                      trailing: Icon(Icons.arrow_forward),
+                      onTap: () async {
+                        await launch("https://intra.esiee.fr/");
+                      },
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
+                      title: Text("Icampus"),
+                      leading: Icon(Icons.info),
+                      trailing: Icon(Icons.arrow_forward),
+                      onTap: () async {
+                        await launch("https://icampus.esiee.fr/");
+                      },
                     )
                   ]
                   )

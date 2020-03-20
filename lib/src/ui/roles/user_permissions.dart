@@ -172,6 +172,7 @@ class ClubPermissionsState extends State<ClubPermissions>
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),
+                    textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       club.roles = List.from(currentRoles);
                       clubsBloc.updateClub(club);
@@ -181,6 +182,7 @@ class ClubPermissionsState extends State<ClubPermissions>
                   ),
                   FlatButton(
                     child: Text('Retour'),
+                    textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       currentRoles = List.from(club.roles);
                       Navigator.of(context).pop();
@@ -328,6 +330,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),
+                    textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       student.roles = List.from(currentRoles);
                       studentsBloc.updateStudent(student);
@@ -337,6 +340,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                   ),
                   FlatButton(
                     child: Text('Retour'),
+                    textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       currentRoles = List.from(student.roles);
                       Navigator.of(context).pop();

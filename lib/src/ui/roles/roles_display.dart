@@ -34,7 +34,7 @@ class RolesDisplayState extends State<RolesDisplay> {
       runSpacing: 6.0,
       children: List<Widget>.generate(widget.roles.length, (int index) {
         return Chip(
-          label: Text(describeEnum(widget.roles.elementAt(index).role).toUpperCase()),
+          label: Text(widget.roles.elementAt(index).toString().toUpperCase()),
           backgroundColor: colors[index].shade50,
         );
       }),

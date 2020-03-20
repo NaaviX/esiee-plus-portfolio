@@ -37,5 +37,10 @@ class RoleModel {
     return idRole == other.idRole;
   }
 
+  @override
+  String toString(){
+    return describeEnum(role);
+  }
+
 
 }

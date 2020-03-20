@@ -63,13 +63,13 @@ class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
         end: date.add(const Duration(hours: 17, minutes: 00)),
       ),
       AgendaEventView(
-        title: 'An event 4',
+        title: 'Pré-TOEIC Skills Building',
         description: 'A description 4',
         start: date.add(const Duration(days: 1, hours: 8, minutes: 00)),
         end: date.add(const Duration(days: 1, hours: 12, minutes: 00)),
       ),
       AgendaEventView(
-        title: 'An event 5',
+        title: 'Deep learning 1 ',
         description: 'A description 5',
         start: date.add(const Duration(days: 2, hours: 8, minutes: 00)),
         end: date.add(const Duration(days: 2, hours: 13, minutes: 00)),

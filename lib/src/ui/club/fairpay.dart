@@ -76,7 +76,7 @@ class FairpayState extends State<Fairpay>{
               child: Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text("${widget.thisClub.solde.toString()}  €",
-                    style: TextStyle(color: Colors.blueAccent, fontSize: 30.0, fontWeight: FontWeight.bold)),
+                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 30.0, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

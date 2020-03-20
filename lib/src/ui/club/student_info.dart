@@ -39,6 +39,7 @@ class StudentDetailState extends State<StudentDetail> {
           )),
       actions: <Widget>[
         FlatButton(
+          textColor: Theme.of(context).primaryColor,
           child: Text('Retour'),
           onPressed: () {
             Navigator.of(context).pop();

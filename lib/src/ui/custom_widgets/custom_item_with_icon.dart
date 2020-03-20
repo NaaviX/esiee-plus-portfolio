@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../custom_widgets/Hyperlink';
+import '../custom_widgets/Hyperlink.dart';
 
+// ignore: must_be_immutable
 class CustomItemWithIcon extends StatefulWidget {
   final IconData icon;
   final String text;
@@ -28,7 +29,7 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
             direction: Axis.horizontal,
             alignment: WrapAlignment.start,
             children: <Widget>[
-              Icon(widget.icon, size: 20.0, color: Colors.blue),
+              Icon(widget.icon, size: 20.0, color: Theme.of(context).primaryColor),
               _type(),
             ]),
       );

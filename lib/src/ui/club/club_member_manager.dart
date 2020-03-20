@@ -60,7 +60,6 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                               backgroundColor: Colors.green,
                             ));
                             setState(() {});
-
                           },
                         ),
                         onTap: () {

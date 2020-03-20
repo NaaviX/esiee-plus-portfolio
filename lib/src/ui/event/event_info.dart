@@ -67,9 +67,9 @@ class EventInfoState extends State<EventInfoPage> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(5,0,15,0),
+                      margin: EdgeInsets.fromLTRB(15,0,15,0),
                       padding:  EdgeInsets.fromLTRB(0,0,0,15),
-                      child: list(null,widget.event.description),
+                      child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
                     ),
                     getDate(),
                     Padding(

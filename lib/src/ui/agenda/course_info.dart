@@ -1,9 +1,11 @@
 //When user click on an event on the agenda
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class CourseInfoPage extends StatefulWidget {
 
@@ -63,7 +65,7 @@ class EventInfoState extends State<CourseInfoPage> {
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
           ),
           Container(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: Row(
                   children: <Widget>[
                     Column(
@@ -74,46 +76,61 @@ class EventInfoState extends State<CourseInfoPage> {
                           Text(hour(widget.course.end), style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),)
                         ]),
-                    Container(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(widget.course.title, style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),),
-                            Row(children: <Widget>[
-                              Text("Enseigné par "),
-                              Text(
-                                  "NATOWICZ R.",
-                                  style: TextStyle(fontWeight: FontWeight
-                                      .bold)
-                              )
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              AutoSizeText(
+                                widget.course.title,
+                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                textAlign: TextAlign.left,
+                              ),
+                              Row(
+                                  children: <Widget>[
+                                    Text("Enseigné par "),
+                                    Text(
+                                        "NATOWICZ R.",
+                                        style: TextStyle(fontWeight: FontWeight
+                                            .bold)
+                                    )
+                                  ]
+                              ),
                             ]
-                            )
-                          ]
+                        ),
                       ),
                     ),
                   ]
               )
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+            padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: Divider(
               color: Colors.black,
             ),
           ),
           Container(
-          padding: EdgeInsets.only(left: 15, bottom: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(widget.course.type),
-                CustomItemWithIcon(Icons.place, widget.course.location),
-                CustomItemWithIcon(Icons.timer, widget.course.end.difference(widget.course.start).inHours.toString()+"h"),
-                CustomItemWithIcon(Icons.class_, getUnit()),
-                CustomItemWithIcon(Icons.group, getGroup()),
-              ],
-            )
+              padding: EdgeInsets.only(left: 15, bottom: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Chip(
+                    label: Text(widget.course.type.toUpperCase()),
+                    backgroundColor: Colors.cyan.shade50,
+                  ),
+                  CustomItemWithIcon(Icons.place, widget.course.location),
+                  CustomItemWithIcon(Icons.timer, widget.course.end.difference(widget.course.start).inHours.toString()+"h"),
+                  CustomItemWithIcon(Icons.class_, getUnit()),
+                  CustomItemWithIcon(Icons.group, getGroup()),
+                ],
+              )
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            padding: EdgeInsets.all(10),
+            child: Text(update(), style: TextStyle(fontSize: 10, color: Colors.grey, fontStyle: FontStyle.italic)),
           ),
         ]
     );
@@ -122,11 +139,16 @@ class EventInfoState extends State<CourseInfoPage> {
 
   getGroup() {
     List<String> desc =  widget.course.description.split("\n");
-    String unit = desc.removeLast();
-    return desc.toString();
+    desc.removeLast();
+    String unit = desc.toString();
+    return unit.substring(1, unit.length-1);
   }
 
   getUnit() {
     return widget.course.description.split("\n").last;
+  }
+
+  update() {
+    return "Mis à jour le " + DateFormat("dd MMM à HH:mm", "fr_FR").format(widget.course.updated);
   }
 }

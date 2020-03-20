@@ -232,7 +232,7 @@ class createEventFormState extends State<createEventForm> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(20.0),
                               ),
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               child: Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: Text(

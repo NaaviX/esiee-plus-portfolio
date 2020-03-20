@@ -312,7 +312,7 @@ class createEventFormState extends State<createEventForm> {
   Future uploadFile() async {
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child('couv_event/${start.year}/${titre.text..replaceAll(' ', '_')}');
+        .child('couv_event/${start.year}/${titre.text.replaceAll(' ', '_')}');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');

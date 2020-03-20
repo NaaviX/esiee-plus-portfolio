@@ -1,5 +1,7 @@
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/roles_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -15,12 +17,199 @@ class UserPermissions extends StatefulWidget {
 }
 
 class UserPermissionsState extends State<UserPermissions> {
-  StudentsBloc studentsBloc = StudentsBloc();
   RolesBloc rolesBloc = RolesBloc();
 
-  final searchController = TextEditingController();
+  static List<RoleModel> allRoles;
 
-  List<RoleModel> allRoles;
+  @override
+  void initState() {
+    super.initState();
+    rolesBloc.fetchAllRoles();
+  }
+
+  @override
+  void dispose() {
+    rolesBloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              bottom: TabBar(
+                tabs: [
+                  Tab(
+                    icon: Icon(Icons.person),
+                    text: "Etudiants",
+                  ),
+                  Tab(icon: Icon(Icons.people), text: "Clubs"),
+                ],
+              ),
+              title: Text("Droits des utilisateurs"),
+            ),
+            body: StreamBuilder(
+                stream: rolesBloc.allRoles,
+                builder:
+                    (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
+                  if (roleSnapshot.hasData) {
+                    allRoles = roleSnapshot.data;
+                    return TabBarView(
+                      children: [
+                        StudentPermissions(),
+                        ClubPermissions(),
+                      ],
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
+                })));
+  }
+}
+
+class ClubPermissions extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ClubPermissionsState();
+  }
+}
+
+class ClubPermissionsState extends State<ClubPermissions>
+    with AutomaticKeepAliveClientMixin {
+
+  ClubsBloc clubsBloc = ClubsBloc();
+
+  @override
+  void initState() {
+    clubsBloc.fetchAllClubs();
+    super.initState();
+
+  }
+
+  @override
+  void dispose() {
+    clubsBloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: clubsBloc.allClubs,
+        builder: (context, AsyncSnapshot<List<ClubModel>> clubSnapshot) {
+          if (clubSnapshot.hasData) {
+            return  ListView.builder(
+                    itemCount: clubSnapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      ClubModel club = clubSnapshot.data[index];
+                      return _clubTile(club);
+                    });
+          }
+          return Center(child: CircularProgressIndicator());
+        }  );
+
+  }
+
+
+  ListTile _clubTile(ClubModel club) {
+    List<RoleModel> currentRoles = List.from(club.roles);
+    return new ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(club.urlPhoto),
+      ),
+      title: Text(
+        club.name
+
+      ),
+      subtitle: Text(
+
+      club.mail,
+    ),
+      onTap: () {
+        showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(club.name),
+                content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Divider(
+                                color: Colors.black,
+                              ),
+                              RolesDisplay(currentRoles),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 3,
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: UserPermissionsState.allRoles.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      RoleModel thisRole = UserPermissionsState.allRoles[index];
+                                      return SwitchListTile(
+                                        title: Text(describeEnum(thisRole.role)),
+                                        value: currentRoles.contains(thisRole),
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            if (value) {
+                                              currentRoles.add(thisRole);
+                                            } else {
+                                              currentRoles.removeWhere(
+                                                      (element) => element == thisRole);
+                                            }
+                                          });
+                                        },
+                                      );
+                                    }),
+                              ),
+                            ],
+                          ));
+                    }),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Enregistrer'),
+                    onPressed: () {
+                      club.roles = List.from(currentRoles);
+                      clubsBloc.updateClub(club);
+                      setState(() {});
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Retour'),
+                    onPressed: () {
+                      currentRoles = List.from(club.roles);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+    );
+  }
+
+    @override
+  bool get wantKeepAlive => true;
+
+}
+
+class StudentPermissions extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return StudentPermissionsState();
+  }
+}
+
+class StudentPermissionsState extends State<StudentPermissions>
+    with AutomaticKeepAliveClientMixin {
+  StudentsBloc studentsBloc = StudentsBloc();
+
+  final searchController = TextEditingController();
 
   String filter = "";
 
@@ -28,7 +217,6 @@ class UserPermissionsState extends State<UserPermissions> {
   void initState() {
     super.initState();
     studentsBloc.fetchAllStudents();
-    rolesBloc.fetchAllRoles();
     searchController.addListener(() {
       setState(() {
         filter = searchController.text;
@@ -40,73 +228,47 @@ class UserPermissionsState extends State<UserPermissions> {
   void dispose() {
     studentsBloc.dispose();
     searchController.dispose();
-    rolesBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Droits des utilisateurs"),
-        ),
-        body: StreamBuilder(
-            stream: rolesBloc.allRoles,
-            builder:
-                (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
-              if (roleSnapshot.hasData) {
-                allRoles = roleSnapshot.data;
-                return StreamBuilder(
-                    stream: studentsBloc.allStudents,
-                    builder:
-                        (context,
-                        AsyncSnapshot<List<StudentModel>> studentSnapshot) {
-                      if (studentSnapshot.hasData) {
-
-                        return Column(children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.all(10),
-                              child: CustomTextFormField(
-                                  "Rechercher...",
-                                  "Prenom ou nom de l'élève",
-                                  Icons.search,
-                                  searchController)),
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount: studentSnapshot.data.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    filter = searchController.text;
-                                    StudentModel student =
-                                    studentSnapshot.data[index];
-                                    return filter == null || filter == ""
-                                        ? _studentTile(student)
-                                        : (student.firstname
+    return StreamBuilder(
+        stream: studentsBloc.allStudents,
+        builder: (context, AsyncSnapshot<List<StudentModel>> studentSnapshot) {
+          if (studentSnapshot.hasData) {
+            return Column(children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.all(10),
+                  child: CustomTextFormField(
+                      "Rechercher...",
+                      "Prenom et/ou nom de l'élève",
+                      Icons.search,
+                      searchController)),
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: studentSnapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        filter = searchController.text;
+                        StudentModel student = studentSnapshot.data[index];
+                        return filter == null || filter == ""
+                            ? _studentTile(student)
+                            : (student.firstname
                                         .toLowerCase()
-                                        .startsWith(
-                                        filter.toLowerCase()) ||
-                                        student.lastname
-                                            .toLowerCase()
-                                            .startsWith(
-                                            filter.toLowerCase()) ||
-                                        (student.firstname +
-                                            " " +
-                                            student.lastname)
-                                            .toLowerCase()
-                                            .startsWith(
-                                            filter.toLowerCase()))
-                                        ? _studentTile(student)
-                                        : new Container();
-                                  }))
-                        ]);
-                      } else if (roleSnapshot.hasError) {
-                        return Text(roleSnapshot.error.toString());
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    });
-              }
-              return Center(child: CircularProgressIndicator());
-            }));
+                                        .startsWith(filter.toLowerCase()) ||
+                                    student.lastname
+                                        .toLowerCase()
+                                        .startsWith(filter.toLowerCase()) ||
+                                    (student.firstname + " " + student.lastname)
+                                        .toLowerCase()
+                                        .startsWith(filter.toLowerCase()))
+                                ? _studentTile(student)
+                                : new Container();
+                      }))
+            ]);
+          }
+          return Center(child: CircularProgressIndicator());
+        });
   }
 
   ListTile _studentTile(StudentModel student) {
@@ -129,62 +291,47 @@ class UserPermissionsState extends State<UserPermissions> {
                 title: Text(student.firstname + " " + student.lastname),
                 content: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                      return SingleChildScrollView(
-
-                          child: ListBody(
-
-                            children: <Widget>[
-                              Divider(
-                                color: Colors.black,
-                              ),
-                              RolesDisplay(currentRoles),
-                              SizedBox(
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height / 3,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width / 3,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: allRoles.length,
-                                    itemBuilder: (BuildContext context,
-                                        int index) {
-                                      RoleModel thisRole = allRoles[index];
-                                      return SwitchListTile(
-                                        title: Text(
-                                            describeEnum(thisRole.role)),
-                                        value: currentRoles.contains(thisRole),
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            if (value) {
-                                              currentRoles.add(thisRole);
-                                            } else {
-                                              currentRoles.removeWhere((
-                                                  element) =>
-                                              element == thisRole);
-                                            }
-                                          });
-                                        },
-                                      );
-                                    }),
-                              ),
-
-
-                            ],
-                          ));
-                    }),
+                  return SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Divider(
+                        color: Colors.black,
+                      ),
+                      RolesDisplay(currentRoles),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 3,
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: UserPermissionsState.allRoles.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              RoleModel thisRole = UserPermissionsState.allRoles[index];
+                              return SwitchListTile(
+                                title: Text(describeEnum(thisRole.role)),
+                                value: currentRoles.contains(thisRole),
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    if (value) {
+                                      currentRoles.add(thisRole);
+                                    } else {
+                                      currentRoles.removeWhere(
+                                          (element) => element == thisRole);
+                                    }
+                                  });
+                                },
+                              );
+                            }),
+                      ),
+                    ],
+                  ));
+                }),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),
                     onPressed: () {
                       student.roles = List.from(currentRoles);
                       studentsBloc.updateStudent(student);
-                      setState(() {
-
-                      });
+                      setState(() {});
                       Navigator.of(context).pop();
                     },
                   ),
@@ -201,4 +348,7 @@ class UserPermissionsState extends State<UserPermissions> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

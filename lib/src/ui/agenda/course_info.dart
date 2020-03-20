@@ -33,9 +33,9 @@ class EventInfoState extends State<CourseInfoPage> {
   @override Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
+        title: Text(widget.course.title)
       ),
-        body: Text(widget.course.title)
+        body: Text(widget.course.location)
     );
   }
 }

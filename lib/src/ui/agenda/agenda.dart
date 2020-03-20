@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/agenda/agenda_event_view.dart';
 import 'package:bde_esiee_mobile/src/ui/agenda/week_view.dart';
 import 'package:flutter/material.dart';
@@ -39,40 +40,48 @@ class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
   }
 
   List<AgendaEventView> getCourses(){
-    DateTime now = DateTime.now().subtract(Duration(days: 5));
-    DateTime date = DateTime(now.year, now.month, now.day);
+    DateTime now = DateTime.now();
+    DateTime date = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday-1));
     return [
       AgendaEventView(
-        title: 'An event 1',
-        description: 'A description 1',
-        start: date.add(const Duration(hours: 8, minutes: 00)),
-        end: date.add(const Duration(hours: 10, minutes: 00)),
-        backgroundColor: Colors.blueAccent
+          course: CourseModel(
+              title: 'An event 1',
+              description: 'A description 1',
+              start: date.add(const Duration(hours: 8, minutes: 00)),
+              end: date.add(const Duration(hours: 10, minutes: 00))
+          ),
+          backgroundColor: Colors.blueAccent
       ),
       AgendaEventView(
-        title: 'An event 2',
-        description: 'A description 2',
-        start: date.add(const Duration(hours: 10, minutes: 00)),
-        end: date.add(const Duration(hours: 12, minutes: 00)),
-        backgroundColor: Colors.amber
+          course: CourseModel(
+              title: 'An event 2',
+              description: 'A description 2',
+              start: date.add(const Duration(hours: 10, minutes: 00)),
+              end: date.add(const Duration(hours: 12, minutes: 00))
+          ),
+          backgroundColor: Colors.amber
       ),
       AgendaEventView(
-        title: 'An event 3',
-        description: 'A description 3',
-        start: date.add(const Duration(hours: 13, minutes: 00)),
-        end: date.add(const Duration(hours: 17, minutes: 00)),
+        course: CourseModel(
+            title: 'An event 3',
+            description: 'A description 3',
+            start: date.add(const Duration(hours: 13, minutes: 00)),
+            end: date.add(const Duration(hours: 17, minutes: 00))
+        ),
       ),
       AgendaEventView(
-        title: 'An event 4',
-        description: 'A description 4',
-        start: date.add(const Duration(days: 1, hours: 8, minutes: 00)),
-        end: date.add(const Duration(days: 1, hours: 12, minutes: 00)),
+          course: CourseModel(
+              title: 'An event 4',
+              description: 'A description 4',
+              start: date.add(const Duration(days: 1, hours: 8, minutes: 00)),
+              end: date.add(const Duration(days: 1, hours: 12, minutes: 00)))
       ),
       AgendaEventView(
-        title: 'An event 5',
-        description: 'A description 5',
-        start: date.add(const Duration(days: 2, hours: 8, minutes: 00)),
-        end: date.add(const Duration(days: 2, hours: 13, minutes: 00)),
+          course: CourseModel(
+              title: 'An event 5',
+              description: 'A description 5',
+              start: date.add(const Duration(days: 2, hours: 8, minutes: 00)),
+              end: date.add(const Duration(days: 2, hours: 13, minutes: 00)))
       ),
     ];
   }
@@ -91,22 +100,15 @@ class AgendaState extends State<Agenda> with AutomaticKeepAliveClientMixin {
     ];
   }
 
-  List<DateTime> getDates2(){
-    DateTime now = DateTime.now();
-    DateTime date = DateTime(now.year, now.month, now.day);
-    return [
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 8)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 9)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 10)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 11)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 12)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 13)),
-      date.subtract(Duration(days: date.weekday)).add(Duration(days: 14)),
-    ];
-  }
-
   String changeToLetter(DateTime date){
     return DateFormat('EEEE').format(date);
   }
+
+  AgendaEventView toAgendaEvent(CourseModel course){
+    return AgendaEventView(
+      course: course
+    );
+  }
+
 }
 

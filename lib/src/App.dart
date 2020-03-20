@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/grades/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
@@ -111,7 +112,7 @@ class _Base extends State<Base>  {
 
   static List<Widget> _widgetOptions = <Widget>[
     Home(thisUser, thisClub, thisProf),
-    Agenda(),
+    Calendar(),
     EventList(),
   ];
 

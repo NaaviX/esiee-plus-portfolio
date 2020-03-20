@@ -56,6 +56,7 @@ class ClubListState extends State<ClubList> {
           return ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+              backgroundColor: Colors.white,
             ),
             title: Text(snapshot.data[index].name),
             onTap: () {

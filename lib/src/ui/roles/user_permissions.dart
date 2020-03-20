@@ -256,7 +256,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                             searchController))),
                     Container(
                         margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                        padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1.0, color: Colors.black38),
                           borderRadius: BorderRadius.circular(10.0),
@@ -269,7 +269,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                               selectedRole = newValue;
                             });
                           },
-                          style: TextStyle(color: Colors.black, fontSize: 18.0),
+                          style: TextStyle(color: Colors.black54, fontSize: 15.0),
                           items: dropDownRoles
                               .map<DropdownMenuItem<String>>((String role) {
                             return DropdownMenuItem<String>(

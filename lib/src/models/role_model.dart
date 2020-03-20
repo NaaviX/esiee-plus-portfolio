@@ -39,7 +39,7 @@ class RoleModel {
 
   @override
   String toString(){
-    return describeEnum(role);
+    return describeEnum(role).toUpperCase()[0]+describeEnum(role).substring(1);
   }
 
 

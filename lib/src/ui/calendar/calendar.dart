@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/gradeUnits_list.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -79,50 +76,14 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: FutureBuilder(
-            future: getGradeID(),
-            initialData: "Loading text..",
-            builder: (BuildContext context, AsyncSnapshot<String> gradeID) {
-              return Scaffold(
-                  body: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(gradeID.data != null ? "Numéro de l'unité : ${gradeID.data}" : "Can't find text"),
-                        FutureBuilder(
-                            future: getGradeUnitsID(),
-                            initialData: "Loading text..",
-                            builder: (BuildContext context, AsyncSnapshot<String> gradeUnitsID) {
-                              return Text(gradeUnitsID.data != null ? "Groupes suivies : ${gradeUnitsID.data}" : "Can't find text");
-                            }
-                        )
-                      ]
-                  )
-                    );
-            }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => GradesList()),
-            );
-          },
-          child: Icon(Icons.settings),
-          backgroundColor: Colors.blue,
-        )
-    );
-  }*/
-
   List<AgendaEventView> toAgendaEventList(AsyncSnapshot<List<CourseModel>> courses){
     List<AgendaEventView> agendaEvents = [];
     courses.data.forEach((course) {
       agendaEvents.add(
-        AgendaEventView(
-            course: course,
-          backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0).withOpacity(0.7)
-        )
+          AgendaEventView(
+              course: course,
+              backgroundColor: course.color
+          )
       );
     });
     return agendaEvents;

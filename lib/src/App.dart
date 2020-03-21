@@ -23,6 +23,7 @@ import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/stock.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/user_permissions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -52,47 +53,6 @@ class AppState extends State<App> {
 
   static final primaryColor = Colors.green[800];
 
-  @override
-  void initState() {
-    super.initState();
-    if (user == null) {
-      app = MaterialApp(
-        home: LoginPage(),
-        localizationsDelegates: [
-          const TranslationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en', ''),
-          const Locale('fr', ''),
-        ],
-        theme: ThemeData(
-            primaryColor: primaryColor,
-            accentColor: primaryColor,
-            accentColorBrightness: Brightness.light
-        ),
-      );
-    } else {
-      app = MaterialApp(
-        home: Base(),
-        localizationsDelegates: [
-          const TranslationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en', ''),
-          const Locale('fr', ''),
-        ],
-        theme: ThemeData(
-          primaryColor: primaryColor,
-          accentColor: primaryColor,
-          accentColorBrightness: Brightness.light
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +61,57 @@ class AppState extends State<App> {
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
-
-    return app;
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return new Container(
+            color: Colors.white,
+          );
+        } else {
+          if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
+            user = snapshot.data;
+            //user is logged in
+            return MaterialApp(
+              home: Base(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+              theme: ThemeData(
+                  primaryColor: primaryColor,
+                  accentColor: primaryColor,
+                  accentColorBrightness: Brightness.light
+              ),
+            );
+          } else {
+//user not logged in
+            return MaterialApp(
+              home: LoginPage(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+              theme: ThemeData(
+                  primaryColor: primaryColor,
+                  accentColor: primaryColor,
+                  accentColorBrightness: Brightness.light
+              ),
+            );
+          }
+        }
+      },
+    );
   }
 }
 
@@ -259,14 +268,10 @@ class _Base extends State<Base> {
       ListTile(
         leading: Icon(Icons.power_settings_new),
         title: new Text(Translations.of(context).text("deco")),
-        onTap: () {
+        onTap: () async {
           signOutGoogle();
-          user = null;
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            _selectedIndex = 0;
-            return App();
-          }));
+          _selectedIndex = 0;
+
         },
       ),
       _adminMenu(),

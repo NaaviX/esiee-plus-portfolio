@@ -26,6 +26,12 @@ class StudentsBloc {
     await _repository.updateStudent(student);
   }
 
+  fetchAllStudentClubs(StudentModel student) async {
+    List<ClubModel> studentClubs=await _repository.fetchAllClubs();
+    studentClubs.removeWhere((element) => !element.students.contains(student));
+    return studentClubs;
+  }
+
 
 
   dispose() {

@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
@@ -11,11 +12,6 @@ import '../App.dart';
 import 'event/event_list.dart';
 
 class Home extends StatefulWidget {
-  final StudentModel thisUser;
-  final ClubModel thisClub;
-  final ProfModel thisProf;
-
-  const Home(this.thisUser, this.thisClub, this.thisProf);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,8 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+  final bloc = ClubsBloc();
 
   @override
   void initState() {
@@ -35,22 +30,26 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         return App();
       }));
     }
-
     super.initState();
+    bloc.fetchAllClubs();
   }
 
   @override
   void dispose() {
+    bloc.dispose();
     super.dispose();
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    if (widget.thisUser != null) {
+    if (Base.thisUser != null) {
       return _homeStudent();
-    } else if (widget.thisClub != null) {
+    } else if (Base.thisClub != null) {
       return _homeClub();
-    } else if (widget.thisProf != null) {
+    } else if (Base.thisProf != null) {
       return _homeProf();
     } else {
       return Center(child: CircularProgressIndicator());
@@ -81,10 +80,10 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(user.photoUrl)))),
                         //Flexible(child: Image.network(user.photoUrl)),
-                        Text(widget.thisClub.name,
+                        Text(Base.thisClub.name,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
-                        RolesDisplay(widget.thisClub.roles),
+                        RolesDisplay(Base.thisClub.roles),
                       ],
                     ))
                   ])))),
@@ -156,7 +155,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                             Text(user.displayName,
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
-                            widget.thisUser.contributor
+                            Base.thisUser.contributor
                                 ? Chip(
                                     label: RichText(
                                       text: TextSpan(
@@ -175,7 +174,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                     ),
                                     backgroundColor: Colors.red,
                                   ),
-                            RolesDisplay(widget.thisUser.roles)
+                            RolesDisplay(Base.thisUser.roles)
                           ],
                         ),
                       )

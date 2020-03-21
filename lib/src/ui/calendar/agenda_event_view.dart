@@ -62,9 +62,9 @@ class AgendaEventView extends Comparable<AgendaEventView> {
             builder: (BuildContext context) {
               return CourseInfoPage(
                   course: new CourseModel(
-                      title: this.title,
-                      start: this.start,
-                      end: this.end,
+                      title: this.course.title,
+                      start: this.course.start,
+                      end: this.course.end,
                       type: "TD",
                       location: "5301V, 5308, 5309V",
                       description: "2I\n1I\n4I-RV1",

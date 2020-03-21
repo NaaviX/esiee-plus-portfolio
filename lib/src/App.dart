@@ -108,7 +108,10 @@ class AppState extends State<App> {
 
 class Base extends StatefulWidget {
   Base({Key key}) : super(key: key);
-
+  static List<RoleModel> allRoles;
+  static StudentModel thisUser;
+  static ClubModel thisClub;
+  static ProfModel thisProf;
   @override
   _Base createState() => _Base();
 }
@@ -118,11 +121,6 @@ class _Base extends State<Base> {
   final clubsBloc = ClubsBloc();
   final profsBloc = ProfsBloc();
   RolesBloc rolesBloc = RolesBloc();
-
-  static List<RoleModel> allRoles;
-  StudentModel thisUser;
-  ClubModel thisClub;
-  ProfModel thisProf;
 
   final log = Logger('BASE');
 
@@ -176,7 +174,7 @@ class _Base extends State<Base> {
     return StreamBuilder(
         stream: rolesBloc.allRoles,
         builder: (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
-          allRoles = roleSnapshot.data;
+          Base.allRoles = roleSnapshot.data;
           return StreamBuilder(
             stream: studentBloc.thisStudent,
             builder: (context, AsyncSnapshot<StudentModel> snapshot) {
@@ -184,7 +182,7 @@ class _Base extends State<Base> {
               if (snapshot.hasData) {
                 //isStudent
                 log.fine("student");
-                thisUser = snapshot.data;
+                Base.thisUser = snapshot.data;
                 return _getApp();
               } else {
                 //isClub
@@ -194,7 +192,7 @@ class _Base extends State<Base> {
                     print("connection state club ${snapshot.connectionState}");
                     if (snapshot.hasData) {
                       log.fine("club");
-                      thisClub = snapshot.data;
+                      Base.thisClub = snapshot.data;
                       return _getApp();
                     } else {
                       //C'est un prof
@@ -205,7 +203,7 @@ class _Base extends State<Base> {
                               "connection state prof ${snapshot.connectionState}");
                           if (snapshot.hasData) {
                             log.fine("prof");
-                            thisProf = snapshot.data;
+                            Base.thisProf = snapshot.data;
                             return _getApp();
                           } else {
                             log.fine("loading");
@@ -225,7 +223,7 @@ class _Base extends State<Base> {
 
   Widget _getApp() {
     _widgetOptions = <Widget>[
-      Home(thisUser, thisClub, thisProf),
+      Home(),
       Agenda(),
       EventList(),
     ];
@@ -282,7 +280,7 @@ class _Base extends State<Base> {
   }
 
   Widget _profMenu() {
-    if (thisProf != null) {
+    if (Base.thisProf != null) {
       return Column(children: [
         Divider(),
         RichText(
@@ -327,12 +325,12 @@ class _Base extends State<Base> {
   }
 
   Widget _clubMenu() {
-    if (thisClub != null) {
+    if (Base.thisClub != null) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
-              text: thisClub.name,
+              text: Base.thisClub.name,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -344,7 +342,7 @@ class _Base extends State<Base> {
           title: Text("Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Fairpay(thisClub);
+              return Fairpay();
             }));
           },
         ),
@@ -353,7 +351,7 @@ class _Base extends State<Base> {
           title: Text("Gestion des membres"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ClubMemberManager(thisClub);
+              return ClubMemberManager();
             }));
           },
         ),
@@ -372,12 +370,12 @@ class _Base extends State<Base> {
   }
 
   Widget _studentMenu() {
-    if (thisUser != null) {
+    if (Base.thisUser != null) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
-              text: thisUser.firstname,
+              text: Base.thisUser.firstname,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -444,12 +442,12 @@ class _Base extends State<Base> {
   }
 
   Widget _adminMenu() {
-    if (thisUser != null &&
-            thisUser.roles.contains(
-                allRoles.firstWhere((element) => element.role == Role.admin)) ||
-        thisClub != null &&
-            thisClub.roles.contains(
-                allRoles.firstWhere((element) => element.role == Role.admin))) {
+    if (Base.thisUser != null &&
+          Base.thisUser.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.admin))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -494,12 +492,12 @@ class _Base extends State<Base> {
   }
 
   Widget _modoMenu() {
-      if (thisUser != null &&
-          thisUser.roles.contains(
-              allRoles.firstWhere((element) => element.role == Role.mod)) ||
-          thisClub != null &&
-              thisClub.roles.contains(
-                  allRoles.firstWhere((element) => element.role == Role.mod))) {
+      if (Base.thisUser != null &&
+          Base.thisUser.roles.contains(
+              Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
+          Base.thisClub != null &&
+              Base.thisClub.roles.contains(
+                  Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -526,12 +524,12 @@ class _Base extends State<Base> {
   }
 
   Widget _trezMenu() {
-    if (thisUser != null &&
-        thisUser.roles.contains(
-            allRoles.firstWhere((element) => element.role == Role.trez)) ||
-        thisClub != null &&
-            thisClub.roles.contains(
-                allRoles.firstWhere((element) => element.role == Role.trez))) {
+    if (Base.thisUser != null &&
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.trez)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -567,12 +565,12 @@ class _Base extends State<Base> {
   }
 
   Widget _logMenu() {
-    if (thisUser != null &&
-        thisUser.roles.contains(
-            allRoles.firstWhere((element) => element.role == Role.log)) ||
-        thisClub != null &&
-            thisClub.roles.contains(
-                allRoles.firstWhere((element) => element.role == Role.log))) {
+    if (Base.thisUser != null &&
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.log)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.log))) {
       return Column(children: [
         Divider(),
         RichText(

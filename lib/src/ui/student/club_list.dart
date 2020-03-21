@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import '../../App.dart';
 import '../../blocs/clubs_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -58,6 +59,7 @@ class ClubListState extends State<ClubList> {
               backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
             ),
             title: Text(snapshot.data[index].name),
+            trailing: snapshot.data[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),
             onTap: () {
               Navigator.push(
                 context,

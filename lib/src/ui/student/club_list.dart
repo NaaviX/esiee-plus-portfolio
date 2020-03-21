@@ -57,6 +57,7 @@ class ClubListState extends State<ClubList> {
           return ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+              backgroundColor: Colors.white,
             ),
             title: Text(snapshot.data[index].name),
             trailing: snapshot.data[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),

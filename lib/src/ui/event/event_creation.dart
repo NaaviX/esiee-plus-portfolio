@@ -301,7 +301,7 @@ class createEventFormState extends State<createEventForm> {
   Future chooseFile() async {
     _image = null;
     _uploadedFileURL = null;
-    await FilePicker.getFile(type: FileType.IMAGE).then((file) {
+    await FilePicker.getFile(type: FileType.image).then((file) {
       setState(() {
         _image = file;
       });

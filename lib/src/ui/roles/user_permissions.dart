@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/roles_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
@@ -17,21 +18,6 @@ class UserPermissions extends StatefulWidget {
 }
 
 class UserPermissionsState extends State<UserPermissions> {
-  RolesBloc rolesBloc = RolesBloc();
-
-  static List<RoleModel> allRoles;
-
-  @override
-  void initState() {
-    super.initState();
-    rolesBloc.fetchAllRoles();
-  }
-
-  @override
-  void dispose() {
-    rolesBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,21 +36,13 @@ class UserPermissionsState extends State<UserPermissions> {
               ),
               title: Text("Droits des utilisateurs"),
             ),
-            body: StreamBuilder(
-                stream: rolesBloc.allRoles,
-                builder:
-                    (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
-                  if (roleSnapshot.hasData) {
-                    allRoles = roleSnapshot.data;
-                    return TabBarView(
+            body: TabBarView(
                       children: [
                         StudentPermissions(),
                         ClubPermissions(),
                       ],
-                    );
-                  }
-                  return Center(child: CircularProgressIndicator());
-                })));
+                    )
+                ));
   }
 }
 
@@ -113,6 +91,7 @@ class ClubPermissionsState extends State<ClubPermissions>
     return new ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(club.urlPhoto),
+        backgroundColor: Colors.white,
       ),
       title: Text(club.name),
       subtitle: Text(
@@ -139,10 +118,10 @@ class ClubPermissionsState extends State<ClubPermissions>
                         width: MediaQuery.of(context).size.width / 3,
                         child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: UserPermissionsState.allRoles.length,
+                            itemCount: Base.allRoles.length,
                             itemBuilder: (BuildContext context, int index) {
                               RoleModel thisRole =
-                                  UserPermissionsState.allRoles[index];
+                              Base.allRoles[index];
                               return SwitchListTile(
                                 title: Text(thisRole.toString()),
                                 value: currentRoles.contains(thisRole),
@@ -221,7 +200,7 @@ class StudentPermissionsState extends State<StudentPermissions>
     });
     dropDownRoles = new List();
     dropDownRoles.add("Tous");
-    UserPermissionsState.allRoles.forEach((element) {
+    Base.allRoles.forEach((element) {
       dropDownRoles.add(element.toString());
     });
   }
@@ -296,7 +275,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                                     (student.firstname + " " + student.lastname)
                                         .toLowerCase()
                                         .startsWith(filter.toLowerCase())) &&
-                            (selectedRole != "Tous" && student.roles.contains(UserPermissionsState.allRoles.firstWhere((element) => element.toString() == selectedRole)))
+                            (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)))
                                 ? _studentTile(student)
                                 : new Container();
                       }))
@@ -338,10 +317,10 @@ class StudentPermissionsState extends State<StudentPermissions>
                         width: MediaQuery.of(context).size.width / 3,
                         child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: UserPermissionsState.allRoles.length,
+                            itemCount: Base.allRoles.length,
                             itemBuilder: (BuildContext context, int index) {
                               RoleModel thisRole =
-                                  UserPermissionsState.allRoles[index];
+                              Base.allRoles[index];
                               return SwitchListTile(
                                 title: Text(thisRole.toString()),
                                 value: currentRoles.contains(thisRole),

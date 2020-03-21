@@ -5,6 +5,7 @@ class CustomTextFormField extends StatefulWidget {
 
   @required IconData icon;
   @required TextEditingController controller;
+  FocusNode focusNode;
 
   String type ;
   TextStyle textstyle;
@@ -16,6 +17,7 @@ class CustomTextFormField extends StatefulWidget {
   InputDecoration decoration;
 
   _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+
   _inputDecoration(label, hint, icon) => InputDecoration(
     labelText: label,
     fillColor: Colors.white,
@@ -29,6 +31,7 @@ class CustomTextFormField extends StatefulWidget {
     hintText:hint,
     hintStyle: _hinttextStyle(),
   );
+
   _inputDescDecoration(label, hint) => InputDecoration(
     labelText: label,
     fillColor: Colors.white,
@@ -40,7 +43,7 @@ class CustomTextFormField extends StatefulWidget {
   );
 
 
-  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.maxLength})
+  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.maxLength, this.focusNode})
   {
     if(this.textstyle != null) this.textstyle = this.textstyle;
     else this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
@@ -90,6 +93,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       maxLines: widget.maxlines,
       keyboardType: widget.keyboard,
       controller: widget.controller,
+      focusNode: widget.focusNode,
     );
   }
 

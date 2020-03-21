@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:logging/logging.dart';
 
+import 'club_model.dart';
+
 class StudentModel {
   final log = Logger('StudentModel');
 
@@ -17,6 +19,7 @@ class StudentModel {
   bool contributor;
   String urlPhoto;
   List<RoleModel> roles;
+  List<ClubModel> clubs;
 
 
 
@@ -31,6 +34,7 @@ class StudentModel {
     this.contributor,
     this.urlPhoto,
     this.roles,
+    this.clubs
   });
 
   factory StudentModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -46,6 +50,7 @@ class StudentModel {
       e.contributor = parsedJson["contributor"];
       e.urlPhoto = parsedJson["urlPhoto"];
       e.roles = RoleModel.allRolesFromJson(parsedJson["roles"]);
+      e.clubs = new List();
     }
 
     return e;
@@ -56,6 +61,9 @@ class StudentModel {
         jsonData.map((x) => StudentModel.fromJson(x)));
   }
 
-
+  @override
+  bool operator ==(other) {
+    return idStudent == other.idStudent;
+  }
 
 }

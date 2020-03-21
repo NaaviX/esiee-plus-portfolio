@@ -1,10 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class CourseModel {
   final log = Logger('clubModel');
-
-
 
   String title;
   DateTime start;
@@ -37,7 +37,7 @@ class CourseModel {
       e.teachers = parsedJson["teachers"].toString();
       e.description = parsedJson["description"];
       e.updated = DateTime.fromMillisecondsSinceEpoch(parsedJson["exportedAt"]);
-      e.type = "TD";
+      e.type = parsedJson["tags"][0]["name"];
     }
     return e;
   }
@@ -53,6 +53,21 @@ class CourseModel {
     sortCourses(jsonData);
     return new List<CourseModel>.from(
         jsonData.map((x) => CourseModel.fromJson(x)));
+  }
+
+  Color get color {
+    switch (this.type) {
+      case "TD":
+        return Colors.blueAccent.withOpacity(0.9);
+      case "TP":
+        return Colors.lightBlue.withOpacity(0.9);
+      case "CM":
+        return Colors.green.withOpacity(0.9);
+      case "Projet":
+        return Colors.amber.withOpacity(0.9);
+      default:
+        return Colors.grey.withOpacity(0.9);
+    }
   }
 
 }

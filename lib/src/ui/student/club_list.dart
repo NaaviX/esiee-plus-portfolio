@@ -53,19 +53,22 @@ class ClubListState extends State<ClubList> {
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
-              backgroundColor: Colors.white,
-            ),
-            title: Text(snapshot.data[index].name),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data[index])),
-              );
-            },
-          );
+          if(snapshot.data[index].idClubRef <= 100) {
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+                backgroundColor: Colors.white,
+              ),
+              title: Text(snapshot.data[index].name),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data[index])),
+                );
+              },
+            );
+          }
+          else return null;
         });
   }
 

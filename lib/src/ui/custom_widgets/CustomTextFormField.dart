@@ -17,6 +17,7 @@ class CustomTextFormField extends StatefulWidget {
   InputDecoration decoration;
 
   _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+
   _inputDecoration(label, hint, icon) => InputDecoration(
     labelText: label,
     fillColor: Colors.white,
@@ -30,6 +31,7 @@ class CustomTextFormField extends StatefulWidget {
     hintText:hint,
     hintStyle: _hinttextStyle(),
   );
+
   _inputDescDecoration(label, hint) => InputDecoration(
     labelText: label,
     fillColor: Colors.white,

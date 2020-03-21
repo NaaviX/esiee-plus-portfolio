@@ -5,7 +5,6 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class CourseInfoPage extends StatefulWidget {
 

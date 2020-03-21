@@ -65,7 +65,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
                       title: this.course.title,
                       start: this.course.start,
                       end: this.course.end,
-                      type: "TD",
+                      type: this.course.type,
                       location: "5301V, 5308, 5309V",
                       description: "2I\n1I\n4I-RV1",
                       updated: DateTime.now()

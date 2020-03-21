@@ -12,7 +12,7 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/Calendar/courses_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
 import 'Calendar/gradesUnit_api_provider.dart';
-import 'file:///C:/Users/habdellaoui/Documents/Flutter/bde_esiee_mobile/lib/src/resources/Calendar/grades_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/Calendar/grades_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';

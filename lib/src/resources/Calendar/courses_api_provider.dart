@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
-import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
@@ -10,11 +9,10 @@ class CoursesApiProvider {
   Client client = Client();
 
   Future<List<CourseModel>> fetchCoursesList(String ids) async {
-    List<String> ids2 = ["299","303"];
-    List<String> ids3 = ids.split("-");
+    List<String> units_ids = ids.split("-");
     final response = await client.post(
       "https://api.timecalendar.app/calendar",
-      body: json.encode({'ids': ids3}),
+      body: json.encode({'ids': units_ids}),
       headers: {"Content-Type": "application/json"}
     );
     if (response.statusCode == 200) {

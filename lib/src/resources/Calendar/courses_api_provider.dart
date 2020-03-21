@@ -9,11 +9,12 @@ class CoursesApiProvider {
   final log = Logger('TimeCalendar_API_grades');
   Client client = Client();
 
-  Future<List<CourseModel>> fetchCoursesList() async {
-    List<String> ids = ["299","303"];
+  Future<List<CourseModel>> fetchCoursesList(String ids) async {
+    List<String> ids2 = ["299","303"];
+    List<String> ids3 = ids.split("-");
     final response = await client.post(
       "https://api.timecalendar.app/calendar",
-      body: json.encode({'ids':ids}),
+      body: json.encode({'ids': ids3}),
       headers: {"Content-Type": "application/json"}
     );
     if (response.statusCode == 200) {

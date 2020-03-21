@@ -2,16 +2,21 @@ import 'dart:math';
 
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/agenda_event_view.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/week_view.dart';
-import 'package:bde_esiee_mobile/src/ui/grades/utils.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/gradeUnits_list.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-import 'grade_list.dart';
+import 'grades/grade_list.dart';
 
 class Calendar extends StatefulWidget {
+  final String ids;
+  Calendar({@required this.ids});
+
+
+
   @override
   State<StatefulWidget> createState() {
     return CalendarState();
@@ -19,13 +24,14 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarState extends State<Calendar> {
+
   final log = Logger('Calendar');
   final bloc = CourseBloc();
 
   @override
   void initState() {
     super.initState();
-    bloc.fetchAllCourses();
+    bloc.fetchAllCourses(widget.ids);
   }
 
   @override
@@ -35,22 +41,31 @@ class CalendarState extends State<Calendar> {
   }
 
    @override
-  Widget build(BuildContext context){
-    return StreamBuilder(
-          stream: bloc.allCourses,
-          builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
-            if (snapshot.hasData) {
-              return
-                  Expanded(
-                    child: buildAgenda(snapshot),
-              );
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          }
-    );
-  }
+   Widget build(BuildContext context){
+     return Scaffold(
+         body: StreamBuilder(
+             stream: bloc.allCourses,
+             builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
+               if (snapshot.hasData) {
+                 return buildAgenda(snapshot);
+               } else if (snapshot.hasError) {
+                 return Text(snapshot.error.toString());
+               }
+               return Center(child: CircularProgressIndicator());
+             }
+         ),
+         floatingActionButton: FloatingActionButton(
+           onPressed: () {
+             Navigator.push(
+               context,
+               MaterialPageRoute(builder: (context) => GradesList()),
+             );
+           },
+           child: Icon(Icons.settings),
+           backgroundColor: Colors.blue,
+         )
+     );
+   }
 
   Widget buildAgenda(AsyncSnapshot<List<CourseModel>> snapshot) {
     return WeekView(
@@ -101,14 +116,12 @@ class CalendarState extends State<Calendar> {
   }*/
 
   List<AgendaEventView> toAgendaEventList(AsyncSnapshot<List<CourseModel>> courses){
-    DateTime now = DateTime.now();
-    DateTime date = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday-1));
     List<AgendaEventView> agendaEvents = [];
     courses.data.forEach((course) {
       agendaEvents.add(
         AgendaEventView(
             course: course,
-          backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0).withOpacity(1.0)
+          backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0).withOpacity(0.7)
         )
       );
     });

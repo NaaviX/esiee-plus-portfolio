@@ -1,7 +1,11 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/ui/grades/calendar.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
@@ -16,7 +20,6 @@ import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/club/fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
@@ -27,7 +30,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
-import 'models/club_model.dart';
 import 'models/prof_model.dart';
 import 'ui/event/event_list.dart';
 import 'ui/home.dart';
@@ -93,7 +95,7 @@ class Base extends StatefulWidget {
   _Base createState() => _Base();
 }
 
-class _Base extends State<Base>  {
+class _Base extends State<Base> {
   final studentBloc = StudentsBloc();
   final clubsBloc = ClubsBloc();
   final profsBloc = ProfsBloc();
@@ -109,10 +111,9 @@ class _Base extends State<Base>  {
   PageController pageController = PageController();
 
 
-
   static List<Widget> _widgetOptions = <Widget>[
     Home(thisUser, thisClub, thisProf),
-    Calendar(),
+    CalendarController(),
     EventList(),
   ];
 
@@ -197,14 +198,10 @@ class _Base extends State<Base>  {
               }
             },
           );
-
         }
-
-
       },
 
     );
-
   }
 
   Widget _getApp() {
@@ -215,7 +212,7 @@ class _Base extends State<Base>  {
           controller: pageController,
           onPageChanged: _onPageChanged,
           children: _widgetOptions,
-        ),//_widgetOptions.elementAt(_selectedIndex),
+        ), //_widgetOptions.elementAt(_selectedIndex),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: _getDrawer());
   }
@@ -224,7 +221,7 @@ class _Base extends State<Base>  {
     return Drawer(
         child: ListView(children: <Widget>[
           ListTile(
-            leading: CircleAvatar(backgroundImage:  NetworkImage(user.photoUrl)),
+            leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
             title: Text(user.displayName),
             subtitle: Text(user.email),
           ),
@@ -233,9 +230,10 @@ class _Base extends State<Base>  {
             title: new Text("Paramètres"),
             onTap: () {
               user = null;
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-                return Settings();
-              }));
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) {
+                    return Settings();
+                  }));
             },
           ),
           ListTile(
@@ -244,10 +242,11 @@ class _Base extends State<Base>  {
             onTap: () {
               signOutGoogle();
               user = null;
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-                _selectedIndex = 0;
-                return App();
-              }));
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) {
+                    _selectedIndex = 0;
+                    return App();
+                  }));
             },
           ),
 
@@ -263,7 +262,7 @@ class _Base extends State<Base>  {
   }
 
   Widget _profMenu() {
-    if(thisProf!=null) {
+    if (thisProf != null) {
       return Column(children: [
         Divider(),
         RichText(
@@ -307,13 +306,14 @@ class _Base extends State<Base>  {
   }
 
   Widget _clubMenu() {
-    if(thisClub!=null) {
-      return Column(children : [
+    if (thisClub != null) {
+      return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: thisClub.name,
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
 
@@ -330,7 +330,6 @@ class _Base extends State<Base>  {
           leading: Icon(Icons.group_add),
           title: Text("Gestion des membres"),
           onTap: () {
-
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return ClubMemberManager(thisClub);
             }));
@@ -345,19 +344,21 @@ class _Base extends State<Base>  {
               return Messenger();
             }));
           },
-        ),]);
+        ),
+      ]);
     }
     return Column();
   }
 
   Widget _studentMenu() {
-    if(thisUser!=null) {
-      return Column(children : [
+    if (thisUser != null) {
+      return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: thisUser.firstname,
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
         ListTile(
@@ -415,21 +416,23 @@ class _Base extends State<Base>  {
               return Messenger();
             }));
           },
-        ),]);
+        ),
+      ]);
     }
     return Column();
   }
 
 
   Widget _adminMenu() {
-    if(thisUser!=null && thisUser.isAdmin) {
-      return Column(children : [
+    if (thisUser != null && thisUser.isAdmin) {
+      return Column(children: [
 
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Administration',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
         ListTile(
@@ -458,24 +461,21 @@ class _Base extends State<Base>  {
               return UserPermissions();
             }));
           },
-        )]);
+        )
+      ]);
     }
     return Column();
-
-
-
-
-
   }
 
   Widget _modoMenu() {
-    if(thisUser!=null && thisUser.isModo) {
-      return Column(children : [
+    if (thisUser != null && thisUser.isModo) {
+      return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Modération',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
         ListTile(
@@ -486,19 +486,21 @@ class _Base extends State<Base>  {
               return EventManager();
             }));
           },
-        )]);
+        )
+      ]);
     }
     return Column();
   }
 
   Widget _trezMenu() {
-    if(thisUser!=null  && thisUser.isTrez) {
-      return Column(children : [
+    if (thisUser != null && thisUser.isTrez) {
+      return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Trésorerie',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
         ListTile(
@@ -518,18 +520,21 @@ class _Base extends State<Base>  {
               return FairPayManager();
             }));
           },
-        )]);
+        )
+      ]);
     }
     return Column();
   }
+
   Widget _logMenu() {
-    if(thisUser!=null  && thisUser.isLog) {
-      return Column(children : [
+    if (thisUser != null && thisUser.isLog) {
+      return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Logistique',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16, )
+              style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
           ),
         ),
 
@@ -541,7 +546,8 @@ class _Base extends State<Base>  {
               return Stock();
             }));
           },
-        )]);
+        )
+      ]);
     }
     return Column();
   }

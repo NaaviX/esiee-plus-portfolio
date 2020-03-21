@@ -49,7 +49,7 @@ class Repository {
   Future<List<GradesUnitModel>> fetchAllGradesUnit(String gradesID) => gradesUnitApiProvider.fetchGradesUnitList(gradesID);
 
   final coursesApiProvider = CoursesApiProvider();
-  Future<List<CourseModel>> fetchAllCourses() => coursesApiProvider.fetchCoursesList();
+  Future<List<CourseModel>> fetchAllCourses(String ids) => coursesApiProvider.fetchCoursesList(ids);
 
   final fairpayLogApiProvider = FairpayLogApiProvider();
   Future<List<FairpayLogModel>> fetchFairpayLogs() => fairpayLogApiProvider.fetchFairpayLogList();

@@ -3,6 +3,7 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../App.dart';
@@ -151,8 +152,19 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                         ],
                       ),
                     )
-                  ])))),
-    ]);
+                  ]
+                  )
+              )
+          ),
+      ),
+      FutureBuilder<String>(
+          future: getGradeUnitsID(),
+          builder: (BuildContext context, AsyncSnapshot<String> gradeUnitsID){
+            return Text(gradeUnitsID.data ?? "loading units...");
+          }
+      ),
+    ]
+    );
   }
 
   _getRoles() {

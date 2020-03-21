@@ -1,9 +1,9 @@
 import 'package:bde_esiee_mobile/src/models/gradesUnit_model.dart';
-import 'package:bde_esiee_mobile/src/ui/grades/utils.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../../App.dart';
-import '../../blocs/gradesunits_bloc.dart';
+import '../../../App.dart';
+import '../../../blocs/gradesunits_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 
 class GradeUnitsList extends StatefulWidget {

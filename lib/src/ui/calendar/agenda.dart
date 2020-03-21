@@ -1,6 +1,6 @@
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/agenda_event_view.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/week_view.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

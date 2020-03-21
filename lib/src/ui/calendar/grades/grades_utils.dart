@@ -27,13 +27,12 @@ Future<String> getGradeID() async {
 
 Future<String> getGradeUnitsID() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  // ignore: non_constant_identifier_names
-  String GradesUnitID = prefs.getString('GradeUnits_ID');
-  return GradesUnitID;
+  String gradesUnitID = prefs.getString('GradeUnits_ID');
+  return gradesUnitID;
 }
 
 removeValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove("Grade_ID");
+  //prefs.remove("Grade_ID");
   prefs.remove("GradeUnits_ID");
 }

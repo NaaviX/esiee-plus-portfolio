@@ -62,17 +62,11 @@ class _LoginPageState extends State<LoginPage> {
           if (user != null) {
             if(!user.email.endsWith("esiee.fr")) {
               signOutGoogle();
-              user = null;
               Scaffold.of(context).showSnackBar(new SnackBar(
                 duration: Duration(seconds: 3),
                 content: Text("Utilisateur non autorisé"),
                 backgroundColor: Colors.red,
               ));
-            } else {
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) {
-                return new App();
-              }));
             }
           }
         });

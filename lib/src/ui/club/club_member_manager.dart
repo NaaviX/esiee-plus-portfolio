@@ -6,10 +6,9 @@ import 'package:bde_esiee_mobile/src/ui/club/student_info.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-class ClubMemberManager extends StatefulWidget {
-  final ClubModel thisClub;
+import '../../App.dart';
 
-  const ClubMemberManager(this.thisClub);
+class ClubMemberManager extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
@@ -40,10 +39,10 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
               children: <Widget>[
                 Expanded(
                     child: ListView.builder(
-                  itemCount: widget.thisClub.students.length,
+                  itemCount: Base.thisClub.students.length,
                   itemBuilder: (BuildContext context, int index) {
                     StudentModel student =
-                        widget.thisClub.students.elementAt(index);
+                    Base.thisClub.students.elementAt(index);
                     return ListTile(
                         title: Text(
                           student.firstname + " " + student.lastname,
@@ -53,7 +52,7 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                           icon: Icon(Icons.delete),
                           onPressed: () {
                             clubsBloc.removeStudentFromClub(
-                                student, widget.thisClub);
+                                student, Base.thisClub);
                             Scaffold.of(context).showSnackBar(SnackBar(
                               duration: Duration(seconds: 1),
                               content: Text("Membre supprimé"),
@@ -75,7 +74,7 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                 )),
                 Padding(
                   padding: EdgeInsets.only(bottom: 50),
-                  child: ClubAddMember(widget.thisClub, this),
+                  child: ClubAddMember(Base.thisClub, this),
                 )
               ],
             )));

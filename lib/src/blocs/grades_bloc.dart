@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 class GradesBloc {
   final _repository = Repository();
+
   final _gradesFetcher = PublishSubject<List<GradesModel>>();
 
   Observable<List<GradesModel>> get allGrades => _gradesFetcher.stream;
@@ -18,5 +19,3 @@ class GradesBloc {
     _gradesFetcher.close();
   }
 }
-
-final bloc = GradesBloc();

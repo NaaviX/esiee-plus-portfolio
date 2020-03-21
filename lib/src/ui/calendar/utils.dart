@@ -43,14 +43,14 @@ class DefaultBuilders {
   static Widget defaultEventTextBuilder(AgendaEventView event, BuildContext context, DayView dayView, double height, double width) {
     List<TextSpan> text = [
       TextSpan(
-        text: event.title,
+        text: event.course.title,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       TextSpan(
-        text: ' ' + dayView.hourFormatter(event.start.hour, event.start.minute) + '\n' + dayView.hourFormatter(event.end.hour, event.end.minute) + '\n\n',
+        text: ' ' + dayView.hourFormatter(event.course.start.hour, event.course.start.minute) + '\n' + dayView.hourFormatter(event.course.end.hour, event.course.end.minute) + '\n\n',
       ),
       TextSpan(
-        text: event.description,
+        text: event.course.description,
       ),
     ];
 

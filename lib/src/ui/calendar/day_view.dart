@@ -400,12 +400,12 @@ class _EventDrawProperties {
 
   /// Creates a new flutter week view event draw properties from the specified day view and the specified day view event.
   _EventDrawProperties(DayView dayView, AgendaEventView event) {
-    if (shouldDraw || (!Utils.sameDay(event.start, dayView.date) && !Utils.sameDay(event.end, dayView.date))) {
+    if (shouldDraw || (!Utils.sameDay(event.course.start, dayView.date) && !Utils.sameDay(event.course.end, dayView.date))) {
       return;
     }
 
-    start = event.start;
-    end = event.end;
+    start = event.course.start;
+    end = event.course.end;
 
     if (start.isBefore(dayView.date)) {
       start = dayView.date;

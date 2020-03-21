@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:bde_esiee_mobile/src/ui/agenda/utils.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'controller.dart';

@@ -8,6 +8,7 @@ import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_dashboard.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/settings.dart';
 import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
@@ -470,6 +471,15 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return BdeInfos();
+            }));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.verified_user),
+          title: Text("Cotisants"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ContributorManager();
             }));
           },
         ),

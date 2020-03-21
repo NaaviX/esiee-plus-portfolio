@@ -91,6 +91,7 @@ class ClubPermissionsState extends State<ClubPermissions>
     return new ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(club.urlPhoto),
+        backgroundColor: Colors.white,
       ),
       title: Text(club.name),
       subtitle: Text(

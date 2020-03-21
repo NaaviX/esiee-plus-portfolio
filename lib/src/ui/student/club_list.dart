@@ -54,6 +54,7 @@ class ClubListState extends State<ClubList> {
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
+        if(snapshot.data[index].idClubRef <= 100) {
           return ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
@@ -68,6 +69,8 @@ class ClubListState extends State<ClubList> {
               );
             },
           );
+}
+          else return null;
         });
   }
 

@@ -79,7 +79,7 @@ class DisabledEventListState extends State<DisabledEventList>  with AutomaticKee
                                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0))),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0),topRight: Radius.circular(10.0)),
-                                  color: Colors.blueAccent),
+                                  color: Theme.of(context).primaryColor,),
                             ),
                             padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
                         getEventCover(snapshot.data[index], context)

@@ -1,18 +1,14 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_dashboard.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/settings.dart';
-import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
 import 'package:bde_esiee_mobile/src/ui/student/class_document.dart';
 import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
@@ -25,17 +21,20 @@ import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/stock.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/user_permissions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
+import 'blocs/roles_bloc.dart';
+import 'models/club_model.dart';
 import 'models/prof_model.dart';
+import 'models/role_model.dart';
 import 'ui/event/event_list.dart';
 import 'ui/home.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'resources/translations.dart';
-
 
 //so1Sw1nS
 
@@ -48,33 +47,9 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   Widget app;
-  @override
-  void initState() {
-    super.initState();
-    if (user == null) {
-      app = MaterialApp(home: LoginPage(),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ]);
-    } else {
-      app = MaterialApp(home: Base(),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ]);
-    }
-  }
+
+  static final primaryColor = Colors.green[800];
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +58,66 @@ class AppState extends State<App> {
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
-
-    return app;
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return new Container(
+            color: Colors.white,
+          );
+        } else {
+          if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
+            user = snapshot.data;
+            //user is logged in
+            return MaterialApp(
+              home: Base(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+              theme: ThemeData(
+                  primaryColor: primaryColor,
+                  accentColor: primaryColor,
+                  accentColorBrightness: Brightness.light
+              ),
+            );
+          } else {
+//user not logged in
+            return MaterialApp(
+              home: LoginPage(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+              theme: ThemeData(
+                  primaryColor: primaryColor,
+                  accentColor: primaryColor,
+                  accentColorBrightness: Brightness.light
+              ),
+            );
+          }
+        }
+      },
+    );
   }
 }
 
 class Base extends StatefulWidget {
   Base({Key key}) : super(key: key);
-
+  static List<RoleModel> allRoles;
+  static StudentModel thisUser;
+  static ClubModel thisClub;
+  static ProfModel thisProf;
   @override
   _Base createState() => _Base();
 }
@@ -99,10 +126,7 @@ class _Base extends State<Base> {
   final studentBloc = StudentsBloc();
   final clubsBloc = ClubsBloc();
   final profsBloc = ProfsBloc();
-
-  static dynamic thisUser;
-  static dynamic thisClub;
-  static dynamic thisProf;
+  RolesBloc rolesBloc = RolesBloc();
 
   final log = Logger('BASE');
 
@@ -110,12 +134,7 @@ class _Base extends State<Base> {
 
   PageController pageController = PageController();
 
-
-  static List<Widget> _widgetOptions = <Widget>[
-    Home(thisUser, thisClub, thisProf),
-    CalendarController(),
-    EventList(),
-  ];
+  List<Widget> _widgetOptions;
 
   static List<String> _selectedAppbarTitle = [
     'BDE ESIEE Paris',
@@ -126,6 +145,7 @@ class _Base extends State<Base> {
   @override
   void initState() {
     super.initState();
+    rolesBloc.fetchAllRoles();
     studentBloc.fetchStudent(user.email);
     clubsBloc.fetchClub(user.email);
     profsBloc.fetchProf(user.email);
@@ -133,17 +153,12 @@ class _Base extends State<Base> {
 
   @override
   void dispose() {
+    rolesBloc.dispose();
     studentBloc.dispose();
     clubsBloc.dispose();
     profsBloc.dispose();
     super.dispose();
   }
-
-  /*void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }*/
 
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
@@ -163,56 +178,69 @@ class _Base extends State<Base> {
     ]);
     log.fine("base");
     return StreamBuilder(
-      stream: studentBloc.thisStudent,
-      builder: (context, AsyncSnapshot<StudentModel> snapshot) {
-        if (snapshot.hasData) {
-          //isStudent
-          log.fine("student");
-          thisUser = snapshot.data;
-          return _getApp();
-        } else {
-          //isClub
+        stream: rolesBloc.allRoles,
+        builder: (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
+          Base.allRoles = roleSnapshot.data;
           return StreamBuilder(
-            stream: clubsBloc.thisClub,
-            builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+            stream: studentBloc.thisStudent,
+            builder: (context, AsyncSnapshot<StudentModel> snapshot) {
+              print("connection state student ${snapshot.connectionState}");
               if (snapshot.hasData) {
-                log.fine("club");
-                thisClub = snapshot.data;
+                //isStudent
+                log.fine("student");
+                Base.thisUser = snapshot.data;
                 return _getApp();
               } else {
-                //C'est un prof
-                log.fine("prof");
+                //isClub
                 return StreamBuilder(
-                  stream: profsBloc.thisProf,
-                  builder: (context, AsyncSnapshot<ProfModel> snapshot) {
+                  stream: clubsBloc.thisClub,
+                  builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+                    print("connection state club ${snapshot.connectionState}");
                     if (snapshot.hasData) {
-                      log.fine("prof");
-                      thisProf = snapshot.data;
+                      log.fine("club");
+                      Base.thisClub = snapshot.data;
                       return _getApp();
                     } else {
-                      log.fine("loading");
-                      return Center(child: new CircularProgressIndicator());
+                      //C'est un prof
+                      return StreamBuilder(
+                        stream: profsBloc.thisProf,
+                        builder: (context, AsyncSnapshot<ProfModel> snapshot) {
+                          print(
+                              "connection state prof ${snapshot.connectionState}");
+                          if (snapshot.hasData) {
+                            log.fine("prof");
+                            Base.thisProf = snapshot.data;
+                            return _getApp();
+                          } else {
+                            log.fine("loading");
+                            return Center(
+                                child: new CircularProgressIndicator());
+                          }
+                        },
+                      );
                     }
                   },
                 );
               }
             },
           );
-        }
-      },
-
-    );
+        });
   }
 
   Widget _getApp() {
+    _widgetOptions = <Widget>[
+      Home(),
+      CalendarController(),
+      EventList(),
+    ];
     return Scaffold(
         appBar:
-        AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
+            AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
           children: _widgetOptions,
-        ), //_widgetOptions.elementAt(_selectedIndex),
+        ),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: _getDrawer());
   }
@@ -220,59 +248,52 @@ class _Base extends State<Base> {
   Widget _getDrawer() {
     return Drawer(
         child: ListView(children: <Widget>[
-          ListTile(
-            leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-            title: Text(user.displayName),
-            subtitle: Text(user.email),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: new Text("Paramètres"),
-            onTap: () {
-              user = null;
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) {
-                    return Settings();
-                  }));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.power_settings_new),
-            title: new Text(Translations.of(context).text("deco")),
-            onTap: () {
-              signOutGoogle();
-              user = null;
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) {
-                    _selectedIndex = 0;
-                    return App();
-                  }));
-            },
-          ),
+      ListTile(
+        leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+        title: Text(user.displayName),
+        subtitle: Text(user.email),
+      ),
+      ListTile(
+        leading: Icon(Icons.settings),
+        title: new Text("Paramètres"),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return Settings();
+          }));
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.power_settings_new),
+        title: new Text(Translations.of(context).text("deco")),
+        onTap: () async {
+          signOutGoogle();
+          _selectedIndex = 0;
 
-
-          _adminMenu(),
-          _modoMenu(),
-          _trezMenu(),
-          _logMenu(),
-          _clubMenu(),
-          _studentMenu(),
-          _profMenu()
-        ]));
+        },
+      ),
+      _adminMenu(),
+      _modoMenu(),
+      _trezMenu(),
+      _logMenu(),
+      _clubMenu(),
+      _studentMenu(),
+      _profMenu()
+    ]));
   }
 
   Widget _profMenu() {
-    if (thisProf != null) {
+    if (Base.thisProf != null) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: user.displayName,
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
-
         ListTile(
           leading: Icon(Icons.import_contacts),
           title: Text("Cours"),
@@ -306,23 +327,24 @@ class _Base extends State<Base> {
   }
 
   Widget _clubMenu() {
-    if (thisClub != null) {
+    if (Base.thisClub != null) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
-              text: thisClub.name,
+              text: Base.thisClub.name,
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
-
         ListTile(
           leading: Icon(Icons.account_balance_wallet),
           title: Text("Fairpay"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Fairpay(thisClub);
+              return Fairpay();
             }));
           },
         ),
@@ -331,11 +353,10 @@ class _Base extends State<Base> {
           title: Text("Gestion des membres"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ClubMemberManager(thisClub);
+              return ClubMemberManager();
             }));
           },
         ),
-
         ListTile(
           leading: Icon(Icons.chat),
           title: Text("Messenger"),
@@ -351,15 +372,17 @@ class _Base extends State<Base> {
   }
 
   Widget _studentMenu() {
-    if (thisUser != null) {
+    if (Base.thisUser != null) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
-              text: thisUser.firstname,
+              text: Base.thisUser.firstname,
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
         ListTile(
           leading: Icon(Icons.group),
@@ -370,7 +393,6 @@ class _Base extends State<Base> {
             }));
           },
         ),
-
         ListTile(
           leading: Icon(Icons.location_on),
           title: Text("Salles libres"),
@@ -403,11 +425,10 @@ class _Base extends State<Base> {
           title: Text("Annales"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return AnnalsList();
+              return; //AnnalsList();
             }));
           },
         ),
-
         ListTile(
           leading: Icon(Icons.chat),
           title: Text("Messenger"),
@@ -422,18 +443,23 @@ class _Base extends State<Base> {
     return Column();
   }
 
-
   Widget _adminMenu() {
-    if (thisUser != null && thisUser.isAdmin) {
+    if (Base.thisUser != null &&
+          Base.thisUser.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.admin))) {
       return Column(children: [
-
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Administration',
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
         ListTile(
           leading: Icon(Icons.info_outline),
@@ -441,6 +467,15 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return BdeInfos();
+            }));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.verified_user),
+          title: Text("Cotisants"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ContributorManager();
             }));
           },
         ),
@@ -468,15 +503,22 @@ class _Base extends State<Base> {
   }
 
   Widget _modoMenu() {
-    if (thisUser != null && thisUser.isModo) {
+      if (Base.thisUser != null &&
+          Base.thisUser.roles.contains(
+              Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
+          Base.thisClub != null &&
+              Base.thisClub.roles.contains(
+                  Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Modération',
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
         ListTile(
           leading: Icon(Icons.date_range),
@@ -493,15 +535,22 @@ class _Base extends State<Base> {
   }
 
   Widget _trezMenu() {
-    if (thisUser != null && thisUser.isTrez) {
+    if (Base.thisUser != null &&
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.trez)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Trésorerie',
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
         ListTile(
           leading: Icon(Icons.euro_symbol),
@@ -527,17 +576,23 @@ class _Base extends State<Base> {
   }
 
   Widget _logMenu() {
-    if (thisUser != null && thisUser.isLog) {
+    if (Base.thisUser != null &&
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.log)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.log))) {
       return Column(children: [
         Divider(),
         RichText(
           text: TextSpan(
               text: 'Logistique',
               style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16,)
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
         ),
-
         ListTile(
           leading: Icon(Icons.local_grocery_store),
           title: Text("Réserve"),
@@ -554,17 +609,20 @@ class _Base extends State<Base> {
 
   Widget getBottomNavigationBar() {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home,),
+          activeIcon: Icon(Icons.home, color: AppState.primaryColor,),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.access_time),
+          activeIcon: Icon(Icons.access_time, color: AppState.primaryColor,),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.event),
+          activeIcon: Icon(Icons.event, color: AppState.primaryColor,),
           title: Text('Event'),
         ),
       ],
@@ -575,5 +633,4 @@ class _Base extends State<Base> {
       onTap: _onItemTapped,
     );
   }
-
 }

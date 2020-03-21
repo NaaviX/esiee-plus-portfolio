@@ -1,14 +1,16 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:logging/logging.dart';
+
+import 'club_model.dart';
 
 class StudentModel {
   final log = Logger('StudentModel');
 
 
 
-  int id_student;
+  int idStudent;
   String mailEsiee;
   String firstname;
   String lastname;
@@ -17,16 +19,13 @@ class StudentModel {
   bool contributor;
   String urlPhoto;
   List<RoleModel> roles;
-  bool isAdmin;
-  bool isModo;
-  bool isLog;
-  bool isTrez;
+  List<ClubModel> clubs;
 
 
 
 
   StudentModel({
-    this.id_student,
+    this.idStudent,
     this.mailEsiee,
     this.firstname,
     this.lastname,
@@ -35,17 +34,14 @@ class StudentModel {
     this.contributor,
     this.urlPhoto,
     this.roles,
-    this.isAdmin,
-    this.isLog,
-    this.isModo,
-    this.isTrez
+    this.clubs
   });
 
   factory StudentModel.fromJson(Map<String, dynamic> parsedJson) {
     StudentModel e = new StudentModel();
 
     if (parsedJson != null) {
-      e.id_student = parsedJson["id_student"];
+      e.idStudent = parsedJson["idStudent"];
       e.mailEsiee = parsedJson["mailEsiee"];
       e.firstname = parsedJson["firstname"];
       e.lastname = parsedJson["lastname"];
@@ -53,24 +49,8 @@ class StudentModel {
       e.phone = parsedJson["phone"];
       e.contributor = parsedJson["contributor"];
       e.urlPhoto = parsedJson["urlPhoto"];
-      e.roles = new List<RoleModel>();
-      e.isAdmin = false;
-      e.isTrez = false;
-      e.isModo = false;
-      e.isLog = false;
-      for(dynamic roleFromJson in parsedJson["roles"]) {
-        RoleModel role = RoleModel.roleFromJson(roleFromJson);
-        e.roles.add(role);
-        if(role.role == "admin") {
-          e.isAdmin = true;
-        } else if(role.role == "trez") {
-          e.isTrez = true;
-        } else if(role.role == "mod") {
-          e.isModo = true;
-        } else if(role.role == "log") {
-          e.isLog = true;
-        }
-      }
+      e.roles = RoleModel.allRolesFromJson(parsedJson["roles"]);
+      e.clubs = new List();
     }
 
     return e;
@@ -81,6 +61,9 @@ class StudentModel {
         jsonData.map((x) => StudentModel.fromJson(x)));
   }
 
-
+  @override
+  bool operator ==(other) {
+    return idStudent == other.idStudent;
+  }
 
 }

@@ -1,12 +1,13 @@
 //When user click on an event
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../custom_widgets/Hyperlink';
 
 class EventInfoPage extends StatefulWidget {
 
@@ -58,44 +59,7 @@ class EventInfoState extends State<EventInfoPage> {
                           color: Colors.white,
                         )
                     ),
-                    Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.fromLTRB(5, 15, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
-                                  Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
-                                ],
-                              ),),
-                            Container(
-                                padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
-                                child: Wrap(
-                                    direction: Axis.vertical,
-                                    alignment: WrapAlignment.start,
-                                    children : <Widget>[
-                                      Text(
-                                        widget.event.name.toUpperCase(),
-                                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
-                                      ),
-                                      Row(children: <Widget>[
-                                        Text("Organisé par "),
-                                        Text(
-                                            snapshot.data.name,
-                                            style: TextStyle(fontWeight: FontWeight.bold)
-                                        )
-                                      ]
-                                      ),
-
-                                    ]
-                                )
-                            ),
-                          ]
-                      ),
-                    ),
+                    _header(snapshot),
                     Container(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
                       child: Divider(
@@ -103,11 +67,20 @@ class EventInfoState extends State<EventInfoPage> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(5,0,15,0),
+                      margin: EdgeInsets.fromLTRB(15,0,15,0),
                       padding:  EdgeInsets.fromLTRB(0,0,0,15),
-                      child: list(null,widget.event.description),
+                      child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
                     ),
                     getDate(),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 5),
+                      child: Column(
+                          children: <Widget>[
+
+                          ]
+                      ),
+                    ),
+
                     list(Icons.place,widget.event.place),
                     list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
                     list(Icons.payment, widget.event.link),
@@ -126,37 +99,33 @@ class EventInfoState extends State<EventInfoPage> {
   {
     if( formatDate(widget.event.endDate) == formatDate(widget.event.startDate))
     {
-      return list(
+      if( widget.event.endDate == widget.event.startDate)
+        return list(
+            Icons.access_time,
+            'Le ' + formatDate(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.startDate)
+        );
+      else
+        return list(
           Icons.access_time,
-          'Le ' + formatDate(widget.event.startDate)
+          'Le ' + formatDate(widget.event.startDate) + ' de' + DateFormat(' HH:mm','fr_FR').format(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.endDate)
       );
     }
     else {
       return list(
           Icons.access_time,
-          'Du ' + formatDate(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate));
+          'Du ' + formatDate(widget.event.startDate) + DateFormat(' - HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(" - HH:mm",'fr_FR').format(widget.event.startDate));
     }
   }
 
   Container list(IconData icon, String text)
   {
+    bool hyperlink = false;
     if(text == "0 €") text = "Gratuit";
+    if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = true;
     if(text != null && text !="") {
       return Container(
         padding: EdgeInsets.fromLTRB(10, 0, 0, 15),
-        child: Wrap(
-            spacing: 10,
-            direction: Axis.horizontal,
-            alignment: WrapAlignment.start,
-            children: <Widget>[
-              if(icon != null) Icon(icon, size: 20.0, color: Colors.blue),
-              if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare)
-                Hyperlink(text,text),
-              if(icon != Icons.payment && icon != FontAwesomeIcons.facebookSquare)
-                Text(text, style: TextStyle(fontSize: 18,),
-                  textAlign: TextAlign.justify,),
-            ]),
-      );
+        child: CustomItemWithIcon(icon, text, hyperlink : hyperlink,),);
     }
     else {
       return Container(
@@ -167,7 +136,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   String formatDate(DateTime date)
   {
-    return DateFormat('EEE','fr_FR').format(date) + ' ' + formatDay(date) + ' ' + formatMonth(date) + DateFormat(' à HH:mm','fr_FR').format(date);
+    return DateFormat('EEE ','fr_FR').format(date) + formatDay(date) + DateFormat(' MMMM','fr_FR').format(date);
   }
 
   String formatMonth(DateTime date)
@@ -179,5 +148,47 @@ class EventInfoState extends State<EventInfoPage> {
   String formatDay(DateTime date)
   {
     return  DateFormat('d','fr_FR').format(date);
+  }
+
+  _header(AsyncSnapshot<ClubModel> snapshot) {
+    return Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
+                Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children : <Widget>[
+                      AutoSizeText(
+                        widget.event.name.toUpperCase(),
+                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(children: <Widget>[
+                        Text("Organisé par "),
+                        Text(
+                            snapshot.data.name,
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        )
+                      ]
+                      ),
+
+                    ]
+                )
+            ),
+          ),
+        ]
+    );
   }
 }

@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
 
+import '../App.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -28,6 +30,10 @@ Future<FirebaseUser> signInWithGoogle() async {
 
 void signOutGoogle() async {
   await googleSignIn.signOut();
+  FirebaseAuth.instance.signOut();
+  Base.thisUser = null;
+  Base.thisClub = null;
+  Base.thisProf = null;
   user = null;
   print("User Sign Out");
 }

@@ -39,27 +39,27 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   Widget build(BuildContext context){
     return Scaffold(
 
-      body: StreamBuilder(
-        stream: bloc.allEvents,
-        builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-          if (snapshot.hasData) {
-            return buildList(snapshot);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EventCreation()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue
-      )
+        body: StreamBuilder(
+          stream: bloc.allEvents,
+          builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
+            if (snapshot.hasData) {
+              return buildList(snapshot);
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventCreation()),
+              );
+            },
+            child: Icon(Icons.add),
+            backgroundColor: Theme.of(context).primaryColor,
+        )
     );
   }
 
@@ -68,89 +68,103 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-                  onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
-                  );
-                },
-                child: Center(
-                  child: Column(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
+              );
+            },
+            child: Center(
+              child: Column(
                   mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(12.0),
-                            child: Center(
-                                child : Text(
-                                    getTitle(snapshot.data[index]),
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0))),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0),topRight: Radius.circular(10.0)),
-                                color: Colors.blueAccent),
-                          ),
-                          padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
-                      getEventCover(snapshot.data[index], context)
-                  ]))
-            );
+                  children: <Widget>[
+                    Padding(
+                        child: getEventCover(snapshot.data[index], context),
+                        padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
+                  ]
+              ),
+            ),
+          );
         });
   }
 
   String getTitle(EventModel event){
-      String result = event.name;
-      if (event.startDate != null)
-        result += '  -  ' + DateFormat('dd MMM').format(event.startDate) + '.';
-      return result;
+    String result = event.name;
+    if (event.startDate != null)
+      result += '  -  ' + DateFormat('dd MMM').format(event.startDate) + '.';
+    return result;
   }
 
   Widget getEventCover(EventModel event, BuildContext context){
-    if(event.backgroundUrl == null) {
-      event.backgroundUrl = "";
-    }
     if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
       return Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Image.network(
-          event.backgroundUrl,
-          fit: BoxFit.cover,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width, height: 150,
-        ),
+        color: Theme.of(context).primaryColor,
+        child: Column(
+            children: <Widget>[
+              Container(
+                height: 40,
+                child:  Center(
+                  child: Text(getTitle(event), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0),textAlign: TextAlign.center,),
+                ),
+              ),
+              Image.network(
+                event.backgroundUrl,
+                fit: BoxFit.cover,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width, height: 150,
+              ),
+            ]),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0.0),
+          borderRadius: BorderRadius.circular(15.0),
         ),
         elevation: 5,
-        margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0),
       );
     }
     else{
-      return Stack(children: <Widget>[
-          Container(
-          height: 150,
-          width: MediaQuery.of(context).size.width,
-          decoration: new BoxDecoration(
-            color: Colors.black,
-            image: new DecorationImage(
-              fit: BoxFit.cover,
-              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
-              image: new NetworkImage(
-                event.backgroundUrl,
+      return Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        color: Theme.of(context).primaryColor,
+        child: Column(
+            children: <Widget>[
+              Container(
+                height: 40,
+                child:  Center(
+                  child: Text(getTitle(event), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0),textAlign: TextAlign.center,),
+                ),
               ),
-            ),
-          ),
-          margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0)
+              Stack(children: <Widget>[
+                Container(
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: new BoxDecoration(
+                      color: Colors.black,
+                      image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
+                        image: new NetworkImage(
+                          event.backgroundUrl,
+                        ),
+                      ),
+                    ),
+                ),
+                Container(
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    child : Center( child : Text( ("terminé").toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8), fontSize: 30.0))),
+                    margin: EdgeInsets.only(bottom: 0.0, left: 15.0, right: 15.0)
+                ),
+              ]),
+            ]),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
         ),
-        Container(
-            height: 150,
-            width: MediaQuery.of(context).size.width,
-            child : Center( child : Text( ("terminé").toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8), fontSize: 30.0))),
-            margin: EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0)
-        ),
-      ]);
+        elevation: 5,
+      );
     }
   }
 

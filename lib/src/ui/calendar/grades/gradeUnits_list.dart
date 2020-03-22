@@ -118,6 +118,7 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
     return GroupedListView<dynamic, String>(
         groupBy: (unit) => unit.section,
         elements: _elements,
+        useStickyGroupSeparators: false,
         sort: false,
         groupSeparatorBuilder: (String value) => Container(
             color: Theme.of(context).primaryColor.withOpacity(0.2),

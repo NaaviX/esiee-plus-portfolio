@@ -9,17 +9,8 @@ import 'utils.dart';
 
 /// Represents a flutter week view event.
 class AgendaEventView extends Comparable<AgendaEventView> {
-  /// The event title.
-  final String title;
-
-  /// The event description.
-  final String description;
-
-  /// The event start date & time.
-  final DateTime start;
-
-  /// The event end date & time.
-  final DateTime end;
+  /// The course
+  final CourseModel course;
 
   /// The event widget background color.
   final Color backgroundColor;
@@ -44,10 +35,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
 
   /// Creates a new flutter week view event instance.
   AgendaEventView({
-    @required this.title,
-    @required this.description,
-    @required DateTime start,
-    @required DateTime end,
+    this.course,
     this.backgroundColor = const Color(0xCC2196F3),
     this.decoration,
     this.textStyle = const TextStyle(color: Colors.white),
@@ -55,12 +43,10 @@ class AgendaEventView extends Comparable<AgendaEventView> {
     this.margin,
     this.onLongPress,
     this.eventTextBuilder,
-  })  : start = DateTime(start.year, start.month, start.day, start.hour, start.minute),
-        end = DateTime(end.year, end.month, end.day, end.hour, end.minute),
-        assert(title != null),
-        assert(description != null),
-        assert(start != null),
-        assert(end != null);
+  })  : assert(course.title != null),
+        assert(course.description != null),
+        assert(course.start != null),
+        assert(course.end != null);
 
   /// Builds the event widget.
   Widget build(BuildContext context, DayView dayView, double height, double width) {
@@ -76,12 +62,13 @@ class AgendaEventView extends Comparable<AgendaEventView> {
             builder: (BuildContext context) {
               return CourseInfoPage(
                   course: new CourseModel(
-                      title: this.title,
-                      start: this.start,
-                      end: this.end,
-                      type: "TD",
-                      location: "5301V, 5308, 5309V",
-                      description: "2I\n1I\n4I-RV1",
+                      title: this.course.title,
+                      start: this.course.start,
+                      end: this.course.end,
+                      type: this.course.type,
+                      location: this.course.location,
+                      description: this.course.description,
+                      teachers: this.course.teachers,
                       updated: DateTime.now()
                   )
               );
@@ -109,10 +96,10 @@ class AgendaEventView extends Comparable<AgendaEventView> {
 
   @override
   int compareTo(AgendaEventView other) {
-    int result = start.compareTo(other.start);
+    int result = this.course.start.compareTo(other.course.start);
     if (result != 0) {
       return result;
     }
-    return end.compareTo(other.end);
+    return this.course.end.compareTo(other.course.end);
   }
 }

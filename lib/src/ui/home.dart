@@ -1,15 +1,11 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/prof_model.dart';
-import 'package:bde_esiee_mobile/src/models/role_model.dart';
-import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../App.dart';
-import 'event/event_list.dart';
 
 class Home extends StatefulWidget {
 
@@ -174,6 +170,12 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                     ),
                                     backgroundColor: Colors.red,
                                   ),
+                            FutureBuilder<String>(
+                                future: getGradeUnitsID(),
+                                builder: (BuildContext context, AsyncSnapshot<String> gradeUnitsID){
+                                  return Text(gradeUnitsID.data ?? "loading units...");
+                                }
+                            ),
                             RolesDisplay(Base.thisUser.roles)
                           ],
                         ),

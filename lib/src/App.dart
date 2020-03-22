@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
@@ -10,7 +9,6 @@ import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_dashboard.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/settings.dart';
-import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
 import 'package:bde_esiee_mobile/src/ui/student/class_document.dart';
 import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
@@ -18,7 +16,6 @@ import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/club/fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
-import 'package:bde_esiee_mobile/src/ui/agenda/agenda.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
@@ -29,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
-import 'package:rxdart/rxdart.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/roles_bloc.dart';
 import 'models/club_model.dart';
@@ -229,7 +225,7 @@ class _Base extends State<Base> {
   Widget _getApp() {
     _widgetOptions = <Widget>[
       Home(),
-      Agenda(),
+      CalendarController(),
       EventList(),
     ];
     return Scaffold(

@@ -58,15 +58,17 @@ class CourseModel {
   Color get color {
     switch (this.type) {
       case "TD":
-        return Colors.blueAccent.withOpacity(0.9);
+        return Color(0x6D8CCE).withOpacity(0.8);
       case "TP":
-        return Colors.lightBlue.withOpacity(0.9);
+        return Color(0x8A7AD2).withOpacity(0.8);
       case "CM":
-        return Colors.green.withOpacity(0.9);
+        return Color(0x569B56).withOpacity(0.7);
       case "Projet":
-        return Colors.amber.withOpacity(0.9);
+        return Color(0xFF9142).withOpacity(0.8);
+      case "Examen":
+        return Color(0xD80230).withOpacity(0.5);
       default:
-        return Colors.grey.withOpacity(0.9);
+        return Color(0xFFC840).withOpacity(0.9);
     }
   }
 

@@ -60,6 +60,7 @@ class EventInfoState extends State<CourseInfoPage> {
         children: <Widget>[
           Container(
               padding: EdgeInsets.all(15),
+              alignment: Alignment.topCenter,
               child: Text(day(widget.course.start),
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
           ),
@@ -82,21 +83,14 @@ class EventInfoState extends State<CourseInfoPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               AutoSizeText(
-                                widget.course.title,
-                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                                maxLines: 1,
+                                getTitle(),
+                                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                maxLines: 2,
+                                minFontSize: 15,
                                 textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              Row(
-                                  children: <Widget>[
-                                    Text("Enseigné par "),
-                                    Text(
-                                        "NATOWICZ R.",
-                                        style: TextStyle(fontWeight: FontWeight
-                                            .bold)
-                                    )
-                                  ]
-                              ),
+                              getTeacher(),
                             ]
                         ),
                       ),
@@ -120,7 +114,7 @@ class EventInfoState extends State<CourseInfoPage> {
                     backgroundColor: widget.course.color,
                   ),
                   CustomItemWithIcon(Icons.place, widget.course.location),
-                  CustomItemWithIcon(Icons.timer, widget.course.end.difference(widget.course.start).inHours.toString()+"h"),
+                  CustomItemWithIcon(Icons.timer, getTime()),
                   CustomItemWithIcon(Icons.class_, getUnit()),
                   CustomItemWithIcon(Icons.group, getGroup()),
                 ],
@@ -149,5 +143,36 @@ class EventInfoState extends State<CourseInfoPage> {
 
   update() {
     return "Mis à jour le " + DateFormat("dd MMM à HH:mm", "fr_FR").format(widget.course.updated);
+  }
+
+  getTime() {
+    String h = widget.course.end.difference(widget.course.start).inHours.toString()+"h";
+    if(widget.course.end.difference(widget.course.start).inMinutes%60 != 0)
+      h += (widget.course.end.difference(widget.course.start).inMinutes%60).toString();
+    return h;
+  }
+
+  getTitle() {
+    return widget.course.title.split(" - ").first;
+  }
+
+  getTeacher() {
+    if(widget.course.teachers != "[]")
+      return Row(
+          children: <Widget>[
+            Text("Enseigné par "),
+            Expanded(
+              child: AutoSizeText(
+                widget.course.teachers.toString().substring(1, widget.course.teachers.toString().length-1),
+                style: TextStyle(fontWeight: FontWeight.bold),
+                maxLines: 1,
+                minFontSize: 8,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ]
+      );
+    return Container();
   }
 }

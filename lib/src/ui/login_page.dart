@@ -10,23 +10,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-
   @override
-  void initState() {
-    if (user != null) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return App();
-      }));
+  void setState(fn) {
+    if(mounted){
+      super.setState(fn);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: Builder(
-        builder: (context) => Container(
+      body: Container(
         color: Colors.white,
         child: Center(
           child: Column(
@@ -48,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _signInButton(BuildContext context) {

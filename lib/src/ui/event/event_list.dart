@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
@@ -50,16 +51,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
             return Center(child: CircularProgressIndicator());
           },
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EventCreation()),
-              );
-            },
-            child: Icon(Icons.add),
-            backgroundColor: Theme.of(context).primaryColor,
-        )
+        floatingActionButton: creationButton(),
     );
   }
 
@@ -166,6 +158,20 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         elevation: 5,
       );
     }
+  }
+
+  creationButton() {
+    if(Base.thisClub != null)
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventCreation()),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
   }
 
 }

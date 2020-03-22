@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,7 +23,6 @@ class EventCreation extends StatefulWidget {
 }
 
 class EventCreationState extends State<EventCreation> {
-
 
   final log = Logger('eventCreation');
 
@@ -48,6 +49,8 @@ class createEventForm extends StatefulWidget {
 class createEventFormState extends State<createEventForm> {
 
   final bloc = EventsBloc();
+  final clubsBloc = ClubsBloc();
+
   final titre = TextEditingController();
   final place = TextEditingController();
   final description = TextEditingController();
@@ -58,11 +61,13 @@ class createEventFormState extends State<createEventForm> {
   @override
   void initState() {
     super.initState();
+    clubsBloc.fetchClub(user.email);
   }
 
   @override
   void dispose() {
     bloc.dispose();
+    clubsBloc.dispose();
     titre.dispose();
     super.dispose();
   }
@@ -79,196 +84,228 @@ class createEventFormState extends State<createEventForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-          child: Padding(
-              padding: EdgeInsets.only(left:20, top:0, right:20, bottom:0),
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 10.0),
-                      //Titre
-                      CustomTextFormField(
-                        "Nom de l'événement",
-                        "Intitulé de l'évenement",
-                        Icons.calendar_today,
-                        titre,
-                        type: "titre",
-                        requiredField: true,
-                        maxLength: 100,
-                      ),
-                      SizedBox(height: 10.0),
-                      //Description
-                      CustomTextFormField(
-                        "Description",
-                        "Description de votre évenement",
-                        null,
-                        description,
-                        type: "desc",
-                        requiredField: true,
-                      ),
-                      SizedBox(height: 10.0,),
-                      //Dates
-                      Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return
+      StreamBuilder(
+          stream: clubsBloc.thisClub,
+          builder: (context,
+              AsyncSnapshot<ClubModel> snapshot)
+          {
+            return Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                  child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 20, top: 0, right: 20, bottom: 0),
+                      child: ConstrainedBox(
+                          constraints: BoxConstraints(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              IntrinsicWidth(
-                                child: Column(
-                                  children: <Widget>[
-                                    RaisedButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(200.0)),
-                                      elevation: 2.0,
-                                      onPressed: callDatePickerStart,
-                                      child: dateButton("start"),
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(height: 10.0,),
-                                    RaisedButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(200.0)),
-                                      elevation: 2.0,
-                                      onPressed: callDatePickerEnd,
-                                      child: dateButton("end"),
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(height: 10.0,),
-                                    RaisedButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(200.0)),
-                                      elevation: 2.0,
-                                      onPressed: callDatePickerPub,
-                                      child: dateButton("publication"),
-                                      color: Colors.white,
-                                    ),
-                                  ],
-                                ),
+                              SizedBox(height: 10.0),
+                              //Titre
+                              CustomTextFormField(
+                                "Nom de l'événement",
+                                "Intitulé de l'évenement",
+                                Icons.calendar_today,
+                                titre,
+                                type: "titre",
+                                requiredField: true,
+                                maxLength: 100,
                               ),
-                              IntrinsicWidth(
-                                child: Column(
+                              SizedBox(height: 10.0),
+                              //Description
+                              CustomTextFormField(
+                                "Description",
+                                "Description de votre évenement",
+                                null,
+                                description,
+                                type: "desc",
+                                requiredField: true,
+                              ),
+                              SizedBox(height: 10.0,),
+                              //Dates
+                              Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callTimePickerStart,
-                                        child: timeButton("start"),
-                                        color: Colors.white,
+                                      IntrinsicWidth(
+                                        child: Column(
+                                          children: <Widget>[
+                                            RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(
+                                                      200.0)),
+                                              elevation: 2.0,
+                                              onPressed: callDatePickerStart,
+                                              child: dateButton("start"),
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(height: 10.0,),
+                                            RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(
+                                                      200.0)),
+                                              elevation: 2.0,
+                                              onPressed: callDatePickerEnd,
+                                              child: dateButton("end"),
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(height: 10.0,),
+                                            RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(
+                                                      200.0)),
+                                              elevation: 2.0,
+                                              onPressed: callDatePickerPub,
+                                              child: dateButton("publication"),
+                                              color: Colors.white,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      SizedBox(height: 10.0,),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callTimePickerEnd,
-                                        child: timeButton("end"),
-                                        color: Colors.white,
+                                      IntrinsicWidth(
+                                        child: Column(
+                                            children: <Widget>[
+                                              RaisedButton(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(200.0)),
+                                                elevation: 2.0,
+                                                onPressed: callTimePickerStart,
+                                                child: timeButton("start"),
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(height: 10.0,),
+                                              RaisedButton(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(200.0)),
+                                                elevation: 2.0,
+                                                onPressed: callTimePickerEnd,
+                                                child: timeButton("end"),
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(height: 10.0,),
+                                              RaisedButton(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(200.0)),
+                                                elevation: 2.0,
+                                                onPressed: callTimePickerPub,
+                                                child: timeButton("publication"),
+                                                color: Colors.white,
+                                              ),
+                                            ]
+                                        ),
                                       ),
-                                      SizedBox(height: 10.0,),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callTimePickerPub,
-                                        child: timeButton("publication"),
-                                        color: Colors.white,
-                                      ),
-                                    ]
-                                ),
+                                    ],
+                                  )
                               ),
+                              SizedBox(height: 10.0),
+                              //Lieu
+                              CustomTextFormField(
+                                "Lieu",
+                                "Lieu de l'évenement",
+                                Icons.place,
+                                place,
+                                requiredField: true,
+                              ),
+                              SizedBox(height: 10.0),
+                              //Prix
+                              CustomTextFormField(
+                                "Prix",
+                                "0",
+                                Icons.euro_symbol,
+                                price,
+                                keyboard: TextInputType.number,
+                                requiredField: true,
+                              ),
+                              SizedBox(height: 10.0),
+                              //Lien de vente
+                              CustomTextFormField(
+                                "Lien de vente",
+                                "Lien de vente des places",
+                                Icons.credit_card,
+                                link,
+                                keyboard: TextInputType.url,
+                                maxLength: 500,
+                              ),
+                              SizedBox(height: 10.0),
+                              //Lien facebook
+                              CustomTextFormField(
+                                "Lien Facebook",
+                                "Lien de l'évent sur facebook",
+                                FontAwesomeIcons.facebookSquare,
+                                fblink,
+                                keyboard: TextInputType.url,
+                                maxLength: 500,
+                              ),
+                              SizedBox(height: 10.0),
+                              //Image
+                              _downloadImage(),
+                              Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0),
+                                    child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: new BorderRadius.circular(
+                                              20.0),
+                                        ),
+                                        color: Theme
+                                            .of(context)
+                                            .primaryColor,
+                                        child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Text(
+                                              'créer'.toUpperCase(),
+                                              style: TextStyle(
+                                                  color: Colors.white, fontSize: 20),
+                                            )),
+                                        splashColor: Colors.white,
+                                        onPressed: () {
+                                          if (_formKey.currentState.validate()) {
+                                            bloc.addSaveEvent(
+                                                new EventModel(
+                                                    idEvent: 0,
+                                                    name: titre.text,
+                                                    startDate: start,
+                                                    endDate: end,
+                                                    place: place.text,
+                                                    backgroundUrl: _uploadedFileURL,
+                                                    description: description
+                                                        .text,
+                                                    publicationDate: pub,
+                                                    link: link.text,
+                                                    facebookLink: fblink.text,
+                                                    idClubRef: snapshot.data
+                                                        .idClubRef,
+                                                    enable: true,
+                                                    price: int.parse(price.text)
+                                                )
+                                            );
+
+                                            Scaffold.of(context)
+                                                .showSnackBar(SnackBar(
+                                                backgroundColor: Colors.blue,
+                                                content: Text('Evénement créé',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 17.0,))));
+                                            Navigator.of(context).pop();
+                                          }
+                                        }
+                                    ),
+                                  )
+                              )
                             ],
                           )
-                      ),
-                      SizedBox(height: 10.0),
-                      //Lieu
-                      CustomTextFormField(
-                        "Lieu",
-                        "Lieu de l'évenement",
-                        Icons.place,
-                        place,
-                        requiredField: true,
-                      ),
-                      SizedBox(height: 10.0),
-                      //Prix
-                      CustomTextFormField(
-                        "Prix",
-                        "0",
-                        Icons.euro_symbol,
-                        price,
-                        keyboard : TextInputType.number,
-                        requiredField: true,
-                      ),
-                      SizedBox(height: 10.0),
-                      //Lien de vente
-                      CustomTextFormField(
-                        "Lien de vente",
-                        "Lien de vente des places",
-                        Icons.credit_card,
-                        link,
-                        keyboard : TextInputType.url,
-                        maxLength: 500,
-                      ),
-                      SizedBox(height: 10.0),
-                      //Lien facebook
-                      CustomTextFormField(
-                        "Lien Facebook",
-                        "Lien de l'évent sur facebook",
-                        FontAwesomeIcons.facebookSquare,
-                        fblink,
-                        keyboard : TextInputType.url,
-                        maxLength: 500,
-                      ),
-                      SizedBox(height: 10.0),
-                      //Image
-                      _downloadImage(),
-                      Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(20.0),
-                              ),
-                              color: Theme.of(context).primaryColor,
-                              child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text(
-                                    'créer'.toUpperCase(),
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  )),
-                              splashColor: Colors.white,
-                              onPressed: () {
-                                if (_formKey.currentState.validate()) {
-                                  bloc.addSaveEvent(
-                                      new EventModel(
-                                          idEvent: 0,
-                                          name: titre.text,
-                                          startDate: start,
-                                          endDate: end,
-                                          place: place.text,
-                                          backgroundUrl: _uploadedFileURL,
-                                          description: description.text,
-                                          publicationDate: pub,
-                                          link: link.text,
-                                          facebookLink: fblink.text,
-                                          idClubRef: 100,
-                                          enable: true,
-                                          price: int.parse(price.text)
-                                      )
-                                  );
-                                  Scaffold.of(context)
-                                      .showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Evénement créé', style: TextStyle(color: Colors.white, fontSize: 17.0,))));
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                            ),
-                          ))
-                    ],
-                  )))),
-    );
+                      )
+                  )
+              ),
+            );
+          }
+      );
   }
 
   _downloadImage() => ButtonTheme(

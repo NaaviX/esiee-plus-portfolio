@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import '../../../App.dart';
 import '../../../blocs/gradesunits_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/grades_model.dart';
+import 'package:grouped_list/grouped_list.dart';
 
 class GradeUnitsList extends StatefulWidget {
   final GradesModel grades;
@@ -17,7 +18,7 @@ class GradeUnitsList extends StatefulWidget {
 }
 
 class GradeUnitsListState extends State<GradeUnitsList> {
-  GradesModel grades;
+  final GradesModel grades;
   GradeUnitsListState({this.grades});
 
   final bloc = GradesUnitBloc();
@@ -42,7 +43,7 @@ class GradeUnitsListState extends State<GradeUnitsList> {
           builder: (context, AsyncSnapshot<List<GradesUnitModel>> snapshot) {
             if (snapshot.hasData) {
               unitsState = getUnitsState(snapshot.data);
-              return GradeUnitsCheckList( unitsState: unitsState);//{ GradesUnitModel(name: 'Groupe 1', id: 01): false, GradesUnitModel(name: 'Groupe 2', id: 02): false} );//buildList(snapshot);
+              return GradeUnitsCheckList( unitsState: unitsState, grades: grades,);//{ GradesUnitModel(name: 'Groupe 1', id: 01): false, GradesUnitModel(name: 'Groupe 2', id: 02): false} );//buildList(snapshot);
             }
             else if (snapshot.hasError) {
               return Text(snapshot.error.toString());
@@ -63,7 +64,8 @@ class GradeUnitsListState extends State<GradeUnitsList> {
 
 class GradeUnitsCheckList extends StatefulWidget{
   final Map<GradesUnitModel, bool> unitsState;
-  GradeUnitsCheckList({this.unitsState});
+  final GradesModel grades;
+  GradeUnitsCheckList({this.unitsState, this.grades});
 
   @override
   GradeUnitsCheckListState createState() {
@@ -79,21 +81,8 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text('CheckboxListTile demo')),
-      body: new ListView(
-        children: unitsState.keys.map((GradesUnitModel unit) {
-          return new CheckboxListTile(
-            title: new Text(unit.name),
-            value: unitsState[unit],
-            onChanged: (bool value) {
-              setState(() {
-                log.log(Level.ALL, unit.id);
-                unitsState[unit] = value;
-              });
-            },
-          );
-        }).toList(),
-      ),
+      appBar: new AppBar(title: new Text(widget.grades.name)),
+      body: buildList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           saveUnitsState();
@@ -104,6 +93,61 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
       ),
     );
   }
+
+  /*Widget buildList() {
+    return new ListView(
+      children: this.unitsState.keys.map((GradesUnitModel unit) {
+        return new CheckboxListTile(
+          title: new Text(unit.name),
+          value: unitsState[unit],
+          onChanged: (bool value) {
+            setState(() {
+              log.log(Level.ALL, unit.id);
+              unitsState[unit] = value;
+            });
+          },
+        );
+      }).toList(),
+    );
+  }*/
+
+  Widget buildList() {
+    List _elements = this.unitsState.keys.toList();
+    //Theme.of(context).primaryColor;
+
+    return GroupedListView<dynamic, String>(
+        groupBy: (unit) => unit.section,
+        elements: _elements,
+        sort: false,
+        groupSeparatorBuilder: (String value) => Container(
+            color: Theme.of(context).primaryColor.withOpacity(0.2),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Text(
+                      value,
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ))
+            )),
+        itemBuilder: (c, unit) {
+          return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _CheckboxTile(unit)
+          );
+        }
+    );
+  }
+
+  CheckboxListTile _CheckboxTile(GradesUnitModel unit) => CheckboxListTile(
+      title: new Text(unit.name),
+      value: unitsState[unit],
+      onChanged: (bool value) {
+        setState(() {
+          log.log(Level.ALL, unit.id);
+          unitsState[unit] = value;
+        });
+      },
+    );
 
   saveUnitsState(){
     List<String> unitsIdList = [];

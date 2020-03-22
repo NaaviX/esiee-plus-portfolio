@@ -69,7 +69,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
                       location: this.course.location,
                       description: this.course.description,
                       teachers: this.course.teachers,
-                      updated: DateTime.now()
+                      updated: this.course.updated
                   )
               );
             });

@@ -4,13 +4,13 @@ class GradesUnitModel {
   final log = Logger('GradesUnit');
 
   int id;
-  String schoolCode;
   String name;
+  String section;
 
   GradesUnitModel({
     this.id,
-    this.schoolCode,
-    this.name
+    this.name,
+    this.section
   });
 
   factory GradesUnitModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -18,8 +18,8 @@ class GradesUnitModel {
 
     if (parsedJson != null) {
       e.id = parsedJson["id"];
-      e.schoolCode = parsedJson["school_code"];
       e.name = parsedJson["name"];
+      e.section = parsedJson["typeunit_name"];
     }
     return e;
   }

@@ -108,7 +108,7 @@ class AppState extends State<App> {
 }
 
 class Base extends StatefulWidget {
-  Base({Key key}) : super(key: key);
+  static int selectedIndex = 0;
   static List<RoleModel> allRoles;
   static StudentModel thisUser;
   static ClubModel thisClub;
@@ -125,9 +125,8 @@ class _Base extends State<Base> {
 
   final log = Logger('BASE');
 
-  int _selectedIndex = 0;
 
-  PageController pageController = PageController();
+  PageController pageController = PageController(initialPage: Base.selectedIndex);
 
   List<Widget> _widgetOptions;
 
@@ -139,11 +138,12 @@ class _Base extends State<Base> {
 
   @override
   void initState() {
-    super.initState();
+
     rolesBloc.fetchAllRoles();
     studentBloc.fetchStudent(user.email);
     clubsBloc.fetchClub(user.email);
     profsBloc.fetchProf(user.email);
+    super.initState();
   }
 
   @override
@@ -161,7 +161,7 @@ class _Base extends State<Base> {
 
   void _onPageChanged(int index) {
     setState(() {
-      _selectedIndex = index;
+      Base.selectedIndex = index;
     });
   }
 
@@ -230,7 +230,7 @@ class _Base extends State<Base> {
     ];
     return Scaffold(
         appBar:
-            AppBar(title: Text(_selectedAppbarTitle.elementAt(_selectedIndex))),
+            AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex))),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
@@ -263,7 +263,7 @@ class _Base extends State<Base> {
         onTap: () async {
           Navigator.of(context).pop();
           signOutGoogle();
-          _selectedIndex = 0;
+          Base.selectedIndex = 0;
 
 
         },
@@ -625,7 +625,7 @@ class _Base extends State<Base> {
       ],
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      currentIndex: _selectedIndex,
+      currentIndex: Base.selectedIndex,
       selectedItemColor: Colors.blue[800],
       onTap: _onItemTapped,
     );

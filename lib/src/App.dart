@@ -61,11 +61,6 @@ class AppState extends State<App> {
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return new Container(
-            color: Colors.white,
-          );
-        } else {
           if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
             user = snapshot.data;
             //user is logged in
@@ -106,7 +101,7 @@ class AppState extends State<App> {
               ),
             );
           }
-        }
+
       },
     );
   }
@@ -266,8 +261,10 @@ class _Base extends State<Base> {
         leading: Icon(Icons.power_settings_new),
         title: new Text(Translations.of(context).text("deco")),
         onTap: () async {
+          Navigator.of(context).pop();
           signOutGoogle();
           _selectedIndex = 0;
+
 
         },
       ),

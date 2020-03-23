@@ -111,7 +111,7 @@ class EventInfoState extends State<CourseInfoPage> {
                 children: <Widget>[
                   Chip(
                     label: Text(widget.course.type.toUpperCase()),
-                    backgroundColor: widget.course.color,
+                    backgroundColor: widget.course.color.withOpacity(0.5),
                   ),
                   CustomItemWithIcon(Icons.place, widget.course.location),
                   CustomItemWithIcon(Icons.timer, getTime()),

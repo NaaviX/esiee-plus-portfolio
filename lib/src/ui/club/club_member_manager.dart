@@ -23,6 +23,8 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
 
   final ClubsBloc clubsBloc = ClubsBloc();
 
+  FocusScopeNode currentFocus;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,12 +33,13 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
         ),
         body: GestureDetector(
             onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+              currentFocus = FocusScope.of(context);
 
               currentFocus.unfocus();
             },
             child: Column(
               children: <Widget>[
+                ClubAddMember(this),
                 Expanded(
                     child: ListView.builder(
                   itemCount: Base.thisClub.students.length,
@@ -72,10 +75,7 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
                         });
                   },
                 )),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 50),
-                  child: ClubAddMember(Base.thisClub, this),
-                )
+
               ],
             )));
   }

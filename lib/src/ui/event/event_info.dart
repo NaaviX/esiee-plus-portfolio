@@ -1,6 +1,7 @@
 //When user click on an event
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
@@ -9,10 +10,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../App.dart';
+import 'event_creation.dart';
+import 'event_list.dart';
+
 class EventInfoPage extends StatefulWidget {
 
   EventModel event;
-  EventInfoPage({this.event});
+  bool isValidator;
+  EventInfoPage({this.event, this.isValidator}) {
+    if(this.isValidator != null) this.isValidator = this.isValidator;
+    else this.isValidator = false;
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -24,6 +33,7 @@ class EventInfoPage extends StatefulWidget {
 class EventInfoState extends State<EventInfoPage> {
 
   final bloc = ClubsBloc();
+  final Eventbloc = EventsBloc();
 
   @override
   void initState() {
@@ -85,6 +95,7 @@ class EventInfoState extends State<EventInfoPage> {
                     list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
                     list(Icons.payment, widget.event.link),
                     list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
+
                   ]
               );
             }
@@ -92,6 +103,7 @@ class EventInfoState extends State<EventInfoPage> {
               return Container();
           }
       ),
+      floatingActionButton: _manage(widget.event.idClubRef),
     );
   }
 
@@ -190,5 +202,31 @@ class EventInfoState extends State<EventInfoPage> {
           ),
         ]
     );
+  }
+
+  _manage(int clubRef) {
+    if(widget.isValidator) {
+      return FloatingActionButton(
+          child: Icon(Icons.event_available, color: Colors.white,),
+          splashColor: Colors.white,
+          onPressed: () {
+            Eventbloc.addSaveEvent(widget.event);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
+          }
+      );
+    }
+    else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventCreation()),
+          );
+        },
+        child: Icon(Icons.settings, color: Colors.white,),
+        backgroundColor: Theme.of(context).primaryColor,
+      );
+    }
+    else return Container();
   }
 }

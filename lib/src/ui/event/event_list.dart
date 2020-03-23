@@ -1,11 +1,13 @@
 import 'dart:ui';
 
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:intl/intl.dart';
 
 import 'event_creation.dart';
 import 'event_info.dart';
@@ -21,16 +23,19 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   @override
   bool get wantKeepAlive => true;
   final bloc = EventsBloc();
+  final clubsBloc = ClubsBloc();
 
   @override
   void initState() {
     super.initState();
     bloc.fetchAllEvents();
+    clubsBloc.fetchClub(user.email);
   }
 
   @override
   void dispose() {
     bloc.dispose();
+    clubsBloc.dispose();
     super.dispose();
   }
 
@@ -40,18 +45,18 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   Widget build(BuildContext context){
     return Scaffold(
 
-        body: StreamBuilder(
-          stream: bloc.allEvents,
-          builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-            if (snapshot.hasData) {
-              return buildList(snapshot);
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
-        floatingActionButton: creationButton(),
+      body: StreamBuilder(
+        stream: bloc.allEvents,
+        builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
+          if (snapshot.hasData) {
+            return getList(snapshot);
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+      floatingActionButton: creationButton(),
     );
   }
 
@@ -70,94 +75,22 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
               child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Padding(
-                        child: getEventCover(snapshot.data[index], context),
-                        padding: EdgeInsets.only(top: 10.0,left: 15.0, right: 15.0)),
+                    getCover(snapshot.data[index], context),
                   ]
               ),
             ),
           );
-        });
+        }
+    );
   }
 
-  String getTitle(EventModel event){
-    String result = event.name;
-    if (event.startDate != null)
-      result += '  -  ' + DateFormat('dd MMM').format(event.startDate) + '.';
-    return result;
-  }
-
-  Widget getEventCover(EventModel event, BuildContext context){
-    if(event.endDate != null && event.endDate.isAfter(DateTime.now())) {
-      return Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: Theme.of(context).primaryColor,
-        child: Column(
-            children: <Widget>[
-              Container(
-                height: 40,
-                child:  Center(
-                  child: Text(getTitle(event), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0),textAlign: TextAlign.center,),
-                ),
-              ),
-              Image.network(
-                event.backgroundUrl,
-                fit: BoxFit.cover,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width, height: 150,
-              ),
-            ]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 5,
-      );
+  getCover(EventModel event, BuildContext context) {
+    if(Base.thisClub != null && selected!="Tous") {
+      if(event.idClubRef==Base.thisClub.idClubRef && selected=="Mes évents")
+        return EventCard(event, context);
+      else return Container();
     }
-    else{
-      return Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: Theme.of(context).primaryColor,
-        child: Column(
-            children: <Widget>[
-              Container(
-                height: 40,
-                child:  Center(
-                  child: Text(getTitle(event), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0),textAlign: TextAlign.center,),
-                ),
-              ),
-              Stack(children: <Widget>[
-                Container(
-                    height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: new BoxDecoration(
-                      color: Colors.black,
-                      image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut),
-                        image: new NetworkImage(
-                          event.backgroundUrl,
-                        ),
-                      ),
-                    ),
-                ),
-                Container(
-                    height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    child : Center( child : Text( ("terminé").toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8), fontSize: 30.0))),
-                    margin: EdgeInsets.only(bottom: 0.0, left: 15.0, right: 15.0)
-                ),
-              ]),
-            ]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 5,
-      );
-    }
+    else return EventCard(event, context);
   }
 
   creationButton() {
@@ -169,9 +102,54 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
             MaterialPageRoute(builder: (context) => EventCreation()),
           );
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white,),
         backgroundColor: Theme.of(context).primaryColor,
       );
+  }
+
+  String selected = "Mes évents";
+  List<String> list = ["Tous", "Mes évents"];
+
+  dropDown() {
+    return  Container(
+        width: (500),
+        margin: EdgeInsets.only(left: 10, top: 10, right: 10),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.0, color: Colors.black38),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: DropdownButton<String>(
+          isExpanded: true,
+          underline: Column(),
+          value: selected,
+          onChanged: (String newValue) {
+            setState(() {
+              selected = newValue;
+            });
+          },
+          style: TextStyle(color: Colors.black54, fontSize: 15.0),
+          items: list
+              .map<DropdownMenuItem<String>>((String role) {
+            return DropdownMenuItem<String>(
+              value: role,
+              child: Text(role),
+            );
+          }).toList(),
+        )
+    );
+  }
+
+  getList(AsyncSnapshot<List<EventModel>> snapshot) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        if(Base.thisClub != null) dropDown(),
+        Expanded(
+          child: buildList(snapshot),
+        ),
+      ],
+    );
   }
 
 }

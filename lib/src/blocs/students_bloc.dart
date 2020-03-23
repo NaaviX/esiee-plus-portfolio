@@ -22,6 +22,11 @@ class StudentsBloc {
     _studentFetcher.sink.add(studentModel);
   }
 
+  fetchStudentById(String idStudent) async {
+    StudentModel studentModel = await _repository.fetchStudentById(idStudent);
+    _studentFetcher.sink.add(studentModel);
+  }
+
   updateStudent(StudentModel student) async {
     await _repository.updateStudent(student);
   }

@@ -35,6 +35,18 @@ class StudentApiProvider {
     }
   }
 
+  Future<StudentModel> fetchStudentById(String idStudent) async {
+    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/student/student/"+Uri.encodeFull(idStudent));
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      dynamic student = json.decode(utf8.decode(response.bodyBytes));
+      return StudentModel.fromJson(student);
+    } else {
+      // If that call was not successful, return null;
+      return null;
+    }
+  }
+
   Future<StudentModel> updateStudent(StudentModel student) async {
     int i = 0;
     String lRoles = "";

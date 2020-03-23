@@ -37,12 +37,12 @@ class UserPermissionsState extends State<UserPermissions> {
               title: Text("Droits des utilisateurs"),
             ),
             body: TabBarView(
-                      children: [
-                        StudentPermissions(),
-                        ClubPermissions(),
-                      ],
-                    )
-                ));
+              children: [
+                StudentPermissions(),
+                ClubPermissions(),
+              ],
+            )
+        ));
   }
 }
 
@@ -106,41 +106,41 @@ class ClubPermissionsState extends State<ClubPermissions>
                 title: Text(club.name),
                 content: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                  return SingleChildScrollView(
-                      child: ListBody(
-                    children: <Widget>[
-                      Divider(
-                        color: Colors.black,
-                      ),
-                      RolesDisplay(currentRoles),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: Base.allRoles.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              RoleModel thisRole =
-                              Base.allRoles[index];
-                              return SwitchListTile(
-                                title: Text(thisRole.toString()),
-                                value: currentRoles.contains(thisRole),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    if (value) {
-                                      currentRoles.add(thisRole);
-                                    } else {
-                                      currentRoles.removeWhere(
-                                          (element) => element == thisRole);
-                                    }
-                                  });
-                                },
-                              );
-                            }),
-                      ),
-                    ],
-                  ));
-                }),
+                      return SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Divider(
+                                color: Colors.black,
+                              ),
+                              RolesDisplay(currentRoles),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 3,
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: Base.allRoles.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      RoleModel thisRole =
+                                      Base.allRoles[index];
+                                      return SwitchListTile(
+                                        title: Text(thisRole.toString()),
+                                        value: currentRoles.contains(thisRole),
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            if (value) {
+                                              currentRoles.add(thisRole);
+                                            } else {
+                                              currentRoles.removeWhere(
+                                                      (element) => element == thisRole);
+                                            }
+                                          });
+                                        },
+                                      );
+                                    }),
+                              ),
+                            ],
+                          ));
+                    }),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),
@@ -220,44 +220,44 @@ class StudentPermissionsState extends State<StudentPermissions>
           if (studentSnapshot.hasData) {
             return Column(children: <Widget>[
               Container(
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                    Flexible(
-                        child: Container(
-                      margin: EdgeInsets.all(10),
-                  child:
-                        CustomTextFormField(
-                            "Rechercher...",
-                            "Prenom et/ou nom de l'élève",
-                            Icons.search,
-                            searchController))),
-                    Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                        padding: EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.0, color: Colors.black38),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: DropdownButton<String>(
-                          underline: Column(),
-                          value: selectedRole,
-                          onChanged: (String newValue) {
-                            setState(() {
-                              selectedRole = newValue;
-                            });
-                          },
-                          style: TextStyle(color: Colors.black54, fontSize: 15.0),
-                          items: dropDownRoles
-                              .map<DropdownMenuItem<String>>((String role) {
-                            return DropdownMenuItem<String>(
-                              value: role,
-                              child: Text(role),
-                            );
-                          }).toList(),
-                        )),
-                  ])),
+                        Flexible(
+                            child: Container(
+                                margin: EdgeInsets.all(10),
+                                child:
+                                CustomTextFormField(
+                                    "Rechercher...",
+                                    "Prenom et/ou nom de l'élève",
+                                    Icons.search,
+                                    searchController))),
+                        Container(
+                            margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
+                            padding: EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1.0, color: Colors.black38),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: DropdownButton<String>(
+                              underline: Column(),
+                              value: selectedRole,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  selectedRole = newValue;
+                                });
+                              },
+                              style: TextStyle(color: Colors.black54, fontSize: 15.0),
+                              items: dropDownRoles
+                                  .map<DropdownMenuItem<String>>((String role) {
+                                return DropdownMenuItem<String>(
+                                  value: role,
+                                  child: Text(role),
+                                );
+                              }).toList(),
+                            )),
+                      ])),
               Expanded(
                   child: ListView.builder(
                       itemCount: studentSnapshot.data.length,
@@ -267,17 +267,17 @@ class StudentPermissionsState extends State<StudentPermissions>
                         return (filter == null || filter == "") && selectedRole == "Tous"
                             ? _studentTile(student)
                             : (student.firstname
-                                        .toLowerCase()
-                                        .startsWith(filter.toLowerCase()) ||
-                                    student.lastname
-                                        .toLowerCase()
-                                        .startsWith(filter.toLowerCase()) ||
-                                    (student.firstname + " " + student.lastname)
-                                        .toLowerCase()
-                                        .startsWith(filter.toLowerCase())) &&
+                            .toLowerCase()
+                            .startsWith(filter.toLowerCase()) ||
+                            student.lastname
+                                .toLowerCase()
+                                .startsWith(filter.toLowerCase()) ||
+                            (student.firstname + " " + student.lastname)
+                                .toLowerCase()
+                                .startsWith(filter.toLowerCase())) &&
                             (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)))
-                                ? _studentTile(student)
-                                : new Container();
+                            ? _studentTile(student)
+                            : new Container();
                       }))
             ]);
           }
@@ -305,41 +305,41 @@ class StudentPermissionsState extends State<StudentPermissions>
                 title: Text(student.firstname + " " + student.lastname),
                 content: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                  return SingleChildScrollView(
-                      child: ListBody(
-                    children: <Widget>[
-                      Divider(
-                        color: Colors.black,
-                      ),
-                      RolesDisplay(currentRoles),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: Base.allRoles.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              RoleModel thisRole =
-                              Base.allRoles[index];
-                              return SwitchListTile(
-                                title: Text(thisRole.toString()),
-                                value: currentRoles.contains(thisRole),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    if (value) {
-                                      currentRoles.add(thisRole);
-                                    } else {
-                                      currentRoles.removeWhere(
-                                          (element) => element == thisRole);
-                                    }
-                                  });
-                                },
-                              );
-                            }),
-                      ),
-                    ],
-                  ));
-                }),
+                      return SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Divider(
+                                color: Colors.black,
+                              ),
+                              RolesDisplay(currentRoles),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 3,
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: Base.allRoles.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      RoleModel thisRole =
+                                      Base.allRoles[index];
+                                      return SwitchListTile(
+                                        title: Text(thisRole.toString()),
+                                        value: currentRoles.contains(thisRole),
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            if (value) {
+                                              currentRoles.add(thisRole);
+                                            } else {
+                                              currentRoles.removeWhere(
+                                                      (element) => element == thisRole);
+                                            }
+                                          });
+                                        },
+                                      );
+                                    }),
+                              ),
+                            ],
+                          ));
+                    }),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Enregistrer'),

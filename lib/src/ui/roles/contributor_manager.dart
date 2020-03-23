@@ -1,4 +1,9 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/ui/club/student_info.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/contributor_add.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,73 +15,207 @@ class ContributorManager extends StatefulWidget {
 }
 
 class ContributorManagerState extends State<ContributorManager> {
+  StudentsBloc studentsBloc = StudentsBloc();
+
+  final searchController = TextEditingController();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  List<StudentModel> allStudents;
+  List<StudentModel> contributors;
+  List<StudentModel> allStudentsExceptContributors;
+
+  FocusNode currentFocus;
+
+  String filter = "";
 
   @override
   void initState() {
+    studentsBloc.fetchAllStudents();
+    searchController.addListener(() {
+      setState(() {
+        filter = searchController.text;
+      });
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+    studentsBloc.dispose();
+    searchController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-            appBar: AppBar(
-              bottom: TabBar(
-                tabs: [
-                  Tab(
-                    icon: Icon(Icons.person),
-                    text: "Cotisants",
-                  ),
-                  Tab(
-                      icon: Icon(Icons.person_add),
-                      text: "Ajouts"
-                  ),
-                ],
+    return Scaffold(
+      key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text("Gestion cotisants BDE"),
+        ),
+        body: GestureDetector(
+            onTap: () {
+              currentFocus = FocusScope.of(context);
+              currentFocus.unfocus();
+            },
+            child: StreamBuilder(
+                stream: studentsBloc.allStudents,
+                builder: (context,
+                    AsyncSnapshot<List<StudentModel>> studentSnapshot) {
+                  if (studentSnapshot.hasData) {
+                    allStudents = studentSnapshot.data;
+                    contributors = allStudents.where((element) => element.contributor).toList();
+                    allStudentsExceptContributors = allStudents.where((element) => !contributors.contains(element)).toList();
+                    return Column(
+                      children: <Widget>[
+                        Container(
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                      child: Container(
+                                          margin: EdgeInsets.all(2),
+                                          child: ContributorAdd(this, allStudentsExceptContributors))),
+                                  Container(
+                                      margin: EdgeInsets.only(
+                                          top: 10, bottom: 10, right: 10),
+
+                                      child: _scanButton()),
+                                ])),
+                        Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(color: Colors.black12))),
+                            child: Flexible(
+                                child: Container(
+                                    margin: EdgeInsets.all(10),
+                                    child:
+                                    CustomTextFormField(
+                                        "Rechercher...",
+                                        "Prenom et/ou nom de l'élève",
+                                        Icons.search,
+                                        searchController,
+                                    focusNode: currentFocus,))),),
+                        Expanded(
+                            child: ListView.builder(
+                          itemCount: contributors.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            StudentModel student = contributors.elementAt(index);
+                            filter = searchController.text;
+                            return (filter == null || filter == "")
+                                ? _studentTile(student)
+                                : (student.firstname
+                                .toLowerCase()
+                                .startsWith(filter.toLowerCase()) ||
+                                student.lastname
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()) ||
+                                (student.firstname + " " + student.lastname)
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()))
+                                ? _studentTile(student)
+                                : new Container();
+
+                          },
+                        )),
+                      ],
+                    );
+                  }
+                  return Column();
+                })));
+
+
+  }
+
+  Widget _studentTile(StudentModel student) {
+    return ListTile(
+        title: Text(
+          student.firstname + " " + student.lastname,
+        ),
+        trailing: IconButton(
+          color: Colors.red,
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            deleteStudentFromContributor(student);
+          },
+        ),
+        onTap: () {
+          showDialog<void>(
+              context: context,
+              barrierDismissible: true,
+              // user must tap button!
+              builder: (BuildContext context) {
+                return StudentDetail(student);
+              });
+        });
+  }
+
+  void deleteStudentFromContributor(StudentModel student) {
+    if(student != null) {
+      student.contributor = false;
+      studentsBloc.updateStudent(student);
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Cotisant supprimé"),
+        backgroundColor: Colors.green,
+      ));
+    } else {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Erreur lors de la mise à jour"),
+        backgroundColor: Colors.red,
+      ));
+    }
+    setState(() {});
+  }
+
+  void addStudentToContributor(StudentModel student) {
+    if(student != null) {
+      student.contributor = true;
+      studentsBloc.updateStudent(student);
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Cotisant ajouté"),
+        backgroundColor: Colors.green,
+      ));
+    } else {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Erreur lors de la mise à jour"),
+        backgroundColor: Colors.red,
+      ));
+    }
+    setState(() {});
+  }
+
+  Widget _scanButton() {
+    return
+      RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(10.0),
+          ),
+          padding : EdgeInsets.only(
+              top: 16, bottom: 16, left: 7, right: 7),
+
+          color: Theme.of(context).primaryColor,
+          child: Text(
+                'scan'.toUpperCase(),
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              title: Text("Droits des utilisateurs"),
-            ),
-            body: Container(
-              child: TabBarView(
-                children: [
-                  Container(),
-                  Wrap(
-                    children: <Widget> [
-                      Text(barcode),
-                      RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(20.0),
-                          ),
-                          color: Theme.of(context).primaryColor,
-                          child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                'scan'.toUpperCase(),
-                                style: TextStyle(color: Colors.white, fontSize: 20),
-                              )),
-                          splashColor: Colors.white,
-                          onPressed: () {
-                            scan();
-                          }
-                      ),
-                    ]),
-                ],
-              ),
-            )
-        )
-    );
+          splashColor: Colors.white,
+          onPressed: () {
+            scan();
+          });
   }
 
   String barcode = "";
+
   Future scan() async {
     try {
-      String barcode = await BarcodeScanner.scan();
-      setState(() => this.barcode = barcode);
+      String idStudent = await BarcodeScanner.scan();
+      addStudentToContributor(allStudentsExceptContributors.firstWhere((element) => element.idStudent.toString() == idStudent));
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
@@ -85,8 +224,9 @@ class ContributorManagerState extends State<ContributorManager> {
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
-    } on FormatException{
-      setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+    } on FormatException {
+      setState(() => this.barcode =
+          'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
       setState(() => this.barcode = 'Unknown error: $e');
     }

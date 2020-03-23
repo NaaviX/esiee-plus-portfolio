@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:search_widget/search_widget.dart';
 
+import '../../App.dart';
 import 'club_member_manager.dart';
 
 class ClubAddMember extends StatefulWidget {
-  final ClubModel thisClub;
   final ClubMemberManagerState parent;
 
-  const ClubAddMember(this.thisClub, this.parent);
+  const ClubAddMember(this.parent);
 
   @override
   State<StatefulWidget> createState() {
@@ -54,7 +54,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
           stream: studentsBloc.allStudents,
           builder: (context, AsyncSnapshot<List<StudentModel>> snapshot) {
             if (snapshot.hasData) {
-              for(StudentModel student in widget.thisClub.students) {
+              for(StudentModel student in Base.thisClub.students) {
                 snapshot.data.removeWhere((element) => element.idStudent == student.idStudent);
               }
               return Form(
@@ -116,7 +116,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
   }
 
   Widget _popupListItemBuilder(StudentModel item) {
-    if(!widget.thisClub.students.contains(item)) {
+    if(!Base.thisClub.students.contains(item)) {
       return ListTile(
           subtitle: Text(
             item.firstname + " " + item.lastname + "\n" +
@@ -132,7 +132,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
                   backgroundColor: Colors.red,
                 ));
               } else {
-                clubsBloc.addStudentToClub(item, widget.thisClub);
+                clubsBloc.addStudentToClub(item, Base.thisClub);
                 Scaffold.of(context).showSnackBar(SnackBar(
                   duration: Duration(seconds: 1),
                   content: Text("Membre ajouté !"),

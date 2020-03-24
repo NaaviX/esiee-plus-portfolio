@@ -94,42 +94,28 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
     );
   }
 
-  /*Widget buildList() {
-    return new ListView(
-      children: this.unitsState.keys.map((GradesUnitModel unit) {
-        return new CheckboxListTile(
-          title: new Text(unit.name),
-          value: unitsState[unit],
-          onChanged: (bool value) {
-            setState(() {
-              log.log(Level.ALL, unit.id);
-              unitsState[unit] = value;
-            });
-          },
-        );
-      }).toList(),
-    );
-  }*/
-
   Widget buildList() {
     List _elements = this.unitsState.keys.toList();
-    //Theme.of(context).primaryColor;
-
     return GroupedListView<dynamic, String>(
         groupBy: (unit) => unit.section,
         elements: _elements,
         useStickyGroupSeparators: false,
+        separator: Container(),
         sort: false,
-        groupSeparatorBuilder: (String value) => Container(
-            color: Theme.of(context).primaryColor.withOpacity(0.2),
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                    child: Text(
-                      value,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ))
-            )),
+        groupSeparatorBuilder: (String value) => Column(
+            children: [
+              Divider(height: 20),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                      )
+                  )
+              )
+            ]
+        ),
         itemBuilder: (c, unit) {
           return Padding(
               padding: const EdgeInsets.all(8.0),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,63 +10,61 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class createEventForm extends StatefulWidget {
+  EventModel event;
+
   BuildContext context;
   EventsBloc bloc;
 
   TextEditingController titre, place, description, link, fblink, price;
 
-  GlobalKey<FormState> formKey;
-
   DateTime start, end, pub;
-  File image;
   String uploadedFileURL;
 
-  createEventForm({BuildContext context, EventsBloc bloc, TextEditingController titre, TextEditingController place, TextEditingController description,
-      TextEditingController link, TextEditingController fblink, TextEditingController price, GlobalKey<FormState> formKey,
-      DateTime start, DateTime end, DateTime pub, File image, String uploadedFileURL}){
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    if(this.bloc != null) this.bloc = this.bloc;
-    else this.bloc = EventsBloc();
-
-    if(this.titre != null) this.titre = this.titre;
-    else this.titre = TextEditingController();
-    if(this.place != null) this.place = this.place;
-    else this.place = TextEditingController();
-    if(this.description != null) this.description = this.description;
-    else this.description = TextEditingController();
-    if(this.link != null) this.link = this.link;
-    else this.link = TextEditingController();
-    if(this.fblink != null) this.fblink = this.fblink;
-    else this.fblink = TextEditingController();
-    if(this.price != null) this.price = this.price;
-    else this.price = TextEditingController();
-    if(this.formKey != null) this.formKey = this.formKey;
-    else this.formKey = GlobalKey<FormState>();
-    if(this.start != null) this.start = this.start;
-    else this.start = DateTime.now();
-    if(this.end != null) this.end = this.end;
-    else this.end = DateTime.now();
-    if(this.pub != null) this.pub = this.pub;
-    else this.pub = DateTime.now();
-    if(this.uploadedFileURL != null) this.uploadedFileURL = this.uploadedFileURL;
-    else this.uploadedFileURL = "null";
+  createEventForm({this.event}) {
+    if (event != null) {
+      this.event = this.event;
+      this.titre = TextEditingController(text: this.event.name);
+      this.place = TextEditingController(text: this.event.place,);
+      this.description = TextEditingController(text: this.event.description,);
+      this.link = TextEditingController(text: this.event.link,);
+      this.fblink = TextEditingController(text: this.event.facebookLink,);
+      this.price = TextEditingController(text: this.event.price.toString(),);
+      this.start = this.event.startDate;
+      this.end = this.event.endDate;
+      this.pub = this.event.publicationDate;
+      this.uploadedFileURL = this.event.backgroundUrl;
+    }
+    else {
+      this.titre = TextEditingController();
+      this.place = TextEditingController();
+      this.description = TextEditingController();
+      this.link = TextEditingController();
+      this.fblink = TextEditingController();
+      this.price = TextEditingController();
+      this.start = DateTime.now();
+      this.end = DateTime.now();
+      this.pub = DateTime.now();
+      this.uploadedFileURL = "null";
+    }
   }
+
   @override
   _createEventFormState createState() => _createEventFormState();
 }
 
 class _createEventFormState extends State<createEventForm> {
- @override
+  @override
   void initState() {
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.bloc.dispose();
-    widget.titre.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +74,13 @@ class _createEventFormState extends State<createEventForm> {
       child: SingleChildScrollView(
           child: Padding(
               padding: EdgeInsets.only(
-                  left: 20, top: 0, right: 20, bottom: 0),
+                  left: 20, top: 0, right: 20, bottom: 20),
               child: ConstrainedBox(
                   constraints: BoxConstraints(),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Titre
                         CustomTextFormField(
                           "Nom de l'événement",
@@ -92,7 +91,7 @@ class _createEventFormState extends State<createEventForm> {
                           requiredField: true,
                           maxLength: 100,
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Description
                         CustomTextFormField(
                           "Description",
@@ -102,7 +101,7 @@ class _createEventFormState extends State<createEventForm> {
                           type: "desc",
                           requiredField: true,
                         ),
-                        SizedBox(height: 10.0,),
+                        SizedBox(height: 15.0,),
                         //Dates
                         Container(
                             child: Row(
@@ -181,7 +180,7 @@ class _createEventFormState extends State<createEventForm> {
                               ],
                             )
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Lieu
                         CustomTextFormField(
                           "Lieu",
@@ -190,7 +189,7 @@ class _createEventFormState extends State<createEventForm> {
                           widget.place,
                           requiredField: true,
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Prix
                         CustomTextFormField(
                           "Prix",
@@ -200,7 +199,7 @@ class _createEventFormState extends State<createEventForm> {
                           keyboard: TextInputType.number,
                           requiredField: true,
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Lien de vente
                         CustomTextFormField(
                           "Lien de vente",
@@ -210,7 +209,7 @@ class _createEventFormState extends State<createEventForm> {
                           keyboard: TextInputType.url,
                           maxLength: 500,
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Lien facebook
                         CustomTextFormField(
                           "Lien Facebook",
@@ -220,7 +219,7 @@ class _createEventFormState extends State<createEventForm> {
                           keyboard: TextInputType.url,
                           maxLength: 500,
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 15.0),
                         //Image
                         _downloadImage(),
                       ]
@@ -259,19 +258,21 @@ class _createEventFormState extends State<createEventForm> {
           )
       );
 
+  File image;
+
   Color _verifImage() {
-    if (widget.image == null)
+    if (image == null)
       return Colors.grey.withOpacity(0.7);
     else
       return Colors.green.withOpacity(0.7);
   }
 
   Future chooseFile() async {
-    widget.image = null;
+    image = null;
     widget.uploadedFileURL = null;
     await FilePicker.getFile(type: FileType.image).then((file) {
       setState(() {
-        widget.image = file;
+        image = file;
       });
       uploadFile();
     });
@@ -281,7 +282,7 @@ class _createEventFormState extends State<createEventForm> {
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
         .child('couv_event/${widget.start.year}/${widget.titre.text.replaceAll(' ', '_')}');
-    StorageUploadTask uploadTask = storageReference.putFile(widget.image);
+    StorageUploadTask uploadTask = storageReference.putFile(image);
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {

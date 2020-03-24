@@ -122,7 +122,7 @@ padding: EdgeInsets.all(10),
                       ],
                     );
                   }
-                  return Column();
+                  return Center(child: CircularProgressIndicator(),);
                 })));
 
 

@@ -73,4 +73,13 @@ class EventApiProvider {
       throw Exception('Failed to update data');
     }
   }
+
+
+  Future<EventModel> deleteEvent(EventModel event) async {
+    final response = await client.delete(
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/"+event.idEvent.toString(),);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete event');
+    }
+  }
 }

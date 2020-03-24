@@ -88,16 +88,15 @@ class ContributorManagerState extends State<ContributorManager> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(color: Colors.black12))),
-                            child: Flexible(
-                                child: Container(
-                                    margin: EdgeInsets.all(10),
+padding: EdgeInsets.all(10),
+
                                     child:
                                     CustomTextFormField(
                                         "Rechercher...",
                                         "Prenom et/ou nom de l'élève",
                                         Icons.search,
                                         searchController,
-                                    focusNode: currentFocus,))),),
+                                    focusNode: currentFocus,),),
                         Expanded(
                             child: ListView.builder(
                           itemCount: contributors.length,

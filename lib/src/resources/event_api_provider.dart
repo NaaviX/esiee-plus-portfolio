@@ -26,7 +26,7 @@ class EventApiProvider {
     final response = await client.post(
         "http://137.74.197.140:8080/api-1-SNAPSHOT/event/add",
         body: {
-          'id_event': "0",
+          'id_event': event.idEvent.toString(),
           'enabled': event.enable.toString(),
           'publication_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate),
           'start_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate),

@@ -9,7 +9,9 @@ class BdeInfos extends StatelessWidget {
     ),
     body:ListView(children: <Widget>[
       ListTile(title: Text("SIRET : XXXXXXXXXXXXXXX"),),
-      ListTile(title: Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),)
+      ListTile(title: Text("SIREN : XXXXXXXXXXXXXXX"),),
+      ListTile(title: Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),),
+      ListTile(title: Text("RIB : FRXX XXXX XXXX XXXX XXXX XX"),)
     ],));
   }
 

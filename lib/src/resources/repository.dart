@@ -20,8 +20,6 @@ import 'club_api_provider.dart';
 import 'event_api_provider.dart';
 
 class Repository {
-  static String gradesID;
-  Repository({gradesID});
 
   final rolesApiProvider = RoleApiProvider();
   Future<List<RoleModel>> fetchAllRoles() => rolesApiProvider.fetchRoleList();
@@ -48,6 +46,8 @@ class Repository {
       studentApiProvider.fetchStudentList();
   Future<StudentModel> fetchStudent(String mailEsiee) =>
       studentApiProvider.fetchStudent(mailEsiee);
+  Future<StudentModel> fetchStudentById(String idStudent) =>
+      studentApiProvider.fetchStudentById(idStudent);
   Future<StudentModel> updateStudent(StudentModel student) =>
       studentApiProvider.updateStudent(student);
 

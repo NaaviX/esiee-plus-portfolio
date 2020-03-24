@@ -7,12 +7,12 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../App.dart';
 import 'event_creation.dart';
-import 'event_list.dart';
 
 class EventInfoPage extends StatefulWidget {
 
@@ -118,9 +118,9 @@ class EventInfoState extends State<EventInfoPage> {
         );
       else
         return list(
-          Icons.access_time,
-          'Le ' + formatDate(widget.event.startDate) + ' de' + DateFormat(' HH:mm','fr_FR').format(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.endDate)
-      );
+            Icons.access_time,
+            'Le ' + formatDate(widget.event.startDate) + ' de' + DateFormat(' HH:mm','fr_FR').format(widget.event.startDate) + DateFormat(' à HH:mm','fr_FR').format(widget.event.endDate)
+        );
     }
     else {
       return list(
@@ -210,21 +210,35 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.event_available, color: Colors.white,),
           splashColor: Colors.white,
           onPressed: () {
-            Eventbloc.addSaveEvent(widget.event);
+            if(widget.event.idEvent == 0) Eventbloc.addSaveEvent(widget.event);
+            else Eventbloc.updateEvent(widget.event);
+            Base.selectedIndex = 2;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
           }
       );
     }
     else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
-      return FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EventCreation()),
-          );
-        },
-        child: Icon(Icons.settings, color: Colors.white,),
-        backgroundColor: Theme.of(context).primaryColor,
+      return SpeedDial(
+        animatedIcon: AnimatedIcons.menu_arrow,
+        foregroundColor: Colors.white,
+        children: [
+          SpeedDialChild(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
+            },
+            child: Icon(Icons.edit, color: Colors.white,),
+            label: "Modifier",
+          ),
+          SpeedDialChild(
+            onTap: () {
+              Base.selectedIndex = 2;
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
+            },
+            backgroundColor: Colors.red,
+            child: Icon(Icons.delete, color: Colors.white,),
+            label: "Supprimer",
+          ),
+        ],
       );
     }
     else return Container();

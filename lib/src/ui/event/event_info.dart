@@ -224,7 +224,7 @@ class EventInfoState extends State<EventInfoPage> {
           onPressed: () {
             Eventbloc.addSaveEvent(widget.event);
             Base.selectedIndex = 2;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
           }
       );
     }

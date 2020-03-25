@@ -73,10 +73,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                eventInfo(snapshot.data[index]),
-              );
+              eventInfo(snapshot.data[index]);
             },
             child: Center(
               child: Column(
@@ -92,8 +89,13 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   eventInfo(EventModel event) {
-    if(widget.moderation == true) return MaterialPageRoute(builder: (context) => EventInfoPage(event : event, isModeration: true,));
-    else MaterialPageRoute(builder: (context) => EventInfoPage(event : event));
+    MaterialPageRoute route;
+    if(widget.moderation == true) route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event, isModeration: true,));
+    else route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event));
+    Navigator.push(
+      context,
+      route,
+    );
   }
 
   getCover(EventModel event, BuildContext context) {

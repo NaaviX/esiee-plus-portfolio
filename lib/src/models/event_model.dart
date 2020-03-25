@@ -17,7 +17,7 @@ class EventModel {
   String facebookLink;
   int idClubRef;
   bool enable;
-  int price;
+  double price;
 
   EventModel({
     this.idEvent,

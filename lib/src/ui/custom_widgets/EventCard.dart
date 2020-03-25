@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -67,17 +68,22 @@ class EventCard extends StatelessWidget {
   }
 
   _isEnded(context) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())))
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now()))
       return Container(
           height: 150,
           width: MediaQuery
               .of(context)
               .size
               .width,
-          child: Center(child: Text(("terminé").toUpperCase(),
-              style: TextStyle(fontWeight: FontWeight.bold,
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 30.0))),
+          child: Center(
+              child: AutoSizeText(
+                  (_text()).toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold,
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 30.0),
+                maxLines: 1,
+              )
+          ),
           margin: EdgeInsets.only(
               bottom: 0.0, left: 15.0, right: 15.0)
       );
@@ -85,7 +91,14 @@ class EventCard extends StatelessWidget {
   }
 
   _filter() {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut);
     else return null;
+  }
+
+  _text() {
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "termié";
+    else if(event.enable == false) return "en attente d'approbation";
+    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
+    else return "";
   }
 }

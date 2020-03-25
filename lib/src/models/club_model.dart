@@ -14,9 +14,9 @@ class ClubModel {
   String name;
   String mail;
 
-  int price;
+  double price;
   String contact;
-  int solde;
+  double solde;
   String description;
   String urlPhoto;
   List<RoleModel> roles;

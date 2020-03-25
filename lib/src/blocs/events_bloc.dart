@@ -23,10 +23,6 @@ class EventsBloc {
 
   }
 
-  updateEvent(EventModel event) async {
-    EventModel eventmodel = await _repository.updateEvent(event);
-  }
-
   addSaveEvent(EventModel event) async {
     EventModel eventmodel = await _repository.addSaveEvent(event);
   }

@@ -44,7 +44,7 @@ class GradesList extends StatelessWidget {
           return GestureDetector(
               onTap: () {
                 saveGrade(snapshot.data[index]);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => GradeUnitsList(grades: snapshot.data[index] )));//GradeUnitsCheckList( unitsState: {GradesUnitModel(name: 'Groupe 1', id: 01): false, GradesUnitModel(name: 'Groupe 2', id: 02): false} )));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GradeUnitsList(grades: snapshot.data[index] )));//GradeUnitsCheckList( unitsState: {GradesUnitModel(name: 'Groupe 1', id: 01): false, GradesUnitModel(name: 'Groupe 2', id: 02): false} )));
               },
               child: Padding(
                   padding: EdgeInsets.only(top:2.0, bottom: 0.0, left: 10.0, right: 10.0),

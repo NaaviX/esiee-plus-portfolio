@@ -13,6 +13,13 @@ import 'event_creation.dart';
 import 'event_info.dart';
 
 class EventList extends StatefulWidget {
+  bool moderation;
+
+  EventList({this.moderation}) {
+    if(this.moderation != null) this.moderation = this.moderation;
+    else this.moderation = false;
+  }
+
   @override
   State<StatefulWidget> createState() {
     return EventListState();
@@ -68,7 +75,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => EventInfoPage(event : snapshot.data[index])),
+                eventInfo(snapshot.data[index]),
               );
             },
             child: Center(
@@ -84,17 +91,33 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
     );
   }
 
+  eventInfo(EventModel event) {
+    if(widget.moderation == true) return MaterialPageRoute(builder: (context) => EventInfoPage(event : event, isModeration: true,));
+    else MaterialPageRoute(builder: (context) => EventInfoPage(event : event));
+  }
+
   getCover(EventModel event, BuildContext context) {
-    if(Base.thisClub != null && selected!="Tous") {
-      if(event.idClubRef==Base.thisClub.idClubRef && selected=="Mes évents")
-        return EventCard(event, context);
+    if(widget.moderation == true) {
+      if(event.endDate.isAfter(DateTime.now())) return EventCard(event, context);
       else return Container();
     }
-    else return EventCard(event, context);
+    else if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
+      if (Base.thisClub != null && selected != "Tous") {
+        if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents") return EventCard(event, context);
+        else return Container();
+      }
+      else
+        return EventCard(event, context);
+    }
+    else if (Base.thisClub != null && selected == "En attente") {
+      if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(event, context);
+      else return Container();
+    }
+    else return Container();
   }
 
   creationButton() {
-    if(Base.thisClub != null)
+    if(Base.thisClub != null && widget.moderation!=true)
       return FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -108,36 +131,46 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   String selected = "Mes évents";
-  List<String> list = ["Tous", "Mes évents"];
+  List<String> list = ["Tous", "Mes évents", "En attente"];
 
   dropDown() {
-    return  Container(
-        width: (500),
-        margin: EdgeInsets.only(left: 10, top: 10, right: 10),
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.0, color: Colors.black38),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: DropdownButton<String>(
-          isExpanded: true,
-          underline: Column(),
-          value: selected,
-          onChanged: (String newValue) {
-            setState(() {
-              selected = newValue;
-            });
-          },
-          style: TextStyle(color: Colors.black54, fontSize: 15.0),
-          items: list
-              .map<DropdownMenuItem<String>>((String role) {
-            return DropdownMenuItem<String>(
-              value: role,
-              child: Text(role),
-            );
-          }).toList(),
-        )
-    );
+    if(widget.moderation!=true) {
+      return Container(
+          width: (500),
+          margin: EdgeInsets.only(left: 10, top: 10, right: 10),
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1.0, color: Colors.black38),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: DropdownButton<String>(
+                isExpanded: true,
+                underline: Column(),
+                value: selected,
+                onChanged: (String newValue) {
+                  setState(() {
+                    selected = newValue;
+                  });
+                },
+                items: list.map<DropdownMenuItem<String>>((String role) {
+                  return DropdownMenuItem<String>(
+                    value: role,
+                    child: Text(
+                        role,
+                        style: TextStyle(
+                            color: role == selected ? Colors.black : Colors
+                                .black54,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold)
+                    ),
+                  );
+                }).toList(),
+              ))
+      );
+    }
+    else return Container();
   }
 
   getList(AsyncSnapshot<List<EventModel>> snapshot) {

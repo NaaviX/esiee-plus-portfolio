@@ -1,11 +1,8 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/ui/club/student_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/contributor_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:search_widget/search_widget.dart';
 
 // ignore: must_be_immutable
@@ -84,7 +81,7 @@ class ContributorAddState extends State<ContributorAdd> {
                   widget.parent.currentFocus = focusNode;
                   return CustomTextFormField(
                       "Ajouter un membre", "Prenom ou nom de l'élève",
-                      Icons.search, controller, focusNode: focusNode);
+                      Icons.person_add, controller, focusNode: focusNode);
                 },
               )
           ),

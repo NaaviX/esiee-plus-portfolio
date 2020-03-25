@@ -18,15 +18,19 @@ class EventInfoPage extends StatefulWidget {
 
   EventModel event;
   bool isValidator;
-  EventInfoPage({this.event, this.isValidator}) {
+  bool isModeration;
+
+  EventInfoPage({this.event, this.isValidator, this.isModeration}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
+
+    if(this.isModeration != null) this.isModeration = this.isModeration;
+    else this.isModeration = false;
   }
 
   @override
   State<StatefulWidget> createState() {
     return EventInfoState();
-
   }
 }
 
@@ -50,7 +54,7 @@ class EventInfoState extends State<EventInfoPage> {
   @override Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
+          title: _title(),
       ),
       body: StreamBuilder(
           stream: bloc.thisClub,
@@ -95,7 +99,7 @@ class EventInfoState extends State<EventInfoPage> {
                     list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
                     list(Icons.payment, widget.event.link),
                     list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
-
+                    _validationMod(),
                   ]
               );
             }
@@ -204,10 +208,18 @@ class EventInfoState extends State<EventInfoPage> {
     );
   }
 
+  _title() {
+    if(widget.isValidator) return Text("Preview");
+    else return Text("");
+  }
+
   _manage(int clubRef) {
-    if(widget.isValidator) {
+    if(widget.isModeration) {
+      return null;
+    }
+    else if(widget.isValidator) {
       return FloatingActionButton(
-          child: Icon(Icons.event_available, color: Colors.white,),
+          child: Icon(Icons.check, color: Colors.white,),
           splashColor: Colors.white,
           onPressed: () {
             Eventbloc.addSaveEvent(widget.event);
@@ -230,6 +242,7 @@ class EventInfoState extends State<EventInfoPage> {
           ),
           SpeedDialChild(
             onTap: () {
+              Eventbloc.deleteEvent(widget.event);
               Base.selectedIndex = 2;
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
             },
@@ -241,5 +254,14 @@ class EventInfoState extends State<EventInfoPage> {
       );
     }
     else return Container();
+  }
+
+  _validationMod() {
+    return Container(
+      //CODE DE MAXIME
+      //affiche Validé (o=) si l'évent n'est pas validé par le BDE
+      //affiche Validé (=o) sinon
+      //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
+    );
   }
 }

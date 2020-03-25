@@ -86,7 +86,7 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           saveUnitsState();
-          Navigator.push( context, MaterialPageRoute(builder: (context) => App()));
+          Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => App()));
         },
         child: Icon(Icons.save),
         backgroundColor: Colors.green,

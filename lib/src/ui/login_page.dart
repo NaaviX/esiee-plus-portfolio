@@ -10,14 +10,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-
   @override
-  void initState() {
-    if (user != null) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return App();
-      }));
+  void setState(fn) {
+    if(mounted){
+      super.setState(fn);
     }
   }
 
@@ -41,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 50),
               Image(image: AssetImage('assets/logoDjango.png'), width: 300),
               SizedBox(height: 50),
-              _isLoading ? CircularProgressIndicator() : _signInButton(),
+              _isLoading ? CircularProgressIndicator() : _signInButton(context),
             ],
           ),
         ),
@@ -49,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _signInButton() {
+  Widget _signInButton(BuildContext context) {
     return RaisedButton(
 
         child: Text("Se connecter avec Google"),
@@ -58,10 +54,14 @@ class _LoginPageState extends State<LoginPage> {
           user = await signInWithGoogle();
           setState(() => _isLoading = false);
           if (user != null) {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              return new App();
-            }));
+            if(!user.email.endsWith("esiee.fr")) {
+              signOutGoogle();
+              Scaffold.of(context).showSnackBar(new SnackBar(
+                duration: Duration(seconds: 3),
+                content: Text("Utilisateur non autorisé"),
+                backgroundColor: Colors.red,
+              ));
+            }
           }
         });
   }

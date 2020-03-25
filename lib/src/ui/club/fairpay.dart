@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-class Fairpay extends StatefulWidget {
+import '../../App.dart';
 
-  final ClubModel thisClub;
-  const Fairpay(this.thisClub);
+class Fairpay extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +22,7 @@ class FairpayState extends State<Fairpay>{
   @override
   void initState() {
     super.initState();
-    Logbloc.fetchAllLogs();
+    Logbloc.fetchClubLogs(Base.thisClub.idClubRef.toString());
   }
 
   @override
@@ -41,7 +40,7 @@ class FairpayState extends State<Fairpay>{
           title: Text("Fairpay"),
         ),
         body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
+          stream: Logbloc.ClubFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(
@@ -75,8 +74,8 @@ class FairpayState extends State<Fairpay>{
             Center(
               child: Padding(
                 padding: EdgeInsets.all(20.0),
-                child: Text("${widget.thisClub.solde.toString()}  €",
-                    style: TextStyle(color: Colors.blueAccent, fontSize: 30.0, fontWeight: FontWeight.bold)),
+                child: Text("${Base.thisClub.solde.toString()}  €",
+                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 30.0, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

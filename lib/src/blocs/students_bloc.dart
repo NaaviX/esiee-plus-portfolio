@@ -22,6 +22,23 @@ class StudentsBloc {
     _studentFetcher.sink.add(studentModel);
   }
 
+  fetchStudentById(String idStudent) async {
+    StudentModel studentModel = await _repository.fetchStudentById(idStudent);
+    _studentFetcher.sink.add(studentModel);
+  }
+
+  updateStudent(StudentModel student) async {
+    await _repository.updateStudent(student);
+  }
+
+  fetchAllStudentClubs(StudentModel student) async {
+    List<ClubModel> studentClubs=await _repository.fetchAllClubs();
+    studentClubs.removeWhere((element) => !element.students.contains(student));
+    return studentClubs;
+  }
+
+
+
   dispose() {
     _studentsFetcher.close();
     _studentFetcher.close();

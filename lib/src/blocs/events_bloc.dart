@@ -18,6 +18,11 @@ class EventsBloc {
     _eventsFetcher.sink.add(eventmodel);
   }
 
+  deleteEvent(EventModel event) async {
+    await _repository.deleteEvent(event);
+
+  }
+
   updateEvent(EventModel event) async {
     EventModel eventmodel = await _repository.updateEvent(event);
   }

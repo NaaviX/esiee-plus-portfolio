@@ -84,7 +84,7 @@ class ContributorAddState extends State<ContributorAdd> {
                   widget.parent.currentFocus = focusNode;
                   return CustomTextFormField(
                       "Ajouter un membre", "Prenom ou nom de l'élève",
-                      Icons.search, controller, focusNode: focusNode);
+                      Icons.person_add, controller, focusNode: focusNode);
                 },
               )
           ),

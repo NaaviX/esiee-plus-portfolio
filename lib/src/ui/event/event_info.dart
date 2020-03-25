@@ -210,8 +210,7 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.event_available, color: Colors.white,),
           splashColor: Colors.white,
           onPressed: () {
-            if(widget.event.idEvent == 0) Eventbloc.addSaveEvent(widget.event);
-            else Eventbloc.updateEvent(widget.event);
+            Eventbloc.addSaveEvent(widget.event);
             Base.selectedIndex = 2;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
           }
@@ -231,6 +230,7 @@ class EventInfoState extends State<EventInfoPage> {
           ),
           SpeedDialChild(
             onTap: () {
+              Eventbloc.deleteEvent(widget.event);
               Base.selectedIndex = 2;
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
             },

@@ -119,24 +119,27 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
           border: Border.all(width: 1.0, color: Colors.black38),
           borderRadius: BorderRadius.circular(10.0),
         ),
-        child: DropdownButton<String>(
-          isExpanded: true,
-          underline: Column(),
-          value: selected,
-          onChanged: (String newValue) {
-            setState(() {
-              selected = newValue;
-            });
-          },
-          style: TextStyle(color: Colors.black54, fontSize: 15.0),
-          items: list
-              .map<DropdownMenuItem<String>>((String role) {
-            return DropdownMenuItem<String>(
-              value: role,
-              child: Text(role),
-            );
-          }).toList(),
-        )
+        child: Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              underline: Column(),
+              value: selected,
+              onChanged: (String newValue) {
+                setState(() {
+                  selected = newValue;
+                });
+              },
+              items: list.map<DropdownMenuItem<String>>((String role) {
+                return DropdownMenuItem<String>(
+                  value: role,
+                  child: Text(
+                      role,
+                      style: TextStyle(color: role == selected ? Colors.black : Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold)
+                  ),
+                );
+              }).toList(),
+            ))
     );
   }
 

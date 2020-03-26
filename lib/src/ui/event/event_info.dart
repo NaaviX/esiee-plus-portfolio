@@ -136,7 +136,7 @@ class EventInfoState extends State<EventInfoPage> {
   Container list(IconData icon, String text)
   {
     bool hyperlink = false;
-    if(text == "0 €") text = "Gratuit";
+    if(text == "0.0 €") text = "Gratuit";
     if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = true;
     if(text != null && text !="") {
       return Container(
@@ -244,7 +244,7 @@ class EventInfoState extends State<EventInfoPage> {
             onTap: () {
               Eventbloc.deleteEvent(widget.event);
               Base.selectedIndex = 2;
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => App()));
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
             },
             backgroundColor: Colors.red,
             child: Icon(Icons.delete, color: Colors.white,),

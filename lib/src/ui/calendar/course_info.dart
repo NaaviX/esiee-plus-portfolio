@@ -62,7 +62,8 @@ class EventInfoState extends State<CourseInfoPage> {
               padding: EdgeInsets.all(15),
               alignment: Alignment.topCenter,
               child: Text(day(widget.course.start),
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+              )
           ),
           Container(
               padding: EdgeInsets.fromLTRB(15, 0, 15, 0),

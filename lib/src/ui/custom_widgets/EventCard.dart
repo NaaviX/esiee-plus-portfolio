@@ -96,7 +96,7 @@ class EventCard extends StatelessWidget {
   }
 
   _text() {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "termié";
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
     else if(event.enable == false) return "en attente d'approbation";
     else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
     else return "";

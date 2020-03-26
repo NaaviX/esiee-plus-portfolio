@@ -256,12 +256,19 @@ class EventInfoState extends State<EventInfoPage> {
     else return Container();
   }
 
+  bool _isEnabled = false;
+
   _validationMod() {
-    return Container(
+    return SwitchListTile(
       //CODE DE MAXIME
       //affiche Validé (o=) si l'évent n'est pas validé par le BDE
       //affiche Validé (=o) sinon
       //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
+      title:const Text('Autorisé ?'),
+      value: _isEnabled,
+
+      activeTrackColor: Colors.green,
+      inactiveTrackColor: Colors.red,
     );
   }
 }

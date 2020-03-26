@@ -33,7 +33,7 @@ class ClubsBloc {
 
   fetchTotalAmount() async {
     List<ClubModel> clubModel = await _repository.fetchAllClubs();
-    int total = 0;
+    double total = 0;
     for(ClubModel c in clubModel){
       total += c.solde;
     }

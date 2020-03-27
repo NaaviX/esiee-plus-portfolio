@@ -15,6 +15,7 @@ class CoursesApiProvider {
       body: json.encode({'ids': units_ids}),
       headers: {"Content-Type": "application/json"}
     );
+
     if (response.statusCode == 200) {
       return CourseModel.allCoursesFromJson( json.decode(response.body) as List );
     }

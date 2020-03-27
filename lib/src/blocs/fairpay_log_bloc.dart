@@ -21,6 +21,11 @@ class FairpayLogBloc {
     _fpLogFetcher.sink.add(fairpaylogmodel);
   }
 
+  addLog(FairpayLogModel log) async {
+    FairpayLogModel logModel = await _repository.addLog(log);
+    return logModel;
+  }
+
   dispose() {
     _fpAllLogFetcher.close();
     _fpLogFetcher.close();

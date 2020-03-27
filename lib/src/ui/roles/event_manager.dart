@@ -1,4 +1,4 @@
-import 'package:bde_esiee_mobile/src/ui/event/disabled__event.dart';
+import 'package:bde_esiee_mobile/src/ui/event/disabled_event.dart';
 import 'package:flutter/material.dart';
 
 class EventManager extends StatelessWidget {

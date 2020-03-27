@@ -74,7 +74,7 @@ class ClubListState extends State<ClubList> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data[index])),
+                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data[index]),),
                 );
               },
             );
@@ -186,50 +186,6 @@ class ClubInfoPage extends StatelessWidget{
             ]
         )
     );
-
-    /*GestureDetector(
-              child: Hero(
-                tag: 'logoClub'+club.idClubRef.toString(),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(club.urlPhoto),
-                  backgroundColor: Colors.transparent,
-                  radius:100,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),*/
-
-    /*Column(
-      children: <Widget> [
-      Container(
-          width: MediaQuery.of(context).size.width,
-          height: 150.0,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage("https://bde.esiee.fr/bundles/applicationbde/img/couverture.png")
-            ),
-            color: Colors.white,
-          ),
-      ),
-    Container(
-      margin: EdgeInsets.only(top: -50),
-      child: GestureDetector(
-        child: Hero(
-          tag: 'logoClub'+club.idClubRef.toString(),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(club.urlPhoto),
-            backgroundColor: Colors.white,
-            radius: 100,
-          ),
-        ),
-      ),
-    ),
-        ]
-      )
-    );*/
   }
 }
 

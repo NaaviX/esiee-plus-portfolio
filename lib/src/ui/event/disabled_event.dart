@@ -27,10 +27,7 @@ class DisabledEventListState extends State<DisabledEventList>  with AutomaticKee
   Widget build(BuildContext context){
     return Scaffold(
 
-        body: EventList(moderation: true,),
+      body: EventList(moderation: true,),
     );
   }
 }
-
-
-

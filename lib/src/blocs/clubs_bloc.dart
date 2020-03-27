@@ -52,8 +52,10 @@ class ClubsBloc {
     await _repository.updateClub(club);
   }
 
-
-
+  editSolde(ClubModel club, double diff) async {
+    club.solde += diff;
+    await _repository.updateClub(club);
+  }
 
   dispose() {
     _clubsFetcher.close();

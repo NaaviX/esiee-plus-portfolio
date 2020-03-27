@@ -86,7 +86,7 @@ class FairpayState extends State<Fairpay>{
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return transactionRow(snapshot.data[index].amount, snapshot.data[index].date, snapshot.data[index].description, oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+          return transactionRow(snapshot.data[index].amount, snapshot.data[index].date, snapshot.data[index].info, oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
         }
     );
   }

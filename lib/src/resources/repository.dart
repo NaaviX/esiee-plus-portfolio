@@ -32,8 +32,7 @@ class Repository {
   final clubsApiProvider = ClubApiProvider();
   Future<List<ClubModel>> fetchAllClubs() => clubsApiProvider.fetchClubList();
   Future<ClubModel> fetchClubByMail(String mail) => clubsApiProvider.fetchClubByMail(mail);
-  Future<ClubModel> updateClub(ClubModel club) =>
-      clubsApiProvider.updateClub(club);
+  Future<ClubModel> updateClub(ClubModel club) => clubsApiProvider.updateClub(club);
 
   final profApiProvider = ProfApiProvider();
   Future<List<ProfModel>> fetchAllProfs() =>
@@ -65,5 +64,6 @@ class Repository {
   final fairpayLogApiProvider = FairpayLogApiProvider();
   Future<List<FairpayLogModel>> fetchFairpayLogs() => fairpayLogApiProvider.fetchFairpayLogList();
   Future<List<FairpayLogModel>> fetchLogsByClub(String id) => fairpayLogApiProvider.fetchLogsByClub(id);
+  Future<FairpayLogModel> addLog(FairpayLogModel log) => fairpayLogApiProvider.addLog(log);
 
 }

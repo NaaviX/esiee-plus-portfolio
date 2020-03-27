@@ -7,7 +7,7 @@ class FairpayLogModel {
   DateTime date;
   String type;
   double amount;
-  String description;
+  String info;
   int idClubRef;
 
   FairpayLogModel({
@@ -15,7 +15,7 @@ class FairpayLogModel {
     this.date,
     this.type,
     this.amount,
-    this.description,
+    this.info,
     this.idClubRef
   });
 
@@ -27,7 +27,7 @@ class FairpayLogModel {
       e.date = DateTime.parse(parsedJson["date"]);
       e.type = parsedJson["type"];
       e.amount = parsedJson["montant"];
-      e.description = parsedJson["info"];
+      e.info = parsedJson["info"];
       e.idClubRef = parsedJson["idClubRef"];
     }
     return e;
@@ -36,6 +36,16 @@ class FairpayLogModel {
   static List<FairpayLogModel> allFairpayLogFromJson(List<dynamic> jsonData) {
     return new List<FairpayLogModel>.from(
         jsonData.map((x) => FairpayLogModel.fromJson(x)));
+  }
+
+  String get userName{
+    List<String> splitDescription = this.info.split(" :: ");
+    return splitDescription.length > 1 ? splitDescription[0] : "unknown";
+  }
+
+  String get description{
+    List<String> splitDescription = this.info.split(" :: ");
+    return splitDescription.length > 1 ? splitDescription[1] : splitDescription[0];
   }
 
 }

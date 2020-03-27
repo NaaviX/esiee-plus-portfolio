@@ -5,14 +5,16 @@ class BdeInfos extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Informations BDE"),
-    ),
-    body:ListView(children: <Widget>[
-      ListTile(title: Text("SIRET : XXXXXXXXXXXXXXX"),),
-      ListTile(title: Text("SIREN : XXXXXXXXXXXXXXX"),),
-      ListTile(title: Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),),
-      ListTile(title: Text("RIB : FRXX XXXX XXXX XXXX XXXX XX"),)
-    ],));
+          title: Text("Informations BDE"),
+        ),
+        body:ListView(children: <Widget>[
+          ListTile(title: Text("SIRET : XXXXXXXXXXXXXXX"),),
+          ListTile(title: Text("SIREN : XXXXXXXXXXXXXXX"),),
+          ListTile(title: Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),),
+          ListTile(title: Text("RIB : FRXX XXXX XXXX XXXX XXXX XX"),)
+        ]
+      )
+    );
   }
 
 

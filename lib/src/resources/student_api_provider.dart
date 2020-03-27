@@ -72,7 +72,7 @@ class StudentApiProvider {
             "&phone=" +
             student.phone.toString() +
             "&is_contributor=" +
-            student.contributor.toString() +
+            student.isContributor.toString() +
             "&url_photo=" +
             student.urlPhoto.toString() +
             "&classes=" +

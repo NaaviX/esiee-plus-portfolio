@@ -91,7 +91,7 @@ class ContributorAddState extends State<ContributorAdd> {
   }
 
   Widget _popupListItemBuilder(StudentModel item) {
-    if (!item.contributor) {
+    if (!item.isContributor) {
       return ListTile(
           subtitle: Text(
             item.firstname + " " + item.lastname + "\n" +
@@ -102,8 +102,6 @@ class ContributorAddState extends State<ContributorAdd> {
             icon: Icon(Icons.add_circle_outline, color: Colors.green,),
             onPressed: () {
               widget.parent.addStudentToContributor(item);
-
-
               widget.parent.currentFocus.unfocus();
             },))
       );

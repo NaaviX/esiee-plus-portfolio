@@ -16,7 +16,7 @@ class StudentModel {
   String lastname;
   String promo;
   String phone;
-  bool contributor;
+  bool isContributor;
   String urlPhoto;
   List<RoleModel> roles;
   List<ClubModel> clubs;
@@ -31,7 +31,7 @@ class StudentModel {
     this.lastname,
     this.promo,
     this.phone,
-    this.contributor,
+    this.isContributor,
     this.urlPhoto,
     this.roles,
     this.clubs
@@ -47,7 +47,7 @@ class StudentModel {
       e.lastname = parsedJson["lastname"];
       e.promo = parsedJson["promo"];
       e.phone = parsedJson["phone"];
-      e.contributor = parsedJson["contributor"];
+      e.isContributor = parsedJson["contributor"];
       e.urlPhoto = parsedJson["urlPhoto"];
       e.roles = RoleModel.allRolesFromJson(parsedJson["roles"]);
       e.clubs = new List();

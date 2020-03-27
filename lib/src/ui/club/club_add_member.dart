@@ -125,7 +125,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
           trailing: IconButton(
             icon: Icon(Icons.add_circle_outline, color: Colors.green,),
             onPressed: () {
-              if(!item.contributor) {
+              if(!item.isContributor) {
                 Scaffold.of(context).showSnackBar(SnackBar(
                   duration: Duration(seconds: 1),
                   content: Text("Erreur : cet élève n'est pas cotisant au BDE"),

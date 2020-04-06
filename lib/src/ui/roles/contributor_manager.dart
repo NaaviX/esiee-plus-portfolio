@@ -65,7 +65,7 @@ class ContributorManagerState extends State<ContributorManager> {
                     AsyncSnapshot<List<StudentModel>> studentSnapshot) {
                   if (studentSnapshot.hasData) {
                     allStudents = studentSnapshot.data;
-                    contributors = allStudents.where((element) => element.contributor).toList();
+                    contributors = allStudents.where((element) => element.isContributor).toList();
                     allStudentsExceptContributors = allStudents.where((element) => !contributors.contains(element)).toList();
                     return Column(
                       children: <Widget>[
@@ -153,7 +153,7 @@ padding: EdgeInsets.all(10),
 
   void deleteStudentFromContributor(StudentModel student) {
     if(student != null) {
-      student.contributor = false;
+      student.isContributor = false;
       studentsBloc.updateStudent(student);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         duration: Duration(seconds: 1),
@@ -172,13 +172,17 @@ padding: EdgeInsets.all(10),
 
   void addStudentToContributor(StudentModel student) {
     if(student != null) {
-      student.contributor = true;
-      studentsBloc.updateStudent(student);
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text("Cotisant ajouté"),
-        backgroundColor: Colors.green,
-      ));
+      if(!student.isContributor){
+        student.isContributor = true;
+        studentsBloc.updateStudent(student);
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(seconds: 1),
+              content: Text("Cotisant ajouté"),
+              backgroundColor: Colors.green,
+            )
+        );
+      }
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         duration: Duration(seconds: 1),
@@ -214,7 +218,16 @@ padding: EdgeInsets.all(10),
   Future scan() async {
     try {
       String idStudent = await BarcodeScanner.scan();
-      addStudentToContributor(allStudentsExceptContributors.firstWhere((element) => element.idStudent.toString() == idStudent));
+      StudentModel student =  allStudents.firstWhere((element) => element.idStudent.toString() == idStudent) ?? StudentModel();
+      if(!student.isContributor)
+        addStudentToContributor(student);
+      else _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 2),
+            content: Text("Cet élève est déjà cotisant"),
+            backgroundColor: Colors.green,
+          )
+      );
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {

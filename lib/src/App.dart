@@ -4,23 +4,27 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/Treasury/fairpay_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_dashboard.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/Treasury/treasury_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/contributor_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
+//import 'package:bde_esiee_mobile/src/ui/roles/trez/old/fairpay_manager.dart';
+//import 'package:bde_esiee_mobile/src/ui/roles/trez/old/treasury_dashboard.dart';
+//import 'package:bde_esiee_mobile/src/ui/roles/trez/old/treasury_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_dashboard.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/settings.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/bde_infos.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/admin/bde_infos.dart';
+import 'package:bde_esiee_mobile/src/ui/student/annals.dart';
 import 'package:bde_esiee_mobile/src/ui/student/class_document.dart';
 import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/club/fairpay.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
-import 'package:bde_esiee_mobile/src/ui/messenger.dart';
+import 'package:bde_esiee_mobile/src/ui/messenger/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/stock.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/user_permissions.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/admin/user_permissions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,46 +65,46 @@ class AppState extends State<App> {
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
-            user = snapshot.data;
-            //user is logged in
-            return MaterialApp(
-              home: Base(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-              theme: ThemeData(
-                  primaryColor: primaryColor,
-                  accentColor: primaryColor,
-                  accentColorBrightness: Brightness.light
-              ),
-            );
-          } else {
+        if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
+          user = snapshot.data;
+          //user is logged in
+          return MaterialApp(
+            home: Base(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ],
+            theme: ThemeData(
+                primaryColor: primaryColor,
+                accentColor: primaryColor,
+                accentColorBrightness: Brightness.light
+            ),
+          );
+        } else {
 //user not logged in
-            return MaterialApp(
-              home: LoginPage(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-              theme: ThemeData(
-                  primaryColor: primaryColor,
-                  accentColor: primaryColor,
-                  accentColorBrightness: Brightness.light
-              ),
-            );
-          }
+          return MaterialApp(
+            home: LoginPage(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ],
+            theme: ThemeData(
+                primaryColor: primaryColor,
+                accentColor: primaryColor,
+                accentColorBrightness: Brightness.light
+            ),
+          );
+        }
 
       },
     );
@@ -230,7 +234,7 @@ class _Base extends State<Base> {
     ];
     return Scaffold(
         appBar:
-            AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex))),
+        AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex))),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
@@ -243,39 +247,39 @@ class _Base extends State<Base> {
   Widget _getDrawer() {
     return Drawer(
         child: ListView(children: <Widget>[
-      ListTile(
-        leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-        title: Text(user.displayName),
-        subtitle: Text(user.email),
-      ),
-      ListTile(
-        leading: Icon(Icons.settings),
-        title: new Text("Paramètres"),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return Settings();
-          }));
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.power_settings_new),
-        title: new Text(Translations.of(context).text("deco")),
-        onTap: () async {
-          Navigator.of(context).pop();
-          signOutGoogle();
-          Base.selectedIndex = 0;
+          ListTile(
+            leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+            title: Text(user.displayName),
+            subtitle: Text(user.email),
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: new Text("Paramètres"),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return Settings();
+              }));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.power_settings_new),
+            title: new Text(Translations.of(context).text("deco")),
+            onTap: () async {
+              Navigator.of(context).pop();
+              signOutGoogle();
+              Base.selectedIndex = 0;
 
 
-        },
-      ),
-      _adminMenu(),
-      _modoMenu(),
-      _trezMenu(),
-      _logMenu(),
-      _clubMenu(),
-      _studentMenu(),
-      _profMenu()
-    ]));
+            },
+          ),
+          _adminMenu(),
+          _modoMenu(),
+          _trezMenu(),
+          _logMenu(),
+          _clubMenu(),
+          _studentMenu(),
+          _profMenu()
+        ]));
   }
 
   Widget _profMenu() {
@@ -422,7 +426,7 @@ class _Base extends State<Base> {
           title: Text("Annales"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return; //AnnalsList();
+              return AnnalsList(); //AnnalsList();
             }));
           },
         ),
@@ -442,8 +446,8 @@ class _Base extends State<Base> {
 
   Widget _adminMenu() {
     if (Base.thisUser != null &&
-          Base.thisUser.roles.contains(
-                Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(
                 Base.allRoles.firstWhere((element) => element.role == Role.admin))) {
@@ -500,12 +504,12 @@ class _Base extends State<Base> {
   }
 
   Widget _modoMenu() {
-      if (Base.thisUser != null &&
-          Base.thisUser.roles.contains(
-              Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
-          Base.thisClub != null &&
-              Base.thisClub.roles.contains(
-                  Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
+    if (Base.thisUser != null &&
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
+        Base.thisClub != null &&
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
       return Column(children: [
         Divider(),
         RichText(

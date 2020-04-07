@@ -86,5 +86,4 @@ class ClubListState extends State<ClubList> {
   String formatDate(DateTime date){
     return new DateFormat('yyyy MMMM dd').format(date);
   }
-
 }

@@ -5,8 +5,7 @@ import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
-import 'package:bde_esiee_mobile/src/ui/event/disabled__event.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/event_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -289,7 +288,7 @@ class EventInfoState extends State<EventInfoPage> {
         );
       }
     else {
-      return;
+      return Container();
     }
   }
 
@@ -317,7 +316,7 @@ class EventInfoState extends State<EventInfoPage> {
       }
     else
       {
-        return;
+        return Container();
       }
   }
 

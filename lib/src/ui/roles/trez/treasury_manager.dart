@@ -1,11 +1,9 @@
-import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import './indicator.dart';
 
 class TreasuryManager extends StatefulWidget {
 
@@ -39,8 +37,8 @@ class TreasuryManagerState extends State<TreasuryManager>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Gestion Trésorerie"),
-    ),
+          title: Text("Gestion Trésorerie"),
+        ),
         body: StreamBuilder(
           stream: Logbloc.allFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
@@ -134,9 +132,9 @@ class TreasuryManagerState extends State<TreasuryManager>{
             });
             return Text("Total hors BDE : ${total} €",
                 style: TextStyle(
-                    color: Colors.blueGrey,
-                    fontSize: 15.0,
-                    //fontWeight: FontWeight.bold
+                  color: Colors.blueGrey,
+                  fontSize: 15.0,
+                  //fontWeight: FontWeight.bold
                 )
             );
           }
@@ -152,14 +150,14 @@ class TreasuryManagerState extends State<TreasuryManager>{
   }
 
   _clubNameByID(int id) => StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-          if(clubList.hasData){
-            String name = clubList.data.firstWhere((club) => club.idClubRef == id).name;
-            return Text("${formatClubName(name)}", style: TextStyle(color: Colors.grey, fontSize: 14.0));
-          }
-          return Text("");
+      stream: clubsBloc.allClubs,
+      builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
+        if(clubList.hasData){
+          String name = clubList.data.firstWhere((club) => club.idClubRef == id).name;
+          return Text("${formatClubName(name)}", style: TextStyle(color: Colors.grey, fontSize: 14.0));
         }
+        return Text("");
+      }
   );
 
   Widget buildList(AsyncSnapshot<List<FairpayLogModel>> snapshot) {

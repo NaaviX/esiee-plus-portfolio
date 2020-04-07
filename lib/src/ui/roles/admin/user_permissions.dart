@@ -1,6 +1,5 @@
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/roles_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
@@ -8,7 +7,6 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class UserPermissions extends StatefulWidget {
   @override

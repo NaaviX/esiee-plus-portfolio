@@ -1,14 +1,12 @@
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-import '../../../App.dart';
 
 
 class FairPayManager extends StatefulWidget {
@@ -73,19 +71,22 @@ class FairPayManagerState extends State<FairPayManager> {
   Widget _clubTile(ClubModel club) => GestureDetector(
       child: Padding(
           padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
-      child: GridTile(
-        child: Column(
-            children: [
-              CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
-              Padding(padding: EdgeInsets.all(1.0)),
-              Text( "${club.solde} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
-            ]
-        ),
-      )),
+          child: GridTile(
+            child: Column(
+                children: [
+                  Hero(
+                    tag: "fairpay"+club.idClubRef.toString(),
+                    child: CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
+                  ),
+                  Padding(padding: EdgeInsets.all(1.0)),
+                  Text( " ${club.solde.toString()} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
+                ]
+            ),
+          )),
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FairPayClubManager(club)),
+          MaterialPageRoute(builder: (context) => Fairpay(club: club, isTrez: true)),//FairPayClubManager(club)),
         );
       }
   );
@@ -107,7 +108,7 @@ class FairPayManagerState extends State<FairPayManager> {
 }
 
 //When user click on a club
-class ClubFairPayPage extends StatelessWidget{
+/*class ClubFairPayPage extends StatelessWidget{
 
   final ClubModel club;
   ClubFairPayPage({this.club});
@@ -463,7 +464,9 @@ class fairPayActionFormState extends State<fairPayActionForm>{
                       }
                   );
                 }
-            ))]);
-
-}
+            )
+        )
+      ]
+  );
+}*/
 

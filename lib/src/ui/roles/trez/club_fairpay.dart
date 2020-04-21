@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
+import 'fairpay_form.dart';
+
 
 class Fairpay extends StatefulWidget {
 
@@ -139,9 +141,13 @@ class FairpayState extends State<Fairpay>{
           ),
         ],
       ),
-      onPressed: () {
-
-      },
+      onPressed: () => showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return FairpayForm(text, widget.club);
+          }
+      )
     );
   }
 

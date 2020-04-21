@@ -49,7 +49,7 @@ class FairpayFormState extends State<FairpayForm> {
 
   getColor() {
     switch (widget.type) {
-      case "Dépot":
+      case "Depot":
         return Colors.green;
       case "Retrait":
         return Colors.red;
@@ -76,12 +76,11 @@ class FairpayFormState extends State<FairpayForm> {
                       widget.type, style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        clubsBloc.editSolde(
-                            widget.club, double.parse(amountController.text));
+                        if(widget.type != "Subvention") return clubsBloc.editSolde(widget.club, _getAmount());
                         fairpayBloc.addLog(
                             FairpayLogModel(
                                 type: widget.type,
-                                amount: double.parse(amountController.text),
+                                amount: _getAmount(),
                                 idClubRef: widget.club.idClubRef,
                                 info: "${Base.thisUser.firstname} ${Base
                                     .thisUser.lastname} :: ${descController
@@ -114,6 +113,12 @@ class FairpayFormState extends State<FairpayForm> {
             isPositive: true,
           )
       );
+
+  _getAmount() {
+    double amount = double.parse(amountController.text);
+    if(widget.type == "Retrait") return -amount;
+    else return amount;
+  }
 
   _descriptionInput() =>
       Container(

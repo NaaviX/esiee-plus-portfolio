@@ -27,6 +27,7 @@ class Fairpay extends StatefulWidget {
 
 class FairpayState extends State<Fairpay>{
   final Logbloc = FairpayLogBloc();
+  int filtre = 0;
 
   @override
   void initState() {
@@ -118,7 +119,7 @@ class FairpayState extends State<Fairpay>{
       return  ButtonBar(
         alignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _button(Colors.green, Icons.file_download, 'Dépot'),
+          _button(Colors.green, Icons.file_download, 'Depot'),
           _button(Colors.red, Icons.file_upload, 'Retrait'),
           _button(Colors.orange, Icons.verified_user, 'Subvention'),
         ],
@@ -169,60 +170,14 @@ class FairpayState extends State<Fairpay>{
 
                   //Container for buttons
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    padding: EdgeInsets.symmetric(horizontal: 35),
                     child: Row(
                       children: <Widget>[
-                        Container(
-                          child: Text("Toutes", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
+                        _filtre(Colors.white, "Toutes", 0),
                         SizedBox(width: 16,),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 8,
-                                backgroundColor: Colors.green,
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text("Dépot", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
+                        _filtre(Colors.green, "Depot", 1),
                         SizedBox(width: 16,),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 8,
-                                backgroundColor: Colors.red,
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text("Retrait", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
+                        _filtre(Colors.red, "Retrait", 2),
                       ],
                     ),
                   ),
@@ -248,6 +203,32 @@ class FairpayState extends State<Fairpay>{
     );
   }
 
+  _filtre(Color color, String text, int nbFiltre) {
+    return GestureDetector(
+      onTap: () {setState(() {filtre = nbFiltre;});},
+      child: Container(
+        child: Row(
+          children: <Widget>[
+            text != "Toutes" ? CircleAvatar(
+              radius: 8,
+              backgroundColor: color,
+            ) : Container(),
+            SizedBox(
+              width: 8,
+            ),
+            Text(text, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
+          ],
+        ),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      ),
+    );
+  }
+
   Widget buildList(AsyncSnapshot<List<FairpayLogModel>> snapshot,) {
     return ListView.builder(
         shrinkWrap: true,
@@ -255,7 +236,21 @@ class FairpayState extends State<Fairpay>{
         controller: ScrollController(keepScrollOffset: false),
         itemCount: snapshot.data.length,
         itemBuilder: (context, index) {
-          return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+          switch (filtre) {
+            case 0:
+              return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+            case 1:
+              if(snapshot.data[index].type == "Depot") {
+                return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              }
+              return Container();
+            case 2:
+              if(snapshot.data[index].type == "Retrait") {
+                return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              }
+              return Container();
+          }
+          return Container();
         }
     );
   }

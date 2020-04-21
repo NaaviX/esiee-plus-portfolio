@@ -5,9 +5,16 @@ class TreasuryDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Dashboard Trésorerie"),
-    ),
-    body:Text("TO DO"));
+          title: Text("Dashboard Trésorerie"),
+        ),
+        body:ListView(
+            children: <Widget>[
+              ListTile(title: Text("545 Cotisants")),
+              ListTile(title: Text("Subvention CCI")),
+              ListTile(title: Text("1 millions € dépensés     3,45 € restants")),
+            ]
+        )
+    );
   }
 
 

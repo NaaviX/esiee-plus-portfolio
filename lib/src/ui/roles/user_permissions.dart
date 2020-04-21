@@ -248,14 +248,13 @@ class StudentPermissionsState extends State<StudentPermissions>
                                   selectedRole = newValue;
                                 });
                               },
-                              style: TextStyle(color: Colors.black54, fontSize: 15.0),
-                              items: dropDownRoles
-                                  .map<DropdownMenuItem<String>>((String role) {
+                              items: dropDownRoles.map<DropdownMenuItem<String>>((String role) {
                                 return DropdownMenuItem<String>(
                                   value: role,
-                                  child: Text(role),
+                                  child: Text(role, style: TextStyle(color: role == selectedRole ? Colors.black : Colors.black54)),
                                 );
                               }).toList(),
+                              style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),
                             )),
                       ])),
               Expanded(
@@ -265,7 +264,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                         filter = searchController.text;
                         StudentModel student = studentSnapshot.data[index];
                         return (filter == null || filter == "") && selectedRole == "Tous"
-                            ? _studentTile(student)
+                            ? _studentTile(student, index)
                             : (student.firstname
                             .toLowerCase()
                             .startsWith(filter.toLowerCase()) ||
@@ -276,7 +275,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                                 .toLowerCase()
                                 .startsWith(filter.toLowerCase())) &&
                             (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)))
-                            ? _studentTile(student)
+                            ? _studentTile(student,index)
                             : new Container();
                       }))
             ]);
@@ -285,85 +284,95 @@ class StudentPermissionsState extends State<StudentPermissions>
         });
   }
 
-  ListTile _studentTile(StudentModel student) {
+  _studentTile(StudentModel student, int index) {
     List<RoleModel> currentRoles = List.from(student.roles);
-    return new ListTile(
-      subtitle: Text(
-        student.firstname +
-            " " +
-            student.lastname +
-            "\n" +
-            student.mailEsiee.toString(),
-      ),
-      onTap: () {
-        showDialog<void>(
-            context: context,
-            barrierDismissible: true,
-            // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(student.firstname + " " + student.lastname),
-                content: StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              Divider(
-                                color: Colors.black,
-                              ),
-                              RolesDisplay(currentRoles),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 3,
-                                width: MediaQuery.of(context).size.width / 3,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: Base.allRoles.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      RoleModel thisRole =
-                                      Base.allRoles[index];
-                                      return SwitchListTile(
-                                        title: Text(thisRole.toString()),
-                                        value: currentRoles.contains(thisRole),
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            if (value) {
-                                              currentRoles.add(thisRole);
-                                            } else {
-                                              currentRoles.removeWhere(
-                                                      (element) => element == thisRole);
-                                            }
-                                          });
-                                        },
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ));
-                    }),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Enregistrer'),
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: () {
-                      student.roles = List.from(currentRoles);
-                      studentsBloc.updateStudent(student);
-                      setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Retour'),
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: () {
-                      currentRoles = List.from(student.roles);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
-      },
-    );
+    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    return new Container(
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(color: color),
+        child: ListTile(
+          subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  student.firstname+" "+student.lastname,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  student.mailEsiee.toString(),
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ]
+          ),
+          onTap: () {
+            showDialog<void>(
+                context: context,
+                barrierDismissible: true,
+                // user must tap button!
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(student.firstname + " " + student.lastname),
+                    content: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Divider(
+                                    color: Colors.black,
+                                  ),
+                                  RolesDisplay(currentRoles),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height / 3,
+                                    width: MediaQuery.of(context).size.width / 3,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: Base.allRoles.length,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          RoleModel thisRole =
+                                          Base.allRoles[index];
+                                          return SwitchListTile(
+                                            title: Text(thisRole.toString()),
+                                            value: currentRoles.contains(thisRole),
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                if (value) {
+                                                  currentRoles.add(thisRole);
+                                                } else {
+                                                  currentRoles.removeWhere(
+                                                          (element) => element == thisRole);
+                                                }
+                                              });
+                                            },
+                                          );
+                                        }),
+                                  ),
+                                ],
+                              ));
+                        }),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Enregistrer'),
+                        textColor: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          student.roles = List.from(currentRoles);
+                          studentsBloc.updateStudent(student);
+                          setState(() {});
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Retour'),
+                        textColor: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          currentRoles = List.from(student.roles);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          },
+        ));
   }
 
   @override

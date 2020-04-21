@@ -151,7 +151,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                             Text(user.displayName,
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
-                            Base.thisUser.contributor
+                            Base.thisUser.isContributor
                                 ? Chip(
                                     label: RichText(
                                       text: TextSpan(

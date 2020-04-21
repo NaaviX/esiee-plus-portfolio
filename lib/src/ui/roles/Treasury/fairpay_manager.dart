@@ -78,7 +78,7 @@ class FairPayManagerState extends State<FairPayManager> {
             children: [
               CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
               Padding(padding: EdgeInsets.all(1.0)),
-              Text( " ${club.solde.toString()} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
+              Text( "${club.solde} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
             ]
         ),
       )),
@@ -197,8 +197,8 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
             Center(
               child: Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text(" ${widget.thisClub.solde.toString()} €",
-                    style: TextStyle(color: Colors.blueAccent, fontSize: 30.0, fontWeight: FontWeight.bold))
+                child: Text("  ${widget.thisClub.solde} €",
+                    style: TextStyle(color: getColor(widget.thisClub.solde), fontSize: 30.0, fontWeight: FontWeight.bold))
               ),
             ),
             ButtonBar(
@@ -212,6 +212,10 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
           ],
         )),
   );
+
+  getColor(double solde){
+    return solde > 0 ? Colors.blueAccent : solde < 0 ? Colors.redAccent : Colors.grey;
+  }
 
   FlatButton cardButton(String title, Color color, ) => FlatButton(
       child: Text(title, style: TextStyle(color: Colors.white),),
@@ -348,7 +352,8 @@ class fairPayActionFormState extends State<fairPayActionForm>{
         "1.00",
         Icons.euro_symbol,
         amountController,
-        requiredField: true
+        requiredField: true,
+        isPositive: true,
       )
   );
 

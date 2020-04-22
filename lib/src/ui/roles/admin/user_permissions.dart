@@ -278,6 +278,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                       }))
             ]);
           }
+
           return Center(child: CircularProgressIndicator());
         });
   }

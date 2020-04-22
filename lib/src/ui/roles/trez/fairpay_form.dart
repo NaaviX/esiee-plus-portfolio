@@ -76,7 +76,7 @@ class FairpayFormState extends State<FairpayForm> {
                       widget.type, style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        if(widget.type != "Subvention") return clubsBloc.editSolde(widget.club, _getAmount());
+                        if(widget.type != "Subvention") clubsBloc.editSolde(widget.club, _getAmount());
                         fairpayBloc.addLog(
                             FairpayLogModel(
                                 type: widget.type,

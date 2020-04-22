@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -7,9 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-
-import '../../../App.dart';
-
 
 class FairPayManager extends StatefulWidget {
 
@@ -73,15 +71,15 @@ class FairPayManagerState extends State<FairPayManager> {
   Widget _clubTile(ClubModel club) => GestureDetector(
       child: Padding(
           padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
-      child: GridTile(
-        child: Column(
-            children: [
-              CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
-              Padding(padding: EdgeInsets.all(1.0)),
-              Text( "${club.solde} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
-            ]
-        ),
-      )),
+          child: GridTile(
+            child: Column(
+                children: [
+                  CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
+                  Padding(padding: EdgeInsets.all(1.0)),
+                  Text( "${club.solde} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))
+                ]
+            ),
+          )),
       onTap: () {
         Navigator.push(
           context,
@@ -196,9 +194,9 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
             CircleAvatar(backgroundImage: NetworkImage(widget.thisClub.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
             Center(
               child: Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Text("  ${widget.thisClub.solde} €",
-                    style: TextStyle(color: getColor(widget.thisClub.solde), fontSize: 30.0, fontWeight: FontWeight.bold))
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("  ${widget.thisClub.solde} €",
+                      style: TextStyle(color: getColor(widget.thisClub.solde), fontSize: 30.0, fontWeight: FontWeight.bold))
               ),
             ),
             ButtonBar(
@@ -339,7 +337,7 @@ class fairPayActionFormState extends State<fairPayActionForm>{
         return _depotForm(context);
       case "Retrait":
         return _retraitForm();
-      /*case "Subv.":
+    /*case "Subv.":
         return _subventionForm();*/
     }
   }
@@ -361,12 +359,12 @@ class fairPayActionFormState extends State<fairPayActionForm>{
       padding: EdgeInsets.only(right: 25.0, left: 25.0, top: 10.0, bottom: 10.0),
       alignment: Alignment.topCenter,
       child: CustomTextFormField(
-        "Description",
-        "...",
-        Icons.insert_comment,
-        descController,
-        requiredField: true,
-        type: "desc"
+          "Description",
+          "...",
+          Icons.insert_comment,
+          descController,
+          requiredField: true,
+          type: "desc"
       )
   );
 
@@ -397,10 +395,10 @@ class fairPayActionFormState extends State<fairPayActionForm>{
                     clubsBloc.editSolde(widget.club, double.parse(amountController.text));
                     fairpayBloc.addLog(
                         FairpayLogModel(
-                          type: "Depot",
-                          amount: double.parse(amountController.text),
-                          idClubRef: widget.club.idClubRef,
-                          info: "${Base.thisUser.firstname} ${Base.thisUser.lastname} :: ${descController.text}"
+                            type: "Depot",
+                            amount: double.parse(amountController.text),
+                            idClubRef: widget.club.idClubRef,
+                            info: "${Base.thisUser.firstname} ${Base.thisUser.lastname} :: ${descController.text}"
                         )
                     );
                     if(Navigator.canPop(context)) Navigator.pop(context);

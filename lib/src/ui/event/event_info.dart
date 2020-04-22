@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -38,6 +39,8 @@ class EventInfoState extends State<EventInfoPage> {
 
   final bloc = ClubsBloc();
   final Eventbloc = EventsBloc();
+
+  bool _isEnabled = false;
 
   @override
   void initState() {
@@ -100,6 +103,7 @@ class EventInfoState extends State<EventInfoPage> {
                     list(Icons.payment, widget.event.link),
                     list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
                     _validationMod(),
+                    _suppressionMod(),
                   ]
               );
             }
@@ -256,12 +260,103 @@ class EventInfoState extends State<EventInfoPage> {
     else return Container();
   }
 
+
   _validationMod() {
-    return Container(
-      //CODE DE MAXIME
-      //affiche Validé (o=) si l'évent n'est pas validé par le BDE
-      //affiche Validé (=o) sinon
-      //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
+    _isEnabled = widget.event.enable;
+    if(widget.isModeration)
+      {
+        return SwitchListTile(
+          //CODE DE MAXIME
+          //affiche Non Validé (o=) si l'évent n'est pas validé par le BDE
+          //affiche Validé (=o) sinon
+          //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
+          title:const Text('Autorisé'),
+          value: _isEnabled,
+          onChanged: (bool value)
+          {
+            setState( ()
+            {
+              _isEnabled = value;
+            });
+            widget.event.enable = _isEnabled;
+            Eventbloc.addSaveEvent(widget.event);
+          },
+          activeColor : Colors.green,
+          inactiveThumbColor : Colors.red,
+          //activeTrackColor: Colors.grey,
+          //inactiveTrackColor: Colors.red,
+        );
+      }
+    else {
+      return Container();
+    }
+  }
+
+  _suppressionMod(){
+    if(widget.isModeration)
+      {
+        return Material(
+          child: Center(
+            child: Ink(
+              decoration: const ShapeDecoration(
+                color: Colors.red,
+                shape: CircleBorder(),
+              ),
+              child: IconButton(
+                icon: Icon(Icons.delete),
+                color: Colors.white,
+                onPressed: () {
+                  _neverSatisfied();
+                  ;
+                },
+              ),
+            ),
+          ),
+        );
+      }
+    else
+      {
+        return Container();
+      }
+  }
+
+  Future<void> _neverSatisfied() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('SUPPRESSION'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Êtes-vous sûr de vouloir supprimer l\’Event ?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Oui'),
+              onPressed: () {
+                setState(() {
+                  Eventbloc.deleteEvent(widget.event);
+                  Navigator.of(context).pop();
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventManager()));
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
+                });
+
+              },
+            ),
+            FlatButton(
+              child: Text('Non'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

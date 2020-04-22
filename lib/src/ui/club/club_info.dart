@@ -1,6 +1,7 @@
 //When user click on a club
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ClubInfoPage extends StatelessWidget{
@@ -97,6 +98,7 @@ class ClubInfoPage extends StatelessWidget{
                   ),
                 ]
             ),
+            //_contact(context),
             _description(context),
           ],
         )
@@ -114,11 +116,13 @@ class ClubInfoPage extends StatelessWidget{
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(20),
             child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text("Qui sommes nous ?", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
-                  Container(height: 10,),
+                  Container(height: 12,),
                   AutoSizeText(club.description, style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),
                 ]
             ),

@@ -89,9 +89,8 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   eventInfo(EventModel event) {
-    MaterialPageRoute route;
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event));
     if(widget.moderation == true) route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event, isModeration: true,));
-    else route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event));
     Navigator.push(
       context,
       route,

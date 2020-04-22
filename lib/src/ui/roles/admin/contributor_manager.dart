@@ -2,7 +2,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/club/student_info.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/contributor_add.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +50,7 @@ class ContributorManagerState extends State<ContributorManager> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Gestion cotisants BDE"),
         ),
@@ -72,7 +72,7 @@ class ContributorManagerState extends State<ContributorManager> {
                         Container(
                             child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Flexible(
                                       child: Container(
@@ -85,40 +85,40 @@ class ContributorManagerState extends State<ContributorManager> {
                                       child: _scanButton()),
                                 ])),
                         Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.black12))),
-padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(color: Colors.black12))),
+                          padding: EdgeInsets.all(10),
 
-                                    child:
-                                    CustomTextFormField(
-                                        "Rechercher...",
-                                        "Prenom et/ou nom de l'élève",
-                                        Icons.search,
-                                        searchController,
-                                    focusNode: currentFocus,),),
+                          child:
+                          CustomTextFormField(
+                            "Rechercher...",
+                            "Prenom et/ou nom de l'élève",
+                            Icons.search,
+                            searchController,
+                            focusNode: currentFocus,),),
                         Expanded(
                             child: ListView.builder(
-                          itemCount: contributors.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            StudentModel student = contributors.elementAt(index);
-                            filter = searchController.text;
-                            return (filter == null || filter == "")
-                                ? _studentTile(student)
-                                : (student.firstname
-                                .toLowerCase()
-                                .startsWith(filter.toLowerCase()) ||
-                                student.lastname
+                              itemCount: contributors.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                StudentModel student = contributors.elementAt(index);
+                                filter = searchController.text;
+                                return (filter == null || filter == "")
+                                    ? _studentTile(student, index)
+                                    : (student.firstname
                                     .toLowerCase()
                                     .startsWith(filter.toLowerCase()) ||
-                                (student.firstname + " " + student.lastname)
-                                    .toLowerCase()
-                                    .startsWith(filter.toLowerCase()))
-                                ? _studentTile(student)
-                                : new Container();
+                                    student.lastname
+                                        .toLowerCase()
+                                        .startsWith(filter.toLowerCase()) ||
+                                    (student.firstname + " " + student.lastname)
+                                        .toLowerCase()
+                                        .startsWith(filter.toLowerCase()))
+                                    ? _studentTile(student, index)
+                                    : new Container();
 
-                          },
-                        )),
+                              },
+                            )),
                       ],
                     );
                   }
@@ -128,11 +128,74 @@ padding: EdgeInsets.all(10),
 
   }
 
-  Widget _studentTile(StudentModel student) {
-    return ListTile(
+  Widget _studentTile(StudentModel student, int index) {
+    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    return new Container(
+      padding: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(color: color),
+      child: ListTile(
+          subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  student.firstname+" "+student.lastname,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  student.mailEsiee.toString(),
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ]
+          ),
+          trailing: IconButton(
+            color: Colors.red,
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false, // user must tap button!
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Supression'),
+                    content: Text('Voulez-vous supprimer ce cotisant ?'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Oui'),
+                        onPressed: () {
+                          deleteStudentFromContributor(student);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Non'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          onTap: () {
+            showDialog<void>(
+                context: context,
+                barrierDismissible: true,
+                // user must tap button!
+                builder: (BuildContext context) {
+                  return StudentDetail(student);
+                });
+          }
+      ),
+    );
+
+
+    /*ListTile(
         title: Text(
           student.firstname + " " + student.lastname,
         ),
+
         trailing: IconButton(
           color: Colors.red,
           icon: Icon(Icons.delete),
@@ -148,7 +211,7 @@ padding: EdgeInsets.all(10),
               builder: (BuildContext context) {
                 return StudentDetail(student);
               });
-        });
+        });*/
   }
 
   void deleteStudentFromContributor(StudentModel student) {
@@ -204,9 +267,9 @@ padding: EdgeInsets.all(10),
 
           color: Theme.of(context).primaryColor,
           child: Text(
-                'scan'.toUpperCase(),
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
+            'scan'.toUpperCase(),
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
           splashColor: Colors.white,
           onPressed: () {
             scan();
@@ -238,7 +301,7 @@ padding: EdgeInsets.all(10),
       }
     } on FormatException {
       setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
+      'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
       setState(() => this.barcode = 'Unknown error: $e');
     }

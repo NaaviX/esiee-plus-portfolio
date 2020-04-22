@@ -11,7 +11,6 @@ class CustomTextFormField extends StatefulWidget {
   TextStyle textstyle;
   int maxlines;
   TextInputType keyboard;
-  String customValidator;
   bool requiredField;
   bool isPositive;
   int maxLength;
@@ -45,7 +44,7 @@ class CustomTextFormField extends StatefulWidget {
   );
 
 
-  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.customValidator, this.requiredField, this.isPositive, this.maxLength, this.focusNode})
+  CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.isPositive, this.maxLength, this.focusNode})
   {
     if(this.textstyle != null) this.textstyle = this.textstyle;
     else this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
@@ -90,7 +89,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: widget.decoration,
-      validator: (val) => widget.customValidator ?? _validate(val),
+      validator: (val) => _ifNull(val),
       style: widget.textstyle,
       maxLines: widget.maxlines,
       keyboardType: widget.keyboard,
@@ -99,19 +98,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     );
   }
 
-  _validate(val) {
-    if (val.isEmpty && widget.requiredField) {
+  _ifNull(val) {
+    if (val.isEmpty && widget.requiredField == true) {
       return '*Champs requis';
     }
-
-    if (val.toString().length > widget.maxLength) {
+    else if (val.toString().length > widget.maxLength) {
       return 'La longueur maximun du champs est de ' + widget.maxLength.toString() + ' charactère(s)';
     }
-
-    if (widget.isPositive && double.parse(val) <= 0) {
-      return 'La valeur ne peut être négative';
-    }
-
     return null;
   }
 }

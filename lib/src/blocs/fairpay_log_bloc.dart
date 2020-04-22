@@ -13,11 +13,13 @@ class FairpayLogBloc {
 
   fetchAllLogs() async {
     List<FairpayLogModel> fairpaylogmodel = await _repository.fetchFairpayLogs();
+    fairpaylogmodel.sort((item1, item2) => item2.date.compareTo(item1.date));
     _fpAllLogFetcher.sink.add(fairpaylogmodel);
   }
 
   fetchClubLogs(String id) async {
     List<FairpayLogModel> fairpaylogmodel = await _repository.fetchLogsByClub(id);
+    fairpaylogmodel.sort((item1, item2) => item2.date.compareTo(item1.date));
     _fpLogFetcher.sink.add(fairpaylogmodel);
   }
 

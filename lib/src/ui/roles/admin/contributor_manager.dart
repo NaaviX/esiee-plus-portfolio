@@ -156,7 +156,7 @@ class ContributorManagerState extends State<ContributorManager> {
                 barrierDismissible: false, // user must tap button!
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Supression'),
+                    title: Text('Suppression'),
                     content: Text('Voulez-vous supprimer ce cotisant ?'),
                     actions: <Widget>[
                       FlatButton(

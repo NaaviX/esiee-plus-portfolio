@@ -335,18 +335,16 @@ class EventInfoState extends State<EventInfoPage> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                setState(() {
-                  Eventbloc.deleteEvent(widget.event);
-                  if(Base.thisClub != null && !widget.isModeration) {
-                    Base.selectedIndex = 2;
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
-                  }
-                  else {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
-                  }
-                });
-
+                Eventbloc.deleteEvent(widget.event);
+                if(Base.thisClub != null && !widget.isModeration) {
+                  Base.selectedIndex = 2;
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+                }
+                else {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
+                }
+                setState(() {});
               },
             ),
             FlatButton(

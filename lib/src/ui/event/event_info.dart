@@ -246,10 +246,8 @@ class EventInfoState extends State<EventInfoPage> {
           ),
           SpeedDialChild(
             onTap: () {
-              Eventbloc.deleteEvent(widget.event);
-              Base.selectedIndex = 2;
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
-            },
+              _neverSatisfied();
+              },
             backgroundColor: Colors.red,
             child: Icon(Icons.delete, color: Colors.white,),
             label: "Supprimer",
@@ -307,7 +305,6 @@ class EventInfoState extends State<EventInfoPage> {
                 color: Colors.white,
                 onPressed: () {
                   _neverSatisfied();
-                  ;
                 },
               ),
             ),
@@ -340,10 +337,14 @@ class EventInfoState extends State<EventInfoPage> {
               onPressed: () {
                 setState(() {
                   Eventbloc.deleteEvent(widget.event);
-                  Navigator.of(context).pop();
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventManager()));
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
+                  if(Base.thisClub != null && !widget.isModeration) {
+                    Base.selectedIndex = 2;
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+                  }
+                  else {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
+                  }
                 });
 
               },

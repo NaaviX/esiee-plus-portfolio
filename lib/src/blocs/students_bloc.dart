@@ -37,8 +37,6 @@ class StudentsBloc {
     return studentClubs;
   }
 
-
-
   dispose() {
     _studentsFetcher.close();
     _studentFetcher.close();

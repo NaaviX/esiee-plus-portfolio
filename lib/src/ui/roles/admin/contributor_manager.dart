@@ -156,7 +156,7 @@ class ContributorManagerState extends State<ContributorManager> {
                 barrierDismissible: false, // user must tap button!
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Supression'),
+                    title: Text('Suppression'),
                     content: Text('Voulez-vous supprimer ce cotisant ?'),
                     actions: <Widget>[
                       FlatButton(
@@ -189,29 +189,6 @@ class ContributorManagerState extends State<ContributorManager> {
           }
       ),
     );
-
-
-    /*ListTile(
-        title: Text(
-          student.firstname + " " + student.lastname,
-        ),
-
-        trailing: IconButton(
-          color: Colors.red,
-          icon: Icon(Icons.delete),
-          onPressed: () {
-            deleteStudentFromContributor(student);
-          },
-        ),
-        onTap: () {
-          showDialog<void>(
-              context: context,
-              barrierDismissible: true,
-              // user must tap button!
-              builder: (BuildContext context) {
-                return StudentDetail(student);
-              });
-        });*/
   }
 
   void deleteStudentFromContributor(StudentModel student) {
@@ -266,10 +243,11 @@ class ContributorManagerState extends State<ContributorManager> {
               top: 16, bottom: 16, left: 7, right: 7),
 
           color: Theme.of(context).primaryColor,
-          child: Text(
+          child: Icon(Icons.credit_card),
+          /*Text(
             'scan'.toUpperCase(),
             style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
+          ),*/
           splashColor: Colors.white,
           onPressed: () {
             scan();

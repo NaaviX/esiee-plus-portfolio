@@ -38,9 +38,9 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
   }
 
   _type() {
-    if(!widget.hyperlink)
-      return Text(widget.text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,);
-    else return Hyperlink(widget.text, widget.text);
+    if(widget.hyperlink)
+      return Hyperlink(widget.text, widget.text);
+    else return Text(widget.text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,);
   }
 
 }

@@ -1,6 +1,5 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +119,14 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     ]);
   }
 
+  String studentClubs() {
+    String studentClubs;
+    for(int i=0; i<Base.thisUser.clubs.length;i++) {
+      studentClubs += " " + Base.thisUser.clubs[i].name;
+    }
+    return studentClubs = Base.thisUser.clubs.length.toString();
+  }
+
   Widget _homeStudent() {
     return SingleChildScrollView(
         child: Column(children: <Widget>[
@@ -151,6 +158,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                             Text(user.displayName,
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
+                            /*RolesDisplay(Base.thisUser.roles),*/
                             Base.thisUser.isContributor
                                 ? Chip(
                                     label: RichText(
@@ -170,13 +178,13 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                     ),
                                     backgroundColor: Colors.red,
                                   ),
-                            FutureBuilder<String>(
+                            /*FutureBuilder<String>(
                                 future: getGradeUnitsID(),
                                 builder: (BuildContext context, AsyncSnapshot<String> gradeUnitsID){
                                   return Text(gradeUnitsID.data ?? "loading units...");
                                 }
-                            ),
-                            RolesDisplay(Base.thisUser.roles)
+                            ),*/
+                            Base.thisUser.clubs.length!=0 ? Text(studentClubs()) : Container(),
                           ],
                         ),
                       )

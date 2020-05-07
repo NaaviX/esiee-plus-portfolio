@@ -1,6 +1,4 @@
-import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.lightGreen,
                     fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 50),
+
               Image(image: AssetImage('assets/logoDjango.png'), width: 300),
               SizedBox(height: 50),
               _isLoading ? CircularProgressIndicator() : _signInButton(context),

@@ -69,6 +69,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
 
   Widget buildList(AsyncSnapshot<List<EventModel>> snapshot) {
     return ListView.builder(
+        //scrollDirection: Axis.horizontal,
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(

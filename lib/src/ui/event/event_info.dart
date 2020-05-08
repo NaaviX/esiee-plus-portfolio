@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +58,7 @@ class EventInfoState extends State<EventInfoPage> {
   @override Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: _title(),
+        title: _title(),
       ),
       body: StreamBuilder(
           stream: bloc.thisClub,
@@ -197,10 +198,25 @@ class EventInfoState extends State<EventInfoPage> {
                       ),
                       Row(children: <Widget>[
                         Text("Organisé par "),
-                        Text(
-                            snapshot.data.name,
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        )
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data),),
+                            );
+                          },
+                          child: Text(
+                              snapshot.data.name,
+                              style: TextStyle(fontWeight: FontWeight.bold)
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(snapshot.data
+                              .urlPhoto),
+                          backgroundColor: Colors.white,
+                          radius: 10,
+                        ),
                       ]
                       ),
 
@@ -247,7 +263,7 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
             onTap: () {
               _neverSatisfied();
-              },
+            },
             backgroundColor: Colors.red,
             child: Icon(Icons.delete, color: Colors.white,),
             label: "Supprimer",
@@ -262,29 +278,29 @@ class EventInfoState extends State<EventInfoPage> {
   _validationMod() {
     _isEnabled = widget.event.enable;
     if(widget.isModeration)
-      {
-        return SwitchListTile(
-          //CODE DE MAXIME
-          //affiche Non Validé (o=) si l'évent n'est pas validé par le BDE
-          //affiche Validé (=o) sinon
-          //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
-          title:const Text('Autorisé'),
-          value: _isEnabled,
-          onChanged: (bool value)
+    {
+      return SwitchListTile(
+        //CODE DE MAXIME
+        //affiche Non Validé (o=) si l'évent n'est pas validé par le BDE
+        //affiche Validé (=o) sinon
+        //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
+        title:const Text('Autorisé'),
+        value: _isEnabled,
+        onChanged: (bool value)
+        {
+          setState( ()
           {
-            setState( ()
-            {
-              _isEnabled = value;
-            });
-            widget.event.enable = _isEnabled;
-            Eventbloc.addSaveEvent(widget.event);
-          },
-          activeColor : Colors.green,
-          inactiveThumbColor : Colors.red,
-          //activeTrackColor: Colors.grey,
-          //inactiveTrackColor: Colors.red,
-        );
-      }
+            _isEnabled = value;
+          });
+          widget.event.enable = _isEnabled;
+          Eventbloc.addSaveEvent(widget.event);
+        },
+        activeColor : Colors.green,
+        inactiveThumbColor : Colors.red,
+        //activeTrackColor: Colors.grey,
+        //inactiveTrackColor: Colors.red,
+      );
+    }
     else {
       return Container();
     }
@@ -292,29 +308,30 @@ class EventInfoState extends State<EventInfoPage> {
 
   _suppressionMod(){
     if(widget.isModeration)
-      {
-        return Material(
-          child: Center(
-            child: Ink(
-              decoration: const ShapeDecoration(
-                color: Colors.red,
-                shape: CircleBorder(),
-              ),
-              child: IconButton(
-                icon: Icon(Icons.delete),
-                color: Colors.white,
-                onPressed: () {
-                  _neverSatisfied();
-                },
-              ),
+    {
+      return Material(
+        child: Center(
+          child: Ink(
+            decoration: const ShapeDecoration(
+              color: Colors.red,
+              shape: CircleBorder(),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.delete),
+              color: Colors.white,
+              onPressed: () {
+                _neverSatisfied();
+                ;
+              },
             ),
           ),
-        );
-      }
+        ),
+      );
+    }
     else
-      {
-        return Container();
-      }
+    {
+      return Container();
+    }
   }
 
   Future<void> _neverSatisfied() async {

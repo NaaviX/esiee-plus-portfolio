@@ -42,7 +42,7 @@ class EventCardState extends State<EventCard> {
         stream: club.thisClub,
         // ignore: missing_return
         builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return Padding(
+          return Container(
               child: Card(
                 semanticContainer: true,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -55,10 +55,7 @@ class EventCardState extends State<EventCard> {
                           children: <Widget>[
                             Container(
                               height: 150,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
+                              width: MediaQuery.of(context).size.width,
                               decoration: new BoxDecoration(
                                 color: Colors.black,
                                 image: new DecorationImage(
@@ -73,10 +70,7 @@ class EventCardState extends State<EventCard> {
                             _isEnded(context, event),
                           ]),
                       Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
+                        width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.all(15.0),
                         //height: 40,
                         child: Stack(
@@ -118,7 +112,8 @@ class EventCardState extends State<EventCard> {
                 ),
                 elevation: 5,
               ),
-              padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5)
+              padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
+              width: MediaQuery.of(context).size.width,
           );
         }
     );

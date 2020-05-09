@@ -18,27 +18,50 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "BDE ESIEE PARIS",
-                style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.lightGreen,
-                    fontWeight: FontWeight.bold),
-              ),
+      body: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Container(
+              color: Colors.white,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "ESIEE Plus",
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.lightGreen,
+                          fontWeight: FontWeight.bold),
+                    ),
 
-              Image(image: AssetImage('assets/logoDjango.png'), width: 300),
-              SizedBox(height: 50),
-              _isLoading ? CircularProgressIndicator() : _signInButton(context),
-            ],
-          ),
-        ),
+                    Image(image: AssetImage('assets/logoDjango.png'), width: 300),
+                    SizedBox(height: 50),
+                    _isLoading ? CircularProgressIndicator() : _signInButton(context),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              child: Row(
+                  children: <Widget>[
+                    Text("Dévellopée par ", style: TextStyle(fontSize: 15),),
+                    Text(
+                        "BDE Django",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.green[800]),
+                    ),
+                    SizedBox(width: 5,),
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/logoDjango.png'),
+                      backgroundColor: Colors.white,
+                      radius: 15,
+                    ),
+                  ]
+              ),
+            )
+          ]
       ),
     );
   }

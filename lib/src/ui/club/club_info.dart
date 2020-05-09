@@ -261,15 +261,15 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
   }
 
   _nbrEvent(AsyncSnapshot<List<EventModel>> snapshot) {
-    if(snapshot.data.length != null)
-      for(int i = 0; i<snapshot.data.length; i++) {
-        EventModel event = snapshot.data[i];
-        bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
-        bool dateInf = event.startDate.isAfter(DateTime(DateTime.now().year-1, 8, 15));
-        if(event.enable && dateInf && event.idClubRef == widget.club.idClubRef) nbrEvent++;
-      }
-
     if (snapshot.hasData) {
+      if(snapshot.data.length != null)
+        for(int i = 0; i<snapshot.data.length; i++) {
+          EventModel event = snapshot.data[i];
+          bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
+          bool dateInf = event.startDate.isAfter(DateTime(DateTime.now().year-1, 8, 15));
+          if(event.enable && dateInf && event.idClubRef == widget.club.idClubRef) nbrEvent++;
+        }
+
       return AutoSizeText(nbrEvent.toString(), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,),);
     }
     else if (snapshot.hasError) {

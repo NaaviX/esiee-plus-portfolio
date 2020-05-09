@@ -117,8 +117,6 @@ class EventCardState extends State<EventCard> {
           );
         }
     );
-
-
   }
 
   clubName(AsyncSnapshot<ClubModel> snapshot) {

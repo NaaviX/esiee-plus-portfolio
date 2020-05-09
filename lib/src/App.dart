@@ -5,8 +5,6 @@ import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/contributor_check.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/professor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_dashboard.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_manager.dart';

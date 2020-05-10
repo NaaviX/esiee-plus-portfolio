@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
@@ -137,6 +138,28 @@ class _Base extends State<Base> {
     'Evenements',
   ];
 
+  List<Widget> actionButton(BuildContext context) {
+    if(Base.selectedIndex == 1) {
+      return [
+        IconButton(
+          icon: const Icon(Icons.event),
+          onPressed: () {
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.more_vert),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GradesList()),
+            );
+          },
+        ),
+      ];
+    }
+    else return null;
+  }
+
   @override
   void initState() {
 
@@ -231,7 +254,7 @@ class _Base extends State<Base> {
     ];
     return Scaffold(
         appBar:
-        AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex))),
+        AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
@@ -526,7 +549,27 @@ class _Base extends State<Base> {
               return EventManager();
             }));
           },
-        )
+        ),
+        //Base.thisUser.roles.contains(
+        //    Base.allRoles.firstWhere((element) => element.role == Role.admin)) ? Container() :
+        ListTile(
+          leading: Icon(Icons.verified_user),
+          title: new Text("Vérifier cotisant"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ContributorCheck();
+            }));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.person_add),
+          title: new Text("Ajout Professeur"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return AddProf();
+            }));
+          },
+        ),
       ]);
     }
     return Column();

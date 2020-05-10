@@ -51,7 +51,7 @@ class CalendarState extends State<Calendar> {
                return Center(child: CircularProgressIndicator());
              }
          ),
-         floatingActionButton: FloatingActionButton(
+         /*floatingActionButton: FloatingActionButton(
            onPressed: () {
              Navigator.push(
                context,
@@ -60,7 +60,7 @@ class CalendarState extends State<Calendar> {
            },
            child: Icon(Icons.settings),
            backgroundColor: Colors.blue,
-         )
+         )*/
      );
    }
 

@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 10,
               child: Row(
                   children: <Widget>[
-                    Text("Dévellopée par ", style: TextStyle(fontSize: 15),),
+                    Text("Développée par ", style: TextStyle(fontSize: 15),),
                     Text(
                         "BDE Django",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.green[800]),

@@ -550,26 +550,6 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        //Base.thisUser.roles.contains(
-        //    Base.allRoles.firstWhere((element) => element.role == Role.admin)) ? Container() :
-        ListTile(
-          leading: Icon(Icons.verified_user),
-          title: new Text("Vérifier cotisant"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ContributorCheck();
-            }));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.person_add),
-          title: new Text("Ajout Professeur"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return AddProf();
-            }));
-          },
-        ),
       ]);
     }
     return Column();

@@ -15,6 +15,62 @@
       },
       "oauth_client": [
         {
+          "client_id": "428876618628-79fbqrg3h827s0f15mhgejh9svrlfokb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "8aeb5411da1fa3669ae2a9c9bfd51d4522f21f0c"
+          }
+        },
+        {
+          "client_id": "428876618628-rfuuv2n15dvgprc6hnvv6iva1prnb222.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "5d9263e75bd5c4b9bbe086b506679b4b4bc923ce"
+          }
+        },
+        {
+          "client_id": "428876618628-otmjo6vehhugjbt836mrpaqc6jnc41t9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "8004696d29ac4e2fc95ac59314a0cdfdecbf2016"
+          }
+        },
+        {
+          "client_id": "428876618628-mla4m1f9ucafcuggnjjvh96asmvogmms.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "9a9825c0d53a194d3c21a25a4995cc463f316aa2"
+          }
+        },
+        {
+          "client_id": "428876618628-066mougbvf444fu3oa9a4mvtt9vo6550.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "c0a70f1b7aa6d323cc1f051875b1a2e44adc9402"
+          }
+        },
+        {
+          "client_id": "428876618628-u65b3egrjlfo27v833vmb7pep6kl5mt0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "1de76a8cc27af04d5976ea790da8dee37463801e"
+          }
+        },
+        {
+          "client_id": "428876618628-ujd0dc7f0t9i5m6rlo309a5phhto228n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "4969b24a62d6cab4a1c443378c25c1ee1bc4c567"
+          }
+        },
+        {
           "client_id": "428876618628-156djuebj4oek0v8ogchj486e0hh333b.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -66,12 +66,14 @@ class CalendarState extends State<Calendar> {
 
   Widget buildAgenda(AsyncSnapshot<List<CourseModel>> snapshot) {
     return WeekView(
-      initialHour: 7,
-      dates: getWeekDates(),
+      initialHour: 6,
+      initialMinute: 50,
+      dates: getWeekDates(5, 60),
       hoursColumnWidth: 40,
       dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       events: toAgendaEventList(snapshot),
       dateFormatter: f,
+      inScrollableWidget: true,
       userZoomable: false,
     );
   }
@@ -93,17 +95,11 @@ class CalendarState extends State<Calendar> {
     return DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase()+DateFormat('\nd/MM').format(DateTime(a, b, c));
   }
 
-  List<DateTime> getWeekDates(){
-    DateTime now = DateTime.now();
-    DateTime monday = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday));
-    return [
-      monday.add(Duration(days: 1)),
-      monday.add(Duration(days: 2)),
-      monday.add(Duration(days: 3)),
-      monday.add(Duration(days: 4)),
-      monday.add(Duration(days: 5)),
-      monday.add(Duration(days: 6)),
-      monday.add(Duration(days: 7)),
-    ];
+  List<DateTime> getWeekDates(int weekUntilToday, int weekAfterToday){
+    //DateTime monday = DateTime(dayToDisplay.year, dayToDisplay.month, dayToDisplay.day).subtract(Duration(days: dayToDisplay.weekday));
+    DateTime start = DateTime.now().subtract(Duration(days: weekUntilToday*7 + DateTime.now().weekday-1 ));
+    int days = ( weekUntilToday + weekAfterToday + 1) * 7 ;
+    List yearDays = new List<DateTime>.generate(days, (index) => start.add(Duration(days: index)));
+    return yearDays;
   }
 }

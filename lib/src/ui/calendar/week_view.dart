@@ -200,7 +200,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
               padding: EdgeInsets.only(left: widget.hoursColumnWidth),
               controller: widget.controller.horizontalScrollController,
               scrollDirection: Axis.horizontal,
-              physics: widget.inScrollableWidget ? MagnetScrollPhysics(itemSize: dayViewWidth) : const NeverScrollableScrollPhysics(),
+              physics: widget.inScrollableWidget ? MagnetScrollPhysics(itemSize: dayViewWidth*7) : const NeverScrollableScrollPhysics(),
               itemCount: widget.dateCount,
               itemBuilder: (context, index) => createDayView(index),
             ),
@@ -227,7 +227,9 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
     bool hasCurrentDay = false;
     if (widget.dateCount != null) {
       for (int i = 0; i < widget.dateCount; i++) {
-        if (widget.dateCreator(i) == today) {
+        DateTime idxDay = widget.dateCreator(i);
+        DateTime dayAt = DateTime(idxDay.year, idxDay.month, idxDay.day);
+        if (dayAt == today) {
           hasCurrentDay = true;
           break;
         }
@@ -239,24 +241,25 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
 
   @override
   void scrollToCurrentTime() {
-    super.scrollToCurrentTime();
-
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
 
     int index = 0;
     if (widget.dateCount != null) {
       for (; index < widget.dateCount; index++) {
-        if (widget.dateCreator(index) == today) {
+        DateTime idxDay = widget.dateCreator(index);
+        DateTime dayAt = DateTime(idxDay.year, idxDay.month, idxDay.day);
+        if (dayAt == today) {
           break;
         }
       }
     }
 
-    double topOffset = calculateTopOffset(now.hour, now.minute);
+    index -= index % 7; ///modulate to set by week
+
     double leftOffset = dayViewWidth * index;
 
-    widget.controller.verticalScrollController.jumpTo(math.min(topOffset, widget.controller.verticalScrollController.position.maxScrollExtent));
+    widget.controller.verticalScrollController.jumpTo(math.min(calculateTopOffset(widget.initialHour,widget.initialMinute), widget.controller.verticalScrollController.position.maxScrollExtent));
     widget.controller.horizontalScrollController.jumpTo(math.min(leftOffset, widget.controller.horizontalScrollController.position.maxScrollExtent));
   }
 }
@@ -314,7 +317,7 @@ class _AutoScrollDayBarState extends State<_AutoScrollDayBar> {
               date: widget.weekView.dateCreator(position),
             ),
           ),
-          physics: MagnetScrollPhysics(itemSize: widget.dayViewWidth),
+          physics: MagnetScrollPhysics(itemSize: widget.dayViewWidth*7),
           padding: EdgeInsets.only(left: widget.weekView.hoursColumnWidth),
           controller: scrollController,
           scrollDirection: Axis.horizontal,

@@ -141,11 +141,11 @@ class _Base extends State<Base> {
   List<Widget> actionButton(BuildContext context) {
     if(Base.selectedIndex == 1) {
       return [
-        IconButton(
+        /*IconButton(
           icon: const Icon(Icons.event),
           onPressed: () {
           },
-        ),
+        ),*/
         IconButton(
           icon: const Icon(Icons.more_vert),
           onPressed: () {

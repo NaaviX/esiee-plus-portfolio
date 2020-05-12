@@ -87,7 +87,7 @@ class DayViewController extends ZoomController {
 
   /// The current zoom factor.
   @override
-  double zoomFactor = 1;
+  double zoomFactor = 0.77;
 
   /// Creates a new day view controller instance.
   DayViewController({

@@ -70,7 +70,7 @@ class CalendarState extends State<Calendar> {
       initialMinute: 50,
       dates: getWeekDates(5, 60),
       hoursColumnWidth: 40,
-      dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
+      dayViewWidth: (MediaQuery.of(context).size.width-40)/6,
       events: toAgendaEventList(snapshot),
       dateFormatter: f,
       inScrollableWidget: true,
@@ -100,6 +100,7 @@ class CalendarState extends State<Calendar> {
     DateTime start = DateTime.now().subtract(Duration(days: weekUntilToday*7 + DateTime.now().weekday-1 ));
     int days = ( weekUntilToday + weekAfterToday + 1) * 7 ;
     List yearDays = new List<DateTime>.generate(days, (index) => start.add(Duration(days: index)));
+    yearDays.removeWhere((day) => day.weekday == 7);
     return yearDays;
   }
 }

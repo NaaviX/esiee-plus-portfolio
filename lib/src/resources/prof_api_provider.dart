@@ -26,4 +26,29 @@ class ProfApiProvider {
     }
     return null;
   }
+
+  Future<ProfModel> addProf(ProfModel prof) async {
+    final response = await client.post(
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add",
+        body: {
+          'idProf': prof.idProf,
+          'firstname': prof.firstname,
+          'lastname': prof.lastname,
+          'mailEsiee': prof.mailEsiee,
+          'phone': prof.phone,
+          'office': prof.office,
+          'urlPhoto': prof.urlPhoto,
+          "classes": [
+            {
+              "idClass": 1,
+              "nom": "E4FI"
+            }
+          ],
+        });
+    if (response.statusCode == 200) {
+      return ProfModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      throw Exception('Failed to update data');
+    }
+  }
 }

@@ -20,6 +20,8 @@ class createEventForm extends StatefulWidget {
   DateTime start, end, pub;
   String uploadedFileURL;
 
+  bool isForStratif;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   createEventForm({this.event}) {
@@ -31,6 +33,7 @@ class createEventForm extends StatefulWidget {
       this.link = TextEditingController(text: this.event.link,);
       this.fblink = TextEditingController(text: this.event.facebookLink,);
       this.price = TextEditingController(text: this.event.price.toString(),);
+      this.isForStratif = this.event.enabledStratif;
       this.start = this.event.startDate;
       this.end = this.event.endDate;
       this.pub = this.event.publicationDate;
@@ -43,6 +46,7 @@ class createEventForm extends StatefulWidget {
       this.link = TextEditingController();
       this.fblink = TextEditingController();
       this.price = TextEditingController();
+      this.isForStratif = true;
       this.start = DateTime.now();
       this.end = DateTime.now();
       this.pub = DateTime.now();
@@ -222,11 +226,30 @@ class _createEventFormState extends State<createEventForm> {
                         SizedBox(height: 15.0),
                         //Image
                         _downloadImage(),
+                        SizedBox(height: 15.0),
+                        _stratif(),
+                        SizedBox(height: 50.0),
                       ]
                   )
               )
           )
       ),
+    );
+  }
+
+  _stratif() {
+    return SwitchListTile(
+      title:const Text('Administratifs admis'),
+      value: widget.isForStratif,
+      onChanged: (bool value)
+      {
+        setState( ()
+        {
+          widget.isForStratif = value;
+        });
+      },
+      activeColor : Colors.green,
+      inactiveThumbColor : Colors.red,
     );
   }
 

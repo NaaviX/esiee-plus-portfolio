@@ -50,7 +50,8 @@ class EventCreationState extends State<EventCreation> {
                   facebookLink: widget.form.fblink.text,
                   idClubRef: Base.thisClub.idClubRef,
                   enable: false,
-                  price: double.parse(widget.form.price.text)
+                  price: double.parse(widget.form.price.text),
+                  enabledStratif: widget.form.isForStratif,
               );
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event: event, isValidator: true,)));
             }

@@ -1,0 +1,127 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class FairpayLogCard extends StatefulWidget {
+
+  @required BuildContext context;
+  @required FairpayLogModel log;
+
+  FairpayLogCard(this.log, this.context);
+
+  @override
+  State<StatefulWidget> createState() {
+    return FairpayLogCardState();
+  }
+}
+
+class FairpayLogCardState extends State<FairpayLogCard> {
+
+  final club = ClubsBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    club.fetchClubById(widget.log.idClubRef);
+  }
+
+  @override
+  void dispose() {
+    club.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final FairpayLogModel log = widget.log;
+    return StreamBuilder(
+        stream: club.thisClub,
+        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+          return Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(15),
+                  child: Row(
+                    //direction: Axis.horizontal,
+                    //alignment: WrapAlignment.start,
+                    children: <Widget>[
+                      clubLogo(snapshot),
+                      SizedBox(width: 15,),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width - 235,
+                            child: AutoSizeText(log.description, style: TextStyle(color: Colors.black87, fontSize: 20), maxLines: 3,),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width - 235,
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              children: <Widget>[
+                                Text(formatDate(log.date) + ' · ', style: TextStyle(color: Colors.black54, fontSize: 12, fontStyle: FontStyle.italic)),
+                                SizedBox(height: 2,),
+                                Text(nameToInitial(log.userName), style: TextStyle(color: Colors.black54, fontSize: 12, fontStyle: FontStyle.italic),),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(width: 5,),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          width: 95,
+                          child: AutoSizeText(log.amount.toString() + ' €', style: amountStyle(log.amount.toString()), maxLines: 1,)
+                      )
+                    ],
+                  ),
+                ),
+                Divider(height: 1, thickness: 1,),
+              ]
+          );
+        }
+    );
+  }
+
+  nameToInitial(String name){
+    return name == "unknown" ? "" : "${name.split(" ")[0][0]}. ${name.split(" ")[1]}";
+  }
+
+  clubName(AsyncSnapshot<ClubModel> snapshot) {
+    if(snapshot.hasData){
+      return Text(snapshot.data.name);
+    }
+    else return Container();
+  }
+
+  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
+    NetworkImage backgroundImage;
+    snapshot.hasData ? backgroundImage = NetworkImage(snapshot.data.urlPhoto) : backgroundImage = null;
+    return Container(
+      child: CircleAvatar(
+        backgroundImage: backgroundImage,
+        backgroundColor: Colors.white,
+        radius: 29,
+      ),
+    );
+  }
+
+  String formatDate(DateTime date)
+  {
+    return DateFormat.yMd('fr_FR').format(date);
+    return DateFormat('d/m/yy ','fr_FR').format(date);
+  }
+
+  TextStyle amountStyle(String amount)
+  {
+    if(amount.toString().contains("-"))
+      return TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold,);
+    else return TextStyle(color: Colors.green, fontSize: 20, fontWeight: FontWeight.bold,);
+  }
+}

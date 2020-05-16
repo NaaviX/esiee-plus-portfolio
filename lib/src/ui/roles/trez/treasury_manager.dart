@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -45,9 +49,12 @@ class TreasuryManagerState extends State<TreasuryManager>{
             if (snapshot.hasData){
               return Column(
                   children: <Widget>[
-                    topArea(),
+                    _topArea(),
                     Expanded(
-                        child: buildList(snapshot)
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child:  _log(snapshot),
+                      ),
                     )
                   ]
               );
@@ -62,35 +69,39 @@ class TreasuryManagerState extends State<TreasuryManager>{
     );
   }
 
-  Card topArea() => Card(
-    margin: EdgeInsets.all(10.0),
-    elevation: 1.0,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15)),
-    child: Container(
-      padding: EdgeInsets.all(15.0),
-      child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+  _topArea() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 20, 20, 7),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  _fairpayTotal(),
-                ],
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _fairpayTotal(),
+                    SizedBox(height: 5,),
+                    _fairpayTotalWithoutBDE(),
+                  ]
               ),
-              Padding( padding: EdgeInsets.all(5.0)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  _fairpayTotalWithoutBDE(),
-                ],
-              )
+              Container(
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.white,
+                  child: ClipOval(
+                    child: Icon(Icons.account_balance, size: 40, color: Theme.of(context).primaryColor,),
+                  ),
+                ),
+              ),
             ],
-          )
+          ),
+        ],
       ),
-    ),
-  );
+    );
+  }
 
   Widget _fairpayTotal(){
     return StreamBuilder(
@@ -101,18 +112,22 @@ class TreasuryManagerState extends State<TreasuryManager>{
             clubList.data.forEach((club) {
               total += club.solde;
             });
-            return Text("Total Fairpay : ${total} €",
-                style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
-                )
+            return Column(
+              children: <Widget>[
+                Text("${total} €",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
             );
           }
-          return Text("Total Fairpay : loading...",
+          return Text("Loading...",
               style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 20.0,
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 30.0,
                   fontWeight: FontWeight.bold
               )
           );
@@ -130,111 +145,84 @@ class TreasuryManagerState extends State<TreasuryManager>{
               if( club.idClubRef != 100 )
                 total += club.solde;
             });
-            return Text("Total hors BDE : ${total} €",
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 15.0,
-                  //fontWeight: FontWeight.bold
-                )
+            return Text("Hors BDE : ${total} €",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
             );
           }
-          return Text("Total hors BDE : loading...",
-              style: TextStyle(
-                color: Colors.blueGrey,
-                fontSize: 15.0,
-                //fontWeight: FontWeight.bold
-              )
+          return Text("Hors BDE : loading...",
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
           );
         }
     );
   }
 
-  _clubNameByID(int id) => StreamBuilder(
-      stream: clubsBloc.allClubs,
-      builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-        if(clubList.hasData){
-          String name = clubList.data.firstWhere((club) => club.idClubRef == id).name;
-          return Text("${formatClubName(name)}", style: TextStyle(color: Colors.grey, fontSize: 14.0));
-        }
-        return Text("");
-      }
-  );
+  _log(AsyncSnapshot<List<FairpayLogModel>> snapshot) {
+    List<FairpayLogModel> ajd = new List<FairpayLogModel>();
+    List<FairpayLogModel> same_month = new List<FairpayLogModel>();
+    List<FairpayLogModel> mandat = new List<FairpayLogModel>();
+    List<FairpayLogModel> avant_mandat = new List<FairpayLogModel>();
 
-  Widget buildList(AsyncSnapshot<List<FairpayLogModel>> snapshot) {
-    return ListView.builder(
-        itemCount: snapshot.data.length,
-        itemBuilder: (BuildContext context, int index) {
-          return transactionRowWithClubName(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
-        }
+    //mai de l'année dernière
+    DateTime mandat_pressedants = DateTime(DateTime.now().year-1, 05);
+    //mai de cette année
+    DateTime mandat_actuel = DateTime(DateTime.now().year, 05);
+
+    DateTime jour = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime mois = DateTime(DateTime.now().year, DateTime.now().month);
+
+    List<FairpayLogModel> log_snap = snapshot.data;
+    snapshot.data.forEach((element) {
+      DateTime date_log = element.date;
+      DateTime mois_log = DateTime(date_log.year, date_log.month);
+      DateTime jour_log = DateTime(date_log.year, date_log.month, date_log.day);
+      if(jour_log == jour) ajd.add(element);
+      else if(mois_log == mois) same_month.add(element);
+      else if(DateTime.now().month < 05) {
+        if(mois_log.isAfter(mandat_pressedants)) mandat.add(element);
+        else avant_mandat.add(element);
+      }
+      else if(DateTime.now().month >= 05)
+      {
+        if(mois_log.isAfter(mandat_actuel)) mandat.add(element);
+        else avant_mandat.add(element);
+      }
+      else avant_mandat.add(element);
+    });
+
+    return ListView(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ajd.isNotEmpty ? Text("Ajourd'hui", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              ajd.isNotEmpty ? getTextWidgets(ajd) : Container(),
+              ajd.isNotEmpty ? SizedBox(height: 20,) : Container(),
+              same_month.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              same_month.isNotEmpty ? getTextWidgets(same_month) : Container(),
+              same_month.isNotEmpty ? SizedBox(height: 20,) : Container(),
+              mandat.isNotEmpty ?  Text("Plus tôt dans le mandat", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              mandat.isNotEmpty ? getTextWidgets(mandat) : Container(),
+              mandat.isNotEmpty ? SizedBox(height: 20,) : Container(),
+              avant_mandat.isNotEmpty ?  Text("Pendant les mandats précédents", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              avant_mandat.isNotEmpty ? getTextWidgets(avant_mandat) : Container(),
+            ],
+          )
+        ]
     );
   }
 
-  Container transactionRowWithClubName( FairpayLogModel log, {Color oddColour = Colors.white} ) => Container(
-    decoration: BoxDecoration(color: oddColour),
-    padding: EdgeInsets.only(top: 15.0, bottom: 10.0, left: 5.0, right: 5.0),
-    child: Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(DateFormat('d MMM').format(log.date), style: TextStyle(color: Colors.grey, fontSize: 14.0)),
-            SizedBox(width: 15.0),
-            _clubNameByID(log.idClubRef)
-          ],
-        ),
-        SizedBox(
-          height: 5.0,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(width: 15.0),
-            transIcon(log.amount),
-            transText(log.amount),
-            SizedBox(width: 25.0),
-            Text("${log.description}", style: TextStyle(fontSize: 16.0)),
-          ],
-        ),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Text("${nameToInitial(log.userName)}", style: TextStyle(color: Colors.grey.withOpacity(0.7), fontSize: 12.0)),
-            ])
-      ],
-    ),
-  );
-
-  String nameToInitial(String name){
-    return name == "unknown" ? "" : "${name.split(" ")[0][0]}. ${name.split(" ")[1]}";
+  Widget getTextWidgets(List<FairpayLogModel> log)
+  {
+    List<Widget> list = new List<Widget>();
+    log.forEach((element) => list.add(new FairpayLogCard(element, context)));
+    return new Card(
+      elevation: 5,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Column(children: list),
+    );
   }
-
-  Widget transIcon(double amount){
-    int quarter = amount < 0 ? 1 : 0;
-    Color color = amount < 0 ? Colors.red : Colors.green;
-    return RotatedBox(
-        quarterTurns: quarter,
-        child: Icon(Icons.call_made, color: color));
-  }
-
-  Widget transText(double amount){
-    Color color = amount < 0 ? Colors.red : Colors.green;
-    String text = amount < 0 ? amount.toStringAsFixed(2) : '+'+amount.toStringAsFixed(2);
-    return Text(text.padRight(8,'  '), style: TextStyle(fontSize: 16.0, color: color, fontWeight: FontWeight.bold ));
-  }
-
-  String formatClubName(String clubName){
-    switch (clubName) {
-      case "Club esiee sans frontières":
-        return "ESF";
-      case "Bureau des Sports":
-        return "BDS";
-      case "Bureau des étudiants":
-        return "BDE";
-      case "Club dj":
-        return "DJ";
-      default:
-        return clubName.replaceAll("Club ","").toUpperCase();
-    }
-  }
-
 }

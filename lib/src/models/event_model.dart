@@ -18,6 +18,7 @@ class EventModel {
   int idClubRef;
   bool enable;
   double price;
+  bool enabledStratif;
 
   EventModel({
     this.idEvent,
@@ -32,7 +33,8 @@ class EventModel {
     this.facebookLink,
     this.idClubRef,
     this.enable,
-    this.price
+    this.price,
+    this.enabledStratif
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -59,11 +61,11 @@ class EventModel {
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
       e.enable = parsedJson["enabled"];
+      e.enabledStratif = (parsedJson["enabledStratif"] == 1);
       e.price = parsedJson["price"];
       e.link = parsedJson["sellLink"];
       e.facebookLink = parsedJson["facebookLink"];
       e.idClubRef = parsedJson["idClubRef"];
-
 
       if(e.backgroundUrl == null || e.backgroundUrl == "null") {
         e.backgroundUrl = "https://bde.esiee.fr/bundles/applicationbde/img/couverture.png";

@@ -42,6 +42,7 @@ class EventInfoState extends State<EventInfoPage> {
   final Eventbloc = EventsBloc();
 
   bool _isEnabled = false;
+  bool _isForStratif = false;
 
   @override
   void initState() {
@@ -104,6 +105,7 @@ class EventInfoState extends State<EventInfoPage> {
                     list(Icons.payment, widget.event.link),
                     list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
                     _validationMod(),
+                    SizedBox(height: 10,),
                     _suppressionMod(),
                   ]
               );
@@ -277,28 +279,42 @@ class EventInfoState extends State<EventInfoPage> {
 
   _validationMod() {
     _isEnabled = widget.event.enable;
+    _isForStratif = widget.event.enabledStratif;
     if(widget.isModeration)
     {
-      return SwitchListTile(
-        //CODE DE MAXIME
-        //affiche Non Validé (o=) si l'évent n'est pas validé par le BDE
-        //affiche Validé (=o) sinon
-        //bouton pour supprimer l'évent avec un alert dialogue pour valider qu'on veut supprimer
-        title:const Text('Autorisé'),
-        value: _isEnabled,
-        onChanged: (bool value)
-        {
-          setState( ()
-          {
-            _isEnabled = value;
-          });
-          widget.event.enable = _isEnabled;
-          Eventbloc.addSaveEvent(widget.event);
-        },
-        activeColor : Colors.green,
-        inactiveThumbColor : Colors.red,
-        //activeTrackColor: Colors.grey,
-        //inactiveTrackColor: Colors.red,
+      return Column(
+        children: <Widget>[
+          SwitchListTile(
+            title:const Text('Autorisé'),
+            value: _isEnabled,
+            onChanged: (bool value)
+            {
+              setState( ()
+              {
+                _isEnabled = value;
+              });
+              widget.event.enable = _isEnabled;
+              Eventbloc.addSaveEvent(widget.event);
+            },
+            activeColor : Colors.green,
+            inactiveThumbColor : Colors.red,
+          ),
+          SwitchListTile(
+            title:const Text('Administratifs admis'),
+            value: _isForStratif,
+            onChanged: (bool value)
+            {
+              setState( ()
+              {
+                _isForStratif = value;
+              });
+              widget.event.enabledStratif = _isForStratif;
+              Eventbloc.addSaveEvent(widget.event);
+            },
+            activeColor : Colors.green,
+            inactiveThumbColor : Colors.red,
+          )
+        ],
       );
     }
     else {

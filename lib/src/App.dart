@@ -7,6 +7,7 @@ import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_list.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/proff_add.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_dashboard.dart';
@@ -549,6 +550,15 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return EventManager();
+            }));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.person_add),
+          title: Text("Ajout professeur"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return AddProf();
             }));
           },
         ),

@@ -108,6 +108,10 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents") return EventCard(event, context);
         else return Container();
       }
+      else if (Base.thisProf != null){
+        if(event.enabledStratif == true) return EventCard(event, context);
+        else return Container();
+      }
       else
         return EventCard(event, context);
     }

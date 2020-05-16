@@ -73,7 +73,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new NetworkImage(user.photoUrl)))),
+                                    image: new NetworkImage(Base.thisClub.urlPhoto)))),
                         //Flexible(child: Image.network(user.photoUrl)),
                         Text(Base.thisClub.name,
                             style: TextStyle(

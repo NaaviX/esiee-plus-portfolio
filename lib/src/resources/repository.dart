@@ -39,6 +39,7 @@ class Repository {
       profApiProvider.fetchProfList();
   Future<ProfModel> fetchProfByMail(String mailEsiee) =>
       profApiProvider.fetchProfByMail(mailEsiee);
+  Future<ProfModel> addSaveProf(ProfModel prof) => profApiProvider.addProf(prof);
 
   final studentApiProvider = StudentApiProvider();
   Future<List<StudentModel>> fetchAllStudents() =>

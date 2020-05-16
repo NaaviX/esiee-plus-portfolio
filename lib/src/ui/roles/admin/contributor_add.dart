@@ -23,14 +23,6 @@ class ContributorAddState extends State<ContributorAdd> {
   final _formKey = GlobalKey<FormState>();
 
 
-  StudentsBloc studentsBloc = StudentsBloc();
-
-  @override
-  void dispose() {
-    super.dispose();
-    studentsBloc.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {

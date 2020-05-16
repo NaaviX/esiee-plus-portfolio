@@ -50,7 +50,7 @@ class CourseModel {
   }
 
   static List<CourseModel> allCoursesFromJson(List<dynamic> jsonData) {
-    sortCourses(jsonData);
+    //sortCourses(jsonData);
     return new List<CourseModel>.from(
         jsonData.map((x) => CourseModel.fromJson(x)));
   }

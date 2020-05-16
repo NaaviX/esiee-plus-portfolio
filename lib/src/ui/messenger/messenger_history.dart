@@ -129,13 +129,12 @@ class MessengerHistoryState extends State<MessengerHistory> {
                           nbMsgNotRead++;
                         }
                       }
-                      List<String> nom = discussions.elementAt(index).split("@")[0].split(".");
                       return ListTile(
                         trailing: Chip(
                           label: nbMsgNotRead>0 ? Text(nbMsgNotRead.toString()) : Text(""),
                           backgroundColor: nbMsgNotRead>0 ? Colors.green : Colors.transparent,
                         ),
-                        title: Text(nom[0]+" "+nom[1].toUpperCase()),
+                        title: Text(discussions.elementAt(index).split("@")[0].replaceAll(".", " ").toUpperCase()),
                         subtitle: Text(
                           discussions.elementAt(index),
                         ),

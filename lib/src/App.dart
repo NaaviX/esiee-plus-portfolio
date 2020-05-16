@@ -340,7 +340,7 @@ class _Base extends State<Base> {
           title: Text("Messenger"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return MessengerList();
+              return MessengerHistory();
             }));
           },
         )
@@ -385,7 +385,7 @@ class _Base extends State<Base> {
           title: Text("Messenger"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return MessengerList();
+              return MessengerHistory();
             }));
           },
         ),

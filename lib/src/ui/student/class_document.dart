@@ -11,9 +11,14 @@ class ClassDocumentState extends State<ClassDocument> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Cours"),
-    ),
-    body:Text("TO DO"));
+          title: Text("Cours"),
+        ),
+        body:Column(
+            children: <Widget>[
+              Image(image: AssetImage('assets/cours.png'),width: MediaQuery.of(context).size.width,),
+            ]
+        )
+    );
   }
 
 

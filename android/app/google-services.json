@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "479442277479",
+    "firebase_url": "https://bde-esiee-mobile-eea38.firebaseio.com",
+    "project_id": "bde-esiee-mobile-eea38",
+    "storage_bucket": "bde-esiee-mobile-eea38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479442277479:android:bd996d3a7c9f77369a30c2",
+        "android_client_info": {
+          "package_name": "bde.esiee.fr.bde_esiee_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479442277479-j814h38e4mi7rlm5o3a2j2dunvqpsem7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "8aeb5411da1fa3669ae2a9c9bfd51d4522f21f0c"
+          }
+        },
+        {
+          "client_id": "479442277479-c8141ar536tr4h8ffsg98m4ojslmddoj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "be110194ab575069c901e21d46b729e2d081500d"
+          }
+        },
+        {
+          "client_id": "479442277479-d81ppcol54elf7dkrtqh2dedvsghn58f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdnLd2MTtcEGqBR_bPBY9sPB8WNMTda64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479442277479-d81ppcol54elf7dkrtqh2dedvsghn58f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

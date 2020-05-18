@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:bde_esiee_mobile/src/theme.dart';
+
 import 'controller.dart';
 import 'agenda_event_view.dart';
 import 'headers.dart';
@@ -40,8 +42,8 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
     List<AgendaEventView> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
-    this.currentTimeRuleColor = Colors.pink,
-    this.currentTimeCircleColor = Colors.pink,
+    this.currentTimeRuleColor = TertiaryColor,
+    this.currentTimeCircleColor = TertiaryColor,
     DayViewController controller,
     DateFormatter dateFormatter,
     HourFormatter hourFormatter,
@@ -59,7 +61,7 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
     bool userZoomable = true,
   })  : assert(date != null),
         date = DateTime(date.year, date.month, date.day),
-        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? const Color(0xFFE3F5FF) : Colors.white),
+        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? SecondaryColor.withOpacity(0.15) : Background),
         events = events ?? [],
         super(
           controller: controller ?? DayViewController(),

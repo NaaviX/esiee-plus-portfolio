@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'day_view.dart';
@@ -211,7 +212,7 @@ class DayBar extends StatelessWidget {
   DayBar({
     @required DateTime date,
     double height = 40,
-    this.backgroundColor = const Color(0xFFEBEBEB),
+    this.backgroundColor = Background,
     this.textStyle,
     this.dateFormatter = DefaultBuilders.defaultDateFormatter,
   })  : assert(date != null),
@@ -227,7 +228,7 @@ class DayBar extends StatelessWidget {
   }) : this(
           date: date ?? DateTime.now(),
           height: parent.dayBarHeight,
-          backgroundColor: parent.dayBarBackgroundColor ?? Colors.white,
+          backgroundColor: parent.dayBarBackgroundColor ?? Background,
           textStyle: parent.dayBarTextStyle,
           dateFormatter: parent.dateFormatter,
         );
@@ -277,7 +278,7 @@ class HoursColumn extends StatelessWidget {
   HoursColumn({
     double hourRowHeight = 60,
     double width = 60,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor = Background,
     this.textStyle = const TextStyle(color: Colors.black54),
     this.hourFormatter = DefaultBuilders.defaultHourFormatter,
   })  : assert(hourFormatter != null),
@@ -290,7 +291,7 @@ class HoursColumn extends StatelessWidget {
   }) : this(
           hourRowHeight: parent._calculateHourRowHeight(),
           width: parent.hoursColumnWidth,
-          backgroundColor: parent.hoursColumnBackgroundColor ?? Colors.white,
+          backgroundColor: parent.hoursColumnBackgroundColor ?? Background,
           textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54),
           hourFormatter: parent.hourFormatter,
         );

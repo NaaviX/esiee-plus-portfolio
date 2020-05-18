@@ -156,7 +156,7 @@ class _createEventFormState extends State<createEventForm> {
                                           elevation: 2.0,
                                           onPressed: callTimePickerStart,
                                           child: timeButton("start"),
-                                          color: Colors.white,
+                                          color: Colors.white
                                         ),
                                         SizedBox(height: 10.0,),
                                         RaisedButton(

@@ -453,7 +453,6 @@ class MessengerState extends State<Messenger> {
               valueColor:
               AlwaysStoppedAnimation<Color>(AppState.primaryColor)),
         ),
-        color: Colors.white.withOpacity(0.8),
       )
           : Container(),
     );

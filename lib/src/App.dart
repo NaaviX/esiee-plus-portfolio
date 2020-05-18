@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
@@ -30,6 +31,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/roles_bloc.dart';
@@ -80,11 +82,7 @@ class AppState extends State<App> {
               const Locale('en', ''),
               const Locale('fr', ''),
             ],
-            theme: ThemeData(
-                primaryColor: primaryColor,
-                accentColor: primaryColor,
-                accentColorBrightness: Brightness.light
-            ),
+            theme: MyTheme.defaultTheme,
           );
         } else {
 //user not logged in
@@ -644,25 +642,25 @@ class _Base extends State<Base> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home,),
-          activeIcon: Icon(Icons.home, color: AppState.primaryColor,),
+          icon: Icon(FontAwesomeIcons.home, size: 19,),
+          activeIcon: Icon(FontAwesomeIcons.home, color: PrimaryColor, size: 19,),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.access_time),
-          activeIcon: Icon(Icons.access_time, color: AppState.primaryColor,),
+          icon: Icon(FontAwesomeIcons.clock, size: 19,),
+          activeIcon: Icon(FontAwesomeIcons.clock, color: PrimaryColor, size: 19,),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.event),
-          activeIcon: Icon(Icons.event, color: AppState.primaryColor,),
-          title: Text('Event'),
+          icon: Icon(FontAwesomeIcons.calendarAlt, size: 19,),
+          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: PrimaryColor, size: 19,),
+          title: Text('Event',),
         ),
       ],
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      selectedItemColor: Colors.blue[800],
+      selectedItemColor: PrimaryColor,
       onTap: _onItemTapped,
     );
   }

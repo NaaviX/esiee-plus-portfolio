@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -185,7 +186,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
         Container(
           height: widget.dayBarHeight,
           width: widget.hoursColumnWidth,
-          color: widget.dayBarBackgroundColor ?? Colors.white,
+          color: widget.dayBarBackgroundColor ?? Background,
         ),
       ],
     );

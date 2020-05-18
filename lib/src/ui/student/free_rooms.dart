@@ -5,10 +5,13 @@ class FreeRooms extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Salles libres"),
-    ),
-    body:Text("TO DO"));
+          title: Text("Salles libres"),
+        ),
+        body: Column(
+            children: <Widget>[
+              Image(image: AssetImage('assets/freeRooms.png'),width: MediaQuery.of(context).size.width,),
+            ]
+        )
+    );
   }
-
-
 }

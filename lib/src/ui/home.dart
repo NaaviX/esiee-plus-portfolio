@@ -75,9 +75,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(Base.thisClub.urlPhoto)))),
                         //Flexible(child: Image.network(user.photoUrl)),
-                        Text(Base.thisClub.name,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text(Base.thisClub.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                         RolesDisplay(Base.thisClub.roles),
                       ],
                     ))
@@ -109,9 +107,7 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                       fit: BoxFit.fill,
                                       image: new NetworkImage(user.photoUrl)))),
                           //Flexible(child: Image.network(user.photoUrl)),
-                          Text(user.displayName,
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                         ],
                       ),
                     )
@@ -155,26 +151,20 @@ class HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                                         image:
                                             new NetworkImage(user.photoUrl)))),
                             //Nom
-                            Text(user.displayName,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                             /*RolesDisplay(Base.thisUser.roles),*/
                             Base.thisUser.isContributor
                                 ? Chip(
                                     label: RichText(
                                       text: TextSpan(
-                                          text: "Cotisant",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                          text: "Cotisant",),
                                     ),
                                     backgroundColor: Colors.green,
                                   )
                                 : Chip(
                                     label: RichText(
                                       text: TextSpan(
-                                          text: "Non Cotisant",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                          text: "Non Cotisant",),
                                     ),
                                     backgroundColor: Colors.red,
                                   ),

@@ -5,7 +5,6 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
-import 'package:bde_esiee_mobile/src/ui/messenger/messenger_list.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/proff_add.dart';
@@ -23,7 +22,6 @@ import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
-import 'package:bde_esiee_mobile/src/ui/messenger/messenger.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/user_permissions.dart';
@@ -55,9 +53,6 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   Widget app;
 
-  static final primaryColor = Color(0xff296faa);//Colors.green[800];
-
-
   @override
   Widget build(BuildContext context) {
     //logs de l'aplication ex: Log.i("titre", "texte");
@@ -66,46 +61,43 @@ class AppState extends State<App> {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
     return StreamBuilder<FirebaseUser>(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
-          user = snapshot.data;
-          //user is logged in
-          return MaterialApp(
-            home: Base(),
-            localizationsDelegates: [
-              const TranslationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''),
-              const Locale('fr', ''),
-            ],
-            theme: MyTheme.defaultTheme,
-          );
-        } else {
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
+            user = snapshot.data;
+            //user is logged in
+            return MaterialApp(
+              theme : MyTheme.defaultTheme,
+              //darkTheme : MyTheme.darkTheme,
+              home: Base(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+            );
+          } else {
 //user not logged in
-          return MaterialApp(
-            home: LoginPage(),
-            localizationsDelegates: [
-              const TranslationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''),
-              const Locale('fr', ''),
-            ],
-            theme: ThemeData(
-                primaryColor: primaryColor,
-                accentColor: primaryColor,
-                accentColorBrightness: Brightness.light
-            ),
-          );
+            return MaterialApp(
+              theme : MyTheme.defaultTheme,
+              //darkTheme : MyTheme.darkTheme,
+              home: LoginPage(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+            );
+          }
         }
-
-      },
     );
   }
 }
@@ -127,7 +119,6 @@ class _Base extends State<Base> {
   RolesBloc rolesBloc = RolesBloc();
 
   final log = Logger('BASE');
-
 
   PageController pageController = PageController(initialPage: Base.selectedIndex);
 
@@ -163,7 +154,6 @@ class _Base extends State<Base> {
 
   @override
   void initState() {
-
     rolesBloc.fetchAllRoles();
     studentBloc.fetchStudent(user.email);
     clubsBloc.fetchClub(user.email);
@@ -270,7 +260,7 @@ class _Base extends State<Base> {
         child: ListView(children: <Widget>[
           ListTile(
             leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-            title: Text(user.displayName),
+            title: Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
             subtitle: Text(user.email),
           ),
           ListTile(
@@ -289,8 +279,6 @@ class _Base extends State<Base> {
               Navigator.of(context).pop();
               signOutGoogle();
               Base.selectedIndex = 0;
-
-
             },
           ),
           _adminMenu(),
@@ -299,7 +287,7 @@ class _Base extends State<Base> {
           _logMenu(),
           _clubMenu(),
           _studentMenu(),
-          _profMenu()
+          _profMenu(),
         ]));
   }
 
@@ -642,18 +630,18 @@ class _Base extends State<Base> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.home, size: 19,),
-          activeIcon: Icon(FontAwesomeIcons.home, color: PrimaryColor, size: 19,),
+          icon: Icon(FontAwesomeIcons.home,),
+          activeIcon: Icon(FontAwesomeIcons.home, color: PrimaryColor,),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.clock, size: 19,),
-          activeIcon: Icon(FontAwesomeIcons.clock, color: PrimaryColor, size: 19,),
+          icon: Icon(FontAwesomeIcons.clock,),
+          activeIcon: Icon(FontAwesomeIcons.clock, color: PrimaryColor,),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.calendarAlt, size: 19,),
-          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: PrimaryColor, size: 19,),
+          icon: Icon(FontAwesomeIcons.calendarAlt,),
+          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: PrimaryColor,),
           title: Text('Event',),
         ),
       ],

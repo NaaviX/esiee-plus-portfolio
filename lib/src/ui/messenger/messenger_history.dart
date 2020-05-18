@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -120,7 +121,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
-                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppState.primaryColor)));
+                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(PrimaryColor)));
                     } else {
                       var listMessage = snapshot.data.documents;
                       int nbMsgNotRead = 0;

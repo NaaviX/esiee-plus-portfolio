@@ -13,8 +13,7 @@ class SettingsState extends State<Settings> {
         appBar: AppBar(
           title: Text("Paramètres"),
         ),
-        body:Text("TO DO"));
+        body:Text("TO DO")
+    );
   }
-
-
 }

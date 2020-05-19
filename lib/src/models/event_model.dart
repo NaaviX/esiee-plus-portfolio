@@ -19,6 +19,7 @@ class EventModel {
   bool enable;
   double price;
   bool enabledStratif;
+  int points;
 
   EventModel({
     this.idEvent,
@@ -34,7 +35,8 @@ class EventModel {
     this.idClubRef,
     this.enable,
     this.price,
-    this.enabledStratif
+    this.enabledStratif,
+    this.points,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -61,7 +63,8 @@ class EventModel {
 
       e.backgroundUrl = parsedJson["backgroundUrl"];
       e.enable = parsedJson["enabled"];
-      e.enabledStratif = (parsedJson["enabledStratif"] == 1);
+      e.enabledStratif = parsedJson["enabledStratif"];
+      e.points = parsedJson["points"];
       e.price = parsedJson["price"];
       e.link = parsedJson["sellLink"];
       e.facebookLink = parsedJson["facebookLink"];

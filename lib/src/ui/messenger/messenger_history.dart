@@ -8,6 +8,7 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../App.dart';
 import 'messenger.dart';
@@ -132,13 +133,19 @@ class MessengerHistoryState extends State<MessengerHistory> {
                       }
                       return ListTile(
                         trailing: Chip(
-                          label: nbMsgNotRead>0 ? Text(nbMsgNotRead.toString()) : Text(""),
-                          backgroundColor: nbMsgNotRead>0 ? Colors.green : Colors.transparent,
+                          avatar: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: nbMsgNotRead>0 ? SecondaryColor : Colors.transparent,
+                            child: Text(''),
+                          ),
+                          label: Text(""),
+                          //label: nbMsgNotRead>0 ? Text(nbMsgNotRead.toString()) : Text(""),
+                          //backgroundColor: nbMsgNotRead>0 ? SecondaryColor : Colors.transparent,
                         ),
                         title: Text(discussions.elementAt(index).split("@")[0].replaceAll(".", " ").toUpperCase()),
-                        subtitle: Text(
-                          discussions.elementAt(index),
-                        ),
+                        subtitle: nbMsgNotRead>0 ?
+                          Text(nbMsgNotRead.toString() + " nouveaux messages"/*discussions.elementAt(index),*/)
+                        : Text("T'es con"/*discussions.elementAt(index),*/),
                         onTap: () {
                           StudentModel student;
                           ClubModel club;
@@ -180,7 +187,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
             return MessengerList();
           }));
         },
-        child: const Icon(Icons.add),
+        child: const Icon(FontAwesomeIcons.solidCommentDots),
       ),
     );
   }
@@ -190,6 +197,5 @@ class MessengerHistoryState extends State<MessengerHistory> {
     studentsBloc.fetchAllStudents();
     clubsBloc.fetchAllClubs();
     profsBloc.fetchAllProfs();
-
   }
 }

@@ -52,6 +52,7 @@ class EventCreationState extends State<EventCreation> {
                   enable: false,
                   price: double.parse(widget.form.price.text),
                   enabledStratif: widget.form.isForStratif,
+                  points: 0,
               );
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event: event, isValidator: true,)));
             }

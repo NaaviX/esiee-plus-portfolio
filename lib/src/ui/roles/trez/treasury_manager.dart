@@ -195,7 +195,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ajd.isNotEmpty ? Text("Ajourd'hui", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              ajd.isNotEmpty ? Text("Aujourd'hui", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
               ajd.isNotEmpty ? getTextWidgets(ajd) : Container(),
               ajd.isNotEmpty ? SizedBox(height: 20,) : Container(),
               same_month.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),

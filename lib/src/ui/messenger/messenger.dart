@@ -16,8 +16,6 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../../App.dart';
-
 class Messenger extends StatefulWidget {
   final StudentModel student;
   final ClubModel club;

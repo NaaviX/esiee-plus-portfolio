@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';

@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-import 'grades/grade_list.dart';
-
 class Calendar extends StatefulWidget {
   final String ids;
   Calendar({@required this.ids});

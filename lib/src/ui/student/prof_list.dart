@@ -1,9 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../../blocs/clubs_bloc.dart';
 import 'package:intl/intl.dart';
 
 class ProfList extends StatefulWidget {

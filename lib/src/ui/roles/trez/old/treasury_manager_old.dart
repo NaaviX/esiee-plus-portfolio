@@ -101,7 +101,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
             clubList.data.forEach((club) {
               total += club.solde;
             });
-            return Text("Total Fairpay : ${total} €",
+            return Text("Total Fairpay : $total €",
                 style: TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 20.0,
@@ -130,7 +130,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
               if( club.idClubRef != 100 )
                 total += club.solde;
             });
-            return Text("Total hors BDE : ${total} €",
+            return Text("Total hors BDE : $total €",
                 style: TextStyle(
                   color: Colors.blueGrey,
                   fontSize: 15.0,

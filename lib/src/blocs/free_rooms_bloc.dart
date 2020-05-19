@@ -1,5 +1,3 @@
-import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
-
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 

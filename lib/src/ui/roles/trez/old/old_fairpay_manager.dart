@@ -303,7 +303,7 @@ class fairPayActionForm extends StatefulWidget{
   }
 }
 
-class fairPayActionFormState extends State<fairPayActionForm>{
+class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_case_types
   final clubsBloc = ClubsBloc();
   final fairpayBloc = FairpayLogBloc();
 
@@ -461,7 +461,10 @@ class fairPayActionFormState extends State<fairPayActionForm>{
                       }
                   );
                 }
-            ))]);
+            )
+        )
+      ]
+  );
 
 }
 

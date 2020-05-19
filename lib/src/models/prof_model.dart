@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:logging/logging.dart';
 
 import 'class_model.dart';

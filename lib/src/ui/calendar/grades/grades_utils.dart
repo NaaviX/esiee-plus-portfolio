@@ -1,4 +1,3 @@
-import 'package:bde_esiee_mobile/src/models/gradesUnit_model.dart';
 import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';

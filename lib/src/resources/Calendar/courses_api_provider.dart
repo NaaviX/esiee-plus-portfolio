@@ -9,10 +9,10 @@ class CoursesApiProvider {
   Client client = Client();
 
   Future<List<CourseModel>> fetchCoursesList(String ids) async {
-    List<String> units_ids = ids.split("-");
+    List<String> unitsIds = ids.split("-");
     final response = await client.post(
       "https://api.timecalendar.app/calendar",
-      body: json.encode({'ids': units_ids}),
+      body: json.encode({'ids': unitsIds}),
       headers: {"Content-Type": "application/json"}
     );
 

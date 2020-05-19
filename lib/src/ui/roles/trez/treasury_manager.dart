@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -7,7 +5,6 @@ import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TreasuryManager extends StatefulWidget {
 
@@ -170,7 +167,6 @@ class TreasuryManagerState extends State<TreasuryManager>{
     DateTime jour = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime mois = DateTime(DateTime.now().year, DateTime.now().month);
 
-    List<FairpayLogModel> log_snap = snapshot.data;
     snapshot.data.forEach((element) {
       DateTime date_log = element.date;
       DateTime mois_log = DateTime(date_log.year, date_log.month);

@@ -42,7 +42,7 @@ class CourseModel {
     return e;
   }
 
-  static List<dynamic> sortCourses(List<dynamic> jsonData) {
+  static void sortCourses(List<dynamic> jsonData) {
     DateTime monday = DateTime.now().subtract(Duration(days: DateTime.now().weekday));
     DateTime sunday = monday.add(Duration(days: 6));
     jsonData.removeWhere((element) => DateTime.fromMillisecondsSinceEpoch(element["start"]).isAfter(sunday));

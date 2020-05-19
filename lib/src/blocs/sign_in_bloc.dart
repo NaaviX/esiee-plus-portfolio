@@ -1,9 +1,7 @@
-import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
 
-import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 

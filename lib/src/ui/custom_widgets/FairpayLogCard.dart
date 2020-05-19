@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +113,6 @@ class FairpayLogCardState extends State<FairpayLogCard> {
   String formatDate(DateTime date)
   {
     return DateFormat.yMd('fr_FR').format(date);
-    return DateFormat('d/m/yy ','fr_FR').format(date);
   }
 
   TextStyle amountStyle(String amount)

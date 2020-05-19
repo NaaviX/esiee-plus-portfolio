@@ -9,7 +9,7 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 
 final log = Logger('signin');
 
-FirebaseUser user = null;
+FirebaseUser user;
 
 Future<FirebaseUser> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();

@@ -44,8 +44,7 @@ class AddProfState extends State<AddProf> {
                 elevation: 2.0,
                 onPressed: () {
                   if (widget.form.formKey.currentState.validate()) {
-                    bloc.addSaveEvent(
-                        new ProfModel(
+                        ProfModel prof = new ProfModel(
                           idProf: idProf(),
                           firstname: widget.form.firstname.text,
                           lastname: widget.form.lastname.text,
@@ -53,13 +52,11 @@ class AddProfState extends State<AddProf> {
                           phone: widget.form.phone.text,
                           office: widget.form.office.text,
                           urlPhoto: verifURL(),
-                        )
-                    );
-                  }
-                  if (widget.form.formKey.currentState.validate()) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => App()), (
-                        Route<dynamic> route) => false);
+                        );
+                        bloc.addSaveProf(prof);
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => App()), (
+                            Route<dynamic> route) => false);
                   }
                 },
                 child: Text("Enregistrer", style: TextStyle(color: Colors.white, fontSize: 15),),

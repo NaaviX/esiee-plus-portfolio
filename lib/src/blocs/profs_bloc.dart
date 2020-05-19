@@ -28,7 +28,7 @@ class ProfsBloc {
     _profFetcher.close();
   }
 
-  addSaveEvent(ProfModel prof) async {
+  addSaveProf(ProfModel prof) async {
     ProfModel profmodel = await _repository.addSaveProf(prof);
   }
 }

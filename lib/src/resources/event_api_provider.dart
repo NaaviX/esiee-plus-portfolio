@@ -24,11 +24,10 @@ class EventApiProvider {
 
   Future<EventModel> addEvent(EventModel event) async {
     final response = await client.post(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/update",
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/add",
         body: {
           'id_event': event.idEvent.toString(),
           'enabled': event.enable.toString(),
-          'enabledStratif' : event.enabledStratif.toString(),
           'publication_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate),
           'start_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate),
           'end_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.endDate),
@@ -40,7 +39,8 @@ class EventApiProvider {
           'facebook_link': event.facebookLink,
           'id_club_ref': event.idClubRef.toString(),
           'background_url': event.backgroundUrl,
-          "points": 0,
+          "points": 0.toString(),
+          'enabled_stratif' : event.enabledStratif.toString(),
         });
     if (response.statusCode == 200) {
       return EventModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));

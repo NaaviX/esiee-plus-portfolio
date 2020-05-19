@@ -8,8 +8,6 @@ import 'class_model.dart';
 class ProfModel {
   final log = Logger('ProfModel');
 
-
-
   int idProf;
   String firstname;
   String lastname;

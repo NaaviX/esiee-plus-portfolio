@@ -7,7 +7,7 @@ import 'package:bde_esiee_mobile/src/ui/calendar/grades/grade_list.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
-import 'package:bde_esiee_mobile/src/ui/prof/proff_add.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_dashboard.dart';

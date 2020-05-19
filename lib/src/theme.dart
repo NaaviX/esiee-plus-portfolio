@@ -13,7 +13,7 @@ const TertiaryColorLight = const Color(0xFFEC4D9C);
 const TertiaryColorDark = const Color(0xFFBC3D7C);
 
 const Background = const Color(0xFFFDFDFD);
-const DarkBackground = const Color(0x4FF15202B);
+const DarkBackground = const Color(0xFFF15202B);
 const WidgetBackground = const Color(0xFFFFFFFF);
 const WidgetDarkBackground = const Color(0xFF0e283d);
 const Black = const Color(0xFF000000);

@@ -36,6 +36,8 @@ class ProfApiProvider {
           'phone': prof.phone,
           'office': prof.office,
           'urlPhoto': prof.urlPhoto,
+          'unitsId': [],
+          'classesId': [],
         });
     if (response.statusCode == 200) {
       return ProfModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));

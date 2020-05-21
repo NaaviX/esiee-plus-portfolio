@@ -54,9 +54,7 @@ class AddProfState extends State<AddProf> {
                           urlPhoto: verifURL(),
                         );
                         bloc.addSaveProf(prof);
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => App()), (
-                            Route<dynamic> route) => false);
+                        Navigator.of(context).pop();
                   }
                 },
                 child: Text("Enregistrer", style: TextStyle(color: Colors.white, fontSize: 15),),

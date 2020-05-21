@@ -69,21 +69,23 @@ class FreeRoomsState extends State<FreeRooms> {
       epi5.add(element);
     });
 
-    return Column(
-      children: <Widget>[
-        Image(image: AssetImage('assets/freeRooms.png'),width: MediaQuery.of(context).size.width, height: 200,),
-        epi(0, epi0.toString()),
-        Divider(height: 1, thickness: 1,),
-        epi(1, epi1.toString()),
-        Divider(height: 1, thickness: 1,),
-        epi(2, epi2.toString()),
-        Divider(height: 1, thickness: 1,),
-        epi(3, epi3.toString()),
-        Divider(height: 1, thickness: 1,),
-        epi(4, epi4.toString()),
-        Divider(height: 1, thickness: 1,),
-        epi(5, epi5.toString()),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Image(image: AssetImage('assets/freeRooms.png'),width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height/5,),
+          epi(0, epi0.toString()),
+          Divider(height: 1, thickness: 1,),
+          epi(1, epi1.toString()),
+          Divider(height: 1, thickness: 1,),
+          epi(2, epi2.toString()),
+          Divider(height: 1, thickness: 1,),
+          epi(3, epi3.toString()),
+          Divider(height: 1, thickness: 1,),
+          epi(4, epi4.toString()),
+          Divider(height: 1, thickness: 1,),
+          epi(5, epi5.toString()),
+        ],
+      ),
     );
   }
 

@@ -26,7 +26,7 @@ class UserPermissionsState extends State<UserPermissions> {
               bottom: TabBar(
                 tabs: [
                   Tab(
-                    icon: Icon(Icons.person),
+                    icon: Icon(Icons.person,),
                     text: "Etudiants",
                   ),
                   Tab(icon: Icon(Icons.people), text: "Clubs"),

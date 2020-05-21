@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const PrimaryColor = const Color(0xFF296faa);
@@ -27,15 +28,20 @@ class MyTheme {
     final ThemeData base = ThemeData.light();
 
     return base.copyWith(
-      accentColor: SecondaryColor,
-      accentColorBrightness: Brightness.dark,
-
       primaryColor: PrimaryColor,
-      primaryColorDark: PrimaryColorDark,
-      primaryColorLight: PrimaryColorLight,
-      primaryColorBrightness: Brightness.dark,
+      backgroundColor: Background,
+      scaffoldBackgroundColor: Background,
 
+      textSelectionColor: SecondaryColor,
       selectedRowColor: SecondaryColor,
+
+      primaryIconTheme: IconThemeData(
+        color: PrimaryColor
+      ),
+
+      iconTheme: IconThemeData(
+        color: PrimaryColor,
+      ),
 
       appBarTheme: AppBarTheme(
         elevation: 1.0,
@@ -45,44 +51,12 @@ class MyTheme {
         ),
       ),
 
-      buttonTheme: base.buttonTheme.copyWith(
-
+      tabBarTheme: TabBarTheme(
+        labelColor: PrimaryColor,
       ),
 
-      cardTheme: base.cardTheme.copyWith(
+      cardTheme: CardTheme(
         color: WidgetBackground,
-
-      ),
-
-      dialogTheme: base.dialogTheme.copyWith(
-
-      ),
-
-      chipTheme: base.chipTheme.copyWith(
-
-      ),
-
-      floatingActionButtonTheme: base.floatingActionButtonTheme.copyWith(
-
-      ),
-
-      primaryIconTheme: base.primaryIconTheme.copyWith(
-        color: PrimaryColor,
-      ),
-
-      scaffoldBackgroundColor: Background,
-      textSelectionColor: PrimaryColorLight,
-      backgroundColor: Background,
-
-      textTheme: base.textTheme.copyWith(
-        bodyText2: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
-        subtitle1: TextStyle(
-          fontSize: 18,
-          color: Colors.black,
-        ),
       ),
     );
   }
@@ -91,19 +65,40 @@ class MyTheme {
     final ThemeData base = ThemeData.dark();
 
     return base.copyWith(
-        accentColor: SecondaryColor,
-        accentColorBrightness: Brightness.dark,
+      primaryColor: PrimaryColorDark,
+      backgroundColor: DarkBackground,
+      scaffoldBackgroundColor: DarkBackground,
 
-        primaryColor: PrimaryColorDark,
-        primaryColorDark: PrimaryColorDark,
-        primaryColorLight: PrimaryColorLight,
-        primaryColorBrightness: Brightness.dark,
+      textSelectionColor: SecondaryColorDark,
+      selectedRowColor: SecondaryColorDark,
 
-        backgroundColor: WidgetDarkBackground,
+      primaryIconTheme: IconThemeData(
+          color: PrimaryColor
+      ),
 
-        selectedRowColor: SecondaryColor,
+      iconTheme: IconThemeData(
+        color: PrimaryColor,
+      ),
 
-        appBarTheme: AppBarTheme(color: PrimaryColorDark)
+      appBarTheme: AppBarTheme(
+        elevation: 1.0,
+        color: DarkBackground,
+        textTheme: TextTheme(
+          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColor,),
+        ),
+      ),
+
+      tabBarTheme: TabBarTheme(
+        labelColor: PrimaryColor,
+      ),
+
+      cardTheme: CardTheme(
+        color: WidgetDarkBackground,
+      ),
+
+      textTheme: TextTheme(
+        caption: TextStyle(color: White),
+      )
     );
   }
 }

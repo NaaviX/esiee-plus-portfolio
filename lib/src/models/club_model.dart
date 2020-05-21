@@ -5,8 +5,6 @@ import 'package:logging/logging.dart';
 class ClubModel {
   final log = Logger('clubModel');
 
-
-
   int idClubRef;
   String idClub;
   String name;
@@ -19,6 +17,11 @@ class ClubModel {
   String urlPhoto;
   List<RoleModel> roles;
   List<StudentModel> students;
+
+  String urlBackground;
+  String urlNetwork;
+  String urlFB;
+
   ClubModel({
     this.idClubRef,
     this.idClub,
@@ -30,7 +33,10 @@ class ClubModel {
     this.description,
     this.urlPhoto,
     this.roles,
-    this.students
+    this.students,
+    this.urlBackground,
+    this.urlFB,
+    this.urlNetwork
   });
 
   factory ClubModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -58,6 +64,19 @@ class ClubModel {
       if(e.urlPhoto == null) {
         e.urlPhoto = "";
       }
+      e.urlNetwork = parsedJson["url_network"];
+      if(e.urlNetwork == null) {
+        e.urlNetwork = "";
+      }
+      e.urlBackground = parsedJson["url_background"];
+      if(e.urlBackground == null) {
+        e.urlBackground = "";
+      }
+      e.urlFB = parsedJson["url_background"];
+      if(e.urlFB == null) {
+        e.urlFB = "";
+      }
+
 
       e.roles = RoleModel.allRolesFromJson(parsedJson["roles"]);
       e.students = StudentModel.allStudentsFromJson(parsedJson["students"]);

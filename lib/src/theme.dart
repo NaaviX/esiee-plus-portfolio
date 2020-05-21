@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const PrimaryColor = const Color(0xFF296faa);
 const PrimaryColorLight = const Color(0xFF296faa);
-const PrimaryColorDark = const Color(0xFF296faa);
+const PrimaryColorDark = const Color(0xFF1a2e43);
 
 const SecondaryColor = const Color(0xFF52C9ED);
 const SecondaryColorLight = const Color(0xFF52C9ED);
@@ -33,9 +33,17 @@ class MyTheme {
       primaryColor: PrimaryColor,
       primaryColorDark: PrimaryColorDark,
       primaryColorLight: PrimaryColorLight,
-        primaryColorBrightness: Brightness.dark,
+      primaryColorBrightness: Brightness.dark,
 
       selectedRowColor: SecondaryColor,
+
+      appBarTheme: AppBarTheme(
+        elevation: 1.0,
+        color: Background,
+        textTheme: TextTheme(
+          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColor,),
+        ),
+      ),
 
       buttonTheme: base.buttonTheme.copyWith(
 
@@ -59,8 +67,7 @@ class MyTheme {
       ),
 
       primaryIconTheme: base.primaryIconTheme.copyWith(
-        color: White,
-        size: 20,
+        color: PrimaryColor,
       ),
 
       scaffoldBackgroundColor: Background,
@@ -84,15 +91,19 @@ class MyTheme {
     final ThemeData base = ThemeData.dark();
 
     return base.copyWith(
-      accentColor: SecondaryColor,
-      accentColorBrightness: Brightness.dark,
+        accentColor: SecondaryColor,
+        accentColorBrightness: Brightness.dark,
 
-      primaryColor: PrimaryColorDark,
-      primaryColorDark: PrimaryColorDark,
-      primaryColorLight: PrimaryColorLight,
-      primaryColorBrightness: Brightness.dark,
+        primaryColor: PrimaryColorDark,
+        primaryColorDark: PrimaryColorDark,
+        primaryColorLight: PrimaryColorLight,
+        primaryColorBrightness: Brightness.dark,
 
-      selectedRowColor: SecondaryColor,
+        backgroundColor: WidgetDarkBackground,
+
+        selectedRowColor: SecondaryColor,
+
+        appBarTheme: AppBarTheme(color: PrimaryColorDark)
     );
   }
 }

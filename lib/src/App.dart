@@ -68,7 +68,7 @@ class AppState extends State<App> {
             //user is logged in
             return MaterialApp(
               theme : MyTheme.defaultTheme,
-              //darkTheme : MyTheme.darkTheme,
+              darkTheme : MyTheme.darkTheme,
               home: Base(),
               localizationsDelegates: [
                 const TranslationsDelegate(),
@@ -84,7 +84,7 @@ class AppState extends State<App> {
 //user not logged in
             return MaterialApp(
               theme : MyTheme.defaultTheme,
-              //darkTheme : MyTheme.darkTheme,
+              darkTheme : MyTheme.darkTheme,
               home: LoginPage(),
               localizationsDelegates: [
                 const TranslationsDelegate(),

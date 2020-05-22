@@ -138,17 +138,14 @@ class addProfFormState extends State<addProfForm> {
                             stream: units.allUnits,
                             builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
                               if(snapshot.hasData) return Wrap(
+                                alignment: WrapAlignment.spaceBetween,
+                                spacing: 10,
                                 children: _buildChoiceList(snapshot.data),
                               );
                               else return CircularProgressIndicator();
                             }
                         ),
-                        Text(widget.selectedChoices.toString()),
                         //listUnits(),
-                        SizedBox(height: 15.0),
-                        //Image
-                        //_downloadImage(),
-                        SizedBox(height: 15.0),
                       ]
                   )
               )
@@ -272,20 +269,21 @@ class addProfFormState extends State<addProfForm> {
     List<Widget> choices = List<Widget>();
 
     units.forEach((item) {
-      choices.add(Container(
-        padding: const EdgeInsets.all(2.0),
-        child: ChoiceChip(
-          label: Text(item.unitName),
-          selected: widget.selectedChoices.contains(item),
-          onSelected: (selected) {
-            setState(() {
-              widget.selectedChoices.contains(item)
-                  ? widget.selectedChoices.remove(item)
-                  : widget.selectedChoices.add(item);
-            });
-          },
-        ),
-      ));
+      choices.add(
+          Container(
+            padding: const EdgeInsets.all(2.0),
+            child: ChoiceChip(
+              label: Text(item.unitName),
+              selected: widget.selectedChoices.contains(item),
+              onSelected: (selected) {
+                setState(() {
+                  widget.selectedChoices.contains(item)
+                      ? widget.selectedChoices.remove(item)
+                      : widget.selectedChoices.add(item);
+                });
+              },
+            ),
+          ));
     });
 
     return choices;

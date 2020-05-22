@@ -7,12 +7,8 @@ import 'package:flutter/material.dart';
 import '../../App.dart';
 
 class AddProf extends StatefulWidget {
-  addProfForm form;
-
-  AddProf({ProfModel prof}){
-    if(prof != null) this.form = addProfForm(prof: prof,);
-    else form = addProfForm();
-  }
+  ProfModel thisProf;
+  AddProf({ProfModel thisProf});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +18,13 @@ class AddProf extends StatefulWidget {
 class AddProfState extends State<AddProf> {
 
   final bloc = ProfsBloc();
+  addProfForm form;
+
+  @override
+  void initState() {
+    (widget.thisProf != null) ? form = addProfForm(prof: widget.thisProf, parent: this)
+        : form = addProfForm(parent: this);
+  }
 
   @override Widget build(BuildContext context) {
     return new Scaffold(
@@ -34,7 +37,7 @@ class AddProfState extends State<AddProf> {
             SizedBox(height: 15,),
             Image(image: AssetImage('assets/addTeacher.png'),width: MediaQuery.of(context).size.width,),
             SizedBox(height: 15,),
-            widget.form,
+            form,
             SizedBox(
               height: 50,
               child: RaisedButton(
@@ -44,15 +47,15 @@ class AddProfState extends State<AddProf> {
                 ),
                 elevation: 2.0,
                 onPressed: () {
-                  if (widget.form.formKey.currentState.validate()) {
+                  if (form.formKey.currentState.validate()) {
                         ProfModel prof = new ProfModel(
                           idProf: idProf(),
-                          firstname: widget.form.firstname.text,
-                          lastname: widget.form.lastname.text,
-                          mailEsiee: widget.form.mailEsiee.text,
-                          phone: widget.form.phone.text,
-                          office: widget.form.office.text,
-                          units: widget.form.selectedChoices,
+                          firstname: form.firstname.text,
+                          lastname: form.lastname.text,
+                          mailEsiee: form.mailEsiee.text,
+                          phone: form.phone.text,
+                          office: form.office.text,
+                          units: form.selectedChoices.toList(),
                           urlPhoto: verifURL(),
                         );
                         bloc.addSaveProf(prof);
@@ -71,12 +74,12 @@ class AddProfState extends State<AddProf> {
   }
 
   verifURL() {
-    if(widget.form.uploadedFileURL != null) return widget.form.uploadedFileURL;
+    if(form.uploadedFileURL != null) return form.uploadedFileURL;
     else return "null";
   }
 
   idProf() {
-    if(widget.form.prof != null) return widget.form.prof.idProf;
+    if(form.prof != null) return form.prof.idProf;
     else return 0;
   }
 }

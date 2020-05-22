@@ -34,4 +34,22 @@ class UnitModel {
   static UnitModel unitFromJson(dynamic jsonData) {
     return new UnitModel.fromJson(jsonData);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is UnitModel &&
+              runtimeType == other.runtimeType &&
+              idUnit == other.idUnit &&
+              unitCode == other.unitCode &&
+              unitName == other.unitName;
+
+  @override
+  int get hashCode =>
+      idUnit.hashCode ^
+      unitCode.hashCode ^
+      unitName.hashCode;
+
+
+
 }

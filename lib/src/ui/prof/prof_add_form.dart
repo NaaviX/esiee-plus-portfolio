@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +20,12 @@ class addProfForm extends StatefulWidget {
   TextEditingController firstname, lastname, mailEsiee, phone, office;
 
   String uploadedFileURL;
-  List<UnitModel> selectedChoices;
+  Set<UnitModel> selectedChoices;
+  AddProfState parent;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  addProfForm({this.prof}) {
+  addProfForm({this.prof, AddProfState parent} ) {
     if (this.prof != null) {
       this.prof = this.prof;
       this.firstname = TextEditingController(text: this.prof.firstname);
@@ -40,7 +43,7 @@ class addProfForm extends StatefulWidget {
       this.phone = TextEditingController();
       this.office = TextEditingController();
       this.uploadedFileURL = "null";
-      this.selectedChoices = List<UnitModel>();
+      this.selectedChoices = HashSet<UnitModel>();
     }
   }
 
@@ -279,7 +282,6 @@ class addProfFormState extends State<addProfForm> {
               widget.selectedChoices.contains(item)
                   ? widget.selectedChoices.remove(item)
                   : widget.selectedChoices.add(item);
-              widget.selectedChoices.sort();
             });
           },
         ),

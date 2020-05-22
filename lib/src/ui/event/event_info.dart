@@ -232,7 +232,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   _title() {
     if(widget.isValidator) return Text("Preview");
-    else return Text("");
+    else return Text(widget.event.name);
   }
 
   _manage(int clubRef) {

@@ -26,17 +26,28 @@ class ProfApiProvider {
   }
 
   Future<ProfModel> addProf(ProfModel prof) async {
+    Map<String, List<int>> units = {
+      "unitsId": [1]
+    };
+
+    final unitsList = jsonEncode(units);
+
     final response = await client.post(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add",
-        body: {
-          'idProf': prof.idProf.toString(),
-          'firstname': prof.firstname,
-          'lastname': prof.lastname,
-          'mailEsiee': prof.mailEsiee,
-          'phone': prof.phone,
-          'office': prof.office,
-          'urlPhoto': prof.urlPhoto,
-        });
+      "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add",
+      body: {
+        'id_prof': 0.toString(),
+        'firstname': prof.firstname,
+        'lastname': prof.lastname,
+        'mail_esiee': prof.mailEsiee,
+        'phone': prof.phone,
+        'office': prof.office,
+        'url_photo': prof.urlPhoto,
+        'unitsId': unitsList,
+      },
+      headers: {
+        'classesId' : 1.toString(),
+      },
+    );
     if (response.statusCode == 200) {
       return ProfModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
     } else {

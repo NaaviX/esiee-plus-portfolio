@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:logging/logging.dart';
 
 import 'class_model.dart';
@@ -13,6 +14,7 @@ class ProfModel {
   String phone;
   String urlPhoto;
   List<ClassModel> classes;
+  List<UnitModel> units;
 
   ProfModel({
     this.idProf,
@@ -23,6 +25,7 @@ class ProfModel {
     this.phone,
     this.urlPhoto,
     this.classes,
+    this.units,
   });
 
   factory ProfModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -44,6 +47,11 @@ class ProfModel {
       for(dynamic classFromJson in parsedJson["classes"]) {
         ClassModel classe = ClassModel.classFromJson(classFromJson);
         e.classes.add(classe);
+      }
+      e.units = new List<UnitModel>();
+      for(dynamic unitFromJson in parsedJson["units"]) {
+        UnitModel unit = UnitModel.unitFromJson(unitFromJson);
+        e.units.add(unit);
       }
     }
 

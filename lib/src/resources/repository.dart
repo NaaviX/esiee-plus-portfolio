@@ -9,14 +9,16 @@ import 'package:bde_esiee_mobile/src/models/grades_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/resources/Calendar/courses_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/freeRooms_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/unit_api_provider.dart';
 import 'Calendar/gradesUnit_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/Calendar/grades_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
-import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
 import 'club_api_provider.dart';
 import 'event_api_provider.dart';
 
@@ -52,8 +54,6 @@ class Repository {
   Future<StudentModel> updateStudent(StudentModel student) =>
       studentApiProvider.updateStudent(student);
 
-
-
   final gradesApiProvider = GradesApiProvider();
   Future<List<GradesModel>> fetchAllGrades() => gradesApiProvider.fetchGradesList();
 
@@ -70,5 +70,8 @@ class Repository {
 
   final freeRoomsApiProvider = FreeRoomsApiProvider();
   Future<List<dynamic>> fetchFreeRooms() => freeRoomsApiProvider.fetchFreeRoomsList();
+
+  final unitApiProvider = UnitApiProvider();
+  Future<List<UnitModel>> fetchUnits() => unitApiProvider.fetchUnitsList();
 
 }

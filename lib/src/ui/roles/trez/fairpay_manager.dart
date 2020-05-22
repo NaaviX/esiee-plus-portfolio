@@ -74,7 +74,7 @@ class FairPayManagerState extends State<FairPayManager> {
                 children: [
                   Hero(
                     tag: "fairpay"+club.idClubRef.toString(),
-                    child: CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: 50, backgroundColor: Colors.grey.withOpacity(0.1)),
+                    child: CircleAvatar(backgroundImage: NetworkImage(club.urlPhoto), radius: MediaQuery.of(context).size.width/9, backgroundColor: Colors.grey.withOpacity(0.1)),
                   ),
                   Padding(padding: EdgeInsets.all(1.0)),
                   Text( " ${club.solde.toString()} €", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blueGrey))

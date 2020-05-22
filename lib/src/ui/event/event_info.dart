@@ -325,8 +325,7 @@ class EventInfoState extends State<EventInfoPage> {
   _suppressionMod(){
     if(widget.isModeration)
     {
-      return Material(
-        child: Center(
+      return Center(
           child: Ink(
             decoration: const ShapeDecoration(
               color: Colors.red,
@@ -337,11 +336,9 @@ class EventInfoState extends State<EventInfoPage> {
               color: Colors.white,
               onPressed: () {
                 _neverSatisfied();
-                ;
               },
             ),
           ),
-        ),
       );
     }
     else

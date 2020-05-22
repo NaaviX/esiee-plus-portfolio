@@ -18,7 +18,7 @@ class addProfForm extends StatefulWidget {
   TextEditingController firstname, lastname, mailEsiee, phone, office;
 
   String uploadedFileURL;
-  List<int> selectedChoices;
+  List<UnitModel> selectedChoices;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -31,7 +31,7 @@ class addProfForm extends StatefulWidget {
       this.phone = TextEditingController(text: this.prof.phone,);
       this.office = TextEditingController(text: this.prof.office,);
       this.uploadedFileURL = this.prof.urlPhoto;
-      this.prof.units.forEach((element) {this.selectedChoices.add(element.idUnit);});
+      this.prof.units.forEach((element) {this.selectedChoices.add(element);});
     }
     else {
       this.firstname = TextEditingController();
@@ -40,7 +40,7 @@ class addProfForm extends StatefulWidget {
       this.phone = TextEditingController();
       this.office = TextEditingController();
       this.uploadedFileURL = "null";
-      this.selectedChoices = List<int>();
+      this.selectedChoices = List<UnitModel>();
     }
   }
 
@@ -273,12 +273,12 @@ class addProfFormState extends State<addProfForm> {
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
           label: Text(item.unitName),
-          selected: widget.selectedChoices.contains(item.idUnit),
+          selected: widget.selectedChoices.contains(item),
           onSelected: (selected) {
             setState(() {
-              widget.selectedChoices.contains(item.idUnit)
-                  ? widget.selectedChoices.remove(item.idUnit)
-                  : widget.selectedChoices.add(item.idUnit);
+              widget.selectedChoices.contains(item)
+                  ? widget.selectedChoices.remove(item)
+                  : widget.selectedChoices.add(item);
               widget.selectedChoices.sort();
             });
           },

@@ -64,6 +64,10 @@ class ClubModel {
       if(e.urlPhoto == null) {
         e.urlPhoto = "";
       }
+      e.urlFB = parsedJson["url_fb"];
+      if(e.urlFB == null) {
+        e.urlFB = "";
+      }
       e.urlNetwork = parsedJson["url_network"];
       if(e.urlNetwork == null) {
         e.urlNetwork = "";
@@ -71,10 +75,6 @@ class ClubModel {
       e.urlBackground = parsedJson["url_background"];
       if(e.urlBackground == null) {
         e.urlBackground = "";
-      }
-      e.urlFB = parsedJson["url_background"];
-      if(e.urlFB == null) {
-        e.urlFB = "";
       }
 
 

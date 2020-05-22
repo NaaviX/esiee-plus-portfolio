@@ -1,5 +1,6 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
@@ -62,7 +63,7 @@ class ProfListState extends State<ProfList> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfInfoPage(prof : snapshot.data[index])),
+                MaterialPageRoute(builder: (context) => /*AddProf(prof : snapshot.data[index])),*/ProfInfoPage(prof : snapshot.data[index])),
               );
             },
           );
@@ -95,7 +96,22 @@ class ProfInfoPage extends StatelessWidget{
             )
         ), Center(child: Text("Bureau : "+prof.office),),
         Center(child: Text("Téléphone : "+prof.phone),),
+        Text(prof.units.toString()),
+        ListUnits(),
       ],)
+    );
+  }
+
+  ListUnits() {
+    List<int> selectedChoices = List<int>();
+    prof.units.forEach((element) {selectedChoices.add(element.idUnit);});
+    return ListView.builder(
+        itemCount: selectedChoices.length,
+        itemBuilder: (BuildContext context, int index) {
+          if(selectedChoices != null)
+            return Text(selectedChoices[index].toString());
+          else return Text("pas d'unités");
+        }
     );
   }
 }

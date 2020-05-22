@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
+import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,6 +18,7 @@ class addProfForm extends StatefulWidget {
   TextEditingController firstname, lastname, mailEsiee, phone, office;
 
   String uploadedFileURL;
+  List<int> selectedChoices;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -28,6 +31,7 @@ class addProfForm extends StatefulWidget {
       this.phone = TextEditingController(text: this.prof.phone,);
       this.office = TextEditingController(text: this.prof.office,);
       this.uploadedFileURL = this.prof.urlPhoto;
+      this.prof.units.forEach((element) {this.selectedChoices.add(element.idUnit);});
     }
     else {
       this.firstname = TextEditingController();
@@ -36,6 +40,7 @@ class addProfForm extends StatefulWidget {
       this.phone = TextEditingController();
       this.office = TextEditingController();
       this.uploadedFileURL = "null";
+      this.selectedChoices = List<int>();
     }
   }
 
@@ -44,16 +49,20 @@ class addProfForm extends StatefulWidget {
 }
 
 class addProfFormState extends State<addProfForm> {
+
+  UnitBloc units = UnitBloc();
+
   @override
   void initState() {
+    units.fetchAllUnits();
     super.initState();
   }
 
   @override
   void dispose() {
+    units.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +131,18 @@ class addProfFormState extends State<addProfForm> {
                           maxLength: 500,
                         ),
                         SizedBox(height: 15.0),
+                        StreamBuilder(
+                            stream: units.allUnits,
+                            builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
+                              if(snapshot.hasData) return Wrap(
+                                children: _buildChoiceList(snapshot.data),
+                              );
+                              else return CircularProgressIndicator();
+                            }
+                        ),
+                        Text(widget.selectedChoices.toString()),
+                        //listUnits(),
+                        SizedBox(height: 15.0),
                         //Image
                         //_downloadImage(),
                         SizedBox(height: 15.0),
@@ -130,6 +151,36 @@ class addProfFormState extends State<addProfForm> {
               )
           )
       ),
+    );
+  }
+
+  listUnits(){
+    StreamBuilder(
+        stream: units.allUnits,
+        builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                    //scrollDirection: Axis.horizontal,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          child: Text(snapshot.data[index].unitName),
+                        );
+                      }
+                  ),
+                ),
+              ],
+            );
+          }
+          else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        }
     );
   }
 
@@ -197,5 +248,44 @@ class addProfFormState extends State<addProfForm> {
         widget.uploadedFileURL = fileURL;
       });
     });
+  }
+
+  List<UnitModel> allUnits() {
+    List<UnitModel> unitsList = List<UnitModel>();
+    StreamBuilder(
+        stream: units.allUnits,
+        // ignore: missing_return
+        builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
+          if (snapshot.hasData) {
+            unitsList = snapshot.data;
+          }
+          else unitsList = [];
+        }
+    );
+    return unitsList;
+  }
+
+  List<Widget> _buildChoiceList(List<UnitModel> units) {
+    List<Widget> choices = List<Widget>();
+
+    units.forEach((item) {
+      choices.add(Container(
+        padding: const EdgeInsets.all(2.0),
+        child: ChoiceChip(
+          label: Text(item.unitName),
+          selected: widget.selectedChoices.contains(item.idUnit),
+          onSelected: (selected) {
+            setState(() {
+              widget.selectedChoices.contains(item.idUnit)
+                  ? widget.selectedChoices.remove(item.idUnit)
+                  : widget.selectedChoices.add(item.idUnit);
+              widget.selectedChoices.sort();
+            });
+          },
+        ),
+      ));
+    });
+
+    return choices;
   }
 }

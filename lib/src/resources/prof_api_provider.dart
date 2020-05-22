@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:bde_esiee_mobile/src/models/class_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
+import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
@@ -26,23 +28,82 @@ class ProfApiProvider {
   }
 
   Future<ProfModel> addProf(ProfModel prof) async {
+    int i = 0;
+    String lunits = "";
+    for (UnitModel unit in prof.units) {
+      if (i != 0) {
+        lunits += ",";
+      }
+      lunits += unit.idUnit.toString();
+      i++;
+    }
+
+    i = 0;
+    String lcalsses = "";
+    for (ClassModel classe in prof.classes) {
+      if (i != 0) {
+        lcalsses += ",";
+      }
+      lcalsses += classe.toString();
+      i++;
+    }
+
+    String url = Uri.encodeFull(
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add?id_prof=" +
+            prof.idProf.toString() +
+            "&firstname=" +
+            prof.firstname +
+            "&lastname=" +
+            prof.lastname +
+            "&mail_esiee=" +
+            prof.mailEsiee +
+            "&phone=" +
+            prof.phone +
+            "&office=" +
+            prof.office +
+            "&url_photo=" +
+            prof.urlPhoto +
+            "&unitsId=" +
+            lunits +
+            "&classesId=" +
+            lcalsses);
     final response = await client.post(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add",
-        body: {
-          'idProf': prof.idProf.toString(),
-          'firstname': prof.firstname,
-          'lastname': prof.lastname,
-          'mailEsiee': prof.mailEsiee,
-          'phone': prof.phone,
-          'office': prof.office,
-          'urlPhoto': prof.urlPhoto,
-          'unitsId': [],
-          'classesId': [],
-        });
+      url,
+    );
     if (response.statusCode == 200) {
       return ProfModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       throw Exception('Failed to update data');
     }
   }
+
+  /*Future<ProfModel> addProf(ProfModel prof) async {
+    Map<String, List<int>> units = {
+      "unitsId": [1]
+    };
+
+    final unitsList = jsonEncode(units);
+
+    final response = await client.post(
+      "http://137.74.197.140:8080/api-1-SNAPSHOT/prof/add",
+      body: {
+        'id_prof': 0.toString(),
+        'firstname': prof.firstname,
+        'lastname': prof.lastname,
+        'mail_esiee': prof.mailEsiee,
+        'phone': prof.phone,
+        'office': prof.office,
+        'url_photo': prof.urlPhoto,
+        'unitsId': unitsList,
+      },
+      headers: {
+        'classesId' : 1.toString(),
+      },
+    );
+    if (response.statusCode == 200) {
+      return ProfModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      throw Exception('Failed to update data');
+    }
+  }*/
 }

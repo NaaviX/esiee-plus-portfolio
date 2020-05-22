@@ -72,7 +72,7 @@ class FreeRoomsState extends State<FreeRooms> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Image(image: AssetImage('assets/freeRooms.png'),width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height/5,),
+          Image(image: AssetImage('assets/freeRooms.png'), height: MediaQuery.of(context).size.height/6,),
           epi(0, epi0.toString()),
           Divider(height: 1, thickness: 1,),
           epi(1, epi1.toString()),

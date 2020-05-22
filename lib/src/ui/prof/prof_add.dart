@@ -77,6 +77,4 @@ class AddProfState extends State<AddProf> {
     if(widget.form.prof != null) return widget.form.prof.idProf;
     else return 0;
   }
-
-
 }

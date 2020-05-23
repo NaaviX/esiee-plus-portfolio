@@ -263,7 +263,7 @@ class _Base extends State<Base> {
             title: Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
             subtitle: Text(user.email),
           ),
-          ListTile(
+          /*ListTile(
             leading: Icon(Icons.settings),
             title: new Text("Paramètres"),
             onTap: () {
@@ -271,7 +271,7 @@ class _Base extends State<Base> {
                 return Settings();
               }));
             },
-          ),
+          ),*/
           ListTile(
             leading: Icon(Icons.power_settings_new),
             title: new Text(Translations.of(context).text("deco")),
@@ -284,7 +284,7 @@ class _Base extends State<Base> {
           _adminMenu(),
           _modoMenu(),
           _trezMenu(),
-          _logMenu(),
+          //_logMenu(),
           _clubMenu(),
           _studentMenu(),
           _profMenu(),
@@ -421,7 +421,7 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        ListTile(
+        /*ListTile(
           leading: Icon(Icons.import_contacts),
           title: Text("Cours"),
           onTap: () {
@@ -429,8 +429,8 @@ class _Base extends State<Base> {
               return ClassDocument();
             }));
           },
-        ),
-        ListTile(
+        ),*/
+        /*ListTile(
           leading: Icon(Icons.class_),
           title: Text("Annales"),
           onTap: () {
@@ -438,7 +438,7 @@ class _Base extends State<Base> {
               return AnnalsList(); //AnnalsList();
             }));
           },
-        ),
+        ),*/
         ListTile(
           leading: Icon(Icons.chat),
           title: Text("Messenger"),
@@ -489,7 +489,7 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        ListTile(
+        /*ListTile(
           leading: Icon(Icons.account_balance),
           title: Text("Dashboard trésorerie"),
           onTap: () {
@@ -497,7 +497,7 @@ class _Base extends State<Base> {
               return TreasuryDashboard();
             }));
           },
-        ),
+        ),*/
         ListTile(
           leading: Icon(Icons.group_add),
           title: Text("Droits utilisateurs"),

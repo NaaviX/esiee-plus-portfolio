@@ -1,4 +1,6 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -27,26 +29,27 @@ class _LoginPageState extends State<LoginPage> {
           alignment: Alignment.center,
           children: <Widget>[
             Container(
-              color: Colors.white,
+              /*decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [TertiaryColor, PrimaryColor],
+                    begin: Alignment.topRight,
+                    end: Alignment.center,
+                  ),
+                  borderRadius: BorderRadius.circular(30.0)
+              ),*/
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "ESIEE Plus",
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.lightGreen,
-                          fontWeight: FontWeight.bold),
-                    ),
-
-                    Image(image: AssetImage('assets/logoDjango.png'), width: 300),
-                    SizedBox(height: 50),
-                    _isLoading ? CircularProgressIndicator() : _signInButton(context),
+                    Image(image: AssetImage('assets/Logo.png'), width: 200),
+                    SizedBox(height: 100),
                   ],
                 ),
               ),
+            ),
+            Positioned(
+              bottom: 200,
+              child: _isLoading ? CircularProgressIndicator() : _signInButton(context),
             ),
             Positioned(
               bottom: 10,
@@ -54,8 +57,26 @@ class _LoginPageState extends State<LoginPage> {
                   children: <Widget>[
                     Text("Développée par ", style: TextStyle(fontSize: 15),),
                     Text(
-                        "BDE Django",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.green[800]),
+                      "BDE Django",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.green[800], /*letterSpacing:1,
+                          shadows: [
+                        Shadow( // bottomLeft
+                            offset: Offset(-0.3, -0.3),
+                            color: Colors.white
+                        ),
+                        Shadow( // bottomRight
+                            offset: Offset(0.3, -0.3),
+                            color: Colors.white
+                        ),
+                        Shadow( // topRight
+                            offset: Offset(0.3, 0.3),
+                            color: Colors.white
+                        ),
+                        Shadow( // topLeft
+                            offset: Offset(-0.3, 0.3),
+                            color: Colors.white
+                        ),
+                      ]*/),
                     ),
                     SizedBox(width: 5,),
                     CircleAvatar(
@@ -73,8 +94,19 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton(BuildContext context) {
     return RaisedButton(
-
-        child: Text("Se connecter avec Google"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: PrimaryColor.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(30.0)
+          ),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text("Se connecter avec Google".toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),),
+          ),
+        ),
         onPressed: () async {
           setState(() => _isLoading = true);
           user = await signInWithGoogle();

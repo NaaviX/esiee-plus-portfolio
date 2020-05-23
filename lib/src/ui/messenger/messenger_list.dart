@@ -63,7 +63,9 @@ class MessengerListState extends State<MessengerList> {
             ),
             body: TabBarView(
               children: links,
-            )));
+            )
+        )
+    );
   }
 }
 

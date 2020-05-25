@@ -73,27 +73,24 @@ class MessengerHistoryState extends State<MessengerHistory> {
   Widget getConvs() {
     return StreamBuilder(
         stream: Firestore.instance
-        .collection('messages').snapshots(),
+            .collection('messages').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-      for(var documentRef in snapshot.data.documents) {
+            for(var documentRef in snapshot.data.documents) {
 
-          if (documentRef.documentID.contains(user.email) &&
-              !groupChatIds.contains(documentRef.documentID)) {
-            groupChatIds.add(documentRef.documentID);
-            if (documentRef.documentID.split("::")[0] != user.email) {
-              discussions.add(documentRef.documentID.split("::")[0]);
-            } else {
-              discussions.add(documentRef.documentID.split("::")[1]);
+              if (documentRef.documentID.contains(user.email) &&
+                  !groupChatIds.contains(documentRef.documentID)) {
+                groupChatIds.add(documentRef.documentID);
+                if (documentRef.documentID.split("::")[0] != user.email) {
+                  discussions.add(documentRef.documentID.split("::")[0]);
+                } else {
+                  discussions.add(documentRef.documentID.split("::")[1]);
+                }
+              }
             }
           }
-        }
-      }
-      return getList();
-
-    });
-
-//
+          return getList();
+        });
   }
 
   Widget getList() {
@@ -104,82 +101,77 @@ class MessengerHistoryState extends State<MessengerHistory> {
       body: discussions.isEmpty
           ? ListTile(
 
-        title: Text("Aucune discussion"))
+          title: Text("Aucune discussion"))
           : ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              padding: EdgeInsets.all(10.0),
-              itemBuilder: (context, index) {
-                return StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('messages')
-                      .document(groupChatIds.elementAt(index))
-                      .collection(groupChatIds.elementAt(index))
-                      .orderBy('timestamp', descending: true)
-                      .limit(20)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(PrimaryColor)));
-                    } else {
-                      var listMessage = snapshot.data.documents;
-                      int nbMsgNotRead = 0;
-                      for(var msg in listMessage) {
-                        if(msg["hasBeenRead"] == false && msg["from"] != user.email) {
-                          nbMsgNotRead++;
-                        }
-                      }
-                      return ListTile(
-                        trailing: Chip(
-                          avatar: CircleAvatar(
-                            radius: 8,
-                            backgroundColor: nbMsgNotRead>0 ? SecondaryColor : Colors.transparent,
-                            child: Text(''),
-                          ),
-                          label: Text(""),
-                          //label: nbMsgNotRead>0 ? Text(nbMsgNotRead.toString()) : Text(""),
-                          //backgroundColor: nbMsgNotRead>0 ? SecondaryColor : Colors.transparent,
-                        ),
-                        title: Text(discussions.elementAt(index).split("@")[0].replaceAll(".", " ").toUpperCase()),
-                        subtitle: nbMsgNotRead>0 ?
-                          Text(nbMsgNotRead.toString() + " nouveaux messages"/*discussions.elementAt(index),*/)
-                        : Text("T'es con"/*discussions.elementAt(index),*/),
-                        onTap: () {
-                          StudentModel student;
-                          ClubModel club;
-                          ProfModel prof;
-                          try {
-                            student = allStudents.firstWhere((element) =>
-                            element.mailEsiee == discussions.elementAt(index));
-    } catch (e) {}
-    try {
-                            club = allClubs.firstWhere((element) =>
-                            element.mail == discussions.elementAt(index));
-    } catch (e) {}
-                          try {
-                            prof = allProfs.firstWhere((element) =>
-                            element.mailEsiee == discussions.elementAt(index));
-                          } catch (e) {}
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return Messenger(
-                                student: student,
-                                club: club,
-                                prof: prof);
-                          }));
-                        },
-                      );
-                    }
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        itemBuilder: (context, index) {
+          return StreamBuilder(
+            stream: Firestore.instance
+                .collection('messages')
+                .document(groupChatIds.elementAt(index))
+                .collection(groupChatIds.elementAt(index))
+                .orderBy('timestamp', descending: true)
+                .limit(20)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(PrimaryColor)));
+              } else {
+                var listMessage = snapshot.data.documents;
+                int nbMsgNotRead = 0;
+                for(var msg in listMessage) {
+                  if(msg["hasBeenRead"] == false && msg["from"] != user.email) {
+                    nbMsgNotRead++;
+                  }
+                }
+                return ListTile(
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: PrimaryColor,
+                    child: Icon(Icons.person, color: Colors.white,),
+                  ),
+                  trailing: nbMsgNotRead != 0 ?
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor: SecondaryColor,
+                    child: Text(nbMsgNotRead.toString(), style: TextStyle(fontSize: 12, color: Colors.white),),
+                  ) : CircleAvatar(radius: 10, backgroundColor: Colors.transparent,),
+                  title: Text(discussions.elementAt(index).split("@")[0].replaceAll(".", " ").toUpperCase()),
+                  subtitle: lastMessage(nbMsgNotRead, snapshot, index),
+                  onTap: () {
+                    StudentModel student;
+                    ClubModel club;
+                    ProfModel prof;
+                    try {
+                      student = allStudents.firstWhere((element) =>
+                      element.mailEsiee == discussions.elementAt(index));
+                    } catch (e) {}
+                    try {
+                      club = allClubs.firstWhere((element) =>
+                      element.mail == discussions.elementAt(index));
+                    } catch (e) {}
+                    try {
+                      prof = allProfs.firstWhere((element) =>
+                      element.mailEsiee == discussions.elementAt(index));
+                    } catch (e) {}
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return Messenger(
+                          student: student,
+                          club: club,
+                          prof: prof);
+                    }));
                   },
                 );
-
-
-
-
-              },
-              itemCount: discussions.length,
-            ),
+              }
+            },
+          );
+        },
+        itemCount: discussions.length,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -189,6 +181,16 @@ class MessengerHistoryState extends State<MessengerHistory> {
         child: const Icon(FontAwesomeIcons.solidCommentDots),
       ),
     );
+  }
+
+  lastMessage(int nbMsgNotRead, AsyncSnapshot<dynamic> snapshot, int index) {
+    String prenom = discussions.elementAt(index).split("@")[0].split(".")[0];
+    String from = snapshot.data.documents[0]["from"] == user.email ? 'vous : ' : '';
+    TextStyle style = nbMsgNotRead != 0 ? TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold) : TextStyle();
+    String imageFrom = snapshot.data.documents[0]["from"] == user.email ? 'vous avez ' : prenom.substring(0,1).toUpperCase() + prenom.substring(1,prenom.length) + ' vous a ';
+    return snapshot.data.documents[0]['type'] == "texte" ?
+    Text(from + snapshot.data.documents[0]["content"].toString(), style: style,)
+        : Text(imageFrom + 'envoyé une photo', style: style,);
   }
 
   @override

@@ -34,9 +34,9 @@ class AddProfState extends State<AddProf> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 15,),
-            Image(image: AssetImage('assets/addTeacher.png'),width: MediaQuery.of(context).size.width,),
-            SizedBox(height: 15,),
+            SizedBox(height: 5,),
+            Image(image: AssetImage('assets/addTeacher.png'),height: MediaQuery.of(context).size.height/6,),
+            SizedBox(height: 5,),
             form,
             SizedBox(
               height: 50,

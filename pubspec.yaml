@@ -47,6 +47,7 @@ dependencies:
   flutter_speed_dial: ^1.2.5
   firebase: ^5.0.4
   cached_network_image: ^2.0.0
+  flutter_launcher_icons: ^0.7.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -55,6 +56,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_ios: "assets/LogoFond.png"
+  image_path_android: "assets/LogoFond.png"
+
 
 
 # For information on the generic Dart part of this file, see the
@@ -70,6 +78,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/Logo.png
+    - assets/Logo3.png
+    - assets/LogoFond.png
     - assets/logoDjango.png
     - assets/addTeacher.png
     - assets/freeRooms.png

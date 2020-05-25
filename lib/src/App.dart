@@ -63,7 +63,7 @@ class AppState extends State<App> {
     return StreamBuilder<FirebaseUser>(
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData && snapshot.data.email.endsWith("esiee.fr")) {
+          if (snapshot.hasData) {
             user = snapshot.data;
             //user is logged in
             return MaterialApp(

@@ -74,6 +74,7 @@ class StudentApiProvider {
             "&url_photo=" +
             student.urlPhoto.toString() +
             "&classes=" +
+            "&clubs=" +
             "&roles=" +
             lRoles);
     log.fine(url);

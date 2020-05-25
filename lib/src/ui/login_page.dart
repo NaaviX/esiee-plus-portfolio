@@ -5,6 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
+
+  bool withoutButton;
+
+  LoginPage({this.withoutButton}) {
+    this.withoutButton!=null ? this.withoutButton=true : this.withoutButton=false;
+  }
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -49,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Positioned(
               bottom: 200,
-              child: _isLoading ? CircularProgressIndicator() : _signInButton(context),
+              child: widget.withoutButton ? Container() : _isLoading ? CircularProgressIndicator() : _signInButton(context),
             ),
             Positioned(
               bottom: 10,

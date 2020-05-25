@@ -63,7 +63,7 @@ class ProfListState extends State<ProfList> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => /*AddProf(prof : snapshot.data[index])),*/ProfInfoPage(prof : snapshot.data[index])),
+                MaterialPageRoute(builder: (context) => ProfInfoPage(prof : snapshot.data[index])),
               );
             },
           );
@@ -96,8 +96,6 @@ class ProfInfoPage extends StatelessWidget{
             )
         ), Center(child: Text("Bureau : "+prof.office),),
         Center(child: Text("Téléphone : "+prof.phone),),
-        Text(prof.units.toString()),
-        ListUnits(),
       ],)
     );
   }

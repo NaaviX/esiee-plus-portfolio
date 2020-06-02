@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "479442277479-7n7bt18oq37k4k2ms1juo47vfodif78g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "4421fdb368e433da5dc52597b56a35e9c1a13a3e"
+          }
+        },
+        {
           "client_id": "479442277479-j814h38e4mi7rlm5o3a2j2dunvqpsem7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -46,6 +54,13 @@
             {
               "client_id": "479442277479-d81ppcol54elf7dkrtqh2dedvsghn58f.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "479442277479-4iojn5usb97gsgrgc2sjfcej166clufl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bde.esiee.fr.bdeEsieeMobile"
+              }
             }
           ]
         }

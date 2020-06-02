@@ -272,7 +272,7 @@ class StudentPermissionsState extends State<StudentPermissions>
                             (student.firstname + " " + student.lastname)
                                 .toLowerCase()
                                 .startsWith(filter.toLowerCase())) &&
-                            (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)))
+                            (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)) || selectedRole == "Tous")
                             ? _studentTile(student,index)
                             : new Container();
                       }))

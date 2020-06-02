@@ -6,6 +6,7 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,9 @@ class EventInfoPage extends StatefulWidget {
   EventModel event;
   bool isValidator;
   bool isModeration;
+  EventListState eventList;
 
-  EventInfoPage({this.event, this.isValidator, this.isModeration}) {
+  EventInfoPage({this.event, this.isValidator, this.isModeration, this.eventList}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
@@ -292,9 +294,15 @@ class EventInfoState extends State<EventInfoPage> {
               setState( ()
               {
                 _isEnabled = value;
+                widget.event.enable = _isEnabled;
+                Eventbloc.addSaveEvent(widget.event);
+                widget.eventList.setState(() {
+
+                });
+
               });
-              widget.event.enable = _isEnabled;
-              Eventbloc.addSaveEvent(widget.event);
+
+
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,

@@ -34,7 +34,7 @@ class StudentDetailState extends State<StudentDetail> {
             child: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    Base.thisUser.isContributor
+                    widget.student.isContributor
                         ? Chip(
                       label: RichText(
                         text: TextSpan(

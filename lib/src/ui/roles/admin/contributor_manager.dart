@@ -54,12 +54,7 @@ class ContributorManagerState extends State<ContributorManager> {
         appBar: AppBar(
           title: Text("Gestion cotisants BDE"),
         ),
-        body: GestureDetector(
-            onTap: () {
-              currentFocus = FocusScope.of(context);
-              currentFocus.unfocus();
-            },
-            child: StreamBuilder(
+        body: StreamBuilder(
                 stream: studentsBloc.allStudents,
                 builder: (context,
                     AsyncSnapshot<List<StudentModel>> studentSnapshot) {
@@ -123,7 +118,7 @@ class ContributorManagerState extends State<ContributorManager> {
                     );
                   }
                   return Center(child: CircularProgressIndicator(),);
-                })));
+                }));
 
 
   }
@@ -181,8 +176,6 @@ class ContributorManagerState extends State<ContributorManager> {
           onTap: () {
             showDialog<void>(
                 context: context,
-                barrierDismissible: true,
-                // user must tap button!
                 builder: (BuildContext context) {
                   return StudentDetail(student);
                 });

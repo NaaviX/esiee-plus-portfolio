@@ -77,10 +77,16 @@ class ClubApiProvider {
             club.description.toString() +
             "&url_photo=" +
             club.urlPhoto.toString() +
+            "&url_fb=" +
+            club.urlFB.toString() +
             "&roles=" +
             lRoles +
             "&students=" +
-            lStudents);
+            lStudents +
+            "&url_network=" +
+            club.urlNetwork.toString() +
+            "&url_background=" +
+            club.urlBackground.toString());
     final response = await client.post(
       url,
     );

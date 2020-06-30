@@ -10,8 +10,6 @@ class Calendar extends StatefulWidget {
   final String ids;
   Calendar({@required this.ids});
 
-
-
   @override
   State<StatefulWidget> createState() {
     return CalendarState();
@@ -66,9 +64,9 @@ class CalendarState extends State<Calendar> {
     return WeekView(
       initialHour: 6,
       initialMinute: 50,
-      dates: getWeekDates(5, 60),
+      dates: getWeekDates(10, 53),
       hoursColumnWidth: 40,
-      dayViewWidth: (MediaQuery.of(context).size.width-40)/6,
+      dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       events: toAgendaEventList(snapshot),
       dateFormatter: f,
       inScrollableWidget: true,
@@ -94,11 +92,9 @@ class CalendarState extends State<Calendar> {
   }
 
   List<DateTime> getWeekDates(int weekUntilToday, int weekAfterToday){
-    //DateTime monday = DateTime(dayToDisplay.year, dayToDisplay.month, dayToDisplay.day).subtract(Duration(days: dayToDisplay.weekday));
     DateTime start = DateTime.now().subtract(Duration(days: weekUntilToday*7 + DateTime.now().weekday-1 ));
     int days = ( weekUntilToday + weekAfterToday + 1) * 7 ;
     List yearDays = new List<DateTime>.generate(days, (index) => start.add(Duration(days: index)));
-    yearDays.removeWhere((day) => day.weekday == 7);
     return yearDays;
   }
 }

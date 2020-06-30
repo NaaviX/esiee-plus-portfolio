@@ -8,6 +8,7 @@ import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
+import 'package:bde_esiee_mobile/src/ui/prof/units_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_dashboard.dart';
@@ -22,7 +23,7 @@ import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
-import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
+import 'file:///C:/Users/mchanteloup/Desktop/bde_esiee_mobile/lib/src/ui/prof/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/user_permissions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -286,7 +287,7 @@ class _Base extends State<Base> {
           _adminMenu(),
           _modoMenu(),
           _trezMenu(),
-          //_logMenu(),
+          _logMenu(),
           _clubMenu(),
           _studentMenu(),
           _profMenu(),
@@ -419,7 +420,7 @@ class _Base extends State<Base> {
           title: Text("Liste des professeurs"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ProfList();
+              return UnitsList();
             }));
           },
         ),

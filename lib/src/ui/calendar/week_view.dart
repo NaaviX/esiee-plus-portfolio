@@ -201,7 +201,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
               padding: EdgeInsets.only(left: widget.hoursColumnWidth),
               controller: widget.controller.horizontalScrollController,
               scrollDirection: Axis.horizontal,
-              physics: widget.inScrollableWidget ? MagnetScrollPhysics(itemSize: dayViewWidth*6) : const NeverScrollableScrollPhysics(),
+              physics: widget.inScrollableWidget ? MagnetScrollPhysics(itemSize: dayViewWidth*7) : const NeverScrollableScrollPhysics(),
               itemCount: widget.dateCount,
               itemBuilder: (context, index) => createDayView(index),
             ),

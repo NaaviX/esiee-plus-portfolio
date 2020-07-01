@@ -74,9 +74,9 @@ class UnitsListState extends State<UnitsList> {
                                   )},
                                   borderRadius: BorderRadius.circular(10.0),
                                   child: new Container(
-                                      padding: new EdgeInsets.all(24.0),
+                                      padding: new EdgeInsets.all(20.0),
                                       child:Text(snapshot.data[index].unitName.toUpperCase(),
-                                        style: TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold, fontSize: 20),)),
+                                        style: TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold, fontSize: 18),)),
                                 ),
                               );
                             }

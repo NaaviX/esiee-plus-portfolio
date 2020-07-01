@@ -1,10 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
-import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add_form.dart';
 import 'package:flutter/material.dart';
-
-import '../../App.dart';
 
 class AddProf extends StatefulWidget {
   ProfModel thisProf;

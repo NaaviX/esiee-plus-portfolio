@@ -53,7 +53,6 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
             alignment: Alignment.topCenter,
             children: <Widget>[
               Container(
-                width: MediaQuery.of(context).size.width,
                 height: 200.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(

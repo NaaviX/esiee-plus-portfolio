@@ -2,7 +2,6 @@ import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_info.dart';
-import 'package:bde_esiee_mobile/src/ui/prof/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/units_list.dart';
 import 'package:flutter/material.dart';
 import 'package:search_widget/search_widget.dart';
@@ -90,7 +89,7 @@ class SearchProfState extends State<SearchProf> {
                           widget.parent.currentFocus = focusNode;
                           return CustomTextFormField(
                               "Chercher", "Prenom ou nom du professeur",
-                              Icons.person_add, controller,
+                              Icons.search, controller,
                               focusNode: focusNode);
                         },
                       )

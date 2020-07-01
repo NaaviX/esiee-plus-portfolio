@@ -1,4 +1,3 @@
-import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';

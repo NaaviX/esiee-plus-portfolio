@@ -79,7 +79,7 @@ class ProfInfoPage extends StatelessWidget{
           SizedBox(height: 10,),
           Text(prof.firstname + " " + prof.lastname, style: TextStyle(
             fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white,)),
-          Text(prof.units.toString()),
+          //Text(prof.units.toString()),
         ],
       ),
     );

@@ -79,9 +79,26 @@ class ProfInfoPage extends StatelessWidget{
           SizedBox(height: 10,),
           Text(prof.firstname + " " + prof.lastname, style: TextStyle(
             fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white,)),
+          SizedBox(height: 10,),
+          prof.units.isNotEmpty ?
+          Wrap(
+            spacing: 10,
+            children: _ListProfUnits(),
+          ) : Container(),
           //Text(prof.units.toString()),
         ],
       ),
     );
+  }
+
+  List<Widget> _ListProfUnits() {
+    List<Widget> list = List<Widget>();
+    prof.units.forEach((element) {list.add(
+      Chip(
+        label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
+        backgroundColor: PrimaryColor,
+      )
+    );});
+    return list;
   }
 }

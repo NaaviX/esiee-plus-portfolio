@@ -25,6 +25,7 @@ import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/student/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/user_permissions.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -124,6 +125,8 @@ class _Base extends State<Base> {
 
   List<Widget> _widgetOptions;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   static List<String> _selectedAppbarTitle = [
     'BDE ESIEE Paris',
     'Emploi du temps',
@@ -150,6 +153,11 @@ class _Base extends State<Base> {
       ];
     }
     else return null;
+  }
+
+  Future<bool> isInternetConnected() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
   }
 
   @override
@@ -246,8 +254,8 @@ class _Base extends State<Base> {
       EventList(),
     ];
     return Scaffold(
-        appBar:
-        AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
+        key: _scaffoldKey,
+        appBar: AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
@@ -405,15 +413,11 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        ListTile(
-          leading: Icon(Icons.location_on),
-          title: Text("Salles libres"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return FreeRooms();
-            }));
-          },
-        ),
+        _requireConnectionTile( Icons.location_on, "Salles libres", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return FreeRooms();
+          }));
+        }),
         ListTile(
           leading: Icon(Icons.contacts),
           title: Text("Liste des professeurs"),
@@ -441,18 +445,43 @@ class _Base extends State<Base> {
             }));
           },
         ),*/
-        ListTile(
-          leading: Icon(Icons.chat),
-          title: Text("Messenger"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return MessengerHistory();
-            }));
-          },
-        ),
+        _requireConnectionTile( Icons.chat, "Messenger", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return MessengerHistory();
+          }));
+        })
       ]);
     }
     return Column();
+  }
+
+  Widget _requireConnectionTile( IconData icon, String title, onTap ){
+    return FutureBuilder(
+        future: isInternetConnected(),
+        builder: (BuildContext context, AsyncSnapshot<bool> connected){
+          return connected.hasData && connected.data ? ListTile(
+              leading: Icon( icon ),
+              title: Text( title ),
+              onTap: onTap
+          ) :
+          ListTile(
+              leading: Icon( icon , color: Colors.grey),
+              title: Text(
+                title,
+                style: TextStyle(color: Colors.grey),
+              ),
+            onTap: () {
+              _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text("Non disponible hors connexion"),
+                    backgroundColor: Colors.grey,
+                  )
+              );
+              Navigator.pop(context);
+            }
+          );
+        });
   }
 
   Widget _adminMenu() {
@@ -500,15 +529,11 @@ class _Base extends State<Base> {
             }));
           },
         ),*/
-        ListTile(
-          leading: Icon(Icons.group_add),
-          title: Text("Droits utilisateurs"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return UserPermissions();
-            }));
-          },
-        )
+        _requireConnectionTile( Icons.group_add, "Droits utilisateurs", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return UserPermissions();
+          }));
+        })
       ]);
     }
     return Column();
@@ -532,24 +557,16 @@ class _Base extends State<Base> {
                 fontSize: 16,
               )),
         ),
-        ListTile(
-          leading: Icon(Icons.date_range),
-          title: Text("Gestion évènements"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return EventManager();
-            }));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.person_add),
-          title: Text("Ajout professeur"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return AddProf();
-            }));
-          },
-        ),
+        _requireConnectionTile( Icons.date_range, "Gestion évènements", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return EventManager();
+          }));
+        }),
+        _requireConnectionTile( Icons.person_add, "Ajout professeur", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return AddProf();
+          }));
+        })
       ]);
     }
     return Column();

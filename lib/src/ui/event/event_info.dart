@@ -299,10 +299,7 @@ class EventInfoState extends State<EventInfoPage> {
                 widget.eventList.setState(() {
 
                 });
-
               });
-
-
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,

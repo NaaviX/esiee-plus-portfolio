@@ -92,7 +92,7 @@ class HomeState extends State<Home> {
           ),
           Text(user.displayName, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white,),),
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: EdgeInsets.only(top: 5),
             child: Wrap(
               direction: Axis.horizontal,
               spacing: 10,
@@ -129,7 +129,7 @@ class HomeState extends State<Home> {
             image: new DecorationImage(
               fit: BoxFit.fill,
               image:
-              new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
+                new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
             ),
           )
       ),

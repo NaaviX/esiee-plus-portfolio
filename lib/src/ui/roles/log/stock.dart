@@ -1,6 +1,10 @@
+import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class Stock extends StatefulWidget {
   @override
@@ -9,8 +13,7 @@ class Stock extends StatefulWidget {
   }
 }
 
-class StockState extends State<Stock>
-    with SingleTickerProviderStateMixin{
+class StockState extends State<Stock> with SingleTickerProviderStateMixin{
 
   TabController _tabController;
 
@@ -66,13 +69,13 @@ class StockState extends State<Stock>
 
   Widget _bottomButtons() {
     return FloatingActionButton(
-        //shape: StadiumBorder(),
+      //shape: StadiumBorder(),
         onPressed: _tabController.index == 0
             ? null
             : null,
         backgroundColor: PrimaryColor,
         child: Icon(
-          Icons.add,
+          Icons.add_shopping_cart,
           size: 20.0,
         )
     );
@@ -88,15 +91,54 @@ class Tac extends StatefulWidget {
 
 class TacState extends State<Tac> {
 
-  @override
-  void initState() {}
+  StockBloc stocks = StockBloc();
 
   @override
-  void dispose() {}
+  void initState() {
+    stocks.fetchAllStocks();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    stocks.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+        child: StreamBuilder(
+            stream: stocks.allStocks,
+            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 10,),
+                      Text("Cannettes", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Column(
+                        children: _List(context, snapshot, stocks, "Cannette"),
+                      ),
+                      SizedBox(height: 20,),
+                      Text("Snacks", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Column(
+                        children: _List(context, snapshot, stocks, "Snack"),
+                      ),
+                      SizedBox(height: 20,),
+                      Text("Autres", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Column(
+                        children: _List(context, snapshot, stocks, "Autre"),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              else return Container();
+            })
+    );
   }
 }
 
@@ -109,14 +151,179 @@ class Reserve extends StatefulWidget {
 
 class ReserveState extends State<Reserve> {
 
-  @override
-  void initState() {}
+  StockBloc stocks = StockBloc();
 
   @override
-  void dispose() {}
+  void initState() {
+    stocks.fetchAllStocks();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    stocks.dispose();
+    super.dispose();
+  }
+
+  String selected = "Soft";
+  List<String> list = ["Soft", "Hard"];
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+        child: StreamBuilder(
+            stream: stocks.allStocks,
+            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      DropdownButton<String>(
+                        isExpanded: true,
+                        underline: Column(),
+                        value: selected,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            selected = newValue;
+                          });
+                        },
+                        items: list.map<DropdownMenuItem<String>>((String role) {
+                          return DropdownMenuItem<String>(
+                            value: role,
+                            child: Text(
+                                role,
+                                style: TextStyle(
+                                    color: role == selected ? Colors.black : Colors
+                                        .black54,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold)
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(height: 10,),
+                      selected == "Hard" ? _hard(context, snapshot, stocks) : Container(),
+                      selected == "Soft" ? _soft(context, snapshot, stocks) : Container(),
+                    ],
+                  ),
+                );
+              }
+              else return Container();
+            })
+    );
   }
+}
+
+_hard(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
+  return Column(
+      children: [
+        Text("Hard Pack", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Column(
+          children: _List(context, snapshot, stocks, "Hard Pack"),
+        ),
+        SizedBox(height: 20,),
+        Text("Hard", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Column(
+          children: _List(context, snapshot, stocks, "Hard"),
+        ),
+      ]
+  );
+}
+
+_soft(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
+  return Column(
+      children: [
+        Text("Soft Pack", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Column(
+          children: _List(context, snapshot, stocks, "Soft Pack"),
+        ),
+        SizedBox(height: 20,),
+        Text("Soft", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Column(
+          children: _List(context, snapshot, stocks, "Soft"),
+        ),
+      ]
+  );
+}
+
+_List(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks, String type) {
+  List<Widget> list = List<Widget>();
+  List<StockModel> listOfType = List<StockModel>();
+
+  snapshot.data.forEach((element) { if(element.stockType == type) listOfType.add(element); });
+
+  listOfType.isNotEmpty ?
+  listOfType.forEach((type) {
+    int quantity = type.stockQuant.toInt();
+
+    String info = type.stockType == "Cannette" ? "nombre de pallette(s)"
+        : type.stockType == "Snack" ? "nombre de boite(s)"
+        : type.stockType == "Autre" ? "DLC : " + DateFormat('dd-MM-yyyy', "fr FR").format(type.date)
+        : type.stockType == "Hard" ? "bouteille(s) de " + type.bottleQuant.toString()
+        : type.stockType == "Hard Pack" ? "nombre de pack(s)"
+        : type.stockType == "Soft" ? "nombre de bouteille(s)"
+        : type.stockType == "Soft Pack" ? "nombre de pack(s)"
+        : "";
+
+    list.add(
+      Card(
+          margin: EdgeInsets.all(5),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(type.stockName, style: TextStyle(color: PrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text(info, style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    RawMaterialButton(
+                      onPressed: () {
+                        if(quantity != 0) {
+                          quantity -= 1;
+                          type.stockQuant -= 1;
+                          stocks.addSaveStock(type);
+                          context.setState(() {});
+                        }
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.remove,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                    Text(quantity.toString(), style: TextStyle(color: PrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                    RawMaterialButton(
+                      onPressed: () {
+                        quantity += 1;
+                        type.stockQuant += 1;
+                        stocks.addSaveStock(type);
+                        context.setState(() {});
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.add,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+      ),
+    );
+  }) : Container();
+
+  if(listOfType.isNotEmpty) return list;
+  else return [Text("Aucun élément de type " + type.toLowerCase() + " en reserve")];
 }

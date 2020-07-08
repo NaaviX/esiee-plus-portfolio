@@ -88,6 +88,8 @@ flutter:
     - assets/freeRooms.png
     - assets/cours.png
     - assets/info.png
+    - assets/Alarm.flr
+    - assets/medal.flr
     - locale/i18n_en.json
     - locale/i18n_fr.json
   #  - images/a_dot_ham.jpeg

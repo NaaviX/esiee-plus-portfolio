@@ -132,6 +132,15 @@ class _Base extends State<Base> {
   List<Widget> actionButton(BuildContext context) {
     if(Base.selectedIndex == 1) {
       return [
+        Tooltip(
+          message: "TEXTE A DEFINIR CALENDRIER",
+          child: const Icon(Icons.info_outline),
+          showDuration: Duration(seconds: 30),
+          waitDuration: Duration(microseconds: 1,),
+          padding: EdgeInsets.all(5),
+          margin: EdgeInsets.symmetric(horizontal: 50),
+
+        ),
         /*IconButton(
           icon: const Icon(Icons.event),
           onPressed: () {

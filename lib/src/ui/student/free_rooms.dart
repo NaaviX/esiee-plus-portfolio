@@ -32,6 +32,16 @@ class FreeRoomsState extends State<FreeRooms> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Salles Libres"),
+            actions: [
+              Tooltip(
+                message: "Les salles indiquées ne sont pas prises par un cours en se moment mais cela ne veut pas dire qu'elle ne sont pas occupées pour autant.",
+                child: Container( child: Icon(Icons.info, size: 25,), margin: EdgeInsets.only(right: 15),),
+                showDuration: Duration(seconds: 30),
+                waitDuration: Duration(microseconds: 1,),
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.symmetric(horizontal: 50),
+              ),
+            ]
         ),
         body: StreamBuilder(
           stream: bloc.allRoomsLog,

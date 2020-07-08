@@ -96,7 +96,18 @@ class MessengerHistoryState extends State<MessengerHistory> {
   Widget getList() {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Discuter avec..."),
+          title: Text("Discuter avec..."),
+          actions: [
+            Tooltip(
+              message: "Le BDE ne peut être tenu pour responssable des propos échanger par message.\n"
+                  "En cas de problèmes veuillez en informer immédiatement le BDE.",
+              child: Container( child: Icon(Icons.info, size: 25,), margin: EdgeInsets.only(right: 15),),
+              showDuration: Duration(seconds: 30),
+              waitDuration: Duration(microseconds: 1,),
+              padding: EdgeInsets.all(5),
+              margin: EdgeInsets.symmetric(horizontal: 50),
+            ),
+          ]
       ),
       body: discussions.isEmpty
           ? ListTile(

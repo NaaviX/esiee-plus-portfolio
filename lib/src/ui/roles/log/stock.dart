@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -63,16 +64,21 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
               Reserve(),
             ],
           ),
-          floatingActionButton: _bottomButtons(),
-        ));
+          floatingActionButton: _bottomButtons(context),
+        )
+    );
   }
 
-  Widget _bottomButtons() {
+  Widget _bottomButtons(context) {
     return FloatingActionButton(
       //shape: StadiumBorder(),
-        onPressed: _tabController.index == 0
-            ? null
-            : null,
+        onPressed: () => showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AddStock();
+            }
+        ),
         backgroundColor: PrimaryColor,
         child: Icon(
           Icons.add_shopping_cart,
@@ -290,7 +296,6 @@ _List(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks, Strin
                           quantity -= 1;
                           type.stockQuant -= 1;
                           stocks.addSaveStock(type);
-                          context.setState(() {});
                         }
                       },
                       elevation: 2.0,

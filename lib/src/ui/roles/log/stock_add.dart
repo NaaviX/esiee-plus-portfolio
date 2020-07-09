@@ -1,81 +1,203 @@
-import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/prof_model.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add_form.dart';
+import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/stock_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
-  ProfModel thisProf;
-  AddStock();
-
   @override
-  State<StatefulWidget> createState() {
+  AddStockState createState() {
     return AddStockState();
   }
 }
 class AddStockState extends State<AddStock> {
 
-  final bloc = ProfsBloc();
-  addProfForm form;
+  final bloc = StockBloc();
 
-  @override
-  void initState() {
+  final _formKey = GlobalKey<FormState>();
+  final name = TextEditingController();
+  final type = TextEditingController();
+  final quant = TextEditingController();
+  final bottleQuant = TextEditingController();
 
-  }
+  DateTime date = DateTime.now();
+
+  String selectedChoices = "Cannette";
 
   @override Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-          title: Text("Nouveau Professeur")
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 5,),
-            Image(image: AssetImage('assets/addTeacher.png'),height: MediaQuery.of(context).size.height/6,),
-            SizedBox(height: 5,),
-            form,
-            SizedBox(
-              height: 50,
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        200.0)
-                ),
-                elevation: 2.0,
-                onPressed: () {
-                  if (form.formKey.currentState.validate()) {
-                    ProfModel prof = new ProfModel(
-                      idProf: idProf(),
-                      firstname: form.firstname.text,
-                      lastname: form.lastname.text,
-                      mailEsiee: form.mailEsiee.text,
-                      phone: form.phone.text,
-                      office: form.office.text,
-                      units: form.selectedChoices.toList(),
-                      urlPhoto: verifURL(),
-                    );
-                    bloc.addSaveProf(prof);
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text("Enregistrer", style: TextStyle(color: Colors.white, fontSize: 15),),
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            SizedBox(height: 10,)
-          ],
-        ),
+      elevation: 20.0,
+      backgroundColor: Colors.white,
+      child: Form(
+          key: _formKey,
+          child: _form(context)
       ),
     );
   }
 
-  verifURL() {
-    if(form.uploadedFileURL != null) return form.uploadedFileURL;
-    else return "null";
+  List<String> stockType = ["Cannette", "Snack", "Autre", "Soft", "Soft Pack", "Hard", "Hard Pack"];
+  _form(context) {
+    return SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.only(
+                left: 20, top: 20, right: 20, bottom: 20),
+            child: ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      CustomTextFormField(
+                        "Nom",
+                        "Coca",
+                        null,
+                        name,
+                        type: "titre",
+                        requiredField: true,
+                        maxLength: 10,
+                      ),
+                      Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        children: _buildChoiceList(stockType),
+                      ),
+                      CustomTextFormField(
+                        "Quantité",
+                        "0",
+                        FontAwesomeIcons.cubes,
+                        quant,
+                        type: "titre",
+                        requiredField: true,
+                        maxLength: 4,
+                        keyboard: TextInputType.number,
+                      ),
+                      SizedBox(height: 15.0),
+                      selectedChoices == "Hard" || selectedChoices == "Hard Pack" || selectedChoices == "Soft" || selectedChoices == "Soft Pack" ?
+                      CustomTextFormField(
+                        "Quantité/bouteille",
+                        "0",
+                        FontAwesomeIcons.wineBottle,
+                        bottleQuant,
+                        type: "titre",
+                        requiredField: false,
+                        maxLength: 4,
+                        keyboard: TextInputType.number,
+                      ) : Container(),
+                      selectedChoices == "Autre" || selectedChoices == "Snack" ?
+                      RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                200.0)),
+                        elevation: 2.0,
+                        onPressed: callDatePickerStart,
+                        child: Row(children: <Widget>[
+                          Text("Date de péremption"),
+                          DateFormat('dd/MM/yyyy').format(date) != DateFormat('dd/MM/yyyy').format(DateTime.now()) ? Text(" : " + DateFormat('dd/MM/yyyy').format(date)) : Container(),
+                        ],),
+                        color: Colors.white,
+                      ) : Container(),
+                      selectedChoices != "Cannette" ?
+                      SizedBox(height: 15.0) : Container(),
+                      _buttonAdd(),
+                    ]
+                )
+            )
+        )
+    );
   }
 
-  idProf() {
-    if(form.prof != null) return form.prof.idProf;
-    else return 0;
+  callDatePickerStart() async {
+    var order = await getDate(date);
+    setState(() {
+      order = new DateTime(
+          order.year, order.month, order.day, 1, 0);
+      if (order.isAfter(DateTime.now())) {
+        date = order;
+      }
+    });
+  }
+
+  Future<DateTime> getDate(DateTime date) {
+    return showDatePicker(
+      context: context,
+      initialDate: date,
+      firstDate: DateTime(2018),
+      lastDate: DateTime(2050),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light(),
+          child: child,
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildChoiceList(List<String> units) {
+    List<Widget> choices = List<Widget>();
+
+    units.isNotEmpty ?
+    units.forEach((item) {
+      choices.add(
+          Container(
+              padding: const EdgeInsets.all(2.0),
+              child: ChoiceChip(
+                pressElevation: 5.0,
+                label: Text(item, style: TextStyle(fontSize: 13),),
+                selected: selectedChoices == item,
+                onSelected: (bool selected) {
+                  setState(() {
+                    selectedChoices = selected ? item : null;
+                  });
+                },
+              )));
+    }) : choices.add(Container());
+    return choices;
+  }
+
+  _buttonAdd() {
+    return Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            RaisedButton(
+                padding: EdgeInsets.all(8),
+                color: PrimaryColor,
+                child: Icon(Icons.add_shopping_cart, color: Colors.white,),
+                splashColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    StockModel stock = StockModel(
+                      idStock: 0,
+                      stockName: name.text,
+                      stockType: selectedChoices,
+                      date: date,
+                      stockQuant: double.parse(quant.text),
+                      bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
+                    );
+                    bloc.addSaveStock(stock);
+                    Navigator.of(context).pop();
+                  }
+                }
+            ),
+            RaisedButton(
+                padding: EdgeInsets.all(8),
+                color: Colors.red,
+                child: Icon(Icons.delete, color: Colors.white),
+                splashColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }
+            )
+          ],
+        )
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bde_esiee_mobile/src/App.dart';
@@ -8,6 +9,7 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'event_creation.dart';
 import 'event_info.dart';
@@ -30,44 +32,56 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   @override
   bool get wantKeepAlive => true;
   final bloc = EventsBloc();
-  final clubsBloc = ClubsBloc();
 
   @override
   void initState() {
     super.initState();
     bloc.fetchAllEvents();
-    clubsBloc.fetchClub(user.email);
   }
 
   @override
   void dispose() {
     bloc.dispose();
-    clubsBloc.dispose();
     super.dispose();
   }
 
   final log = Logger('eventList');
 
+  Future<String> getLocalEvents() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('eventsJson');
+    return localEvents;
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
-
       body: StreamBuilder(
         stream: bloc.allEvents,
         builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-          if (snapshot.hasData) {
-            return getList(snapshot);
+          if (!snapshot.hasData) {
+            return FutureBuilder(
+                future: getLocalEvents(),
+                builder: (BuildContext context, AsyncSnapshot<String> eventsJson){
+                  if( eventsJson.hasData ){
+                    dynamic jsonData = jsonDecode(eventsJson.data);
+                    List<EventModel> snapshot = EventModel.allEventsFromJson(jsonData).reversed.toList();
+                    return getList(snapshot);
+                  }
+                  return Center(child: CircularProgressIndicator());
+                }
+            );
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
-          return Center(child: CircularProgressIndicator());
+          return getListAsync(snapshot);
         },
       ),
       floatingActionButton: creationButton(),
     );
   }
 
-  Widget buildList(AsyncSnapshot<List<EventModel>> snapshot) {
+  Widget buildListAsync(AsyncSnapshot<List<EventModel>> snapshot) {
     return ListView.builder(
         //scrollDirection: Axis.horizontal,
         itemCount: snapshot.data.length,
@@ -81,6 +95,28 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     getCover(snapshot.data[index], context),
+                  ]
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  Widget buildList(List<EventModel> snapshot) {
+    return ListView.builder(
+      //scrollDirection: Axis.horizontal,
+        itemCount: snapshot.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              eventInfo(snapshot[index]);
+            },
+            child: Center(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    getCover(snapshot[index], context),
                   ]
               ),
             ),
@@ -179,7 +215,19 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
     else return Container();
   }
 
-  getList(AsyncSnapshot<List<EventModel>> snapshot) {
+  getListAsync(AsyncSnapshot<List<EventModel>> snapshot) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        if(Base.thisClub != null) dropDown(),
+        Expanded(
+          child: buildListAsync(snapshot),
+        ),
+      ],
+    );
+  }
+
+  getList(List<EventModel> snapshot) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[

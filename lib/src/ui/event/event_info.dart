@@ -63,11 +63,7 @@ class EventInfoState extends State<EventInfoPage> {
       appBar: AppBar(
         title: _title(),
       ),
-      body: StreamBuilder(
-          stream: bloc.thisClub,
-          builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
+      body: ListView(
                   children: <Widget>[
                     Container(
                         width: MediaQuery.of(context).size.width,
@@ -80,7 +76,7 @@ class EventInfoState extends State<EventInfoPage> {
                           color: Colors.white,
                         )
                     ),
-                    _header(snapshot),
+                    _header(),
                     Container(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
                       child: Divider(
@@ -110,12 +106,7 @@ class EventInfoState extends State<EventInfoPage> {
                     SizedBox(height: 10,),
                     _suppressionMod(),
                   ]
-              );
-            }
-            else
-              return Container();
-          }
-      ),
+              ),
       floatingActionButton: _manage(widget.event.idClubRef),
     );
   }
@@ -175,60 +166,68 @@ class EventInfoState extends State<EventInfoPage> {
     return  DateFormat('d','fr_FR').format(date);
   }
 
-  _header(AsyncSnapshot<ClubModel> snapshot) {
-    return Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
-                Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-                margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children : <Widget>[
-                      AutoSizeText(
-                        widget.event.name.toUpperCase(),
-                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
-                      ),
-                      Row(children: <Widget>[
-                        Text("Organisé par "),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data),),
-                            );
-                          },
-                          child: Text(
-                              snapshot.data.name,
-                              style: TextStyle(fontWeight: FontWeight.bold)
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(snapshot.data
-                              .urlPhoto),
-                          backgroundColor: Colors.white,
-                          radius: 10,
-                        ),
-                      ]
-                      ),
+  _header() {
+    StreamBuilder(
+        stream: bloc.thisClub,
+        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+          if (snapshot.hasData) {
+            return Row(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
+                        Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children : <Widget>[
+                              AutoSizeText(
+                                widget.event.name.toUpperCase(),
+                                style: TextStyle(color: Colors.black, fontSize: 25.0,),
+                                maxLines: 1,
+                                textAlign: TextAlign.left,
+                              ),
+                              Row(children: <Widget>[
+                                Text("Organisé par "),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data),),
+                                    );
+                                  },
+                                  child: Text(
+                                      snapshot.data.name,
+                                      style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(snapshot.data
+                                      .urlPhoto),
+                                  backgroundColor: Colors.white,
+                                  radius: 10,
+                                ),
+                              ]
+                              ),
 
-                    ]
-                )
-            ),
-          ),
-        ]
+                            ]
+                        )
+                    ),
+                  ),
+                ]
+            );
+          }
+        return Container();
+        }
     );
   }
 

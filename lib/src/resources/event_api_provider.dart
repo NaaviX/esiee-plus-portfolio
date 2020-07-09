@@ -5,10 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class EventApiProvider {
   final log = Logger('eventAPI');
   Client client = Client();
   final _url = 'http://137.74.197.140:8080/api-1-SNAPSHOT/v2/api-docs';
+
+  saveEventsLocal( List<dynamic> jsonData ) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //String gradesUnitID = grades.id.toString();
+    //prefs.setString("Grade_ID", gradesUnitID);
+  }
 
   Future<List<EventModel>> fetchEventList() async {
     final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/event/events");

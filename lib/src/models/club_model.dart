@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ClubModel {
   final log = Logger('clubModel');
@@ -85,7 +88,13 @@ class ClubModel {
     return e;
   }
 
+  static void saveJsonLocal(List<dynamic> value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("clubsJson", json.encode(value));
+  }
+
   static List<ClubModel> allClubsFromJson(List<dynamic> jsonData) {
+    saveJsonLocal(jsonData);
     return new List<ClubModel>.from(
         jsonData.map((x) => ClubModel.fromJson(x)));
   }

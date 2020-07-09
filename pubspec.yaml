@@ -90,6 +90,8 @@ flutter:
     - assets/info.png
     - locale/i18n_en.json
     - locale/i18n_fr.json
+    - assets/medal.flr
+    - assets/Alarm.flr
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

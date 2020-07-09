@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -5,6 +7,7 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventCard extends StatefulWidget {
 
@@ -38,108 +41,162 @@ class EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    return StreamBuilder(
-        stream: club.thisClub,
-        // ignore: missing_return
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return Container(
-              child: Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                //color: Theme.of(context).primaryColor,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+    return Container(
+        child: Card(
+          semanticContainer: true,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          //color: Theme.of(context).primaryColor,
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Stack(
                     children: <Widget>[
-                      Stack(
-                          children: <Widget>[
-                            Container(
-                              height: 150,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: new BoxDecoration(
-                                color: Colors.black,
-                                image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  colorFilter: _filter(event),
-                                  image: new NetworkImage(
-                                    event.backgroundUrl,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            _isEnded(context, event),
-                          ]),
                       Container(
+                        height: 150,
                         width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(15.0),
-                        //height: 40,
-                        child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    getDate(event),
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 13.0),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: 3),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width - 120,
-                                    child: Text(
-                                      event.name,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 19.0),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  SizedBox(height: 3),
-                                  clubName(snapshot),
-                                ],
-                              ),
-                              clubLogo(snapshot),
-                            ]
+                        decoration: new BoxDecoration(
+                          color: Colors.black,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            colorFilter: _filter(event),
+                            image: new NetworkImage(
+                              event.backgroundUrl,
+                            ),
+                          ),
                         ),
                       ),
+                      _isEnded(context, event),
                     ]),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(15.0),
+                  //height: 40,
+                  child: Stack(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              getDate(event),
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13.0),
+                              textAlign: TextAlign.left,
+                            ),
+                            SizedBox(height: 3),
+                            Container(
+                              width: MediaQuery.of(context).size.width - 120,
+                              child: Text(
+                                event.name,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: 19.0),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            SizedBox(height: 3),
+                            clubName(club),
+                          ],
+                        ),
+                        clubLogo(club),
+                      ]
+                  ),
                 ),
-                elevation: 5,
-              ),
-              padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
-              width: MediaQuery.of(context).size.width,
-          );
+              ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          elevation: 5,
+        ),
+        padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
+        width: MediaQuery.of(context).size.width,
+    );
+  }
+
+  Future<String> getLocalClubs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('clubsJson');
+    return localEvents;
+  }
+
+  clubName(ClubsBloc club) {
+    return StreamBuilder(
+        stream: club.thisClub,
+        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+          if (!snapshot.hasData) {
+            return FutureBuilder(
+                future: getLocalClubs(),
+                builder: (BuildContext context, AsyncSnapshot<String> clubsJson){
+                  if( clubsJson.hasData ){
+                    dynamic jsonData = jsonDecode(clubsJson.data);
+                    List<ClubModel> snapshot = ClubModel.allClubsFromJson(jsonData).reversed.toList();
+                    String clubName = snapshot.firstWhere((club) => club.idClubRef == widget.event.idClubRef ).name;
+                    return Text(clubName);
+                  }
+                  return Text("");
+                }
+            );
+          }
+          return Text(snapshot.data.name);
         }
     );
   }
 
-  clubName(AsyncSnapshot<ClubModel> snapshot) {
-    if(snapshot.hasData){
-      return Text(snapshot.data.name);
-    }
-    else return Container();
-  }
-
-  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
-    if(snapshot.hasData){
-      return Positioned(
-        top: 0,
-        right: 0,
-        child: CircleAvatar(
-          backgroundImage: NetworkImage(snapshot.data
-              .urlPhoto),
-          backgroundColor: Colors.white,
-          radius: 29,
-        ),
-      );
-    }
-    else return Container();
+  clubLogo(ClubsBloc club) {
+    Widget loaded = Positioned(
+      top: 0,
+      right: 0,
+      child: CircleAvatar(
+        backgroundColor: Colors.black,
+        radius: 29,
+      ),
+    );
+    return StreamBuilder(
+        stream: club.thisClub,
+        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+          if(!snapshot.hasData){
+            return FutureBuilder(
+                future: getLocalClubs(),
+                builder: (BuildContext context, AsyncSnapshot<String> clubsJson){
+                  if( clubsJson.hasData ){
+                    dynamic jsonData = jsonDecode(clubsJson.data);
+                    List<ClubModel> snapshot = ClubModel.allClubsFromJson(jsonData).reversed.toList();
+                    String clubPhoto = snapshot.firstWhere((club) => club.idClubRef == widget.event.idClubRef ).urlPhoto;
+                    return Positioned(
+                      top: 0,
+                      right: 0,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(clubPhoto),
+                        backgroundColor: Colors.white,
+                        radius: 29,
+                      ),
+                    );
+                  }
+                  return Positioned(
+                    top: 0,
+                    right: 0,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black,
+                      radius: 29,
+                    ),
+                  );
+                }
+            );
+          }
+          return Positioned(
+            top: 0,
+            right: 0,
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(snapshot.data.urlPhoto),
+              backgroundColor: Colors.white,
+              radius: 29,
+            ),
+          );
+        }
+    );
   }
 
   getDate(EventModel event)

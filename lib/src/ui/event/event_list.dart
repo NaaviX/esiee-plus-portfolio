@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bde_esiee_mobile/src/App.dart';
-import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'event_creation.dart';
 import 'event_info.dart';
@@ -29,97 +33,206 @@ class EventList extends StatefulWidget {
 class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
   @override
   bool get wantKeepAlive => true;
-  final bloc = EventsBloc();
-  final clubsBloc = ClubsBloc();
+  final eventBloc = EventsBloc();
+  final clubBloc = ClubsBloc();
 
   @override
   void initState() {
     super.initState();
-    bloc.fetchAllEvents();
-    clubsBloc.fetchClub(user.email);
+    eventBloc.fetchAllEvents();
+    clubBloc.fetchAllClubs();
   }
 
   @override
   void dispose() {
-    bloc.dispose();
-    clubsBloc.dispose();
+    eventBloc.dispose();
+    clubBloc.dispose();
     super.dispose();
   }
 
   final log = Logger('eventList');
 
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
+  Future<bool> isInternetConnected() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi;
+  }
 
-      body: StreamBuilder(
-        stream: bloc.allEvents,
-        builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-          if (snapshot.hasData) {
-            return getList(snapshot);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+  Future<String> getLocalEvents() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('eventsJson');
+    return localEvents;
+  }
+
+  Future<String> getLocalClubs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('clubsJson');
+    return localEvents;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+          future: isInternetConnected(),
+          builder: (BuildContext context, AsyncSnapshot<bool> connected) {
+            return connected.hasData && connected.data
+                ? builEventList()
+                : builEventListLocal();
+          }),
       floatingActionButton: creationButton(),
     );
   }
 
-  Widget buildList(AsyncSnapshot<List<EventModel>> snapshot) {
-    return ListView.builder(
-        //scrollDirection: Axis.horizontal,
-        itemCount: snapshot.data.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              eventInfo(snapshot.data[index]);
-            },
-            child: Center(
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    getCover(snapshot.data[index], context),
-                  ]
-              ),
+  Widget builEventList() {
+    return StreamBuilder(
+      stream: eventBloc.allEvents,
+      builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            if(Base.thisClub != null) dropDown(),
+            Expanded(
+              child: buildList(snapshot.data),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget builEventListLocal() {
+    return FutureBuilder(
+        future: getLocalEvents(),
+        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+          if (eventsJson.hasData) {
+            dynamic jsonData = jsonDecode(eventsJson.data);
+            List<EventModel> snapshot = EventModel
+                .allEventsFromJson(jsonData)
+                .reversed
+                .toList();
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                if(Base.thisClub != null) dropDown(),
+                Expanded(
+                  child: buildList(snapshot),
+                ),
+              ],
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        }
+    );
+  }
+
+  Widget buildList(List<EventModel> events) {
+    return !widget.moderation
+    ? ListView.builder(
+      //scrollDirection: Axis.horizontal,
+        itemCount: events.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Center(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  getCover(events[index], context),
+                ]
+            ),
+          );
+        }
+    )
+    : StreamBuilder(
+        stream: clubBloc.allClubs,
+        builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            //scrollDirection: Axis.horizontal,
+              itemCount: events.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        getCoverModerator(events[index], snapshot.data, context),
+                      ]
+                  ),
+                );
+              }
           );
         }
     );
   }
 
-  eventInfo(EventModel event) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event, eventList: this));
-    if(widget.moderation == true) route = MaterialPageRoute(builder: (context) => EventInfoPage(event : event, isModeration: true,eventList: this));
-    Navigator.push(
-      context,
-      route,
+  getCover(EventModel event, BuildContext context) {
+    return StreamBuilder(
+        stream: clubBloc.allClubs,
+        builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
+          if (!snapshot.hasData) {
+            if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
+              return FutureBuilder(
+                  future: getLocalClubs(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<String> clubsJson) {
+                    if (clubsJson.hasData) {
+                      dynamic jsonData = jsonDecode(clubsJson.data);
+                      List<ClubModel> snapshot = ClubModel
+                          .allClubsFromJson(jsonData)
+                          .reversed
+                          .toList();
+                      ClubModel club = snapshot.firstWhere((club) =>
+                      club.idClubRef == event.idClubRef);
+                      log.fine("Local");
+                      return EventCard(club, event, context, eventList: this);
+                    }
+                    return Container();
+                  }
+              );
+            }
+          }
+          else {
+            log.fine("Online");
+            ClubModel club = snapshot.data.firstWhere((club) => club.idClubRef == event.idClubRef);
+            if(widget.moderation == true) {
+              if(event.endDate.isAfter(DateTime.now()))
+                return EventCard(club, event, context, eventList: this, moderation: true);
+            }
+            if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
+              if (Base.thisClub != null && selected != "Tous") {
+                if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
+                  return EventCard(club, event, context);
+                else return Container();
+              }
+              else if (Base.thisProf != null){
+                if(event.enabledStratif == true) return EventCard(club, event, context, eventList: this);
+                else return Container();
+              }
+              else
+                return EventCard(club, event, context);
+            }
+            else if (Base.thisClub != null && selected == "En attente") {
+              if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(club, event, context, eventList: this);
+              else return Container();
+            }
+            else return Container();
+          }
+          return Container();
+        }
     );
   }
 
-  getCover(EventModel event, BuildContext context) {
-    if(widget.moderation == true) {
-      if(event.endDate.isAfter(DateTime.now())) return EventCard(event, context);
-      else return Container();
-    }
-    else if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
-      if (Base.thisClub != null && selected != "Tous") {
-        if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents") return EventCard(event, context);
-        else return Container();
-      }
-      else if (Base.thisProf != null){
-        if(event.enabledStratif == true) return EventCard(event, context);
-        else return Container();
-      }
-      else
-        return EventCard(event, context);
-    }
-    else if (Base.thisClub != null && selected == "En attente") {
-      if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(event, context);
-      else return Container();
-    }
-    else return Container();
+  getCoverModerator(EventModel event, List<ClubModel> clubs, BuildContext context){
+    ClubModel club = clubs.firstWhere((club) => club.idClubRef == event.idClubRef);
+    if(event.endDate.isAfter(DateTime.now()))
+      return EventCard(club, event, context, eventList: this, moderation: true);
+    return Container();
   }
 
   creationButton() {
@@ -177,18 +290,6 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
       );
     }
     else return Container();
-  }
-
-  getList(AsyncSnapshot<List<EventModel>> snapshot) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        if(Base.thisClub != null) dropDown(),
-        Expanded(
-          child: buildList(snapshot),
-        ),
-      ],
-    );
   }
 
 }

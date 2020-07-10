@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -54,7 +55,7 @@ class EventCreationState extends State<EventCreation> {
                   enabledStratif: widget.form.isForStratif,
                   points: 0,
               );
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event: event, isValidator: true,)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event, Base.thisClub , isValidator: true,)));
             }
           }
       ),

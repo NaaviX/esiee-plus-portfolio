@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventModel {
   final log = Logger('eventModel');
@@ -90,7 +93,13 @@ class EventModel {
     return e;
   }
 
+  static void saveJsonLocal(List<dynamic> value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("eventsJson", json.encode(value));
+  }
+
   static List<EventModel> allEventsFromJson(List<dynamic> jsonData) {
+    saveJsonLocal(jsonData);
     return new List<EventModel>.from(
         jsonData.map((x) => EventModel.fromJson(x)));
   }

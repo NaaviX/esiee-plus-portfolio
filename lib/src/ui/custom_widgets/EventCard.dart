@@ -1,17 +1,27 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventCard extends StatefulWidget {
 
   @required BuildContext context;
   @required EventModel event;
+  @required ClubModel club;
+  EventListState eventList;
+  bool moderation;
 
-  EventCard(this.event, this.context);
+  EventCard(this.club, this.event, this.context, {this.moderation, this.eventList}) {
+    this.moderation = this.moderation == null ? false : this.moderation;
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -38,108 +48,110 @@ class EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    return StreamBuilder(
-        stream: club.thisClub,
-        // ignore: missing_return
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return Container(
-              child: Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                //color: Theme.of(context).primaryColor,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Stack(
-                          children: <Widget>[
-                            Container(
-                              height: 150,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: new BoxDecoration(
-                                color: Colors.black,
-                                image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  colorFilter: _filter(event),
-                                  image: new NetworkImage(
-                                    event.backgroundUrl,
-                                  ),
-                                ),
+    return GestureDetector(
+        onTap: () {
+          pushEventInfo(event, widget.club);
+        },
+        child : Container(
+          child: Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            //color: Theme.of(context).primaryColor,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
+                      children: <Widget>[
+                        Container(
+                          height: 150,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: _filter(event),
+                              image: new NetworkImage(
+                                event.backgroundUrl,
                               ),
                             ),
-                            _isEnded(context, event),
-                          ]),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(15.0),
-                        //height: 40,
-                        child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    getDate(event),
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 13.0),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: 3),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width - 120,
-                                    child: Text(
-                                      event.name,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 19.0),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  SizedBox(height: 3),
-                                  clubName(snapshot),
-                                ],
-                              ),
-                              clubLogo(snapshot),
-                            ]
+                          ),
                         ),
-                      ),
-                    ]),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                elevation: 5,
-              ),
-              padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
-              width: MediaQuery.of(context).size.width,
-          );
-        }
+                        _isEnded(context, event),
+                      ]),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(15.0),
+                    //height: 40,
+                    child: Stack(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                getDate(event),
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 13.0),
+                                textAlign: TextAlign.left,
+                              ),
+                              SizedBox(height: 3),
+                              Container(
+                                width: MediaQuery.of(context).size.width - 120,
+                                child: Text(
+                                  event.name,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 19.0),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              SizedBox(height: 3),
+                              clubName(club),
+                            ],
+                          ),
+                          clubLogo(club),
+                        ]
+                    ),
+                  ),
+                ]),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 5,
+          ),
+          padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
+          width: MediaQuery.of(context).size.width,
+        )
     );
   }
 
-  clubName(AsyncSnapshot<ClubModel> snapshot) {
-    if(snapshot.hasData){
-      return Text(snapshot.data.name);
-    }
-    else return Container();
+  pushEventInfo(EventModel event, ClubModel club) {
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, eventList: widget.eventList));
+    if(widget.moderation)
+      route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true, eventList: widget.eventList));
+    Navigator.push(
+      context,
+      route,
+    );
   }
 
-  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
-    if(snapshot.hasData){
-      return Positioned(
-        top: 0,
-        right: 0,
-        child: CircleAvatar(
-          backgroundImage: NetworkImage(snapshot.data
-              .urlPhoto),
-          backgroundColor: Colors.white,
-          radius: 29,
-        ),
-      );
-    }
-    else return Container();
+  clubName(ClubsBloc club) {
+    return Text(widget.club.name);
+  }
+
+  clubLogo(ClubsBloc club) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(widget.club.urlPhoto),
+        backgroundColor: Colors.white,
+        radius: 29,
+      ),
+    );
   }
 
   getDate(EventModel event)

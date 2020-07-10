@@ -159,11 +159,11 @@ class HomeState extends State<Home> {
       alignment: Alignment.center,
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white,
+        //color: Colors.white,
       ),
       child: Container(
-        width: 20.0,
-        height: 20.0,
+        width: 30.0,
+        height: 30.0,
         child: FlareActor(
           "assets/medal.flr",
           alignment: Alignment.center,

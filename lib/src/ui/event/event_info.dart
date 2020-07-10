@@ -66,16 +66,22 @@ class EventInfoState extends State<EventInfoPage> {
       ),
       body: ListView(
           children: <Widget>[
-            Container(
-                width: MediaQuery.of(context).size.width,
-                height: 150.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(widget.event.backgroundUrl)
+            Stack(
+                children: <Widget>[
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: _filter(widget.event),
+                              image : NetworkImage(widget.event.backgroundUrl)
+                          )
+                      )
                   ),
-                  color: Colors.white,
-                )
+                  _isEnded(context, widget.event),
+                ]
             ),
             _header(),
             Container(
@@ -339,6 +345,41 @@ class EventInfoState extends State<EventInfoPage> {
     {
       return Container();
     }
+  }
+
+  _isEnded(context, EventModel event) {
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now()))
+      return Container(
+          height: 150,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          child: Center(
+              child: AutoSizeText(
+                (_text(event)).toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.bold,
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 30.0),
+                maxLines: 1,
+              )
+          ),
+          margin: EdgeInsets.only(
+              bottom: 0.0, left: 15.0, right: 15.0)
+      );
+    else return Container();
+  }
+
+  _filter(EventModel event) {
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut);
+    else return null;
+  }
+
+  _text(EventModel event) {
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
+    else if(event.enable == false) return "en attente d'approbation";
+    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
+    else return "";
   }
 
   Future<void> _neverSatisfied() async {

@@ -76,163 +76,191 @@ class _createEventFormState extends State<createEventForm> {
     return Form(
       key: widget.formKey,
       child: SingleChildScrollView(
-          child: Padding(
-              padding: EdgeInsets.only(
-                  left: 20, top: 0, right: 20, bottom: 20),
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 15.0),
-                        //Titre
-                        CustomTextFormField(
-                          "Nom de l'événement",
-                          "Intitulé de l'évenement",
-                          Icons.calendar_today,
-                          widget.titre,
-                          type: "titre",
-                          requiredField: true,
-                          maxLength: 100,
-                        ),
-                        SizedBox(height: 15.0),
-                        //Description
-                        CustomTextFormField(
-                          "Description",
-                          "Description de votre évenement",
-                          null,
-                          widget.description,
-                          type: "desc",
-                          requiredField: true,
-                        ),
-                        SizedBox(height: 15.0,),
-                        //Dates
-                        Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                IntrinsicWidth(
-                                  child: Column(
-                                    children: <Widget>[
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callDatePickerStart,
-                                        child: dateButton("start"),
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(height: 10.0,),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callDatePickerEnd,
-                                        child: dateButton("end"),
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(height: 10.0,),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                200.0)),
-                                        elevation: 2.0,
-                                        onPressed: callDatePickerPub,
-                                        child: dateButton("publication"),
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                IntrinsicWidth(
-                                  child: Column(
+        child: Column(
+          children: <Widget>[
+            widget.uploadedFileURL!=null && widget.uploadedFileURL!="null" ?
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.uploadedFileURL)
+                  ),
+                  color: Colors.white,
+                ),
+            ) :
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.uploadedFileURL)
+                  ),
+                  color: Colors.white,
+                )
+            ),
+            Padding(
+                padding: EdgeInsets.only(
+                    left: 20, top: 0, right: 20, bottom: 20),
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 15.0),
+                          //Titre
+                          CustomTextFormField(
+                            "Nom de l'événement",
+                            "Intitulé de l'évenement",
+                            Icons.calendar_today,
+                            widget.titre,
+                            type: "titre",
+                            requiredField: true,
+                            maxLength: 100,
+                          ),
+                          SizedBox(height: 15.0),
+                          //Description
+                          CustomTextFormField(
+                            "Description",
+                            "Description de votre évenement",
+                            null,
+                            widget.description,
+                            type: "desc",
+                            requiredField: true,
+                          ),
+                          SizedBox(height: 15.0,),
+                          //Dates
+                          Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  IntrinsicWidth(
+                                    child: Column(
                                       children: <Widget>[
                                         RaisedButton(
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(200.0)),
+                                              borderRadius: BorderRadius.circular(
+                                                  200.0)),
                                           elevation: 2.0,
-                                          onPressed: callTimePickerStart,
-                                          child: timeButton("start"),
-                                          color: Colors.white
-                                        ),
-                                        SizedBox(height: 10.0,),
-                                        RaisedButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(200.0)),
-                                          elevation: 2.0,
-                                          onPressed: callTimePickerEnd,
-                                          child: timeButton("end"),
+                                          onPressed: callDatePickerStart,
+                                          child: dateButton("start"),
                                           color: Colors.white,
                                         ),
                                         SizedBox(height: 10.0,),
                                         RaisedButton(
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(200.0)),
+                                              borderRadius: BorderRadius.circular(
+                                                  200.0)),
                                           elevation: 2.0,
-                                          onPressed: callTimePickerPub,
-                                          child: timeButton("publication"),
+                                          onPressed: callDatePickerEnd,
+                                          child: dateButton("end"),
                                           color: Colors.white,
                                         ),
-                                      ]
+                                        SizedBox(height: 10.0,),
+                                        RaisedButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                  200.0)),
+                                          elevation: 2.0,
+                                          onPressed: callDatePickerPub,
+                                          child: dateButton("publication"),
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                        ),
-                        SizedBox(height: 15.0),
-                        //Lieu
-                        CustomTextFormField(
-                          "Lieu",
-                          "Lieu de l'évenement",
-                          Icons.place,
-                          widget.place,
-                          requiredField: true,
-                        ),
-                        SizedBox(height: 15.0),
-                        //Prix
-                        CustomTextFormField(
-                          "Prix",
-                          "0",
-                          Icons.euro_symbol,
-                          widget.price,
-                          keyboard: TextInputType.number,
-                          requiredField: true,
-                        ),
-                        SizedBox(height: 15.0),
-                        //Lien de vente
-                        CustomTextFormField(
-                          "Lien de vente",
-                          "Lien de vente des places",
-                          Icons.credit_card,
-                          widget.link,
-                          keyboard: TextInputType.url,
-                          maxLength: 500,
-                        ),
-                        SizedBox(height: 15.0),
-                        //Lien facebook
-                        CustomTextFormField(
-                          "Lien Facebook",
-                          "Lien de l'évent sur facebook",
-                          FontAwesomeIcons.facebookSquare,
-                          widget.fblink,
-                          keyboard: TextInputType.url,
-                          maxLength: 500,
-                        ),
-                        SizedBox(height: 15.0),
-                        //Image
-                        _downloadImage(),
-                        SizedBox(height: 15.0),
-                        _stratif(),
-                        SizedBox(height: 50.0),
-                      ]
-                  )
-              )
-          )
+                                  IntrinsicWidth(
+                                    child: Column(
+                                        children: <Widget>[
+                                          RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius
+                                                      .circular(200.0)),
+                                              elevation: 2.0,
+                                              onPressed: callTimePickerStart,
+                                              child: timeButton("start"),
+                                              color: Colors.white
+                                          ),
+                                          SizedBox(height: 10.0,),
+                                          RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius
+                                                    .circular(200.0)),
+                                            elevation: 2.0,
+                                            onPressed: callTimePickerEnd,
+                                            child: timeButton("end"),
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(height: 10.0,),
+                                          RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius
+                                                    .circular(200.0)),
+                                            elevation: 2.0,
+                                            onPressed: callTimePickerPub,
+                                            child: timeButton("publication"),
+                                            color: Colors.white,
+                                          ),
+                                        ]
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ),
+                          SizedBox(height: 15.0),
+                          //Lieu
+                          CustomTextFormField(
+                            "Lieu",
+                            "Lieu de l'évenement",
+                            Icons.place,
+                            widget.place,
+                            requiredField: true,
+                          ),
+                          SizedBox(height: 15.0),
+                          //Prix
+                          CustomTextFormField(
+                            "Prix",
+                            "0",
+                            Icons.euro_symbol,
+                            widget.price,
+                            keyboard: TextInputType.number,
+                            requiredField: true,
+                          ),
+                          SizedBox(height: 15.0),
+                          //Lien de vente
+                          CustomTextFormField(
+                            "Lien de vente",
+                            "Lien de vente des places",
+                            Icons.credit_card,
+                            widget.link,
+                            keyboard: TextInputType.url,
+                            maxLength: 500,
+                          ),
+                          SizedBox(height: 15.0),
+                          //Lien facebook
+                          CustomTextFormField(
+                            "Lien Facebook",
+                            "Lien de l'évent sur facebook",
+                            FontAwesomeIcons.facebookSquare,
+                            widget.fblink,
+                            keyboard: TextInputType.url,
+                            maxLength: 500,
+                          ),
+                          SizedBox(height: 15.0),
+                          //Image
+                          _downloadImage(),
+                          SizedBox(height: 15.0),
+                          _stratif(),
+                          SizedBox(height: 50.0),
+                        ]
+                    )
+                )
+            )
+          ],
+        )
+
       ),
     );
   }

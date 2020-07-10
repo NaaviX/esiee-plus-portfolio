@@ -2,12 +2,17 @@ import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
+
+  StockState stock;
+  AddStock(stock);
+
   @override
   AddStockState createState() {
     return AddStockState();
@@ -66,7 +71,7 @@ class AddStockState extends State<AddStock> {
                         children: _buildChoiceList(stockType),
                       ),
                       CustomTextFormField(
-                        "Quantité",
+                        _quantite(),
                         "0",
                         FontAwesomeIcons.cubes,
                         quant,
@@ -108,6 +113,15 @@ class AddStockState extends State<AddStock> {
             )
         )
     );
+  }
+
+  _quantite() {
+    String q;
+    selectedChoices == "Hard"  || selectedChoices == "Soft" ? q = "Nombre de bouteille(s)" :
+    selectedChoices == "Soft Pack" || selectedChoices == "Hard Pack"  ? q = "Nombre de pack(s)" :
+    selectedChoices == "Snack" ? q = "Nombre de boite(s)" :
+    selectedChoices == "Cannette" ? q = "Nombre de palette(s)" : q = "Quantité";
+    return q;
   }
 
   callDatePickerStart() async {
@@ -181,7 +195,8 @@ class AddStockState extends State<AddStock> {
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
                     bloc.addSaveStock(stock);
-                    Navigator.of(context).pop();
+                    //widget.stock.setState(() { });
+                    Navigator.pop(context);
                   }
                 }
             ),

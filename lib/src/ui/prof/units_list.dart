@@ -69,8 +69,8 @@ class UnitsListState extends State<UnitsList> {
                                 ),
                                 child: new InkWell(
                                   onTap: () => {Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ProfList(selectedUnit: snapshot.data[index],)),
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ProfList(selectedUnit: snapshot.data[index],)),
                                   )},
                                   borderRadius: BorderRadius.circular(10.0),
                                   child: new Container(

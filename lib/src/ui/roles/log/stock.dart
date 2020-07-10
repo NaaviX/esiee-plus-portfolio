@@ -64,19 +64,19 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
               Reserve(),
             ],
           ),
-          floatingActionButton: _bottomButtons(context),
+          floatingActionButton: _bottomButtons()
         )
     );
   }
 
-  Widget _bottomButtons(context) {
+  Widget _bottomButtons() {
     return FloatingActionButton(
       //shape: StadiumBorder(),
         onPressed: () => showDialog<void>(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return AddStock();
+              return AddStock(this);
             }
         ),
         backgroundColor: PrimaryColor,
@@ -126,17 +126,19 @@ class TacState extends State<Tac> {
                       SizedBox(height: 10,),
                       Text("Cannettes", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
-                        children: _List(context, snapshot, stocks, "Cannette"),
+                        children: _List(this, snapshot, stocks, "Cannette"),
                       ),
                       SizedBox(height: 20,),
                       Text("Snacks", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
-                        children: _List(context, snapshot, stocks, "Snack"),
+                        children: _List(this, snapshot, stocks, "Snack"),
                       ),
                       SizedBox(height: 20,),
                       Text("Autres", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
+                      SizedBox(height: 5,),
                       Column(
-                        children: _List(context, snapshot, stocks, "Autre"),
+                        children: _List(this, snapshot, stocks, "Autre"),
                       ),
                     ],
                   ),
@@ -210,8 +212,8 @@ class ReserveState extends State<Reserve> {
                         }).toList(),
                       ),
                       SizedBox(height: 10,),
-                      selected == "Hard" ? _hard(context, snapshot, stocks) : Container(),
-                      selected == "Soft" ? _soft(context, snapshot, stocks) : Container(),
+                      selected == "Hard" ? _hard(this, snapshot, stocks) : Container(),
+                      selected == "Soft" ? _soft(this, snapshot, stocks) : Container(),
                     ],
                   ),
                 );
@@ -296,6 +298,7 @@ _List(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks, Strin
                           quantity -= 1;
                           type.stockQuant -= 1;
                           stocks.addSaveStock(type);
+                          context.setState(() {});
                         }
                       },
                       elevation: 2.0,

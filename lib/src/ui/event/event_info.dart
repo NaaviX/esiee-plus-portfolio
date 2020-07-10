@@ -220,7 +220,6 @@ class EventInfoState extends State<EventInfoPage> {
                         ),
                       ]
                       ),
-
                     ]
                 )
             ),

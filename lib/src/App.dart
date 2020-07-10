@@ -10,6 +10,7 @@ import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/units_list.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/roles/contributor_verificator.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/bde_infos.dart';
@@ -517,7 +518,7 @@ class _Base extends State<Base> {
           },
         ),
         ListTile(
-          leading: Icon(Icons.verified_user),
+          leading: Icon(Icons.beenhere),
           title: Text("Cotisants"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -565,6 +566,11 @@ class _Base extends State<Base> {
         _requireConnectionTile( Icons.date_range, "Gestion évènements", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return EventManager();
+          }));
+        }),
+        _requireConnectionTile( Icons.verified_user, "Cotisants", () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return ContributorVerificator();
           }));
         }),
         _requireConnectionTile( Icons.person_add, "Ajout professeur", () {

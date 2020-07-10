@@ -21,11 +21,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-/*def keystoreProperties = new Properties()
+//uncomment for apk
+def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}*/
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -54,7 +55,7 @@ android {
     }
 
     /*signingConfigs {
-        debug {
+        release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storeFile file(keystoreProperties['storeFile'])
@@ -63,7 +64,10 @@ android {
     }*/
 
     buildTypes {
-        release {
+        /*release {
+            signingConfig signingConfigs.release
+        }*/
+        debug {
             signingConfig signingConfigs.debug
         }
     }

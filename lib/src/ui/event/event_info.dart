@@ -19,12 +19,13 @@ import 'event_creation.dart';
 
 class EventInfoPage extends StatefulWidget {
 
-  EventModel event;
+  @required EventModel event;
+  @required ClubModel club;
   bool isValidator;
   bool isModeration;
   EventListState eventList;
 
-  EventInfoPage({this.event, this.isValidator, this.isModeration, this.eventList}) {
+  EventInfoPage(this.event, this.club, {this.isValidator, this.isModeration, this.eventList}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
@@ -41,7 +42,7 @@ class EventInfoPage extends StatefulWidget {
 class EventInfoState extends State<EventInfoPage> {
 
   final bloc = ClubsBloc();
-  final Eventbloc = EventsBloc();
+  final eventBloc = EventsBloc();
 
   bool _isEnabled = false;
   bool _isForStratif = false;
@@ -64,49 +65,49 @@ class EventInfoState extends State<EventInfoPage> {
         title: _title(),
       ),
       body: ListView(
+          children: <Widget>[
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.event.backgroundUrl)
+                  ),
+                  color: Colors.white,
+                )
+            ),
+            _header(),
+            Container(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+              child: Divider(
+                color: Colors.black,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(15,0,15,0),
+              padding:  EdgeInsets.fromLTRB(0,0,0,15),
+              child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
+            ),
+            getDate(),
+            Padding(
+              padding:  EdgeInsets.only(left: 5),
+              child: Column(
                   children: <Widget>[
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 150.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(widget.event.backgroundUrl)
-                          ),
-                          color: Colors.white,
-                        )
-                    ),
-                    _header(),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
-                      child: Divider(
-                        color: Colors.black,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(15,0,15,0),
-                      padding:  EdgeInsets.fromLTRB(0,0,0,15),
-                      child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
-                    ),
-                    getDate(),
-                    Padding(
-                      padding:  EdgeInsets.only(left: 5),
-                      child: Column(
-                          children: <Widget>[
 
-                          ]
-                      ),
-                    ),
-
-                    list(Icons.place,widget.event.place),
-                    list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
-                    list(Icons.payment, widget.event.link),
-                    list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
-                    _validationMod(),
-                    SizedBox(height: 10,),
-                    _suppressionMod(),
                   ]
               ),
+            ),
+
+            list(Icons.place,widget.event.place),
+            list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
+            list(Icons.payment, widget.event.link),
+            list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
+            _validationMod(),
+            SizedBox(height: 10,),
+            _suppressionMod(),
+          ]
+      ),
       floatingActionButton: _manage(widget.event.idClubRef),
     );
   }
@@ -167,67 +168,58 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _header() {
-    StreamBuilder(
-        stream: bloc.thisClub,
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          if (snapshot.hasData) {
-            return Row(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
-                        Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                        margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children : <Widget>[
-                              AutoSizeText(
-                                widget.event.name.toUpperCase(),
-                                style: TextStyle(color: Colors.black, fontSize: 25.0,),
-                                maxLines: 1,
-                                textAlign: TextAlign.left,
-                              ),
-                              Row(children: <Widget>[
-                                Text("Organisé par "),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data),),
-                                    );
-                                  },
-                                  child: Text(
-                                      snapshot.data.name,
-                                      style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                ),
-                                SizedBox(width: 5,),
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(snapshot.data
-                                      .urlPhoto),
-                                  backgroundColor: Colors.white,
-                                  radius: 10,
-                                ),
-                              ]
-                              ),
+    return Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
+                Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children : <Widget>[
+                      AutoSizeText(
+                        widget.event.name.toUpperCase(),
+                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(children: <Widget>[
+                        Text("Organisé par "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ClubInfoPage(club : widget.club),),
+                            );
+                          },
+                          child: Text(
+                              widget.event.name,
+                              style: TextStyle(fontWeight: FontWeight.bold)
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(widget.club.urlPhoto),
+                          backgroundColor: Colors.white,
+                          radius: 10,
+                        ),
+                      ]
+                      ),
 
-                            ]
-                        )
-                    ),
-                  ),
-                ]
-            );
-          }
-        return Container();
-        }
+                    ]
+                )
+            ),
+          ),
+        ]
     );
   }
 
@@ -245,7 +237,7 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.check, color: Colors.white,),
           splashColor: Colors.white,
           onPressed: () {
-            Eventbloc.addSaveEvent(widget.event);
+            eventBloc.addSaveEvent(widget.event);
             Base.selectedIndex = 2;
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
           }
@@ -277,7 +269,6 @@ class EventInfoState extends State<EventInfoPage> {
     else return Container();
   }
 
-
   _validationMod() {
     _isEnabled = widget.event.enable;
     _isForStratif = widget.event.enabledStratif;
@@ -294,14 +285,10 @@ class EventInfoState extends State<EventInfoPage> {
               {
                 _isEnabled = value;
                 widget.event.enable = _isEnabled;
-                Eventbloc.addSaveEvent(widget.event);
+                eventBloc.addSaveEvent(widget.event);
                 widget.eventList.setState(() {
-
                 });
-
               });
-
-
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -316,7 +303,7 @@ class EventInfoState extends State<EventInfoPage> {
                 _isForStratif = value;
               });
               widget.event.enabledStratif = _isForStratif;
-              Eventbloc.addSaveEvent(widget.event);
+              eventBloc.addSaveEvent(widget.event);
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -372,7 +359,7 @@ class EventInfoState extends State<EventInfoPage> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                Eventbloc.deleteEvent(widget.event);
+                eventBloc.deleteEvent(widget.event);
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 2;
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);

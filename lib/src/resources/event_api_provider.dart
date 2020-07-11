@@ -12,12 +12,6 @@ class EventApiProvider {
   Client client = Client();
   final _url = 'http://137.74.197.140:8080/api-1-SNAPSHOT/v2/api-docs';
 
-  saveEventsLocal( List<dynamic> jsonData ) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //String gradesUnitID = grades.id.toString();
-    //prefs.setString("Grade_ID", gradesUnitID);
-  }
-
   Future<List<EventModel>> fetchEventList() async {
     final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/event/events");
     if (response.statusCode == 200) {
@@ -60,7 +54,7 @@ class EventApiProvider {
 
   void deleteEvent(EventModel event) async {
     final response = await client.delete(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/"+event.idEvent.toString(),);
+        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/"+event.idEvent.toString());
     if (response.statusCode != 200) {
       throw Exception('Failed to delete event');
     }

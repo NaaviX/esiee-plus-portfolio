@@ -1,6 +1,7 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -236,11 +237,7 @@ class ContributorManagerState extends State<ContributorManager> {
               top: 16, bottom: 16, left: 7, right: 7),
 
           color: Theme.of(context).primaryColor,
-          child: Icon(Icons.credit_card),
-          /*Text(
-            'scan'.toUpperCase(),
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),*/
+          child: Icon(Icons.credit_card, color: Background),
           splashColor: Colors.white,
           onPressed: () {
             scan();

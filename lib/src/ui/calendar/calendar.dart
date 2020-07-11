@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
@@ -5,6 +7,7 @@ import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Calendar extends StatefulWidget {
   final String ids;
@@ -33,38 +36,44 @@ class CalendarState extends State<Calendar> {
     super.dispose();
   }
 
+  Future<String> getLocalCourses() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('coursesJson');
+    return localEvents;
+  }
+
    @override
    Widget build(BuildContext context){
      return Scaffold(
          body: StreamBuilder(
              stream: bloc.allCourses,
              builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
-               if (snapshot.hasData) {
-                 return buildAgenda(snapshot);
+               if (!snapshot.hasData) {
+                 return FutureBuilder(
+                     future: getLocalCourses(),
+                     builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+                       if (eventsJson.hasData) {
+                         dynamic jsonData = jsonDecode(eventsJson.data);
+                         List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
+                         return buildAgenda(snapshot);
+                       }
+                       return Center(child: CircularProgressIndicator());
+                     }
+                 );
                } else if (snapshot.hasError) {
                  return Text(snapshot.error.toString());
                }
-               return Center(child: CircularProgressIndicator());
+               return buildAgenda(snapshot.data);
              }
-         ),
-         /*floatingActionButton: FloatingActionButton(
-           onPressed: () {
-             Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => GradesList()),
-             );
-           },
-           child: Icon(Icons.settings),
-           backgroundColor: Colors.blue,
-         )*/
+         )
      );
    }
 
-  Widget buildAgenda(AsyncSnapshot<List<CourseModel>> snapshot) {
+  Widget buildAgenda(List<CourseModel> snapshot) {
     return WeekView(
       initialHour: 6,
       initialMinute: 50,
-      dates: getWeekDates(10, 53),
+      dates: getWeekDates(10, 8),
       hoursColumnWidth: 40,
       dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       events: toAgendaEventList(snapshot),
@@ -74,9 +83,9 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  List<AgendaEventView> toAgendaEventList(AsyncSnapshot<List<CourseModel>> courses){
+  List<AgendaEventView> toAgendaEventList(List<CourseModel> courses){
     List<AgendaEventView> agendaEvents = [];
-    courses.data.forEach((course) {
+    courses.forEach((course) {
       agendaEvents.add(
           AgendaEventView(
               course: course,

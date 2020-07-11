@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CourseModel {
   final log = Logger('clubModel');
@@ -30,14 +32,16 @@ class CourseModel {
     CourseModel e = new CourseModel();
 
     if (parsedJson != null) {
-      e.title = parsedJson["title"];
-      e.start = DateTime.fromMillisecondsSinceEpoch(parsedJson["start"]);
-      e.end = DateTime.fromMillisecondsSinceEpoch(parsedJson["end"]);
-      e.location = parsedJson["location"];
-      e.teachers = parsedJson["teachers"].toString();
-      e.description = parsedJson["description"];
-      e.updated = DateTime.fromMillisecondsSinceEpoch(parsedJson["exportedAt"]);
-      e.type = parsedJson["tags"][0]["name"];
+      String date = parsedJson["date"].split("/").reversed.toList().join('-');
+      String lastUpdateDate = parsedJson["updated_at"].split(' ')[0].split('/').reversed.toList().join('-');
+      e.title = parsedJson["unite_name"];
+      e.start = DateTime.parse("$date ${parsedJson["start_hour"]}:00");
+      e.end = DateTime.parse("$date ${parsedJson["end_hour"]}:00");
+      e.location = parsedJson["classrooms"].toString();
+      e.teachers = parsedJson["instructors"].toString();
+      e.description = parsedJson["info"];
+      e.updated = DateTime.parse("$lastUpdateDate ${parsedJson["updated_at"].split(' ')[1]}");
+      e.type = parsedJson["name"].split(":")[1];
     }
     return e;
   }
@@ -49,8 +53,13 @@ class CourseModel {
     jsonData.removeWhere((element) => DateTime.fromMillisecondsSinceEpoch(element["end"]).isBefore(monday));
   }
 
+  static void saveJsonLocal(List<dynamic> value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("coursesJson", json.encode(value));
+  }
+
   static List<CourseModel> allCoursesFromJson(List<dynamic> jsonData) {
-    //sortCourses(jsonData);
+    saveJsonLocal(jsonData);
     return new List<CourseModel>.from(
         jsonData.map((x) => CourseModel.fromJson(x)));
   }

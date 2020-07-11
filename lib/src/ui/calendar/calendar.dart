@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -36,6 +37,12 @@ class CalendarState extends State<Calendar> {
     super.dispose();
   }
 
+  Future<bool> isInternetConnected() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi;
+  }
+
   Future<String> getLocalCourses() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String localEvents = prefs.getString('coursesJson');
@@ -45,27 +52,36 @@ class CalendarState extends State<Calendar> {
    @override
    Widget build(BuildContext context){
      return Scaffold(
-         body: StreamBuilder(
-             stream: bloc.allCourses,
-             builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
-               if (!snapshot.hasData) {
-                 return FutureBuilder(
-                     future: getLocalCourses(),
-                     builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-                       if (eventsJson.hasData) {
-                         dynamic jsonData = jsonDecode(eventsJson.data);
-                         List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
-                         return buildAgenda(snapshot);
-                       }
+         body: FutureBuilder(
+             future: isInternetConnected(),
+             builder: (BuildContext context, AsyncSnapshot<bool> connected) {
+               return connected.hasData && connected.data
+                   ? StreamBuilder(
+                   stream: bloc.allCourses,
+                   builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
+                     if (!snapshot.hasData) {
                        return Center(child: CircularProgressIndicator());
+                     } else if (snapshot.hasError) {
+                       return Text(snapshot.error.toString());
                      }
-                 );
-               } else if (snapshot.hasError) {
-                 return Text(snapshot.error.toString());
-               }
-               return buildAgenda(snapshot.data);
-             }
-         )
+                     return buildAgenda(snapshot.data);
+                   }
+               ) : buildLocal();
+             })
+     );
+   }
+
+   Widget buildLocal(){
+     return FutureBuilder(
+         future: getLocalCourses(),
+         builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+           if (eventsJson.hasData) {
+             dynamic jsonData = jsonDecode(eventsJson.data);
+             List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
+             return buildAgenda(snapshot);
+           }
+           return Center(child: CircularProgressIndicator());
+         }
      );
    }
 

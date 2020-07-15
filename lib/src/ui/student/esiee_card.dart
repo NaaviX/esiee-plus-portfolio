@@ -35,11 +35,6 @@ class EsieeCardState extends State<EsieeCard> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight
-    ]);
-    Orientation orientation = MediaQuery.of(context).orientation;
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -61,12 +56,12 @@ class EsieeCardState extends State<EsieeCard> {
                 ),
               ),
               child: Container(
-                height: orientation == Orientation.portrait ? 100 : 315,
-                width: orientation == Orientation.portrait ? 100 : 495,
+                height: 315,
+                width: 495,
                 child: Column(
                     children: <Widget>[
                       Container(
-                        padding: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(left: 30, top: 2),
+                        padding: EdgeInsets.only(left: 30, top: 2),
                         child: Column(
                           children: <Widget>[
                             Row(
@@ -75,8 +70,8 @@ class EsieeCardState extends State<EsieeCard> {
                                 Container(
                                   margin: EdgeInsets.only(left: 15),
                                   padding: EdgeInsets.only(left: 2, top: 2),
-                                  height: orientation == Orientation.portrait ? 0 : 70,
-                                  width: orientation == Orientation.portrait ? 0 : 175,
+                                  height: 70,
+                                  width: 175,
                                   child: Text(
                                     "L'école de\nl'innovation\ntechnologique".toUpperCase(),
                                     style: GoogleFonts.robotoCondensed(
@@ -94,8 +89,8 @@ class EsieeCardState extends State<EsieeCard> {
                                 ),
                                 Container(
                                     padding: EdgeInsets.only(left: 2, top: 2),
-                                    height: orientation == Orientation.portrait ? 0 : 70,
-                                    width: orientation == Orientation.portrait ? 0 : 150,
+                                    height: 70,
+                                    width: 150,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,9 +112,9 @@ class EsieeCardState extends State<EsieeCard> {
                               ],
                             ),
                             Container(
-                              padding: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(top: 5),
-                              height: orientation == Orientation.portrait ? 100 : 190,
-                              width: orientation == Orientation.portrait ? 100 : 500,
+                              padding: EdgeInsets.only(top: 5),
+                              height: 190,
+                              width: 500,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,8 +127,8 @@ class EsieeCardState extends State<EsieeCard> {
                                         padding: EdgeInsets.only(bottom: 3),
                                         alignment: Alignment.bottomCenter,
                                         color: Color(0xFF002860),
-                                        height: orientation == Orientation.portrait ? 100 : 35,
-                                        width: orientation == Orientation.portrait ? 100 : 335,
+                                        height: 35,
+                                        width: 335,
                                         child: Text(
                                           Base.thisUser.promo.contains('F') ? "carte nationale d'apprenti".toUpperCase() : "carte étudiant".toUpperCase(),
                                           style: TextStyle(
@@ -182,9 +177,9 @@ class EsieeCardState extends State<EsieeCard> {
                                     ],
                                   ),
                                   Container(
-                                    margin: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(left: 10, top: 3, ),
-                                    height: orientation == Orientation.portrait ? 100 : 135,
-                                    width: orientation == Orientation.portrait ? 100 : 105,
+                                    margin: EdgeInsets.only(left: 10, top: 3, ),
+                                    height: 135,
+                                    width: 105,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                         fit: BoxFit.fill,
@@ -204,14 +199,14 @@ class EsieeCardState extends State<EsieeCard> {
                         color: Color(0xFF44b3ea),
                       ),
                       Container(
-                        padding: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(left: 30, top: 3),
+                        padding: EdgeInsets.only(left: 30, top: 3),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget> [
                               Container(
-                                padding: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(bottom: 2),
-                                height: orientation == Orientation.portrait ? 100 : 45,
-                                width: orientation == Orientation.portrait ? 100 : 193,
+                                padding: EdgeInsets.only(bottom: 2),
+                                height: 45,
+                                width: 193,
                                 child: SfBarcodeGenerator(
                                   value: Base.thisUser.idStudent.toString(),
                                 ),

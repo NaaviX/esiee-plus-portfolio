@@ -155,7 +155,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          AutoSizeText("Corisation", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
+          AutoSizeText("Cotisation", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
           Expanded(
             child: Center(
               child: widget.club.price == 0 ? Text("GRATUIT", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))

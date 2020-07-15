@@ -81,16 +81,16 @@ class BdeInfos extends StatelessWidget {
           color: Colors.cyan,
           onPressed: () {
             Clipboard.setData(ClipboardData(text: text));
-            toast();
+            toast(titre);
           },
         ),
       ),
     );
   }
 
-  toast() {
+  toast(String titre) {
     return Fluttertoast.showToast(
-      msg: "SIREN Copié dans le presse-papier !",
+      msg: titre + " copié dans le presse-papier !",
       timeInSecForIos: 2,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.green,

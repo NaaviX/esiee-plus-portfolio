@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 class AddStock extends StatefulWidget {
 
   StockState stock;
-  AddStock(stock);
+  AddStock(this.stock);
 
   @override
   AddStockState createState() {
@@ -107,7 +107,7 @@ class AddStockState extends State<AddStock> {
                       ) : Container(),
                       selectedChoices != "Cannette" ?
                       SizedBox(height: 15.0) : Container(),
-                      _buttonAdd(),
+                      _buttonAdd(context),
                     ]
                 )
             )
@@ -172,7 +172,7 @@ class AddStockState extends State<AddStock> {
     return choices;
   }
 
-  _buttonAdd() {
+  _buttonAdd(context) {
     return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -195,8 +195,8 @@ class AddStockState extends State<AddStock> {
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
                     bloc.addSaveStock(stock);
-                    //widget.stock.setState(() { });
-                    Navigator.pop(context);
+                    //widget.stock.getData();
+                    Navigator.of(context).pop();
                   }
                 }
             ),

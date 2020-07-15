@@ -119,7 +119,7 @@ class HomeState extends State<Home> {
   List<Widget> _ListStudentClub() {
     List<Widget> list = List<Widget>();
     list.add(_ContributorMedal());
-    list.add(
+    /*list.add(
       Container(
           width: 30.0,
           height: 30.0,
@@ -148,7 +148,7 @@ class HomeState extends State<Home> {
             ),
           )
       ),
-    );
+    );*/
     return list;
   }
 

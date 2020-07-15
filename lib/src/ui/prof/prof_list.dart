@@ -69,7 +69,12 @@ class ProfListState extends State<ProfList> {
                   leading: CircleAvatar(
                     radius: 20,
                     backgroundColor: PrimaryColor,
-                    child: Icon(Icons.person, color: Colors.white,),
+                    child: snapshot.data[index].urlPhoto != null && snapshot.data[index].urlPhoto != "null" ?
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+                      backgroundColor: Colors.white,
+                      radius:50,
+                    ) : Icon(Icons.person, color: Colors.white,),
                   ),
                   /*CircleAvatar(
                 backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),

@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
@@ -18,6 +19,7 @@ import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
+import 'package:bde_esiee_mobile/src/ui/student/esiee_card.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
@@ -411,6 +413,15 @@ class _Base extends State<Base> {
               )),
         ),
         ListTile(
+          leading: Icon(Icons.credit_card),
+          title: Text("Ma carte"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return EsieeCard();
+            }));
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.group),
           title: Text("Clubs"),
           onTap: () {
@@ -519,7 +530,7 @@ class _Base extends State<Base> {
         ),
         ListTile(
           leading: Icon(Icons.beenhere),
-          title: Text("Cotisants"),
+          title: Text("Ajout Cotisants"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return ContributorManager();

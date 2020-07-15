@@ -190,6 +190,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
           }));
         },
         child: const Icon(FontAwesomeIcons.solidCommentDots),
+        backgroundColor: PrimaryColor,
       ),
     );
   }

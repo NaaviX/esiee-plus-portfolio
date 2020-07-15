@@ -2,10 +2,8 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
-import 'package:bde_esiee_mobile/src/ui/prof/search_prof.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/search_contributor.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,15 +14,21 @@ class ContributorVerificator extends StatefulWidget {
   }
 }
 
+
 class ContributorVerificatorState extends State<ContributorVerificator> {
   StudentsBloc studentsBloc = StudentsBloc();
+
+  final searchController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<StudentModel> allStudents;
+  List<StudentModel> contributors;
+  List<StudentModel> allStudentsExceptContributors;
 
   FocusNode currentFocus;
 
+  String filter = "";
 
   @override
   void initState() {
@@ -43,9 +47,9 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Verification cotisants BDE"),
+          title: Text("Gestion cotisants BDE"),
         ),
-        body: StreamBuilder(
+        body:StreamBuilder(
             stream: studentsBloc.allStudents,
             builder: (context,
                 AsyncSnapshot<List<StudentModel>> studentSnapshot) {
@@ -70,18 +74,20 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
                                       )
                                   ),
                                 ),
-                              ),//ContributorAdd(this, allStudentsExceptContributors))),
+                              ),
                               Container(
                                   margin: EdgeInsets.only(
                                       top: 10, bottom: 10, right: 10),
-                                  child: _scanButton()),
-                            ])),
+                                  child: _scanButton()
+                              ),
+                            ]
+                        )
+                    ),
                   ],
                 );
               }
               return Center(child: CircularProgressIndicator(),);
-            }
-        )
+            })
     );
   }
 
@@ -93,8 +99,9 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
           ),
           padding : EdgeInsets.only(
               top: 16, bottom: 16, left: 7, right: 7),
-          color: PrimaryColor,
-          child: Icon(Icons.credit_card, color: Colors.white,),
+
+          color: Theme.of(context).primaryColor,
+          child: Icon(Icons.credit_card, color: Background),
           splashColor: Colors.white,
           onPressed: () {
             scan();

@@ -82,25 +82,6 @@ class UnitsListState extends State<UnitsList> {
                             }
                         ),
                       )
-                      /*ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: new InkWell(
-                                onTap: ()=> {},
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: new Container(
-                                    padding: new EdgeInsets.all(25.0),
-                                    child:Text(snapshot.data[index].unitName.toUpperCase(),
-                                      style: TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold, fontSize: 20),)),
-                              ),
-                            );
-                          }
-                      )*/
                     ],
                   );
                 } else if (snapshot.hasError) {

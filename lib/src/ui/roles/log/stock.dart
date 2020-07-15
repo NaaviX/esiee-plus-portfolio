@@ -17,23 +17,34 @@ class Stock extends StatefulWidget {
 class StockState extends State<Stock> with SingleTickerProviderStateMixin{
 
   TabController _tabController;
+  StockBloc stocks = StockBloc();
 
   @override
   void initState() {
-    super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabIndex);
+    stocks.fetchAllStocks();
+    super.initState();
+  }
+
+  Future<void> getData() async {
+    setState(() {
+      stocks.fetchAllStocks();
+    });
   }
 
   @override
   void dispose() {
     _tabController.removeListener(_handleTabIndex);
     _tabController.dispose();
+    stocks.dispose();
     super.dispose();
   }
 
   void _handleTabIndex() {
-    setState(() {});
+    setState(() {
+      stocks.fetchAllStocks();
+    });
   }
 
   @override
@@ -41,30 +52,39 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
     return DefaultTabController(
         length: 2,
         child: Scaffold(
-          appBar: AppBar(
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(
-                  icon: Icon(FontAwesomeIcons.shoppingCart,),
-                  text: "Tac",
-                ),
-                Tab(
-                    icon: Icon(FontAwesomeIcons.cocktail),
-                    text: "Reserve"
-                ),
-              ],
+            appBar: AppBar(
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    icon: Icon(FontAwesomeIcons.shoppingCart,),
+                    text: "Tac",
+                  ),
+                  Tab(
+                      icon: Icon(FontAwesomeIcons.cocktail),
+                      text: "Reserve"
+                  ),
+                ],
+              ),
+              title: Text("Stock"),
             ),
-            title: Text("Stock"),
-          ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              Tac(),
-              Reserve(),
-            ],
-          ),
-          floatingActionButton: _bottomButtons()
+            body: Container(
+              child: StreamBuilder(
+                  stream: stocks.allStocks,
+                  builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
+                    if (snapshot.hasData) {
+                      return TabBarView(
+                        controller: _tabController,
+                        children: [
+                          Tac(stocks, snapshot),
+                          Reserve(stocks, snapshot),
+                        ],
+                      );
+                    }
+                    else return Center(child: CircularProgressIndicator());
+                  }),
+            ),
+            floatingActionButton: _bottomButtons()
         )
     );
   }
@@ -86,33 +106,8 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
         )
     );
   }
-}
 
-class Tac extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return TacState();
-  }
-}
-
-class TacState extends State<Tac> {
-
-  StockBloc stocks = StockBloc();
-
-  @override
-  void initState() {
-    stocks.fetchAllStocks();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    stocks.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+/*Widget Tac() {
     return Container(
         child: StreamBuilder(
             stream: stocks.allStocks,
@@ -147,10 +142,68 @@ class TacState extends State<Tac> {
               else return Container();
             })
     );
+  }*/
+}
+
+class Tac extends StatefulWidget {
+
+  StockBloc stocks;
+  AsyncSnapshot<List<StockModel>> snapshot;
+  Tac(this.stocks, this.snapshot);
+
+  @override
+  State<StatefulWidget> createState() {
+    return TacState();
+  }
+}
+
+class TacState extends State<Tac> {
+
+  @override
+  Widget build(BuildContext context) {
+    /*return Container(
+        child: StreamBuilder(
+            stream: widget.stocks.allStocks,
+            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
+              if (snapshot.hasData) {*/
+                return SingleChildScrollView(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 10,),
+                      Text("Cannettes", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Column(
+                        children: _List(this, widget.snapshot, widget.stocks, "Cannette"),
+                      ),
+                      SizedBox(height: 20,),
+                      Text("Snacks", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Column(
+                        children: _List(this, widget.snapshot, widget.stocks, "Snack"),
+                      ),
+                      SizedBox(height: 20,),
+                      Text("Autres", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
+                      SizedBox(height: 5,),
+                      Column(
+                        children: _List(this, widget.snapshot, widget.stocks, "Autre"),
+                      ),
+                    ],
+                  ),
+                );
+              /*}
+              else return Center(child: CircularProgressIndicator());
+            })
+    );*/
   }
 }
 
 class Reserve extends StatefulWidget {
+
+  StockBloc stocks;
+  AsyncSnapshot<List<StockModel>> snapshot;
+  Reserve(this.stocks, this.snapshot);
+
   @override
   State<StatefulWidget> createState() {
     return ReserveState();
@@ -159,30 +212,16 @@ class Reserve extends StatefulWidget {
 
 class ReserveState extends State<Reserve> {
 
-  StockBloc stocks = StockBloc();
-
-  @override
-  void initState() {
-    stocks.fetchAllStocks();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    stocks.dispose();
-    super.dispose();
-  }
-
   String selected = "Soft";
   List<String> list = ["Soft", "Hard"];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    /*return Container(
         child: StreamBuilder(
-            stream: stocks.allStocks,
+            stream: widget.stocks.allStocks,
             builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
-              if (snapshot.hasData) {
+              if (snapshot.hasData) {*/
                 return SingleChildScrollView(
                   padding: EdgeInsets.all(10),
                   child: Column(
@@ -212,15 +251,15 @@ class ReserveState extends State<Reserve> {
                         }).toList(),
                       ),
                       SizedBox(height: 10,),
-                      selected == "Hard" ? _hard(this, snapshot, stocks) : Container(),
-                      selected == "Soft" ? _soft(this, snapshot, stocks) : Container(),
+                      selected == "Hard" ? _hard(this, widget.snapshot, widget.stocks) : Container(),
+                      selected == "Soft" ? _soft(this, widget.snapshot, widget.stocks) : Container(),
                     ],
                   ),
                 );
-              }
+              /*}
               else return Container();
             })
-    );
+    );*/
   }
 }
 

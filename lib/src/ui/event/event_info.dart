@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
@@ -47,6 +48,8 @@ class EventInfoState extends State<EventInfoPage> {
   bool _isEnabled = false;
   bool _isForStratif = false;
 
+  bool _isFav = false;
+
   @override
   void initState() {
     super.initState();
@@ -61,60 +64,74 @@ class EventInfoState extends State<EventInfoPage> {
 
   @override Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _title(),
-      ),
-      body: ListView(
-          children: <Widget>[
-            Stack(
-                children: <Widget>[
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 150.0,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              colorFilter: _filter(widget.event),
-                              image : NetworkImage(widget.event.backgroundUrl)
-                          )
-                      )
-                  ),
-                  _isEnded(context, widget.event),
-                ]
-            ),
-            _header(),
-            Container(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
-              child: Divider(
-                color: Colors.black,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(15,0,15,0),
-              padding:  EdgeInsets.fromLTRB(0,0,0,15),
-              child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
-            ),
-            getDate(),
-            Padding(
-              padding:  EdgeInsets.only(left: 5),
-              child: Column(
+        appBar: AppBar(
+          title: _title(),
+        ),
+        body: ListView(
+            children: <Widget>[
+              Stack(
                   children: <Widget>[
-
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                colorFilter: _filter(widget.event),
+                                image : NetworkImage(widget.event.backgroundUrl)
+                            )
+                        )
+                    ),
+                    _isEnded(context, widget.event),
                   ]
               ),
-            ),
+              _header(),
+              Container(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                child: Divider(
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(15,0,15,0),
+                padding:  EdgeInsets.fromLTRB(0,0,0,15),
+                child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
+              ),
+              getDate(),
+              Padding(
+                padding:  EdgeInsets.only(left: 5),
+                child: Column(
+                    children: <Widget>[
 
-            list(Icons.place,widget.event.place),
-            list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
-            list(Icons.payment, widget.event.link),
-            list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
-            _validationMod(),
-            SizedBox(height: 10,),
-            _suppressionMod(),
-          ]
-      ),
-      floatingActionButton: _manage(widget.event.idClubRef),
+                    ]
+                ),
+              ),
+
+              list(Icons.place,widget.event.place),
+              list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
+              list(Icons.payment, widget.event.link),
+              list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
+              _validationMod(),
+              SizedBox(height: 10,),
+              _suppressionMod(),
+            ]
+        ),
+        floatingActionButton: _floatingActionButton()
+    );
+  }
+
+  FloatingActionButton _floatingActionButton() {
+    if(Base.thisClub != null) return _manage(widget.event.idClubRef);
+    if(Base.thisUser != null) return FloatingActionButton(
+      child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+      splashColor: Colors.white,
+      backgroundColor: Background,
+      onPressed: () {
+        setState(() {
+          _isFav = !_isFav;
+        });
+      },
     );
   }
 
@@ -224,6 +241,17 @@ class EventInfoState extends State<EventInfoPage> {
                 )
             ),
           ),
+          /*Container(
+              padding: EdgeInsets.only(right: 20, top: 10),
+              child: GestureDetector(
+                  child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+                  onTap: () {
+                    setState(() {
+                      _isFav = !_isFav;
+                    });
+                  }
+              )
+          )*/
         ]
     );
   }
@@ -325,19 +353,19 @@ class EventInfoState extends State<EventInfoPage> {
     if(widget.isModeration)
     {
       return Center(
-          child: Ink(
-            decoration: const ShapeDecoration(
-              color: Colors.red,
-              shape: CircleBorder(),
-            ),
-            child: IconButton(
-              icon: Icon(Icons.delete),
-              color: Colors.white,
-              onPressed: () {
-                _neverSatisfied();
-              },
-            ),
+        child: Ink(
+          decoration: const ShapeDecoration(
+            color: Colors.red,
+            shape: CircleBorder(),
           ),
+          child: IconButton(
+            icon: Icon(Icons.delete),
+            color: Colors.white,
+            onPressed: () {
+              _neverSatisfied();
+            },
+          ),
+        ),
       );
     }
     else

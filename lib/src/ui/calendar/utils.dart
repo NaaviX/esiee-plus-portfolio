@@ -193,12 +193,15 @@ class MagnetScrollPhysics extends ScrollPhysics {
   MagnetScrollPhysics applyTo(ScrollPhysics ancestor) {
     return MagnetScrollPhysics(
       parent: buildParent(ancestor),
-      itemSize: itemSize,
+      itemSize: itemSize
     );
   }
 
   @override
   Simulation createBallisticSimulation(ScrollMetrics position, double velocity) {
+
+    double maxVelocity = 1500;
+    velocity = math.min( velocity.abs() , maxVelocity ) * velocity.sign;
     // Scenario 1:
     // If we're out of range and not headed back in range, defer to the parent
     // ballistics, which should put us back in range at the scrollable's boundary.
@@ -223,7 +226,7 @@ class MagnetScrollPhysics extends ScrollPhysics {
     final int settlingItemIndex = _getItemFromOffset(
       offset: testFrictionSimulation?.x(double.infinity) ?? position.pixels,
       minScrollExtent: position.minScrollExtent,
-      maxScrollExtent: position.maxScrollExtent,
+      maxScrollExtent: position.maxScrollExtent
     );
 
     final double settlingPixels = settlingItemIndex * itemSize;

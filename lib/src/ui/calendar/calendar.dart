@@ -60,7 +60,12 @@ class CalendarState extends State<Calendar> {
                    stream: bloc.allCourses,
                    builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
                      if (!snapshot.hasData) {
-                       return Center(child: CircularProgressIndicator());
+                       return Stack(
+                         children: [
+                           buildEmptyAgenda(),
+                           Center(child: CircularProgressIndicator())
+                         ],
+                       );
                      } else if (snapshot.hasError) {
                        return Text(snapshot.error.toString());
                      }
@@ -93,6 +98,19 @@ class CalendarState extends State<Calendar> {
       hoursColumnWidth: 40,
       dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       events: toAgendaEventList(snapshot),
+      dateFormatter: f,
+      inScrollableWidget: true,
+      userZoomable: false,
+    );
+  }
+
+  Widget buildEmptyAgenda() {
+    return WeekView(
+      initialHour: 6,
+      initialMinute: 50,
+      dates: getWeekDates(0, 0),
+      hoursColumnWidth: 40,
+      dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       dateFormatter: f,
       inScrollableWidget: true,
       userZoomable: false,

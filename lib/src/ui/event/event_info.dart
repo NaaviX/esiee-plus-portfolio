@@ -123,7 +123,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   FloatingActionButton _floatingActionButton() {
     if(Base.thisClub != null) return _manage(widget.event.idClubRef);
-    if(Base.thisUser != null) return FloatingActionButton(
+    if(Base.thisUser != null && !widget.isModeration) return FloatingActionButton(
       child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
       splashColor: Colors.white,
       backgroundColor: Background,

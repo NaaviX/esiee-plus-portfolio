@@ -8,11 +8,33 @@ import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 import '../../App.dart';
 
-class EsieeCard extends StatelessWidget {
+class EsieeCard extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return EsieeCardState();
+  }
+}
+
+class EsieeCardState extends State<EsieeCard> {
+  @override
+  void initState(){
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+  }
+
+  @override
+  dispose(){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight

@@ -3,6 +3,7 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../App.dart';
@@ -18,6 +19,10 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     super.initState();
   }
 

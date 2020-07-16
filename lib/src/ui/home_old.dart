@@ -1,10 +1,11 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../App.dart';
 
 class Home extends StatefulWidget {
@@ -15,75 +16,18 @@ class Home extends StatefulWidget {
   }
 }
 
-class HomeState extends State<Home> with TickerProviderStateMixin {
-  final bloc = ClubsBloc();
-
-  AnimationController _resizableController;
-
-  AnimatedBuilder getContainer() {
-    return new AnimatedBuilder(
-        animation: _resizableController,
-        builder: (context, child) {
-          return Container(
-            margin: EdgeInsets.all(3 - _resizableController.value * 3 + 10),
-            child: Container(
-                width: 150.0,
-                height: 150.0,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    fit: BoxFit.fill,
-                    image:
-                    new NetworkImage(user.photoUrl),
-                  ),
-                )
-            ),
-            decoration: new BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                  color: Colors.amberAccent.withOpacity(0.8)/*Colors.green.withOpacity(0.8)*/, width: 5 + _resizableController.value * 3),
-            ),
-          );
-        });
-  }
-
+class HomeState extends State<Home> {
   @override
   void initState() {
-    if (user == null) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return App();
-      }));
-    }
-    super.initState();
-    bloc.fetchAllClubs();
-    _resizableController = new AnimationController(
-      vsync: this,
-      duration: new Duration(
-        milliseconds: 1000,
-      ),
-    );
-    _resizableController.addStatusListener((animationStatus) {
-      switch (animationStatus) {
-        case AnimationStatus.completed:
-          _resizableController.reverse();
-          break;
-        case AnimationStatus.dismissed:
-          _resizableController.forward();
-          break;
-        case AnimationStatus.forward:
-          break;
-        case AnimationStatus.reverse:
-          break;
-      }
-    });
-    _resizableController.forward();
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     super.initState();
   }
 
   @override
   void dispose() {
-    bloc.dispose();
     super.dispose();
   }
 
@@ -92,176 +36,177 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (Base.thisUser != null) {
-      return _homeStudent();
-    } else if (Base.thisClub != null) {
-      return _homeClub();
-    } else if (Base.thisProf != null) {
-      return _homeProf();
-    } else {
-      return Center(child: CircularProgressIndicator());
-    }
+    return Scaffold(
+        body: Column(
+          children: <Widget>[
+            _header(context),
+            Base.thisUser!=null ? _homeStudentUsefulLinks() : Container(),
+          ],
+        )
+
+    );
   }
 
-  Widget _homeClub() {
-    return Column(children: <Widget>[
-      Container(
-          margin: EdgeInsets.all(10.0),
-          child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              elevation: 5,
-              child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(children: <Widget>[
-                    Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                                width: 150.0,
-                                height: 150.0,
-                                decoration: new BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: new DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: new NetworkImage(Base.thisClub.urlPhoto)))),
-                            //Flexible(child: Image.network(user.photoUrl)),
-                            Text(Base.thisClub.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-                            RolesDisplay(Base.thisClub.roles),
-                          ],
-                        ))
-                  ])))),
-    ]);
-  }
-
-  Widget _homeProf() {
-    return Column(children: <Widget>[
-      Container(
-          margin: EdgeInsets.all(10.0),
-          child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              elevation: 5,
-              child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                              width: 150.0,
-                              height: 150.0,
-                              decoration: new BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: new NetworkImage(user.photoUrl)))),
-                          //Flexible(child: Image.network(user.photoUrl)),
-                          Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-                        ],
-                      ),
-                    )
-                  ]))))
-    ]);
-  }
-
-  String studentClubs() {
-    String studentClubs;
-    for(int i=0; i<Base.thisUser.clubs.length;i++) {
-      studentClubs += " " + Base.thisUser.clubs[i].name;
-    }
-    return studentClubs = Base.thisUser.clubs.length.toString();
-  }
-
-  Widget _homeStudent() {
-    return SingleChildScrollView(
-        child: Column(children: <Widget>[
-          Container(
-              margin: EdgeInsets.all(10.0),
-              child: Column(children: <Widget>[
-                Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 5,
-                    child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Row(children: <Widget>[
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                //Avatar
-                                //getContainer(),
-                                Stack(
-                                    children: [
-                                      Center(
-                                        child: Container(
-                                          height: 250,
-                                          width: 250,
-                                          child: FlareActor(
-                                            "assets/Alarm.flr",
-                                            alignment: Alignment.center,
-                                            fit: BoxFit.contain,
-                                            animation: "Alarm",
-                                          ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Container(
-                                          margin: EdgeInsets.all(50),
-                                            width: 150.0,
-                                            height: 150.0,
-                                            alignment: Alignment.center,
-                                            decoration: new BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: new DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image:
-                                                new NetworkImage(user.photoUrl),
-                                              ),
-                                            )
-                                        ),
-                                      ),
-                                    ]
-                                ),
-                                //Nom
-                                Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-                                /*RolesDisplay(Base.thisUser.roles),*/
-                                /*Base.thisUser.isContributor
-                                    ? Chip(
-                                  label: RichText(
-                                    text: TextSpan(
-                                      text: "Cotisant",),
-                                  ),
-                                  backgroundColor: Colors.green,
-                                )
-                                    : Chip(
-                                  label: RichText(
-                                    text: TextSpan(
-                                      text: "Non Cotisant",),
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),*/
-                                /*FutureBuilder<String>(
-                                future: getGradeUnitsID(),
-                                builder: (BuildContext context, AsyncSnapshot<String> gradeUnitsID){
-                                  return Text(gradeUnitsID.data ?? "loading units...");
-                                }
-                            ),*/
-                                Base.thisUser.clubs.length!=0 ? Text(studentClubs()) : Container(),
-                              ],
-                            ),
-                          )
-                        ]))),
-                _homeStudentUsefulLinks()
+  _header(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [
+                0,
+                //0.3,
+                0.8
+              ],
+              colors: [
+                //PrimaryColor.withOpacity(1),
+                Colors.blueAccent,
+                //Colors.blueAccent.withOpacity(0.3),
+                Colors.indigo.withOpacity(1)
               ])),
-        ]));
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height/3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Stack(
+              children: [
+                Base.thisUser != null && Base.thisUser.isContributor ? Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 200,
+                    width: 200,
+                    child: FlareActor(
+                      "assets/Alarm.flr",
+                      alignment: Alignment.center,
+                      fit: BoxFit.contain,
+                      animation: "Alarm",
+                    ),
+                  ),
+                ) : Container(height: 175,),
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      margin: Base.thisUser != null && !Base.thisUser.isContributor ? EdgeInsets.only(top: 30) : EdgeInsets.only(top: 40),
+                      width: 120.0,
+                      height: 120.0,
+                      alignment: Alignment.center,
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image:
+                          new NetworkImage(user.photoUrl),
+                        ),
+                      )
+                  ),
+                ),
+              ]
+          ),
+          Text(user.displayName, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white,),),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Wrap(
+              direction: Axis.horizontal,
+              spacing: 10,
+              children:
+              Base.thisUser != null && Base.thisUser.isContributor ? _ListStudentClub() :
+              Base.thisUser != null && !Base.thisUser.isContributor ?
+              [Chip(
+                label: Text("Eleve", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
+                backgroundColor: PrimaryColor,
+              )] :
+              Base.thisClub != null ?
+              [Chip(
+                label: Text("Club", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
+                backgroundColor: PrimaryColor,
+              )] :
+              Base.thisProf != null ? _ListProfUnits() : [Container()],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _ListStudentClub() {
+    List<Widget> list = List<Widget>();
+    list.add(_ContributorMedal());
+    /*list.add(
+      Container(
+          width: 30.0,
+          height: 30.0,
+          alignment: Alignment.center,
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+              fit: BoxFit.fill,
+              image:
+                new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
+            ),
+          )
+      ),
+    );
+    list.add(
+      Container(
+          width: 30.0,
+          height: 30.0,
+          alignment: Alignment.center,
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+              fit: BoxFit.fill,
+              image:
+              new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FFZY.png?alt=media&token=cdb5de46-6b14-4d1b-b387-ac31541737d4"),
+            ),
+          )
+      ),
+    );*/
+    return list;
+  }
+
+  _ContributorMedal() {
+    return Container(
+      width: 30.0,
+      height: 30.0,
+      alignment: Alignment.center,
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        //color: Colors.white,
+      ),
+      child: Container(
+        width: 30.0,
+        height: 30.0,
+        child: FlareActor(
+          "assets/medal.flr",
+          alignment: Alignment.center,
+          fit: BoxFit.fill,
+          animation: "default",
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _ListProfUnits() {
+    List<Widget> list = List<Widget>();
+    Base.thisProf.units.forEach((element) {list.add(
+        Chip(
+          label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
+          backgroundColor: PrimaryColor,
+        )
+    );});
+    return list;
   }
 
   Widget _homeStudentUsefulLinks() {
     return Card(
+        margin: EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12)),
         elevation: 5,

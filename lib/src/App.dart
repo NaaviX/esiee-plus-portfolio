@@ -416,7 +416,7 @@ class _Base extends State<Base> {
                 fontSize: 16,
               )),
         ),
-        ListTile(
+        /*ListTile(
           leading: Icon(Icons.credit_card),
           title: Text("Ma carte"),
           onTap: () {
@@ -424,7 +424,7 @@ class _Base extends State<Base> {
                 return EsieeCard();
             }));
           },
-        ),
+        ),*/
         ListTile(
           leading: Icon(Icons.group),
           title: Text("Clubs"),

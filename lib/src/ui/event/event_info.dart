@@ -123,7 +123,7 @@ class EventInfoState extends State<EventInfoPage> {
   FloatingActionButton _floatingActionButton() {
     if (!widget.isModeration)
       if(Base.thisClub != null) return _manage(widget.event.idClubRef);
-      else if (Base.thisUser != null) {
+      /*else if (Base.thisUser != null) {
         return FloatingActionButton(
           child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
           splashColor: Colors.white,
@@ -134,7 +134,7 @@ class EventInfoState extends State<EventInfoPage> {
             });
           },
         );
-      }
+      }*/
   }
 
   getDate()
@@ -227,7 +227,7 @@ class EventInfoState extends State<EventInfoPage> {
                             );
                           },
                           child: Text(
-                              widget.event.name,
+                              widget.club.name,
                               style: TextStyle(fontWeight: FontWeight.bold)
                           ),
                         ),

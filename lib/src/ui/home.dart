@@ -1,5 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,49 @@ class HomeState extends State<Home> {
         body: Column(
           children: <Widget>[
             _header(context),
-            Base.thisUser!=null ? _homeStudentUsefulLinks() : Container(),
+            SizedBox(height: 20,),
+            Container(
+              height: MediaQuery.of(context).size.height - 490,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Divider(thickness: 3, height: 3,),
+                    Container(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text("Salut"),
+                            SizedBox(height: 5,),
+                            Text("Bienvenu sur ESIEE+ merci de faire vivre ce projet c'est vraiment cool de ta part <3")
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(thickness: 10, height: 10,),
+                    Container(
+                      height: 165,
+                      child: event(),
+                    ),
+                    //Divider(thickness: 3, height: 3,),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
+                  _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
+                  _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
+                  _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
+                ],
+              ),
+            ),
           ],
         )
 
@@ -49,85 +93,74 @@ class HomeState extends State<Home> {
 
   _header(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              stops: [
-                0,
-                //0.3,
-                0.8
-              ],
-              colors: [
-                //PrimaryColor.withOpacity(1),
-                Colors.blueAccent,
-                //Colors.blueAccent.withOpacity(0.3),
-                Colors.indigo.withOpacity(1)
-              ])),
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height/3,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      height: 270,
+      //color: Colors.blueGrey,
+      child: Stack(
         children: <Widget>[
-          Stack(
-              children: [
-                Base.thisUser != null && Base.thisUser.isContributor ? Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: 200,
-                    width: 200,
-                    child: FlareActor(
-                      "assets/Alarm.flr",
-                      alignment: Alignment.center,
-                      fit: BoxFit.contain,
-                      animation: "Alarm",
-                    ),
-                  ),
-                ) : Container(height: 175,),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      margin: Base.thisUser != null && !Base.thisUser.isContributor ? EdgeInsets.only(top: 30) : EdgeInsets.only(top: 40),
-                      width: 120.0,
-                      height: 120.0,
-                      alignment: Alignment.center,
-                      decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                          new NetworkImage(user.photoUrl),
-                        ),
+          Column(
+            children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image : NetworkImage("http://www.perraultarchitecture.com/data/projet/fiche/1537/large_esiee_axe_md_00d_web_6bcc9.jpg")
                       )
-                  ),
+                  )
+              ),
+              Container(
+                //color: Colors.blueGrey,
+                //height: 50,
+                //margin: EdgeInsets.only(left: 120),
+                margin: EdgeInsets.only(top: 50),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Row(
+                  children: <Widget>[
+                    Text(user.displayName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: PrimaryColor,),),
+                    Container(
+                      margin: EdgeInsets.only(left: 5),
+                      width: 20.0,
+                      height: 20.0,
+                      child: FlareActor(
+                        "assets/medal.flr",
+                        alignment: Alignment.center,
+                        fit: BoxFit.fill,
+                        animation: "default",
+                      ),
+                    ),
+                  ],
                 ),
-              ]
+              ),
+              Container(
+                //color: Colors.blue,
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 5,
+                  children: _ListStudentClub(),
+                ),
+              ),
+            ],
           ),
-          Text(user.displayName, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white,),),
-          Container(
-            margin: EdgeInsets.only(top: 5),
-            child: Wrap(
-              direction: Axis.horizontal,
-              spacing: 10,
-              children:
-              Base.thisUser != null && Base.thisUser.isContributor ? _ListStudentClub() :
-              Base.thisUser != null && !Base.thisUser.isContributor ?
-              [Chip(
-                label: Text("Eleve", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-                backgroundColor: PrimaryColor,
-              )] :
-              Base.thisClub != null ?
-              [Chip(
-                label: Text("Club", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-                backgroundColor: PrimaryColor,
-              )] :
-              Base.thisProf != null ? _ListProfUnits() : [Container()],
+          Positioned(
+            top: 100,
+            child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                width: 100.0,
+                height: 100.0,
+                alignment: Alignment.center,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image:
+                    new NetworkImage(user.photoUrl),
+                  ),
+                  border: Border.all(color: Background, width: 2),
+                )
             ),
           )
         ],
@@ -137,8 +170,7 @@ class HomeState extends State<Home> {
 
   List<Widget> _ListStudentClub() {
     List<Widget> list = List<Widget>();
-    list.add(_ContributorMedal());
-    /*list.add(
+    list.add(
       Container(
           width: 30.0,
           height: 30.0,
@@ -148,7 +180,7 @@ class HomeState extends State<Home> {
             image: new DecorationImage(
               fit: BoxFit.fill,
               image:
-                new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
+              new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
             ),
           )
       ),
@@ -167,29 +199,38 @@ class HomeState extends State<Home> {
             ),
           )
       ),
-    );*/
+    );
     return list;
   }
 
-  _ContributorMedal() {
-    return Container(
-      width: 30.0,
-      height: 30.0,
-      alignment: Alignment.center,
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        //color: Colors.white,
-      ),
+  _homeStudentUsefulLinks(String nom, String site, String image,) {
+    return InkWell(
       child: Container(
-        width: 30.0,
-        height: 30.0,
-        child: FlareActor(
-          "assets/medal.flr",
-          alignment: Alignment.center,
-          fit: BoxFit.fill,
-          animation: "default",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                width: 40.0,
+                height: 40.0,
+                alignment: Alignment.center,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image:
+                    new NetworkImage(image),
+                  ),
+                )
+            ),
+            Text(nom, style: TextStyle(fontSize: 10),),
+          ],
         ),
       ),
+      customBorder: CircleBorder(),
+      onTap: () async {
+        await launch(site);
+      },
     );
   }
 
@@ -204,65 +245,87 @@ class HomeState extends State<Home> {
     return list;
   }
 
-  Widget _homeStudentUsefulLinks() {
-    return Card(
-        margin: EdgeInsets.all(10.0),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)),
-        elevation: 5,
-        child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Row(children: <Widget>[
-              Expanded(
-                  child:
-                  Column(mainAxisSize: MainAxisSize.min, children: <
-                      Widget>[
-                    Container(
-                        width: 122.0,
-                        height: 60.0,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(
-                                    "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png")))),
-                    Divider(),
-                    ListTile(
-                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                      title: Text("Webaurion"),
-                      leading: Icon(Icons.info),
-                      trailing: Icon(Icons.arrow_forward),
-                      onTap: () async {
-                        await launch("https://webaurion.esiee.fr/");
-                      },
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                      title: Text("Blackboard"),
-                      leading: Icon(Icons.info),
-                      trailing: Icon(Icons.arrow_forward),
-                      onTap: () async {
-                        await launch("https://esiee.blackboard.com/");
-                      },
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                      title: Text("Intra"),
-                      leading: Icon(Icons.info),
-                      trailing: Icon(Icons.arrow_forward),
-                      onTap: () async {
-                        await launch("https://intra.esiee.fr/");
-                      },
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                      title: Text("Icampus"),
-                      leading: Icon(Icons.info),
-                      trailing: Icon(Icons.arrow_forward),
-                      onTap: () async {
-                        await launch("https://icampus.esiee.fr/");
-                      },
+  event() {
+    return Column(
+        children: <Widget>[
+          Stack(
+              children: <Widget>[
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 100.0,
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image : NetworkImage("https://bde.esiee.fr/uploads/media/news/0001/02/0733e9810ddb237699c6f8e548aa4b33fbffadb8.png")
+                        )
                     )
-                  ])),
-            ])));
+                ),
+              ]
+          ),
+          _Eventheader(),
+        ]
+    );
+  }
+
+  _Eventheader() {
+    return Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text("Jan.", style: TextStyle(fontSize: 10, color: Colors.red,)),
+                Text("30", style: TextStyle(fontSize: 30,)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children : <Widget>[
+                      AutoSizeText(
+                        "revision java".toUpperCase(),
+                        style: TextStyle(color: Colors.black, fontSize: 20.0,),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(children: <Widget>[
+                        Text("Organisé par "),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                              "Nix",
+                              style: TextStyle(fontWeight: FontWeight.bold)
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage("widget.club.urlPhoto"),
+                          backgroundColor: Colors.white,
+                          radius: 10,
+                        ),
+                      ]
+                      ),
+                    ]
+                )
+            ),
+          ),
+          /*Container(
+              padding: EdgeInsets.only(right: 20, top: 10),
+              child: GestureDetector(
+                  child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+                  onTap: () {
+                    setState(() {
+                      _isFav = !_isFav;
+                    });
+                  }
+              )
+          )*/
+        ]
+    );
   }
 }

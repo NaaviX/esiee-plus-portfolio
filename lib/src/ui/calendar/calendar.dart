@@ -78,12 +78,12 @@ class CalendarState extends State<Calendar> {
                    }
                ) : buildLocal();
              }),
-       floatingActionButton: FloatingActionButton(
+       /*floatingActionButton: FloatingActionButton(
            child: Icon(Icons.adjust, color: Colors.yellowAccent,),
            splashColor: Colors.white,
            onPressed: () {
            }
-       ),
+       ),*/
      );
    }
 

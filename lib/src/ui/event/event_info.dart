@@ -107,7 +107,6 @@ class EventInfoState extends State<EventInfoPage> {
                     ]
                 ),
               ),
-
               list(Icons.place,widget.event.place),
               list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
               list(Icons.payment, widget.event.link),
@@ -122,17 +121,20 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   FloatingActionButton _floatingActionButton() {
-    if(Base.thisClub != null) return _manage(widget.event.idClubRef);
-    if(Base.thisUser != null && !widget.isModeration) return FloatingActionButton(
-      child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
-      splashColor: Colors.white,
-      backgroundColor: Background,
-      onPressed: () {
-        setState(() {
-          _isFav = !_isFav;
-        });
-      },
-    );
+    if (!widget.isModeration)
+      if(Base.thisClub != null) return _manage(widget.event.idClubRef);
+      else if (Base.thisUser != null) {
+        return FloatingActionButton(
+          child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+          splashColor: Colors.white,
+          backgroundColor: Background,
+          onPressed: () {
+            setState(() {
+              _isFav = !_isFav;
+            });
+          },
+        );
+      }
   }
 
   getDate()
@@ -262,12 +264,10 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _manage(int clubRef) {
-    if(widget.isModeration) {
-      return null;
-    }
-    else if(widget.isValidator) {
+    if(widget.isValidator) {
       return FloatingActionButton(
           child: Icon(Icons.check, color: Colors.white,),
+          backgroundColor: PrimaryColor,
           splashColor: Colors.white,
           onPressed: () {
             eventBloc.addSaveEvent(widget.event);
@@ -277,29 +277,35 @@ class EventInfoState extends State<EventInfoPage> {
       );
     }
     else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
-      return SpeedDial(
-        animatedIcon: AnimatedIcons.menu_arrow,
-        foregroundColor: Colors.white,
-        children: [
-          SpeedDialChild(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
-            },
-            child: Icon(Icons.edit, color: Colors.white,),
-            label: "Modifier",
-          ),
-          SpeedDialChild(
-            onTap: () {
-              _neverSatisfied();
-            },
-            backgroundColor: Colors.red,
-            child: Icon(Icons.delete, color: Colors.white,),
-            label: "Supprimer",
-          ),
-        ],
+      return FloatingActionButton(
+        backgroundColor: Colors.transparent,
+          child: SpeedDial(
+            backgroundColor: PrimaryColor,
+            animatedIcon: AnimatedIcons.menu_arrow,
+            foregroundColor: Colors.white,
+            children: [
+              SpeedDialChild(
+                backgroundColor: PrimaryColor,
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
+                },
+                child: Icon(Icons.edit, color: Colors.white,),
+                label: "Modifier",
+                labelStyle: TextStyle(color: Colors.black)
+              ),
+              SpeedDialChild(
+                onTap: () {
+                  _neverSatisfied();
+                },
+                backgroundColor: Colors.red,
+                child: Icon(Icons.delete, color: Colors.white,),
+                label: "Supprimer",
+                  labelStyle: TextStyle(color: Colors.black)
+              ),
+            ],
+          )
       );
     }
-    else return Container();
   }
 
   _validationMod() {

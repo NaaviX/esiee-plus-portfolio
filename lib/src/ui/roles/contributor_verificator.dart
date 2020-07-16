@@ -47,9 +47,9 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Gestion cotisants BDE"),
+          title: Text("Verification cotisants BDE"),
         ),
-        body:StreamBuilder(
+        body: StreamBuilder(
             stream: studentsBloc.allStudents,
             builder: (context,
                 AsyncSnapshot<List<StudentModel>> studentSnapshot) {
@@ -87,7 +87,8 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
                 );
               }
               return Center(child: CircularProgressIndicator(),);
-            })
+            }
+        )
     );
   }
 

@@ -51,8 +51,7 @@ dependencies:
   connectivity: 0.4.8+6
   flare_flutter: ^2.0.5
   google_fonts: ^1.1.0
-  flutter_svg: ^0.17.3+1
-  #syncfusion_flutter_barcodes: ^18.2.45-beta
+  syncfusion_flutter_barcodes: ^18.1.42-beta
 
 
   # The following adds the Cupertino Icons font to your application.

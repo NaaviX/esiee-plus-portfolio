@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -34,8 +35,9 @@ class EventCreationState extends State<EventCreation> {
       ),
       body: widget.form,
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.send, color: Colors.white,),
+          child: Icon(Icons.arrow_forward, color: Colors.white,),
           splashColor: Colors.white,
+          backgroundColor: PrimaryColor,
           onPressed: () {
             if (widget.form.formKey.currentState.validate()) {
               EventModel event = EventModel(

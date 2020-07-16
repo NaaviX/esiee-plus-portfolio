@@ -18,22 +18,14 @@ class ContributorVerificator extends StatefulWidget {
 class ContributorVerificatorState extends State<ContributorVerificator> {
   StudentsBloc studentsBloc = StudentsBloc();
 
-  final searchController = TextEditingController();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  List<StudentModel> allStudents;
-  List<StudentModel> contributors;
-  List<StudentModel> allStudentsExceptContributors;
-
   FocusNode currentFocus;
 
-  String filter = "";
+  List<StudentModel> allStudents;
 
   @override
   void initState() {
     studentsBloc.fetchAllStudents();
-    super.initState();
   }
 
   @override
@@ -54,12 +46,12 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
             builder: (context,
                 AsyncSnapshot<List<StudentModel>> studentSnapshot) {
               if (studentSnapshot.hasData) {
-                return Column(
-                  children: <Widget>[
-                    Container(
+                allStudents = studentSnapshot.data;
+                return Container(
                         child: Row(
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Flexible(
                                 child: Container(
@@ -69,7 +61,6 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
                                         currentFocus.unfocus();
                                       },
                                       child: Container(
-                                        margin: EdgeInsets.all(5),
                                         child: SearchContributor(this),
                                       )
                                   ),
@@ -82,14 +73,12 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
                               ),
                             ]
                         )
-                    ),
-                  ],
                 );
               }
               return Center(child: CircularProgressIndicator(),);
-            }
-        )
-    );
+            }));
+
+
   }
 
   Widget _scanButton() {

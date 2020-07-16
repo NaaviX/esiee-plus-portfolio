@@ -259,6 +259,14 @@ class ContributorManagerState extends State<ContributorManager> {
             backgroundColor: Colors.green,
           )
       );
+      /*showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          // user must tap button!
+          builder: (BuildContext context) {
+            return StudentDetail(student);
+          }
+      );*/
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {

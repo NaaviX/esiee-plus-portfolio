@@ -51,7 +51,7 @@ class SearchContributorState extends State<SearchContributor> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(10.0),
                       child: SearchWidget<StudentModel>(
 
                         dataList: snapshot.data,

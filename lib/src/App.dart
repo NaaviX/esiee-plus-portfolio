@@ -258,7 +258,7 @@ class _Base extends State<Base> {
   Widget _getApp() {
     _widgetOptions = <Widget>[
       Home(),
-      CalendarController(),
+      Calendar(),
       EventList(),
     ];
     return Scaffold(

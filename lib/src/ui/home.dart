@@ -49,7 +49,21 @@ class HomeState extends State<Home> {
 
   _header(BuildContext context) {
     return Container(
-      color: PrimaryColor.withOpacity(0.8),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [
+                0,
+                //0.3,
+                0.8
+              ],
+              colors: [
+                //PrimaryColor.withOpacity(1),
+                Colors.blueAccent,
+                //Colors.blueAccent.withOpacity(0.3),
+                Colors.indigo.withOpacity(1)
+              ])),
       width: MediaQuery
           .of(context)
           .size

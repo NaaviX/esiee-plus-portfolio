@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'controller.dart';
+
 class Calendar extends StatefulWidget {
   final String ids;
   Calendar({@required this.ids});
@@ -49,8 +51,11 @@ class CalendarState extends State<Calendar> {
     return localEvents;
   }
 
+  WeekViewController scrollController;
+
    @override
    Widget build(BuildContext context){
+     WeekViewController scrollController = WeekViewController(dayViewsCount: getWeekDates(10, 8).length);
      return Scaffold(
          body: FutureBuilder(
              future: isInternetConnected(),
@@ -72,7 +77,13 @@ class CalendarState extends State<Calendar> {
                      return buildAgenda(snapshot.data);
                    }
                ) : buildLocal();
-             })
+             }),
+       floatingActionButton: FloatingActionButton(
+           child: Icon(Icons.adjust, color: Colors.yellowAccent,),
+           splashColor: Colors.white,
+           onPressed: () {
+           }
+       ),
      );
    }
 
@@ -90,6 +101,18 @@ class CalendarState extends State<Calendar> {
      );
    }
 
+  void scrollToCurrentTime() {
+
+    /// Calculates the top offset of a given hour and a given minute.
+    double calculateTopOffset(int hour, [int minute = 0, double hourRowHeight]) => (hour + (minute / 60)) * 40;
+
+    /// Calculates the widget height.
+    double calculateHeight([double hourRowHeight]) => calculateTopOffset(24, 0, hourRowHeight);
+
+    //scrollController.verticalScrollController.jumpTo(math.min(calculateTopOffset(6, 50), scrollController.verticalScrollController.position.maxScrollExtent));
+    //scrollController.horizontalScrollController.jumpTo(math.min(leftOffset, scrollController.horizontalScrollController.position.maxScrollExtent));
+  }
+
   Widget buildAgenda(List<CourseModel> snapshot) {
     return WeekView(
       initialHour: 6,
@@ -101,6 +124,7 @@ class CalendarState extends State<Calendar> {
       dateFormatter: f,
       inScrollableWidget: true,
       userZoomable: false,
+      controller: scrollController,
     );
   }
 

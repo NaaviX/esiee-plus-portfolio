@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EventModel {
+class EventModel{
   final log = Logger('eventModel');
 
   int idEvent;                   //idEvent
@@ -90,6 +90,27 @@ class EventModel {
         e.place = "";
       }
     }
+    return e;
+  }
+
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> e = {
+      'name': this.name,
+      'idEvent': this.idEvent,
+      'startDate': this.startDate.toString(),
+      'endDate': this.endDate.toString(),
+      'place': this.place,
+      'backgroundUrl': this.backgroundUrl,
+      'description': this.description,
+      'publicationDate': this.publicationDate.toString(),
+      'link': this.link,
+      'facebookLink': this.facebookLink,
+      'idClubRef': this.idClubRef,
+      'enable': this.enable,
+      'price': this.price,
+      'enabledStratif': this.enabledStratif,
+      'points': this.points,
+    };
     return e;
   }
 

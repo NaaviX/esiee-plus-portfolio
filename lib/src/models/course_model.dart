@@ -87,6 +87,8 @@ class CourseModel {
         return Colors.blueGrey.withOpacity(0.7);
       case "TDRm":
         return Colors.blueGrey.withOpacity(0.7);
+      case "EVENT":
+        return Colors.orangeAccent.withOpacity(0.5);
       default:
         return Colors.amber.withOpacity(0.8);
     }

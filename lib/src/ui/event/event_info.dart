@@ -1,4 +1,6 @@
 //When user click on an event
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../App.dart';
 import 'event_creation.dart';
@@ -49,6 +52,29 @@ class EventInfoState extends State<EventInfoPage> {
   bool _isForStratif = false;
 
   bool _isFav = false;
+
+  Future<String> getSavedEvents() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    return localEvents;
+  }
+
+  void favEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.add( widget.event );
+    String savedEventsJson = json.encode(savedEvents);
+    prefs.setString("savedEventsJson", savedEventsJson);
+  }
+
+  void unfavEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.removeWhere((event) => event["idEvent"] == widget.event.idEvent);
+    prefs.setString("savedEventsJson", json.encode(savedEvents));
+  }
 
   @override
   void initState() {
@@ -107,6 +133,7 @@ class EventInfoState extends State<EventInfoPage> {
                     ]
                 ),
               ),
+
               list(Icons.place,widget.event.place),
               list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
               list(Icons.payment, widget.event.link),
@@ -116,25 +143,53 @@ class EventInfoState extends State<EventInfoPage> {
               _suppressionMod(),
             ]
         ),
-        floatingActionButton: _floatingActionButton(widget.event.idClubRef)
+        floatingActionButton: _floatingActionButton()
     );
   }
 
-  _floatingActionButton(int clubRef) {
+  Widget _floatingActionButton() {
     if (!widget.isModeration)
-      if(Base.thisClub != null) return _manage(clubRef);
-    /*else if (Base.thisUser != null) {
-        return FloatingActionButton(
-          child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
-          splashColor: Colors.white,
-          backgroundColor: Background,
-          onPressed: () {
-            setState(() {
-              _isFav = !_isFav;
-            });
-          },
-        );
-      }*/
+      return FutureBuilder(
+          future: getSavedEvents(),
+          builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+              if (Base.thisClub != null)
+                return _manage(widget.event.idClubRef);
+              if (Base.thisUser != null && !widget.isModeration){
+                dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
+                List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
+                _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
+                return FloatingActionButton(
+                  child: Icon(Icons.event_available, size: 40,
+                      color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+                  splashColor: Colors.white,
+                  backgroundColor: Background,
+                  onPressed: () {
+                    _isFav ? unfavEvent() : favEvent();
+                    setState(() {
+                      _isFav = !_isFav;
+                    });
+                  },
+                );
+              }
+          /*if (Base.thisClub != null)
+            return _manage(widget.event.idClubRef);
+          if (Base.thisUser != null && !widget.isModeration)
+            return FloatingActionButton(
+              child: Icon(Icons.event_available, size: 40,
+                  color: (Colors.blueGrey.withOpacity(0.5))),
+              splashColor: Colors.white,
+              backgroundColor: Background,
+              onPressed: () {
+                _isFav ? unfavEvent() : favEvent();
+                setState(() {
+                  _isFav = !_isFav;
+                });
+              },
+            );*/
+
+          return Container();
+        }
+    );
   }
 
   getDate()

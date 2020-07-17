@@ -116,14 +116,14 @@ class EventInfoState extends State<EventInfoPage> {
               _suppressionMod(),
             ]
         ),
-        floatingActionButton: _floatingActionButton()
+        floatingActionButton: _floatingActionButton(widget.event.idClubRef)
     );
   }
 
-  FloatingActionButton _floatingActionButton() {
+  _floatingActionButton(int clubRef) {
     if (!widget.isModeration)
-      if(Base.thisClub != null) return _manage(widget.event.idClubRef);
-      /*else if (Base.thisUser != null) {
+      if(Base.thisClub != null) return _manage(clubRef);
+    /*else if (Base.thisUser != null) {
         return FloatingActionButton(
           child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
           splashColor: Colors.white,
@@ -277,33 +277,30 @@ class EventInfoState extends State<EventInfoPage> {
       );
     }
     else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
-      return FloatingActionButton(
-        backgroundColor: Colors.transparent,
-          child: SpeedDial(
-            backgroundColor: PrimaryColor,
-            animatedIcon: AnimatedIcons.menu_arrow,
-            foregroundColor: Colors.white,
-            children: [
-              SpeedDialChild(
-                backgroundColor: PrimaryColor,
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
-                },
-                child: Icon(Icons.edit, color: Colors.white,),
-                label: "Modifier",
-                labelStyle: TextStyle(color: Colors.black)
-              ),
-              SpeedDialChild(
-                onTap: () {
-                  _neverSatisfied();
-                },
-                backgroundColor: Colors.red,
-                child: Icon(Icons.delete, color: Colors.white,),
-                label: "Supprimer",
-                  labelStyle: TextStyle(color: Colors.black)
-              ),
-            ],
-          )
+      return SpeedDial(
+        backgroundColor: PrimaryColor,
+        animatedIcon: AnimatedIcons.menu_arrow,
+        foregroundColor: Colors.white,
+        children: [
+          SpeedDialChild(
+              backgroundColor: PrimaryColor,
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
+              },
+              child: Icon(Icons.edit, color: Colors.white,),
+              label: "Modifier",
+              labelStyle: TextStyle(color: Colors.black)
+          ),
+          SpeedDialChild(
+              onTap: () {
+                _neverSatisfied();
+              },
+              backgroundColor: Colors.red,
+              child: Icon(Icons.delete, color: Colors.white,),
+              label: "Supprimer",
+              labelStyle: TextStyle(color: Colors.black)
+          ),
+        ],
       );
     }
   }

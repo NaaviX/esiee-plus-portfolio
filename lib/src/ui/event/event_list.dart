@@ -36,11 +36,14 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   final eventBloc = EventsBloc();
   final clubBloc = ClubsBloc();
 
+  String selected;
+
   @override
   void initState() {
     super.initState();
     eventBloc.fetchAllEvents();
     clubBloc.fetchAllClubs();
+    selected = "Mes évents";
   }
 
   @override
@@ -249,7 +252,6 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
       );
   }
 
-  String selected = "Mes évents";
   List<String> list = ["Tous", "Mes évents", "En attente"];
 
   dropDown() {

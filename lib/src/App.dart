@@ -55,7 +55,7 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -88,7 +88,6 @@ class AppState extends State<App> {
 //user not logged in
             return MaterialApp(
               theme : MyTheme.defaultTheme,
-              //darkTheme : MyTheme.darkTheme,
               home: LoginPage(),
               localizationsDelegates: [
                 const TranslationsDelegate(),
@@ -267,7 +266,7 @@ class _Base extends State<Base> {
     ];
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
+        appBar: AppBar(brightness: Brightness.light, title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,

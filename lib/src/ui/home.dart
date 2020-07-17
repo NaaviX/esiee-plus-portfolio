@@ -21,10 +21,9 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    SystemChrome.setPreferredOrientations([
+    /*SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-    ]);
+    ]);*/
     super.initState();
   }
 
@@ -39,11 +38,13 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body: SafeArea(
+        child: Column(
           children: <Widget>[
             _header(context),
             SizedBox(height: 20,),
-            Container(
+            Container(height: MediaQuery.of(context).size.height - 520,),
+            /*Container(
               height: MediaQuery.of(context).size.height - 490,
               child: SingleChildScrollView(
                 child: Column(
@@ -71,9 +72,9 @@ class HomeState extends State<Home> {
                   ],
                 ),
               ),
-            ),
+            ),*/
             Container(
-              height: 80,
+              height: 62,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,7 +88,7 @@ class HomeState extends State<Home> {
             ),
           ],
         )
-
+        )
     );
   }
 
@@ -105,8 +106,8 @@ class HomeState extends State<Home> {
                   decoration: BoxDecoration(
                       color: Colors.black,
                       image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image : NetworkImage("http://www.perraultarchitecture.com/data/projet/fiche/1537/large_esiee_axe_md_00d_web_6bcc9.jpg")
+                          fit: BoxFit.fill,
+                          image : AssetImage("assets/defaultbanner.png")
                       )
                   )
               ),
@@ -119,6 +120,7 @@ class HomeState extends State<Home> {
                 child: Row(
                   children: <Widget>[
                     Text(user.displayName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: PrimaryColor,),),
+                    Base.thisUser != null && Base.thisUser.isContributor ?
                     Container(
                       margin: EdgeInsets.only(left: 5),
                       width: 20.0,
@@ -129,11 +131,11 @@ class HomeState extends State<Home> {
                         fit: BoxFit.fill,
                         animation: "default",
                       ),
-                    ),
+                    ) : Container(),
                   ],
                 ),
               ),
-              Container(
+              /*Container(
                 //color: Colors.blue,
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.symmetric(horizontal: 10),
@@ -142,7 +144,7 @@ class HomeState extends State<Home> {
                   spacing: 5,
                   children: _ListStudentClub(),
                 ),
-              ),
+              ),*/
             ],
           ),
           Positioned(
@@ -217,7 +219,7 @@ class HomeState extends State<Home> {
                 decoration: new BoxDecoration(
                   shape: BoxShape.circle,
                   image: new DecorationImage(
-                    fit: BoxFit.fill,
+                    fit: BoxFit.scaleDown,
                     image:
                     new NetworkImage(image),
                   ),

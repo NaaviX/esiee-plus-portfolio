@@ -1,6 +1,12 @@
+import 'dart:ffi';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/HomeComponents.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../App.dart';
+import 'event/event_info.dart';
 
 class Home extends StatefulWidget {
 
@@ -19,8 +26,13 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+
+  final eventBloc = EventsBloc();
+  final rate = 10;
+
   @override
   void initState() {
+    eventBloc.fetchAllEvents();
     /*SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);*/
@@ -29,6 +41,7 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
+    eventBloc.dispose();
     super.dispose();
   }
 
@@ -40,61 +53,37 @@ class HomeState extends State<Home> {
     return Scaffold(
         body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _header(context),
-            SizedBox(height: 20,),
-            Container(height: MediaQuery.of(context).size.height - 520,),
-            /*Container(
-              height: MediaQuery.of(context).size.height - 490,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Divider(thickness: 3, height: 3,),
-                    Container(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text("Salut"),
-                            SizedBox(height: 5,),
-                            Text("Bienvenu sur ESIEE+ merci de faire vivre ce projet c'est vraiment cool de ta part <3")
-                          ],
-                        ),
-                      ),
-                    ),
-                    Divider(thickness: 10, height: 10,),
-                    Container(
-                      height: 165,
-                      child: event(),
-                    ),
-                    //Divider(thickness: 3, height: 3,),
-                  ],
-                ),
-              ),
-            ),*/
-            Container(
-              height: 62,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
-                  _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
-                  _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
-                  _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
-                ],
-              ),
-            ),
+            HomeComponents(),
+            _Links()
           ],
         )
         )
     );
   }
 
+  _Links() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      height: 62,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
+          _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
+          _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
+          _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
+        ],
+      ),
+    );
+  }
+
   _header(BuildContext context) {
     return Container(
-      height: 270,
+      height: 270.0-30.0,
       //color: Colors.blueGrey,
       child: Stack(
         children: <Widget>[
@@ -247,87 +236,4 @@ class HomeState extends State<Home> {
     return list;
   }
 
-  event() {
-    return Column(
-        children: <Widget>[
-          Stack(
-              children: <Widget>[
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 100.0,
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image : NetworkImage("https://bde.esiee.fr/uploads/media/news/0001/02/0733e9810ddb237699c6f8e548aa4b33fbffadb8.png")
-                        )
-                    )
-                ),
-              ]
-          ),
-          _Eventheader(),
-        ]
-    );
-  }
-
-  _Eventheader() {
-    return Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text("Jan.", style: TextStyle(fontSize: 10, color: Colors.red,)),
-                Text("30", style: TextStyle(fontSize: 30,)),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children : <Widget>[
-                      AutoSizeText(
-                        "revision java".toUpperCase(),
-                        style: TextStyle(color: Colors.black, fontSize: 20.0,),
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
-                      ),
-                      Row(children: <Widget>[
-                        Text("Organisé par "),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                              "Nix",
-                              style: TextStyle(fontWeight: FontWeight.bold)
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        CircleAvatar(
-                          backgroundImage: NetworkImage("widget.club.urlPhoto"),
-                          backgroundColor: Colors.white,
-                          radius: 10,
-                        ),
-                      ]
-                      ),
-                    ]
-                )
-            ),
-          ),
-          /*Container(
-              padding: EdgeInsets.only(right: 20, top: 10),
-              child: GestureDetector(
-                  child: Icon(Icons.event_available, size: 40, color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
-                  onTap: () {
-                    setState(() {
-                      _isFav = !_isFav;
-                    });
-                  }
-              )
-          )*/
-        ]
-    );
-  }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -8,6 +9,7 @@ import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,6 +34,14 @@ class EventCard extends StatefulWidget {
 class EventCardState extends State<EventCard> {
 
   final club = ClubsBloc();
+
+  bool _isFav = false;
+
+  Future<String> getSavedEvents() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    return localEvents;
+  }
 
   @override
   void initState() {
@@ -98,15 +108,24 @@ class EventCardState extends State<EventCard> {
                               ),
                               SizedBox(height: 3),
                               Container(
-                                width: MediaQuery.of(context).size.width - 120,
-                                child: Text(
-                                  event.name,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: 19.0),
-                                  textAlign: TextAlign.left,
-                                ),
+                                  width: MediaQuery.of(context).size.width - 120,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: event.name,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 19.0),
+                                        ),
+                                        WidgetSpan(
+                                          alignment: PlaceholderAlignment.top,
+                                          child: _favCard(),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                               ),
                               SizedBox(height: 3),
                               clubName(club),
@@ -128,8 +147,24 @@ class EventCardState extends State<EventCard> {
     );
   }
 
+  Widget _favCard() {
+    return FutureBuilder(
+        future: getSavedEvents(),
+        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+          dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
+          List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
+          _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
+          return _isFav ? Container(
+            child: Icon(FontAwesomeIcons.solidHeart, size: 15, color: Colors.red),
+            margin: EdgeInsets.only(left: 5),
+          ) :
+          Container();
+        }
+    );
+  }
+
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, eventList: widget.eventList));
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, parentCard: this, eventList: widget.eventList));
     if(widget.moderation)
       route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true, eventList: widget.eventList));
     Navigator.push(

@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +65,12 @@ class ClubListState extends State<ClubList> {
                 child: Hero(
                   tag: 'logoClub'+snapshot.data[index].idClubRef.toString(),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.blueGrey.withOpacity(0.2),
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+                      backgroundColor: Colors.white,
+                      radius:19,
+                    ),
                   ),
                 ),
               ),

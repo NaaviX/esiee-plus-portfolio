@@ -138,21 +138,25 @@ class _Base extends State<Base> {
   List<Widget> actionButton(BuildContext context) {
     if(Base.selectedIndex == 1) {
       return [
-        Tooltip(
-          message: "TEXTE A DEFINIR CALENDRIER",
-          child: const Icon(Icons.info_outline),
-          showDuration: Duration(seconds: 30),
-          waitDuration: Duration(microseconds: 1,),
+        IconButton(
+          icon: const Icon(Icons.info_outline),
           padding: EdgeInsets.all(5),
-          margin: EdgeInsets.symmetric(horizontal: 50),
-
+          onPressed: () {
+            _scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 3),
+                  content: Text("Le BDE ne peut être tenu responsable des erreurs eventuelles de l'agenda.", textAlign: TextAlign.justify),
+                  backgroundColor: Colors.blueAccent,
+                )
+            );
+          },
         ),
         /*IconButton(
           icon: const Icon(Icons.event),
           onPressed: () {
           },
         ),*/
-        IconButton(
+        /*IconButton(
           icon: const Icon(Icons.more_vert),
           onPressed: () {
             Navigator.push(
@@ -160,7 +164,10 @@ class _Base extends State<Base> {
               MaterialPageRoute(builder: (context) => Calendar()),
             );
           },
-        ),
+        ),*/
+        SizedBox(
+          width: 10,
+        )
       ];
     }
     else return null;
@@ -243,10 +250,10 @@ class _Base extends State<Base> {
                           } else {
                             log.fine("loading");
                             return Container(
-                                color: Background,
-                                child: LoginPage(withoutButton: true),
-                          );//Center(child: Text("Loading"));//new CircularProgressIndicator());
-                        }
+                              color: Background,
+                              child: LoginPage(withoutButton: true),
+                            );//Center(child: Text("Loading"));//new CircularProgressIndicator());
+                          }
                         },
                       );
                     }
@@ -465,11 +472,11 @@ class _Base extends State<Base> {
             }));
           },
         ),*/
-        _requireConnectionTile( Icons.chat, "Messenger", () {
+        /*_requireConnectionTile( Icons.chat, "Messenger", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return MessengerHistory();
           }));
-        })
+        })*/
       ]);
     }
     return Column();
@@ -490,16 +497,16 @@ class _Base extends State<Base> {
                 title,
                 style: TextStyle(color: Colors.grey),
               ),
-            onTap: () {
-              _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(
-                    duration: Duration(seconds: 1),
-                    content: Text("Non disponible hors connexion"),
-                    backgroundColor: Colors.grey,
-                  )
-              );
-              Navigator.pop(context);
-            }
+              onTap: () {
+                _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 1),
+                      content: Text("Non disponible hors connexion"),
+                      backgroundColor: Colors.grey,
+                    )
+                );
+                Navigator.pop(context);
+              }
           );
         });
   }

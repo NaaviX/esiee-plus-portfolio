@@ -8,6 +8,7 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
@@ -25,11 +26,12 @@ class EventInfoPage extends StatefulWidget {
 
   @required EventModel event;
   @required ClubModel club;
+  EventCardState parentCard;
   bool isValidator;
   bool isModeration;
   EventListState eventList;
 
-  EventInfoPage(this.event, this.club, {this.isValidator, this.isModeration, this.eventList}) {
+  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration, this.eventList}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
@@ -159,14 +161,19 @@ class EventInfoState extends State<EventInfoPage> {
                 List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
                 _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
                 return FloatingActionButton(
-                  child: Icon(Icons.event_available, size: 40,
-                      color: (_isFav ? PrimaryColor : Colors.blueGrey.withOpacity(0.5))),
+                  child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
+                      color: (_isFav ? Colors.red : Colors.blueGrey.withOpacity(0.5))),
                   splashColor: Colors.white,
                   backgroundColor: Background,
+                  elevation: 0,
+                  highlightElevation: 0,
                   onPressed: () {
                     _isFav ? unfavEvent() : favEvent();
                     setState(() {
                       _isFav = !_isFav;
+                      widget.parentCard.setState(() {
+
+                      });;
                     });
                   },
                 );

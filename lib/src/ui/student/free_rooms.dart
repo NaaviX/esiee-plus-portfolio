@@ -13,6 +13,8 @@ class FreeRooms extends StatefulWidget {
 class FreeRoomsState extends State<FreeRooms> {
   final bloc = FreeRoomsBloc();
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -30,16 +32,22 @@ class FreeRoomsState extends State<FreeRooms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Salles Libres"),
             actions: [
-              Tooltip(
-                message: "Les salles indiquées ne sont pas prises par un cours en se moment mais cela ne veut pas dire qu'elle ne sont pas occupées pour autant.",
-                child: Container( child: Icon(Icons.info, size: 25,), margin: EdgeInsets.only(right: 15),),
-                showDuration: Duration(seconds: 30),
-                waitDuration: Duration(microseconds: 1,),
+              IconButton(
+                icon: const Icon(Icons.info_outline),
                 padding: EdgeInsets.all(5),
-                margin: EdgeInsets.symmetric(horizontal: 50),
+                onPressed: () {
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        duration: Duration(seconds: 6),
+                        content: Text("Les salles indiquées ne sont pas occupées par un cours en ce moment, elles peuvent cependant ne pas être disponibles.", textAlign: TextAlign.justify),
+                        backgroundColor: Colors.blueAccent,
+                      )
+                  );
+                },
               ),
             ]
         ),

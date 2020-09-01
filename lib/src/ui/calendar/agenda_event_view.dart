@@ -83,13 +83,22 @@ class AgendaEventView extends Comparable<AgendaEventView> {
         ),
         margin: margin,
         padding: padding,
-        child: (eventTextBuilder ?? DefaultBuilders.defaultEventTextBuilder)(
-          this,
-          context,
-          dayView,
-          math.max(0.0, height),
-          math.max(0.0, width),
-        ),
+        child: Stack(
+          children: <Widget>[
+            (eventTextBuilder ?? DefaultBuilders.defaultEventTextBuilder)(
+              this,
+              context,
+              dayView,
+              math.max(0.0, height),
+              math.max(0.0, width),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: course.location == "[Classe virtuelle]" ? Icon(Icons.home, color: Colors.white, size: 17,) : Container(),
+            )
+          ],
+        )
       ),
     );
   }

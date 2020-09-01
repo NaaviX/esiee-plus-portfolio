@@ -123,12 +123,20 @@ class EventCardState extends State<EventCard> {
                                           alignment: PlaceholderAlignment.top,
                                           child: _favCard(),
                                         ),
+                                        TextSpan(
+                                          text: "\n" + widget.club.name,
+                                          style: TextStyle(
+                                              //fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              //fontSize: 15.0
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
                               ),
                               SizedBox(height: 3),
-                              clubName(club),
+
                             ],
                           ),
                           clubLogo(club),
@@ -158,7 +166,10 @@ class EventCardState extends State<EventCard> {
             child: Icon(FontAwesomeIcons.solidHeart, size: 15, color: Colors.red),
             margin: EdgeInsets.only(left: 5),
           ) :
-          Container();
+          Container(
+            child: Icon(null, size: 15, color: Colors.red),
+            margin: EdgeInsets.only(left: 5),
+          );
         }
     );
   }
@@ -174,7 +185,7 @@ class EventCardState extends State<EventCard> {
   }
 
   clubName(ClubsBloc club) {
-    return Text(widget.club.name);
+    return Text("\n" + widget.club.name);
   }
 
   clubLogo(ClubsBloc club) {
@@ -183,7 +194,7 @@ class EventCardState extends State<EventCard> {
       right: 0,
       child: CircleAvatar(
         backgroundImage: NetworkImage(widget.club.urlPhoto),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
         radius: 29,
       ),
     );

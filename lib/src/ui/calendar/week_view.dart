@@ -186,7 +186,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
         Container(
           height: widget.dayBarHeight,
           width: widget.hoursColumnWidth,
-          color: widget.dayBarBackgroundColor ?? Background,
+          color: widget.dayBarBackgroundColor ?? Theme.of(context).backgroundColor,
         ),
       ],
     );
@@ -206,7 +206,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
               itemBuilder: (context, index) => createDayView(index),
             ),
           ),
-          HoursColumn.fromHeadersWidget(parent: widget),
+          HoursColumn.fromHeadersWidget(context, parent: widget),
         ],
       );
 
@@ -314,6 +314,7 @@ class _AutoScrollDayBarState extends State<_AutoScrollDayBar> {
           itemBuilder: (context, position) => SizedBox(
             width: widget.dayViewWidth,
             child: DayBar.fromHeadersWidget(
+              context: context,
               parent: widget.weekView,
               date: widget.weekView.dateCreator(position),
             ),

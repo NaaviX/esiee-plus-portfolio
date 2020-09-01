@@ -113,7 +113,7 @@ class MessengerClubListState extends State<MessengerClubList>
     return new ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(club.urlPhoto),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
       title: Text(club.name),
       subtitle: Text(

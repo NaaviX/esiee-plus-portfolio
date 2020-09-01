@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,7 +82,7 @@ class EsieeCard extends StatelessWidget {
                                             textStyle: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 10.5,
-                                              color: PrimaryColor,
+                                              color: Theme.of(context).primaryColor,
                                               wordSpacing: 0.5,
                                             ),
                                           ),

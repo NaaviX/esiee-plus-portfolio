@@ -3,8 +3,6 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/calendar_controller.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
@@ -19,7 +17,6 @@ import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
-import 'package:bde_esiee_mobile/src/ui/student/esiee_card.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
@@ -54,12 +51,20 @@ class AppState extends State<App> {
   Widget app;
 
   @override
-  Widget build(BuildContext context) {
-    //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  void initState() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    //logs de l'aplication ex: Log.i("titre", "texte");
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: LightBackground,
+          systemNavigationBarDividerColor: Colors.transparent,
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Logger.root.level = Level.ALL; // defaults to Level.INFO
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
@@ -250,7 +255,7 @@ class _Base extends State<Base> {
                           } else {
                             log.fine("loading");
                             return Container(
-                              color: Background,
+                              color: Theme.of(context).backgroundColor,
                               child: LoginPage(withoutButton: true),
                             );//Center(child: Text("Loading"));//new CircularProgressIndicator());
                           }
@@ -285,13 +290,14 @@ class _Base extends State<Base> {
 
   Widget _getDrawer() {
     return Drawer(
-        child: ListView(children: <Widget>[
-          ListTile(
-            leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-            title: Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
-            subtitle: Text(user.email),
-          ),
-          /*ListTile(
+        child: ListView(
+            children: <Widget>[
+              ListTile(
+                leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+                title: Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
+                subtitle: Text(user.email),
+              ),
+              /*ListTile(
             leading: Icon(Icons.settings),
             title: new Text("Paramètres"),
             onTap: () {
@@ -497,16 +503,16 @@ class _Base extends State<Base> {
                 title,
                 style: TextStyle(color: Colors.grey),
               ),
-              onTap: () {
-                _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text("Non disponible hors connexion"),
-                      backgroundColor: Colors.grey,
-                    )
-                );
-                Navigator.pop(context);
-              }
+            onTap: () {
+              _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text("Non disponible hors connexion"),
+                    backgroundColor: Colors.grey,
+                  )
+              );
+              Navigator.pop(context);
+            }
           );
         });
   }
@@ -682,24 +688,24 @@ class _Base extends State<Base> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(FontAwesomeIcons.home,),
-          activeIcon: Icon(FontAwesomeIcons.home, color: PrimaryColor,),
+          activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
           icon: Icon(FontAwesomeIcons.clock,),
-          activeIcon: Icon(FontAwesomeIcons.clock, color: PrimaryColor,),
+          activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
           icon: Icon(FontAwesomeIcons.calendarAlt,),
-          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: PrimaryColor,),
+          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
           title: Text('Event',),
         ),
       ],
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      selectedItemColor: PrimaryColor,
+      selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }

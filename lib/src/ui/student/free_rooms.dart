@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/blocs/free_rooms_bloc.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -117,13 +116,13 @@ class FreeRoomsState extends State<FreeRooms> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("EPI", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: SecondaryColor),),
-                Text(i.toString(), style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: SecondaryColor),),
+                Text("EPI", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                Text(i.toString(), style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
               ],
             ),
           ),
           Expanded(
-            child: Text(epi.substring(1,epi.length-1), style: TextStyle(fontSize: 15, color: PrimaryColor),),
+            child: Text(epi.substring(1,epi.length-1), style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
           ),
         ],
       ),

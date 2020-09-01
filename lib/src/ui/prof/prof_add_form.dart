@@ -134,18 +134,19 @@ class addProfFormState extends State<addProfForm> {
                           maxLength: 500,
                         ),
                         SizedBox(height: 15.0),
-                        StreamBuilder(
-                            stream: units.allUnits,
-                            builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
-                              if(snapshot.hasData) return Wrap(
-                                alignment: WrapAlignment.spaceBetween,
-                                spacing: 10,
-                                children: _buildChoiceList(snapshot.data),
-                              );
-                              else return CircularProgressIndicator();
-                            }
+                        Center(
+                          child: StreamBuilder(
+                              stream: units.allUnits,
+                              builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
+                                if(snapshot.hasData) return Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: 10,
+                                  children: _buildChoiceList(snapshot.data),
+                                );
+                                else return Container();
+                              }
+                          ),
                         ),
-                        //listUnits(),
                       ]
                   )
               )
@@ -248,21 +249,6 @@ class addProfFormState extends State<addProfForm> {
         widget.uploadedFileURL = fileURL;
       });
     });
-  }
-
-  List<UnitModel> allUnits() {
-    List<UnitModel> unitsList = List<UnitModel>();
-    StreamBuilder(
-        stream: units.allUnits,
-        // ignore: missing_return
-        builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
-          if (snapshot.hasData) {
-            unitsList = snapshot.data;
-          }
-          else unitsList = [];
-        }
-    );
-    return unitsList;
   }
 
   List<Widget> _buildChoiceList(List<UnitModel> units) {

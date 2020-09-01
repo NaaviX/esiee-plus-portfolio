@@ -212,7 +212,7 @@ class DayBar extends StatelessWidget {
   DayBar({
     @required DateTime date,
     double height = 40,
-    this.backgroundColor = Background,
+    this.backgroundColor,
     this.textStyle,
     this.dateFormatter = DefaultBuilders.defaultDateFormatter,
   })  : assert(date != null),
@@ -223,12 +223,13 @@ class DayBar extends StatelessWidget {
 
   /// Creates a new day bar instance from a headers widget instance.
   DayBar.fromHeadersWidget({
+    context,
     @required ZoomableHeadersWidget parent,
     DateTime date,
   }) : this(
           date: date ?? DateTime.now(),
           height: parent.dayBarHeight,
-          backgroundColor: parent.dayBarBackgroundColor ?? Background,
+          backgroundColor: parent.dayBarBackgroundColor ?? Theme.of(context).backgroundColor,
           textStyle: parent.dayBarTextStyle,
           dateFormatter: parent.dateFormatter,
         );
@@ -278,7 +279,7 @@ class HoursColumn extends StatelessWidget {
   HoursColumn({
     double hourRowHeight = 60,
     double width = 60,
-    this.backgroundColor = Background,
+    this.backgroundColor,
     this.textStyle = const TextStyle(color: Colors.black54),
     this.hourFormatter = DefaultBuilders.defaultHourFormatter,
   })  : assert(hourFormatter != null),
@@ -286,12 +287,12 @@ class HoursColumn extends StatelessWidget {
         width = math.max(0, width ?? 0);
 
   /// Creates a new hours column instance from a headers widget instance.
-  HoursColumn.fromHeadersWidget({
+  HoursColumn.fromHeadersWidget(context,{
     @required ZoomableHeadersWidget parent,
   }) : this(
           hourRowHeight: parent._calculateHourRowHeight(),
           width: parent.hoursColumnWidth,
-          backgroundColor: parent.hoursColumnBackgroundColor ?? Background,
+          backgroundColor: parent.hoursColumnBackgroundColor ?? Theme.of(context).backgroundColor,
           textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54),
           hourFormatter: parent.hourFormatter,
         );

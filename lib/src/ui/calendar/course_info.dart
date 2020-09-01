@@ -36,7 +36,7 @@ class EventInfoState extends State<CourseInfoPage> {
         borderRadius: BorderRadius.circular(10),
       ),
       elevation: 10.0,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       child: dialogContent(context),
     );
   }

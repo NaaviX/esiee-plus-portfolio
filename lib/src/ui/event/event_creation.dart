@@ -36,8 +36,6 @@ class EventCreationState extends State<EventCreation> {
       body: widget.form,
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_forward, color: Colors.white,),
-          splashColor: Colors.white,
-          backgroundColor: PrimaryColor,
           onPressed: () {
             if (widget.form.formKey.currentState.validate()) {
               EventModel event = EventModel(

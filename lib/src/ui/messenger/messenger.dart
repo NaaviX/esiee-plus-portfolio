@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -256,7 +255,7 @@ class MessengerState extends State<Messenger> {
         child: Center(
           child: CircularProgressIndicator(
               valueColor:
-              AlwaysStoppedAnimation<Color>(PrimaryColor)),
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
         ),
       )
           : Container(),
@@ -275,7 +274,7 @@ class MessengerState extends State<Messenger> {
               child: new IconButton(
                 icon: new Icon(Icons.image),
                 onPressed: getImage,
-                color: PrimaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             color: Colors.transparent
@@ -284,7 +283,7 @@ class MessengerState extends State<Messenger> {
         // Edit text
         Flexible(
           child: TextField(
-            style: TextStyle(color: PrimaryColor, fontSize: 15.0),
+            style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15.0),
             controller: textEditingController,
             keyboardType: TextInputType.multiline,
             minLines: 1,
@@ -316,7 +315,7 @@ class MessengerState extends State<Messenger> {
                 icon: new Icon(Icons.send),
                 onPressed: () =>
                     onSendMessage(textEditingController.text, "texte"),
-                color: PrimaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             color: Colors.transparent
@@ -331,7 +330,7 @@ class MessengerState extends State<Messenger> {
           ? Center(
           child: CircularProgressIndicator(
               valueColor:
-              AlwaysStoppedAnimation<Color>(PrimaryColor)))
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)))
           : StreamBuilder(
         stream: Firestore.instance
             .collection('messages')
@@ -345,7 +344,7 @@ class MessengerState extends State<Messenger> {
             return Center(
                 child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        PrimaryColor)));
+                        Theme.of(context).primaryColor)));
           } else {
             listMessage = snapshot.data.documents;
             return ListView.builder(
@@ -422,7 +421,7 @@ class MessengerState extends State<Messenger> {
             ),
             padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             decoration: BoxDecoration(
-                color: type=="sender" ? PrimaryColor.withOpacity(0.5) : Colors.blueGrey.withOpacity(0.5),
+                color: type=="sender" ? Theme.of(context).primaryColor.withOpacity(0.5) : Colors.blueGrey.withOpacity(0.5),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -439,7 +438,7 @@ class MessengerState extends State<Messenger> {
                     Container(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            PrimaryColor),
+                            Theme.of(context).primaryColor),
                       ),
                       width: 200.0,
                       height: 200.0,

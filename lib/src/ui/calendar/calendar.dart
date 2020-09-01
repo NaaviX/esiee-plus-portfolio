@@ -14,7 +14,7 @@ import 'controller.dart';
 
 class Calendar extends StatefulWidget {
   final String ids;
-  Calendar({@required this.ids});
+  Calendar({this.ids});
 
   @override
   State<StatefulWidget> createState() {

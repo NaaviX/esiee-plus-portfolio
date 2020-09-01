@@ -76,7 +76,7 @@ class UnitsListState extends State<UnitsList> {
                                   child: new Container(
                                       padding: new EdgeInsets.all(20.0),
                                       child:Text(snapshot.data[index].unitName.toUpperCase(),
-                                        style: TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold, fontSize: 18),)),
+                                        style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 18),)),
                                 ),
                               );
                             }
@@ -112,7 +112,7 @@ class UnitsListState extends State<UnitsList> {
                 child: new Container(
                     padding: new EdgeInsets.all(25.0),
                     child:Text(element.unitName.toUpperCase(),
-                      style: TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold, fontSize: 20),)),
+                      style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 20),)),
               ),
             )
         )

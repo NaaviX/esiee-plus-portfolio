@@ -1,24 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const PrimaryColor = const Color(0xFF296faa);
+
 const PrimaryColorLight = const Color(0xFF296faa);
-const PrimaryColorDark = const Color(0xFF1a2e43);
+const PrimaryColorDark = const Color(0xFF1A91DA);
 
-const SecondaryColor = const Color(0xFF52C9ED);
-const SecondaryColorLight = const Color(0xFF52C9ED);
-const SecondaryColorDark = const Color(0xFF296FAA);
+const AccentColorLight = const Color(0xFF52C9ED);
+const AccentColorDark = const Color(0xFF296faa);
 
-const TertiaryColor = const Color(0xFFEC4D9C);
-const TertiaryColorLight = const Color(0xFFEC4D9C);
-const TertiaryColorDark = const Color(0xFFBC3D7C);
+const LightBackground = const Color(0xFFFDFDFD);
+const DarkBackground = const Color(0xFF0e283d);
 
-const Background = const Color(0xFFFDFDFD);
-const DarkBackground = const Color(0xFFF15202B);
-const WidgetBackground = const Color(0xFFFFFFFF);
-const WidgetDarkBackground = const Color(0xFF0e283d);
-const Black = const Color(0xFF000000);
-const White = const Color(0xFFFFFFFF);
+const WidgetBackgroundLight = const Color(0xFFFFFFFF);
+const WidgetDarkBackground = const Color(0xFF184366);
 
 class MyTheme {
   static final ThemeData defaultTheme = _buildTheme();
@@ -28,35 +22,43 @@ class MyTheme {
     final ThemeData base = ThemeData.light();
 
     return base.copyWith(
-      primaryColor: PrimaryColor,
-      backgroundColor: Background,
-      scaffoldBackgroundColor: Background,
+      primaryColor: PrimaryColorLight,
+      accentColor: AccentColorLight,
+      backgroundColor: LightBackground,
+      scaffoldBackgroundColor: LightBackground,
+      canvasColor: LightBackground,
 
-      textSelectionColor: SecondaryColor,
-      selectedRowColor: SecondaryColor,
+      textSelectionColor: AccentColorLight,
+      selectedRowColor: AccentColorLight,
 
-      primaryIconTheme: IconThemeData(
-        color: PrimaryColor
-      ),
-
-      iconTheme: IconThemeData(
-        color: PrimaryColor,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: PrimaryColorLight,
+        foregroundColor: LightBackground,
       ),
 
       appBarTheme: AppBarTheme(
-        elevation: 1.0,
-        color: Background,
+        brightness: Brightness.light,
+        elevation: 0.0,
+        color: LightBackground,
         textTheme: TextTheme(
-          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColor,),
+          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
         ),
       ),
 
+      primaryIconTheme: IconThemeData(
+          color: PrimaryColorLight
+      ),
+
+      iconTheme: IconThemeData(
+        color: PrimaryColorLight,
+      ),
+
       tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColor,
+        labelColor: PrimaryColorLight,
       ),
 
       cardTheme: CardTheme(
-        color: WidgetBackground,
+        color: WidgetBackgroundLight,
       ),
     );
   }
@@ -65,40 +67,46 @@ class MyTheme {
     final ThemeData base = ThemeData.dark();
 
     return base.copyWith(
-      primaryColor: PrimaryColorDark,
-      backgroundColor: DarkBackground,
-      scaffoldBackgroundColor: DarkBackground,
+        primaryColor: PrimaryColorDark,
+        backgroundColor: DarkBackground,
+        scaffoldBackgroundColor: DarkBackground,
 
-      textSelectionColor: SecondaryColorDark,
-      selectedRowColor: SecondaryColorDark,
+        textSelectionColor: AccentColorDark,
+        selectedRowColor: AccentColorDark,
 
-      primaryIconTheme: IconThemeData(
-          color: PrimaryColor
-      ),
-
-      iconTheme: IconThemeData(
-        color: PrimaryColor,
-      ),
-
-      appBarTheme: AppBarTheme(
-        elevation: 1.0,
-        color: DarkBackground,
-        textTheme: TextTheme(
-          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColor,),
+        primaryIconTheme: IconThemeData(
+            color: PrimaryColorDark
         ),
-      ),
 
-      tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColor,
-      ),
+        iconTheme: IconThemeData(
+          color: PrimaryColorDark,
+        ),
 
-      cardTheme: CardTheme(
-        color: WidgetDarkBackground,
-      ),
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.dark,
+          elevation: 1.0,
+          color: DarkBackground,
+          textTheme: TextTheme(
+            title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
+          ),
+        ),
 
-      textTheme: TextTheme(
-        caption: TextStyle(color: White),
-      )
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: PrimaryColorDark,
+          foregroundColor: DarkBackground,
+        ),
+
+        tabBarTheme: TabBarTheme(
+          labelColor: PrimaryColorDark,
+        ),
+
+        cardTheme: CardTheme(
+          color: WidgetDarkBackground,
+        ),
+
+        textTheme: TextTheme(
+          caption: TextStyle(color: Colors.white),
+        )
     );
   }
 }

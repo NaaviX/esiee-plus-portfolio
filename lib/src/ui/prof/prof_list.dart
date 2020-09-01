@@ -68,7 +68,7 @@ class ProfListState extends State<ProfList> {
                 ListTile(
                   leading: CircleAvatar(
                     radius: 20,
-                    backgroundColor: PrimaryColor,
+                    backgroundColor: Theme.of(context).primaryColor,
                     child: snapshot.data[index].urlPhoto != null && snapshot.data[index].urlPhoto != "null" ?
                     CircleAvatar(
                       backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),

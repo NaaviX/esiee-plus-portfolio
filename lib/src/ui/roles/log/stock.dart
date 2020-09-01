@@ -1,6 +1,5 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -99,50 +98,13 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
               return AddStock(this);
             }
         ),
-        backgroundColor: PrimaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         child: Icon(
           Icons.add_shopping_cart,
           size: 20.0,
         )
     );
   }
-
-/*Widget Tac() {
-    return Container(
-        child: StreamBuilder(
-            stream: stocks.allStocks,
-            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
-              if (snapshot.hasData) {
-                return SingleChildScrollView(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 10,),
-                      Text("Cannettes", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                      Column(
-                        children: _List(this, snapshot, stocks, "Cannette"),
-                      ),
-                      SizedBox(height: 20,),
-                      Text("Snacks", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                      Column(
-                        children: _List(this, snapshot, stocks, "Snack"),
-                      ),
-                      SizedBox(height: 20,),
-                      Text("Autres", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
-                      SizedBox(height: 5,),
-                      Column(
-                        children: _List(this, snapshot, stocks, "Autre"),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              else return Container();
-            })
-    );
-  }*/
 }
 
 class Tac extends StatefulWidget {
@@ -172,18 +134,18 @@ class TacState extends State<Tac> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 10,),
-                      Text("Cannettes", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("Cannettes", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
                         children: _List(this, widget.snapshot, widget.stocks, "Cannette"),
                       ),
                       SizedBox(height: 20,),
-                      Text("Snacks", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("Snacks", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
                         children: _List(this, widget.snapshot, widget.stocks, "Snack"),
                       ),
                       SizedBox(height: 20,),
-                      Text("Autres", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
+                      Text("Autres", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/.withOpacity(0.8), fontSize: 15),),
                       SizedBox(height: 5,),
                       Column(
                         children: _List(this, widget.snapshot, widget.stocks, "Autre"),
@@ -266,12 +228,12 @@ class ReserveState extends State<Reserve> {
 _hard(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
   return Column(
       children: [
-        Text("Hard Pack", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Text("Hard Pack", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
         Column(
           children: _List(context, snapshot, stocks, "Hard Pack"),
         ),
         SizedBox(height: 20,),
-        Text("Hard", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Text("Hard", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
         Column(
           children: _List(context, snapshot, stocks, "Hard"),
         ),
@@ -282,12 +244,12 @@ _hard(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
 _soft(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
   return Column(
       children: [
-        Text("Soft Pack", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Text("Soft Pack", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
         Column(
           children: _List(context, snapshot, stocks, "Soft Pack"),
         ),
         SizedBox(height: 20,),
-        Text("Soft", style: TextStyle(color: PrimaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+        Text("Soft", style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 25, fontWeight: FontWeight.bold),),
         Column(
           children: _List(context, snapshot, stocks, "Soft"),
         ),
@@ -325,8 +287,8 @@ _List(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks, Strin
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(type.stockName, style: TextStyle(color: PrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                    Text(info, style: TextStyle(color: PrimaryColor.withOpacity(0.8), fontSize: 15),),
+                    Text(type.stockName, style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text(info, style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/.withOpacity(0.8), fontSize: 15),),
                   ],
                 ),
                 Row(
@@ -347,7 +309,7 @@ _List(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks, Strin
                       ),
                       shape: CircleBorder(),
                     ),
-                    Text(quantity.toString(), style: TextStyle(color: PrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text(quantity.toString(), style: TextStyle(color: Colors.yellow/*Theme.of(context).primaryColor*/, fontSize: 20, fontWeight: FontWeight.bold),),
                     RawMaterialButton(
                       onPressed: () {
                         quantity += 1;

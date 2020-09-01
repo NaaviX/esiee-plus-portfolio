@@ -67,7 +67,7 @@ class HomeComponentsState extends State<HomeComponents> {
             children: [
               Icon(icon),
               SizedBox(width: 5),
-              Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: PrimaryColor))
+              Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor))
             ],
           ),
           SizedBox(height: 7),

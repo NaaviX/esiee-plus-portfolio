@@ -39,7 +39,7 @@ class FairpayFormState extends State<FairpayForm> {
         borderRadius: BorderRadius.circular(10),
       ),
       elevation: 20.0,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       child: Form(
           key: _formKey,
           child: _form(context)

@@ -129,7 +129,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
-                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(PrimaryColor)));
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)));
               } else {
                 var listMessage = snapshot.data.documents;
                 int nbMsgNotRead = 0;
@@ -141,13 +141,13 @@ class MessengerHistoryState extends State<MessengerHistory> {
                 return ListTile(
                   leading: CircleAvatar(
                     radius: 20,
-                    backgroundColor: PrimaryColor,
+                    backgroundColor: Theme.of(context).primaryColor,
                     child: Icon(Icons.person, color: Colors.white,),
                   ),
                   trailing: nbMsgNotRead != 0 ?
                   CircleAvatar(
                     radius: 10,
-                    backgroundColor: SecondaryColor,
+                    backgroundColor: Theme.of(context).accentColor,
                     child: Text(nbMsgNotRead.toString(), style: TextStyle(fontSize: 12, color: Colors.white),),
                   ) : CircleAvatar(radius: 10, backgroundColor: Colors.transparent,),
                   title: Text(discussions.elementAt(index).split("@")[0].replaceAll(".", " ").toUpperCase()),
@@ -190,7 +190,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
           }));
         },
         child: const Icon(FontAwesomeIcons.solidCommentDots),
-        backgroundColor: PrimaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }
@@ -198,7 +198,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
   lastMessage(int nbMsgNotRead, AsyncSnapshot<dynamic> snapshot, int index) {
     String prenom = discussions.elementAt(index).split("@")[0].split(".")[0];
     String from = snapshot.data.documents[0]["from"] == user.email ? 'vous : ' : '';
-    TextStyle style = nbMsgNotRead != 0 ? TextStyle(color: PrimaryColor, fontWeight: FontWeight.bold) : TextStyle();
+    TextStyle style = nbMsgNotRead != 0 ? TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold) : TextStyle();
     String imageFrom = snapshot.data.documents[0]["from"] == user.email ? 'vous avez ' : prenom.substring(0,1).toUpperCase() + prenom.substring(1,prenom.length) + ' vous a ';
     return snapshot.data.documents[0]['type'] == "texte" ?
     Text(from + snapshot.data.documents[0]["content"].toString(), style: style,)

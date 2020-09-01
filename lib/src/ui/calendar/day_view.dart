@@ -39,11 +39,12 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
 
   /// Creates a new day view instance.
   DayView({
+    context,
     List<AgendaEventView> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
-    this.currentTimeRuleColor = TertiaryColor,
-    this.currentTimeCircleColor = TertiaryColor,
+    this.currentTimeRuleColor,
+    this.currentTimeCircleColor,
     DayViewController controller,
     DateFormatter dateFormatter,
     HourFormatter hourFormatter,
@@ -61,7 +62,7 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
     bool userZoomable = true,
   })  : assert(date != null),
         date = DateTime(date.year, date.month, date.day),
-        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? SecondaryColor.withOpacity(0.15) : Background),
+        eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: Utils.sameDay(date) ? Theme.of(context).accentColor.withOpacity(0.15) : Theme.of(context).backgroundColor),
         events = events ?? [],
         super(
           controller: controller ?? DayViewController(),
@@ -121,6 +122,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
           left: widget.hoursColumnWidth,
           right: 0,
           child: DayBar.fromHeadersWidget(
+            context: context,
             parent: widget,
             date: widget.date,
           ),
@@ -160,7 +162,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
       children.add(Positioned(
         top: 0,
         left: 0,
-        child: HoursColumn.fromHeadersWidget(parent: widget),
+        child: HoursColumn.fromHeadersWidget(context, parent: widget),
       ));
     }
 

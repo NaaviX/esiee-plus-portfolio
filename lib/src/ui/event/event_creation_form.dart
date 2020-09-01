@@ -158,7 +158,7 @@ class _createEventFormState extends State<createEventForm> {
                                             elevation: 2.0,
                                             onPressed: callDatePickerStart,
                                             child: dateButton("start"),
-                                            color: Colors.white,
+                                            color: Theme.of(context).backgroundColor,
                                           ),
                                           SizedBox(height: 10.0,),
                                           RaisedButton(
@@ -168,7 +168,7 @@ class _createEventFormState extends State<createEventForm> {
                                             elevation: 2.0,
                                             onPressed: callDatePickerEnd,
                                             child: dateButton("end"),
-                                            color: Colors.white,
+                                            color: Theme.of(context).backgroundColor,
                                           ),
                                           SizedBox(height: 10.0,),
                                           RaisedButton(
@@ -178,7 +178,7 @@ class _createEventFormState extends State<createEventForm> {
                                             elevation: 2.0,
                                             onPressed: callDatePickerPub,
                                             child: dateButton("publication"),
-                                            color: Colors.white,
+                                            color: Theme.of(context).backgroundColor,
                                           ),
                                         ],
                                       ),
@@ -193,7 +193,7 @@ class _createEventFormState extends State<createEventForm> {
                                                 elevation: 2.0,
                                                 onPressed: callTimePickerStart,
                                                 child: timeButton("start"),
-                                                color: Colors.white
+                                                color: Theme.of(context).backgroundColor
                                             ),
                                             SizedBox(height: 10.0,),
                                             RaisedButton(
@@ -203,7 +203,7 @@ class _createEventFormState extends State<createEventForm> {
                                               elevation: 2.0,
                                               onPressed: callTimePickerEnd,
                                               child: timeButton("end"),
-                                              color: Colors.white,
+                                              color: Theme.of(context).backgroundColor,
                                             ),
                                             SizedBox(height: 10.0,),
                                             RaisedButton(
@@ -213,7 +213,7 @@ class _createEventFormState extends State<createEventForm> {
                                               elevation: 2.0,
                                               onPressed: callTimePickerPub,
                                               child: timeButton("publication"),
-                                              color: Colors.white,
+                                              color: Theme.of(context).backgroundColor,
                                             ),
                                           ]
                                       ),

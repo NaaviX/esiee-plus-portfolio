@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 
 class ProfInfoPage extends StatelessWidget{
@@ -21,7 +20,7 @@ class ProfInfoPage extends StatelessWidget{
               borderRadius: BorderRadius.circular(10.0),
             ),
             margin: EdgeInsets.all(10),
-            //color: PrimaryColor,
+            //color: Theme.of(context).primaryColor,
             child: Container(
               //height: 300,
               child: Column(
@@ -52,7 +51,7 @@ class ProfInfoPage extends StatelessWidget{
   }
   _header(BuildContext context) {
     return Container(
-      color: PrimaryColor.withOpacity(0.8),
+      color: Theme.of(context).primaryColor.withOpacity(0.8),
       width: MediaQuery
           .of(context)
           .size
@@ -68,7 +67,7 @@ class ProfInfoPage extends StatelessWidget{
           prof.urlPhoto == null || prof.urlPhoto == "null" ?
           CircleAvatar(
             radius: 50,
-            backgroundColor: PrimaryColor,
+            backgroundColor: Theme.of(context).primaryColor,
             child: Icon(Icons.person, color: Colors.white, size: 50,),
           ) :
           CircleAvatar(
@@ -83,7 +82,7 @@ class ProfInfoPage extends StatelessWidget{
           prof.units.isNotEmpty ?
           Wrap(
             spacing: 10,
-            children: _ListProfUnits(),
+            children: _ListProfUnits(context),
           ) : Container(),
           //Text(prof.units.toString()),
         ],
@@ -91,12 +90,12 @@ class ProfInfoPage extends StatelessWidget{
     );
   }
 
-  List<Widget> _ListProfUnits() {
+  List<Widget> _ListProfUnits(context) {
     List<Widget> list = List<Widget>();
     prof.units.forEach((element) {list.add(
       Chip(
         label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-        backgroundColor: PrimaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
       )
     );});
     return list;

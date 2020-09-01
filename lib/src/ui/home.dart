@@ -101,14 +101,11 @@ class HomeState extends State<Home> {
                   )
               ),
               Container(
-                //color: Colors.blueGrey,
-                //height: 50,
-                //margin: EdgeInsets.only(left: 120),
                 margin: EdgeInsets.only(top: 50),
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: Row(
                   children: <Widget>[
-                    Text(user.displayName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: PrimaryColor,),),
+                    Text(user.displayName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor,),),
                     Base.thisUser != null && Base.thisUser.isContributor ?
                     Container(
                       margin: EdgeInsets.only(left: 5),
@@ -150,7 +147,7 @@ class HomeState extends State<Home> {
                     image:
                     new NetworkImage(user.photoUrl),
                   ),
-                  border: Border.all(color: Background, width: 2),
+                  //border: Border.all(color: Background, width: 2),
                 )
             ),
           )
@@ -230,7 +227,7 @@ class HomeState extends State<Home> {
     Base.thisProf.units.forEach((element) {list.add(
         Chip(
           label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-          backgroundColor: PrimaryColor,
+          //backgroundColor: PrimaryColor,
         )
     );});
     return list;

@@ -192,7 +192,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
         Flexible(
             flex: 1,
             child: IconButton(
-                icon: Icon(FontAwesomeIcons.commentDots, size: 45, color: SecondaryColor,),
+                icon: Icon(FontAwesomeIcons.commentDots, size: 45, color: Theme.of(context).accentColor,),
                 onPressed: () {
                   Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
@@ -301,7 +301,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                   margin: EdgeInsets.only(top: 110),
                   child: Column(
                       children: <Widget>[
-                        AutoSizeText(widget.club.name, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: PrimaryColor), maxLines: 1,),
+                        AutoSizeText(widget.club.name, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor), maxLines: 1,),
                         Container(
                           margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
                           child: Row(
@@ -353,7 +353,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                     radius: 102,
                     child:CircleAvatar(
                     backgroundImage: NetworkImage(widget.club.urlPhoto),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).backgroundColor,
                     radius:100,
                   ),
                   ),

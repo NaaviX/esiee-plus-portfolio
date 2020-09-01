@@ -179,7 +179,7 @@ class AddStockState extends State<AddStock> {
           children: <Widget>[
             RaisedButton(
                 padding: EdgeInsets.all(8),
-                color: PrimaryColor,
+                color: Theme.of(context).primaryColor,
                 child: Icon(Icons.add_shopping_cart, color: Colors.white,),
                 splashColor: Colors.white,
                 shape: RoundedRectangleBorder(

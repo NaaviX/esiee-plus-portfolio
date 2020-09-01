@@ -82,6 +82,7 @@ class DefaultBuilders {
 
   /// Builds a day view in order to put it in a week view.
   static DayView defaultDayViewBuilder(BuildContext context, WeekView weekView, DateTime date, DayViewController controller) => DayView(
+        context: context,
         date: date,
         events: weekView.events,
         hoursColumnWidth: 0,

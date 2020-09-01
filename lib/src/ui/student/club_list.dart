@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

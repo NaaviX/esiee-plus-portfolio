@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
-            color: PrimaryColor.withOpacity(0.8),
+            color: Theme.of(context).primaryColor.withOpacity(0.8),
               borderRadius: BorderRadius.circular(30.0)
           ),
           child: Container(

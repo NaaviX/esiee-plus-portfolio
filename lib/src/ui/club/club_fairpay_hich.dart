@@ -84,13 +84,13 @@ class FairpayState extends State<Fairpay>{
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return transactionRow(snapshot.data[index].amount, snapshot.data[index].date, snapshot.data[index].info, oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+          return transactionRow(snapshot.data[index].amount, snapshot.data[index].date, snapshot.data[index].info, oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Theme.of(context).backgroundColor);
         }
     );
   }
 
-  Container transactionRow( double amount, DateTime date, String description, {Color oddColour = Colors.white} ) => Container(
-    decoration: BoxDecoration(color: oddColour),
+  Container transactionRow( double amount, DateTime date, String description, {Color oddColour} ) => Container(
+    decoration: BoxDecoration(color: oddColour ?? Theme.of(context).backgroundColor),
     padding: EdgeInsets.only(top: 15.0, bottom: 10.0, left: 5.0, right: 5.0),
     child: Column(
       children: <Widget>[

@@ -91,7 +91,7 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
               top: 16, bottom: 16, left: 7, right: 7),
 
           color: Theme.of(context).primaryColor,
-          child: Icon(Icons.credit_card, color: Background),
+          child: Icon(Icons.credit_card, color: Theme.of(context).backgroundColor),
           splashColor: Colors.white,
           onPressed: () {
             scan();

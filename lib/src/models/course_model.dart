@@ -72,6 +72,29 @@ class CourseModel {
   Color get color {
     switch (this.type) {
       case "TD":
+        return Colors.blueAccent.withOpacity(0.8);
+      case "TDR":
+        return Color(0x6D8CCE).withOpacity(0.8);
+      case "TDRM":
+        return Color(0x6D8CCE).withOpacity(0.8);
+      case "TDRm":
+        return Color(0x6D8CCE).withOpacity(0.8);
+      case "TP":
+        return Color(0x8A7AD2).withOpacity(0.8);
+      case "COURS":
+        return Color(0x569B56).withOpacity(0.7);
+      case "PROJET":
+        return Color(0xFF9142).withOpacity(0.8);
+      case "CTRL":
+        return Color(0xD80230).withOpacity(0.6);
+      default:
+        return Color(0xFFC840).withOpacity(0.9);
+    }
+  }
+
+/*Color get color {
+    switch (this.type) {
+      case "TD":
         return Color(0x6D8CCE).withOpacity(0.7);
       case "TP":
         return Color(0x8A7AD2).withOpacity(0.7);
@@ -92,6 +115,6 @@ class CourseModel {
       default:
         return Colors.amber.withOpacity(0.8);
     }
-  }
+  }*/
 
 }

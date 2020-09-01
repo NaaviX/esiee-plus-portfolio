@@ -105,7 +105,7 @@ class FairpayLogCardState extends State<FairpayLogCard> {
     return Container(
       child: CircleAvatar(
         backgroundImage: backgroundImage,
-        radius: 29,
+        radius: 17,
       ),
     );
   }

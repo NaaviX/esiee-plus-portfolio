@@ -6,15 +6,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BdeInfos extends StatelessWidget {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-
     String quoteSIRET = "362 521 879 00034";
     String quoteSIREN = "519 464 267";
     String quoteIBAN = "FR7630001007941234567890185";
     String quoteBIC = "CCBPFRPPVER";
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Informations BDE"),
       ),
@@ -35,11 +38,13 @@ class BdeInfos extends StatelessWidget {
                       ),
                       ),
                       info(
+                        context,
                         FontAwesomeIcons.university,
                         "SIRET",
                         quoteSIRET,
                       ),
                       info(
+                        context,
                         FontAwesomeIcons.university,
                         "SIREN",
                         quoteSIREN,
@@ -52,11 +57,13 @@ class BdeInfos extends StatelessWidget {
                       ),
                       ),
                       info(
+                        context,
                         FontAwesomeIcons.moneyCheckAlt,
                         "IBAN",
                         quoteIBAN,
                       ),
                       info(
+                        context,
                         FontAwesomeIcons.moneyCheckAlt,
                         "BIC",
                         quoteBIC,
@@ -70,7 +77,7 @@ class BdeInfos extends StatelessWidget {
     );
   }
 
-  info(IconData icon, String titre, String text) {
+  info(context, IconData icon, String titre, String text) {
     return Card(
       child: ListTile(
         leading: Icon(icon, size: 30.0),
@@ -81,218 +88,16 @@ class BdeInfos extends StatelessWidget {
           color: Colors.cyan,
           onPressed: () {
             Clipboard.setData(ClipboardData(text: text));
-            toast(titre);
+            _scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text(titre + " copié dans le presse-papier !"),
+                  backgroundColor: Theme.of(context).primaryColor,
+                )
+            );//toast(titre);
           },
         ),
       ),
     );
   }
-
-  toast(String titre) {
-    return Fluttertoast.showToast(
-      msg: titre + " copié dans le presse-papier !",
-      timeInSecForIos: 2,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
-  }
 }
-/*Card(
-          child:
-              Column(
-                mainAxisSize:MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading:Icon(Icons.perm_identity),
-                    title: Text("SIRET"),
-                    subtitle: Text(quoteSIRET),
-                  ),
-                  //Spacer(),
-                  ButtonBar(
-                    children: <Widget>[
-
-                      ),
-                    ],
-                  ),
-
-                  ListTile(
-                    leading:Icon(Icons.assignment_ind),
-                    title: Text("SIREN"),
-                    subtitle: Text(quoteSIREN),
-                  ),
-                  //Spacer(),
-                  ButtonBar(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.content_copy),
-                        color: Colors.cyan,
-                        onPressed: (){
-                          Clipboard.setData(ClipboardData(text: quoteSIREN));
-                          Fluttertoast.showToast(
-                            msg: "SIREN Copié dans le presse-papier !",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
-                  ListTile(
-                    leading:Icon(Icons.credit_card),
-                    title: Text("IBAN"),
-                    subtitle: Text(quoteIBAN),
-                  ),
-                  //Spacer(),
-                  ButtonBar(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.content_copy),
-                        color: Colors.cyan,
-                        onPressed: (){
-                          Clipboard.setData(ClipboardData(text: quoteIBAN));
-                          Fluttertoast.showToast(
-                            msg: "IBAN Copié dans le presse-papier !",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
-                  ListTile(
-                    leading:Icon(Icons.credit_card),
-                    title: Text("RIB"),
-                    subtitle: Text(quoteSIREN),
-                  ),
-                  //Spacer(),
-                  ButtonBar(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.content_copy),
-                        color: Colors.cyan,
-                        onPressed: (){
-                          Clipboard.setData(ClipboardData(text: quoteRIB));
-                          Fluttertoast.showToast(
-                            msg: "RIB Copié dans le presse-papier !",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
-                ],
-              ),
-
-        ),*/
-
-/*body: Column(
-          children: [
-            Row(
-              children: [
-                Text("SIRET : XXXXXXXXXXXXXXX"),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  color: Colors.cyan,
-                  onPressed: (){
-                      Clipboard.setData(ClipboardData(text: quoteSIRET));
-                      Fluttertoast.showToast(
-                          msg: "SIRET Copié dans le presse-papier !",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                      );
-                  },
-                ),
-              ]
-            ),
-            Row(
-              children: [
-                Text("SIREN : XXXXXXXXXXXXXXX"),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  color: Colors.cyan,
-                  onPressed: (){
-                    Clipboard.setData(ClipboardData(text: quoteSIREN));
-                    Fluttertoast.showToast(
-                        msg: "SIREN Copié dans le presse-papier !",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                  },
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  color: Colors.cyan,
-                  onPressed: (){
-                    Clipboard.setData(ClipboardData(text: quoteIBAN));
-                    Fluttertoast.showToast(
-                        msg: "IBAN Copié dans le presse-papier !",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                  },
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text("RIB : FRXX XXXX XXXX XXXX XXXX XX"),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  color: Colors.cyan,
-                  onPressed: (){
-                    Clipboard.setData(ClipboardData(text: quoteRIB));
-                    Fluttertoast.showToast(
-                        msg: "RIB Copié dans le presse-papier !",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                  },
-                )
-              ],
-            ),
-
-      /*ListView(children: <Widget>[
-          ListTile(title: Text("SIRET : XXXXXXXXXXXXXXX"),),
-          ListTile(title: Text("SIREN : XXXXXXXXXXXXXXX"),),
-          ListTile(title: Text("IBAN : FRXX XXXX XXXX XXXX XXXX XX"),),
-          ListTile(title: Text("RIB : FRXX XXXX XXXX XXXX XXXX XX"),)
-        ]
-      )*/
-      ],
-        ),*/

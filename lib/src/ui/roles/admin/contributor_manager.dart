@@ -7,6 +7,7 @@ import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class ContributorManager extends StatefulWidget {
   @override
@@ -204,11 +205,19 @@ class ContributorManagerState extends State<ContributorManager> {
     setState(() {});
   }
 
-  void addStudentToContributor(StudentModel student) {
+  Future<void> addStudentToContributor(StudentModel student) async {
     if(student != null) {
       if(!student.isContributor){
         student.isContributor = true;
         studentsBloc.updateStudent(student);
+        var emailBody = '<!doctype html> <html lang="fr"> <head> <title>Confirmation ajout cotisant</title> </head> <body> <img src="BDE.png" id="logo"/><br /> <p id="main_text">Tu es désormais cotisant au BDE ESIEE Paris !</p> </body> <style> * { padding : 0; margin: 0; } body { background-image: url("header.jpg"); text-align: center; font-family: "Avenir", Helvetica, Arial, sans-serif; } #logo { margin-top: 50px; display: inline-block; width: 25%; } #main_text { margin-top: 50px; color: white; font-weight: bold; font-size: 2em; } </style> </html>';
+        final Email email = Email(
+          body: emailBody,
+          subject: 'Confirmation cotisation BDE ESIEE Paris',
+          recipients: [student.mailEsiee],
+          isHTML: true,
+        );
+        await FlutterEmailSender.send(email);
         _scaffoldKey.currentState.showSnackBar(
             SnackBar(
               duration: Duration(seconds: 1),

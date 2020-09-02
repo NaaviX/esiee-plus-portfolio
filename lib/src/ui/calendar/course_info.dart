@@ -114,7 +114,8 @@ class EventInfoState extends State<CourseInfoPage> {
                     label: Text(widget.course.type.toUpperCase()),
                     backgroundColor: widget.course.color.withOpacity(0.5),
                   ),
-                  CustomItemWithIcon(Icons.place, widget.course.location),
+                  //CustomItemWithIcon(Icons.place, getPlace()),
+                  getPlace(),
                   CustomItemWithIcon(Icons.timer, getTime()),
                   CustomItemWithIcon(Icons.class_, getUnit()),
                   CustomItemWithIcon(Icons.group, getGroup()),
@@ -136,6 +137,12 @@ class EventInfoState extends State<CourseInfoPage> {
     desc.removeLast();
     String unit = desc.toString();
     return unit.substring(1, unit.length-1);
+  }
+
+  CustomItemWithIcon getPlace() {
+    String place = widget.course.location.replaceAll("[", "").replaceAll("]", "");
+    if(place == "Classe virtuelle") return CustomItemWithIcon(Icons.home, place);
+    else return CustomItemWithIcon(Icons.place, place);
   }
 
   getUnit() {

@@ -82,31 +82,31 @@ class DefaultBuilders {
 
   /// Builds a day view in order to put it in a week view.
   static DayView defaultDayViewBuilder(BuildContext context, WeekView weekView, DateTime date, DayViewController controller) => DayView(
-        context: context,
-        date: date,
-        events: weekView.events,
-        hoursColumnWidth: 0,
-        controller: controller,
-        inScrollableWidget: false,
-        dayBarHeight: 0,
-        userZoomable: false,
-        scrollToCurrentTime: false,
-      );
+    context: context,
+    date: date,
+    events: weekView.events,
+    hoursColumnWidth: 0,
+    controller: controller,
+    inScrollableWidget: false,
+    dayBarHeight: 0,
+    userZoomable: false,
+    scrollToCurrentTime: false,
+  );
 
   /// Builds a day bar in order to put it in a week view.
   static DayBar defaultDayBarBuilder(BuildContext context, WeekView weekView, DateTime date) => DayBar(
-        date: date,
-        height: weekView.dayBarHeight,
-        backgroundColor: weekView.dayBarBackgroundColor,
-      );
+    date: date,
+    height: weekView.dayBarHeight,
+    backgroundColor: weekView.dayBarBackgroundColor,
+  );
 
   /// Builds a hours column widget in order to put it in a week view.
   static HoursColumn defaultHoursColumnBuilder(BuildContext context, WeekView weekView, double hourRowHeight) => weekView.hoursColumnWidth <= 0
       ? const SizedBox.shrink()
       : HoursColumn(
-          hourRowHeight: hourRowHeight,
-          width: weekView.hoursColumnWidth,
-        );
+    hourRowHeight: hourRowHeight,
+    width: weekView.hoursColumnWidth,
+  );
 
   /// Returns whether this input exceeds the specified height.
   static bool _exceedHeight(List<TextSpan> input, TextStyle textStyle, double height, double width) {
@@ -193,8 +193,8 @@ class MagnetScrollPhysics extends ScrollPhysics {
   @override
   MagnetScrollPhysics applyTo(ScrollPhysics ancestor) {
     return MagnetScrollPhysics(
-      parent: buildParent(ancestor),
-      itemSize: itemSize
+        parent: buildParent(ancestor),
+        itemSize: itemSize
     );
   }
 
@@ -225,9 +225,9 @@ class MagnetScrollPhysics extends ScrollPhysics {
     // From the natural final position, find the nearest item it should have
     // settled to.
     final int settlingItemIndex = _getItemFromOffset(
-      offset: testFrictionSimulation?.x(double.infinity) ?? position.pixels,
-      minScrollExtent: position.minScrollExtent,
-      maxScrollExtent: position.maxScrollExtent
+        offset: testFrictionSimulation?.x(double.infinity) ?? position.pixels,
+        minScrollExtent: position.minScrollExtent,
+        maxScrollExtent: position.maxScrollExtent
     );
 
     final double settlingPixels = settlingItemIndex * itemSize;
@@ -278,10 +278,10 @@ class MagnetScrollPhysics extends ScrollPhysics {
 
   /// Clips the specified offset to the scrollable range.
   double _clipOffsetToScrollableRange(
-    double offset,
-    double minScrollExtent,
-    double maxScrollExtent,
-  ) =>
+      double offset,
+      double minScrollExtent,
+      double maxScrollExtent,
+      ) =>
       math.min(math.max(offset, minScrollExtent), maxScrollExtent);
 }
 
@@ -293,17 +293,17 @@ class SilentScrollController extends ScrollController {
     bool keepScrollOffset = true,
     String debugLabel,
   }) : super(
-          initialScrollOffset: initialScrollOffset,
-          keepScrollOffset: keepScrollOffset,
-          debugLabel: debugLabel,
-        );
+    initialScrollOffset: initialScrollOffset,
+    keepScrollOffset: keepScrollOffset,
+    debugLabel: debugLabel,
+  );
 
   @override
   _SilentScrollPosition createScrollPosition(
-    ScrollPhysics physics,
-    ScrollContext context,
-    ScrollPosition oldPosition,
-  ) {
+      ScrollPhysics physics,
+      ScrollContext context,
+      ScrollPosition oldPosition,
+      ) {
     return _SilentScrollPosition(
       physics: physics,
       context: context,
@@ -332,13 +332,13 @@ class _SilentScrollPosition extends ScrollPositionWithSingleContext {
     ScrollPosition oldPosition,
     String debugLabel,
   }) : super(
-          physics: physics,
-          context: context,
-          initialPixels: initialPixels,
-          keepScrollOffset: keepScrollOffset,
-          oldPosition: oldPosition,
-          debugLabel: debugLabel,
-        );
+    physics: physics,
+    context: context,
+    initialPixels: initialPixels,
+    keepScrollOffset: keepScrollOffset,
+    oldPosition: oldPosition,
+    debugLabel: debugLabel,
+  );
 
   /// Silently jumps to the specified position.
   void silentJumpTo(double value) {

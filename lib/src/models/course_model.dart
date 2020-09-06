@@ -47,6 +47,21 @@ class CourseModel {
       e.type = parsedJson["name"].split(":")[1];
       e.type = e.type.replaceAll(" ", "");
       //e.color = Color.fromRGBO( int.parse(colors[0]), int.parse(colors[1]), int.parse(colors[2]), 1.0);
+      /*"classrooms"
+    "color"
+    "created_at"
+    "date"
+    "duration"
+    "end_hour"
+    "info"
+    "instructors"
+    "majors"
+    "name"
+    "start_hour"
+    "trainees"
+    "unite"
+    "unite_name"
+    "updated_at"*/
     }
     return e;
   }
@@ -70,51 +85,10 @@ class CourseModel {
   }
 
   Color get color {
-    switch (this.type) {
-      case "TD":
-        return Colors.blueAccent.withOpacity(0.8);
-      case "TDR":
-        return Color(0x6D8CCE).withOpacity(0.8);
-      case "TDRM":
-        return Color(0x6D8CCE).withOpacity(0.8);
-      case "TDRm":
-        return Color(0x6D8CCE).withOpacity(0.8);
-      case "TP":
-        return Color(0x8A7AD2).withOpacity(0.8);
-      case "COURS":
-        return Color(0x569B56).withOpacity(0.7);
-      case "PROJET":
-        return Color(0xFF9142).withOpacity(0.8);
-      case "CTRL":
-        return Color(0xD80230).withOpacity(0.6);
-      default:
-        return Color(0xFFC840).withOpacity(0.9);
-    }
+    return this.type.toUpperCase().contains("CTRL") | this.type.toUpperCase().contains("NOT") | this.type.toUpperCase().contains("SOUTENANCE") ? Color(0xD80230).withOpacity(0.5) :
+    this.type.toUpperCase().contains("TD") ? Color(0x6D8CCE).withOpacity(0.7) :
+    this.type.toUpperCase().contains("TP") ? Color(0x8A7AD2).withOpacity(0.7) :
+    this.type.toUpperCase().contains("COURS") ? Color(0x569B56).withOpacity(0.6) :
+    Color(0xFFC840).withOpacity(0.7);
   }
-
-/*Color get color {
-    switch (this.type) {
-      case "TD":
-        return Color(0x6D8CCE).withOpacity(0.7);
-      case "TP":
-        return Color(0x8A7AD2).withOpacity(0.7);
-      case "COURS":
-        return PrimaryColor.withOpacity(0.7);
-      case "PROJET":
-        return Color(0xFF9142).withOpacity(0.7);
-      case "CTRL":
-        return Color(0xD80230).withOpacity(0.7);
-      case "TDR":
-        return Colors.blueGrey.withOpacity(0.7);
-      case "TDRM":
-        return Colors.blueGrey.withOpacity(0.7);
-      case "TDRm":
-        return Colors.blueGrey.withOpacity(0.7);
-      case "EVENT":
-        return Colors.orangeAccent.withOpacity(0.5);
-      default:
-        return Colors.amber.withOpacity(0.8);
-    }
-  }*/
-
 }

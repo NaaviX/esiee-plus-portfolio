@@ -14,6 +14,8 @@ const DarkBackground = const Color(0xFF0e283d);
 const WidgetBackgroundLight = const Color(0xFFFFFFFF);
 const WidgetDarkBackground = const Color(0xFF184366);
 
+const SelectedColor = const Color(0xFFEC4D9C);
+
 class MyTheme {
   static final ThemeData defaultTheme = _buildTheme();
   static final ThemeData darkTheme = _buildDarkTheme();

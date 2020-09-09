@@ -14,6 +14,7 @@ class StudentsBloc {
 
   fetchAllStudents() async {
     List<StudentModel> studentmodel = await _repository.fetchAllStudents();
+    studentmodel.sort((item1, item2) => item1.lastname.compareTo(item2.lastname));
     _studentsFetcher.sink.add(studentmodel);
   }
 

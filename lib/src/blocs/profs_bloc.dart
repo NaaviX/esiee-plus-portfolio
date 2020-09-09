@@ -13,7 +13,7 @@ class ProfsBloc {
 
   fetchAllProfs() async {
     List<ProfModel> profslist = await _repository.fetchAllProfs();
-    print(profslist);
+    profslist.sort((item1, item2) => item1.firstname.compareTo(item2.firstname));
     _profsFetcher.sink.add(profslist);
   }
 

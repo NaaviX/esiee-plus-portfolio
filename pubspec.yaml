@@ -11,8 +11,7 @@ description: Application mobile BDE ESIEE Paris
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
-version code: 2
+version: 1.0.1+3
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -95,6 +94,7 @@ flutter:
     - assets/defaultbanner.png
     - assets/Alarm.flr
     - assets/medal.flr
+    - assets/intro.flr
     - locale/i18n_en.json
     - locale/i18n_fr.json
   #  - images/a_dot_ham.jpeg

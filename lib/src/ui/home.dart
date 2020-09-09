@@ -52,14 +52,33 @@ class HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            _header(context),
-            HomeComponents(),
-            _Links()
-          ],
-        )
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _header(context),
+                //HomeComponents(),
+                Container(
+                  height : MediaQuery.of(context).size.height-153-270-62,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height : MediaQuery.of(context).size.height-153-270-62-150,
+                        width: MediaQuery.of(context).size.width-75,
+                        child: FlareActor(
+                          "assets/intro.flr",
+                          alignment: Alignment.center,
+                          fit: BoxFit.fill,
+                          animation: "coding",
+                        ),
+                      ),
+                      Text("Page d'accueil en cours de création...", style: TextStyle(fontSize: 23, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                ),
+                _Links()
+              ],
+            )
         )
     );
   }

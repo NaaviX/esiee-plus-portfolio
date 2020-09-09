@@ -56,7 +56,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                 height: 200.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       image: NetworkImage(widget.club.urlBackground)
                   ),
                   color: Colors.transparent,
@@ -65,7 +65,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
               Positioned(
                   child: Container(
                     color: Colors.transparent,
-                    margin: EdgeInsets.only(top: 200),
+                    margin: EdgeInsets.only(top: 220),
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -284,15 +284,15 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
 
   _header() {
     return Container(
-      height: 400,
+      height: 500,
       color: Colors.transparent,
       child: Stack(
           alignment: Alignment.topCenter,
           children: <Widget>[
             Container(
-              height: 400,
+              height: 420,
               child: Card(
-                margin: EdgeInsets.fromLTRB(30, 150, 30, 20),
+                margin: EdgeInsets.fromLTRB(30, 170, 30, 20),
                 elevation: 5.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -311,7 +311,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     AutoSizeText("Membres", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
-                                    AutoSizeText(widget.club.students.length.toString(), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,),),
+                                    AutoSizeText(widget.club.students.length.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
                                   ]
                               ),
                               Container(height: 50, child: VerticalDivider(color: Colors.black, width: 2,)),
@@ -332,7 +332,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     AutoSizeText("Classement", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
-                                    AutoSizeText("0", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,),),
+                                    AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
                                   ]
                               ),
                             ],
@@ -344,17 +344,17 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
               ),
             ),
             Positioned(
-              top: 50,
+              top: 95,
               child: GestureDetector(
                 child: Hero(
                   tag: 'logoClub'+widget.club.idClubRef.toString(),
                   child: CircleAvatar(
                     backgroundColor: Colors.blueGrey.withOpacity(0.2),
-                    radius: 102,
+                    radius: 87,
                     child:CircleAvatar(
                     backgroundImage: NetworkImage(widget.club.urlPhoto),
                     backgroundColor: Theme.of(context).backgroundColor,
-                    radius:100,
+                    radius:85,
                   ),
                   ),
                 ),
@@ -375,11 +375,11 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
           if(event.enable && dateInf && event.idClubRef == widget.club.idClubRef) nbrEvent++;
         }
 
-      return AutoSizeText(nbrEvent.toString(), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,),);
+      return AutoSizeText(nbrEvent.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),);
     }
     else if (snapshot.hasError) {
       return Text(snapshot.error.toString());
     }
-    return AutoSizeText("0", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,),);
+    return AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),);
   }
 }

@@ -53,11 +53,10 @@ class ClubListState extends State<ClubList> {
   }
 
   Widget buildList(AsyncSnapshot<List<ClubModel>> snapshot) {
-
+    snapshot.data.removeWhere((element) => element.idClubRef > 100);
     return ListView.builder(
         itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          if(snapshot.data[index].idClubRef <= 100) {
             return ListTile(
               leading:
               GestureDetector(
@@ -82,8 +81,6 @@ class ClubListState extends State<ClubList> {
                 );
               },
             );
-          }
-          else return null;
         });
   }
 

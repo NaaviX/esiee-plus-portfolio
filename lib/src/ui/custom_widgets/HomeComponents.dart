@@ -108,11 +108,11 @@ class HomeComponentsState extends State<HomeComponents> {
     else return null;
   }
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club));
+    /*MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club));
     Navigator.push(
       context,
       route,
-    );
+    );*/
   }
 
   String formatMonth(DateTime date)

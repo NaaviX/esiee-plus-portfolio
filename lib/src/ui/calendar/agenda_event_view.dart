@@ -95,7 +95,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
             Positioned(
               bottom: 0,
               right: 0,
-              child: /*course.location == "[Classe virtuelle]" ? Icon(Icons.home, color: Colors.white, size: 17,) : */Text(course.location),
+              child: course.location == "[Classe virtuelle]" ? Icon(Icons.home, color: Colors.white, size: 17,) : Text(course.location.replaceAll("[", "").replaceAll("]", ""), style: this.textStyle,),
             )
           ],
         )

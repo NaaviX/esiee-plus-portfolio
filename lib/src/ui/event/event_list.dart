@@ -55,34 +55,34 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
 
   final log = Logger('eventList');
 
-  Future<bool> isInternetConnected() async {
+  /*Future<bool> isInternetConnected() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     return connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi;
-  }
+  }*/
 
-  Future<String> getLocalEvents() async {
+  /*Future<String> getLocalEvents() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String localEvents = prefs.getString('eventsJson');
     return localEvents;
-  }
+  }*/
 
-  Future<String> getLocalClubs() async {
+  /*Future<String> getLocalClubs() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String localEvents = prefs.getString('clubsJson');
     return localEvents;
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
+      body: builEventList(),/*FutureBuilder(
           future: isInternetConnected(),
           builder: (BuildContext context, AsyncSnapshot<bool> connected) {
             return connected.hasData && connected.data
                 ? builEventList()
                 : builEventListLocal();
-          }),
+          }),*/
       floatingActionButton: creationButton(),
     );
   }
@@ -109,7 +109,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
     );
   }
 
-  Widget builEventListLocal() {
+  /*Widget builEventListLocal() {
     return FutureBuilder(
         future: getLocalEvents(),
         builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
@@ -132,11 +132,11 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
           return Center(child: CircularProgressIndicator());
         }
     );
-  }
+  }*/
 
   Widget buildList(List<EventModel> events) {
     return !widget.moderation
-    ? ListView.builder(
+        ? ListView.builder(
       //scrollDirection: Axis.horizontal,
         itemCount: events.length,
         itemBuilder: (BuildContext context, int index) {
@@ -150,7 +150,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
           );
         }
     )
-    : StreamBuilder(
+        : StreamBuilder(
         stream: clubBloc.allClubs,
         builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
           if (!snapshot.hasData) {
@@ -175,66 +175,34 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   getCover(EventModel event, BuildContext context) {
-    return StreamBuilder(
-        stream: clubBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-          if (!snapshot.hasData) {
-            if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
-              return FutureBuilder(
-                  future: getLocalClubs(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<String> clubsJson) {
-                    if (clubsJson.hasData) {
-                      dynamic jsonData = jsonDecode(clubsJson.data);
-                      List<ClubModel> snapshot = ClubModel
-                          .allClubsFromJson(jsonData)
-                          .reversed
-                          .toList();
-                      ClubModel club = snapshot.firstWhere((club) =>
-                      club.idClubRef == event.idClubRef);
-                      log.fine("Local");
-                      return EventCard(club, event, context, eventList: this);
-                    }
-                    return Container();
-                  }
-              );
-            }
-          }
-          else {
-            log.fine("Online");
-            ClubModel club = snapshot.data.firstWhere((club) => club.idClubRef == event.idClubRef);
-            if(widget.moderation == true) {
-              if(event.endDate.isAfter(DateTime.now()))
-                return EventCard(club, event, context, eventList: this, moderation: true);
-            }
-            if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
-              if (Base.thisClub != null && selected != "Tous") {
-                if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
-                  return EventCard(club, event, context);
-                else return Container();
-              }
-              else if (Base.thisProf != null){
-                if(event.enabledStratif == true) return EventCard(club, event, context, eventList: this);
-                else return Container();
-              }
-              else
-                return EventCard(club, event, context);
-            }
-            else if (Base.thisClub != null && selected == "En attente") {
-              if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(club, event, context, eventList: this);
-              else return Container();
-            }
-            else return Container();
-          }
-          return Container();
-        }
-    );
+    if(widget.moderation == true) {
+      if(event.endDate.isAfter(DateTime.now()))
+        return EventCard(event, context, moderation: true);
+    }
+    if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
+      if (Base.thisClub != null && selected != "Tous") {
+        if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
+          return EventCard(event, context);
+        else return Container();
+      }
+      else if (Base.thisProf != null){
+        if(event.enabledStratif == true) return EventCard(event, context);
+        else return Container();
+      }
+      else
+        return EventCard(event, context);
+    }
+    else if (Base.thisClub != null && selected == "En attente") {
+      if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(event, context);
+      else return Container();
+    }
+    else return Container();
   }
 
   getCoverModerator(EventModel event, List<ClubModel> clubs, BuildContext context){
     ClubModel club = clubs.firstWhere((club) => club.idClubRef == event.idClubRef);
     if(event.endDate.isAfter(DateTime.now()))
-      return EventCard(club, event, context, eventList: this, moderation: true);
+      return EventCard(event, context, moderation: true);
     return Container();
   }
 
@@ -244,7 +212,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventCreation()),
+            MaterialPageRoute(builder: (context) => EventCreation(this)),
           );
         },
         child: Icon(Icons.add, color: Colors.white,),

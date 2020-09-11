@@ -278,7 +278,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
   }
 
   getCover(EventModel event, BuildContext context) {
-    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(widget.club, event, context);
+    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(event, context);
     else return Container();
   }
 

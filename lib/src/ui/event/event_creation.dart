@@ -8,11 +8,13 @@ import 'package:logging/logging.dart';
 import '../../App.dart';
 import 'event_creation_form.dart';
 import 'event_info.dart';
+import 'event_list.dart';
 
 class EventCreation extends StatefulWidget {
   createEventForm form;
+  EventListState parentList;
 
-  EventCreation({EventModel event}){
+  EventCreation(parentList, {EventModel event}){
     if(event != null) this.form = createEventForm(event: event,);
     else form = createEventForm();
   }
@@ -55,7 +57,7 @@ class EventCreationState extends State<EventCreation> {
                   enabledStratif: widget.form.isForStratif,
                   points: 0,
               );
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event, Base.thisClub , isValidator: true,)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInfoPage(event, Base.thisClub, isValidator: true,)));
             }
           }
       ),

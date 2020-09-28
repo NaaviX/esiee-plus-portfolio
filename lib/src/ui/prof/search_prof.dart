@@ -113,7 +113,7 @@ class SearchProfState extends State<SearchProf> {
         margin: EdgeInsets.only(top: 10),
         child: Column(
           children: <Widget>[
-            Icon(Icons.place, size:20),
+            item.office != "" ? Icon(Icons.place, size:20) : Container(width:20),
             Text(item.office),
           ],),
       ),

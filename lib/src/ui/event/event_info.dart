@@ -29,9 +29,8 @@ class EventInfoPage extends StatefulWidget {
   EventCardState parentCard;
   bool isValidator;
   bool isModeration;
-  EventListState eventList;
 
-  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration, this.eventList}) {
+  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
@@ -347,7 +346,7 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
               backgroundColor: Theme.of(context).primaryColor,
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event: widget.event)),);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event)),);
               },
               child: Icon(Icons.edit, color: Colors.white,),
               label: "Modifier",
@@ -384,8 +383,6 @@ class EventInfoState extends State<EventInfoPage> {
                 _isEnabled = value;
                 widget.event.enable = _isEnabled;
                 eventBloc.addSaveEvent(widget.event);
-                widget.eventList.setState(() {
-                });
               });
             },
             activeColor : Colors.green,

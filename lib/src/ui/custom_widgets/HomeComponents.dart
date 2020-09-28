@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -19,17 +20,20 @@ class HomeComponents extends StatefulWidget {
 class HomeComponentsState extends State<HomeComponents> {
 
   final eventBloc = EventsBloc();
+  final clubBloc = ClubsBloc();
   final rate = 10;
 
   @override
   void initState() {
     eventBloc.fetchAllEvents();
+    clubBloc.fetchAllClubs();
     super.initState();
   }
 
   @override
   void dispose() {
     eventBloc.dispose();
+    clubBloc.dispose();
     super.dispose();
   }
 
@@ -37,42 +41,49 @@ class HomeComponentsState extends State<HomeComponents> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height-153-270-62;
     return Container(
-      height: height,
-      //color: Colors.orange,
-      child : Column(
-              //mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                infoComponents(Icons.info,"Bienvenue","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
-                SizedBox(height: 5),
-                /*alertComponents(Icons.warning,"Attention !","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
-                SizedBox(height: 5),*/
-                eventComponent(623),
-                SizedBox(height: 5),
-                eventComponent(613),
-              ],
-    ));
+        height: height,
+        //color: Colors.orange,
+        child : Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            infoComponents("Bienvenue","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle te sera utile."),
+            SizedBox(height: 5),
+            //alertComponents(Icons.warning,"Attention !","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
+            dealComponent("https://upload.wikimedia.org/wikipedia/fr/b/b7/Logo_EVS.png", "Promo permis de conduire", "Si tu n'as pas ton permis c'est surement l'occasion de le passer. Ton BDE cherie t'a négocié une promo sur le permis de conduire au prix de 650€. "
+                "Sache que si tu es alternant tu peux en plus béneficier d'une aide de 500€. Toutes les infos sont sur notre page Facebook."),
+            SizedBox(height: 5),
+            eventComponent(2),
+            SizedBox(height: 5),
+          ],
+        ));
   }
 
-  infoComponents(IconData icon, String title, String text){
+  infoComponents(String title, String text){
     double height = MediaQuery.of(context).size.height-153-270-62;
     return Container(
-      //height: height/4-5,
-      margin: EdgeInsets.only(left: 10, bottom: 10),
-      //color: Colors.blue.withOpacity(0.7),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon),
-              SizedBox(width: 5),
-              Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor))
-            ],
-          ),
-          SizedBox(height: 7),
-          Text(text)
-        ],
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.topCenter,
+              colors: [Theme.of(context).primaryColor.withOpacity(0.6), Theme.of(context).primaryColor.withOpacity(0.8)])),
+      height: height/3-5,
+      child:Container(
+        margin: EdgeInsets.only(left: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.info, color: Colors.white),
+                SizedBox(width: 5),
+                Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white))
+              ],
+            ),
+            SizedBox(height: 7),
+            Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),)
+          ],
+        ),
       ),
     );
   }
@@ -198,29 +209,100 @@ class HomeComponentsState extends State<HomeComponents> {
   eventComponent(int idEvent){
     double height = MediaQuery.of(context).size.height-153-270-62;
     return StreamBuilder(
-      stream: eventBloc.allEvents,
-      builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-        if (!snapshot.hasData) {
-          return Container(
-          );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        EventModel event = snapshot.data.firstWhere((event) => event.idEvent == idEvent);
-        return GestureDetector(
-            child : Container(
-                child: _eventInfo(event),
-                height: height/3-5,
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        //colorFilter: _filter(snapshot.data.last),
-                        image : NetworkImage(event.backgroundUrl)
+        stream: eventBloc.allEvents,
+        builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              height: height / 3 - 5,
+              color: Colors.grey.withOpacity(0.2),
+            );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          EventModel event = snapshot.data.firstWhere((event) => event.idEvent == idEvent);
+          return StreamBuilder(
+              stream: clubBloc.allClubs,
+              builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
+                if (!snapshot.hasData) {
+                  return Container(
+                      child: _eventInfo(event),
+                      height: height / 3 - 5,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(event.backgroundUrl)
+                          )
+                      )
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                ClubModel club = snapshot.data.firstWhere((club) => club.idClubRef == event.idEvent);
+                return GestureDetector(
+                    child: Stack(
+                      children: [
+                        Container(
+                            child: _eventInfo(event),
+                            height: height / 3 - 5,
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(event.backgroundUrl)
+                                )
+                            )
+                        ),
+                      ],
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventInfoPage(event, club)),
                     )
-                )
-            ));
-      },
+                );}
+          );
+        }
+    );
+  }
+
+  dealComponent(String urlLogo, String title, String description){
+    double height = MediaQuery.of(context).size.height-153-270-62;
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Colors.blue.withOpacity(0.5), Colors.blue.withOpacity(0.8)])),
+      height: height/3-5,
+      child:Container(
+        margin: EdgeInsets.only(left: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8),
+                Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white)),
+                SizedBox(height: 5),
+                Text("description", textAlign:TextAlign.justify, style: TextStyle(color: Colors.white)),
+              ],
+            ),
+            SizedBox(width: 10),
+            CircleAvatar(
+              backgroundColor: Colors.white.withOpacity(0.5),
+              radius: 45,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(urlLogo),
+                backgroundColor: Theme.of(context).backgroundColor,
+                radius:45,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

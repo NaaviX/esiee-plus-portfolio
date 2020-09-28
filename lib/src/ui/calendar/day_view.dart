@@ -32,10 +32,10 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
   final EventsColumnBackgroundPainter eventsColumnBackgroundPainter;
 
   /// The current time rule color.
-  final Color currentTimeRuleColor;
+  final Color currentTimeRuleColor = SelectedColor;
 
   /// The current time circle color.
-  final Color currentTimeCircleColor;
+  final Color currentTimeCircleColor = SelectedColor;
 
   /// Creates a new day view instance.
   DayView({
@@ -43,8 +43,8 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
     List<AgendaEventView> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
-    this.currentTimeRuleColor,
-    this.currentTimeCircleColor,
+    //this.currentTimeRuleColor,
+    //this.currentTimeCircleColor,
     DayViewController controller,
     DateFormatter dateFormatter,
     HourFormatter hourFormatter,
@@ -213,10 +213,10 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
   }
 
   /// Creates a positioned horizontal rule in the hours column.
-  Widget createCurrentTimeCircle([double radius = 10]) {
+  Widget createCurrentTimeCircle([double radius = 7]) {
     DateTime now = DateTime.now();
     return Positioned(
-      top: calculateTopOffset(now.hour, now.minute) - (radius / 2),
+      top: calculateTopOffset(now.hour, now.minute) - (radius / 2) + 1,
       left: 0,
       child: Container(
         height: radius,

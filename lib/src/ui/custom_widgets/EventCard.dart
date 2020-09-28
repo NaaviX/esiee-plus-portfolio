@@ -17,11 +17,9 @@ class EventCard extends StatefulWidget {
 
   @required BuildContext context;
   @required EventModel event;
-  @required ClubModel club;
-  EventListState eventList;
   bool moderation;
 
-  EventCard(this.club, this.event, this.context, {this.moderation, this.eventList}) {
+  EventCard(this.event, this.context, {this.moderation}) {
     this.moderation = this.moderation == null ? false : this.moderation;
   }
 
@@ -58,100 +56,119 @@ class EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    return GestureDetector(
-        onTap: () {
-          pushEventInfo(event, widget.club);
-        },
-        child : Container(
-          child: Card(
-            semanticContainer: true,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            //color: Theme.of(context).primaryColor,
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Stack(
+    return StreamBuilder(
+        stream: club.thisClub,
+        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+          return GestureDetector(
+              onTap: () {
+                snapshot.hasData ? pushEventInfo(event, snapshot.data) : null;
+              },
+              child: Container(
+                child: Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  //color: Theme.of(context).primaryColor,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          height: 150,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: new BoxDecoration(
-                            color: Colors.black,
-                            image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              colorFilter: _filter(event),
-                              image: new NetworkImage(
-                                event.backgroundUrl,
+                        Stack(
+                            children: <Widget>[
+                              Container(
+                                height: 150,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
+                                decoration: new BoxDecoration(
+                                  color: Colors.black,
+                                  image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    colorFilter: _filter(event),
+                                    image: new NetworkImage(
+                                      event.backgroundUrl,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              _isEnded(context, event),
+                            ]),
+                        Container(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          padding: EdgeInsets.all(15.0),
+                          //height: 40,
+                          child: Stack(
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      getDate(event),
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 13.0),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(height: 3),
+                                    Container(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width - 120,
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: event.name,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontSize: 19.0),
+                                              ),
+                                              WidgetSpan(
+                                                alignment: PlaceholderAlignment
+                                                    .top,
+                                                child: _favCard(),
+                                              ),
+                                              TextSpan(
+                                                text: snapshot.hasData ? "\n" + snapshot.data.name : "",
+                                                style: TextStyle(
+                                                  //fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  //fontSize: 15.0
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                    ),
+                                    SizedBox(height: 3),
+
+                                  ],
+                                ),
+                                snapshot.hasData ? clubLogo(snapshot) : Container(height: 29, width: 29,),
+                              ]
                           ),
                         ),
-                        _isEnded(context, event),
                       ]),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(15.0),
-                    //height: 40,
-                    child: Stack(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                getDate(event),
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 13.0),
-                                textAlign: TextAlign.left,
-                              ),
-                              SizedBox(height: 3),
-                              Container(
-                                  width: MediaQuery.of(context).size.width - 120,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: event.name,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 19.0),
-                                        ),
-                                        WidgetSpan(
-                                          alignment: PlaceholderAlignment.top,
-                                          child: _favCard(),
-                                        ),
-                                        TextSpan(
-                                          text: "\n" + widget.club.name,
-                                          style: TextStyle(
-                                              //fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              //fontSize: 15.0
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                              ),
-                              SizedBox(height: 3),
-
-                            ],
-                          ),
-                          clubLogo(club),
-                        ]
-                    ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                ]),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            elevation: 5,
-          ),
-          padding: EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 5),
-          width: MediaQuery.of(context).size.width,
-        )
+                  elevation: 5,
+                ),
+                padding: EdgeInsets.only(
+                    top: 5.0, left: 15.0, right: 15.0, bottom: 5),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+              )
+          );
+        }
     );
   }
 
@@ -175,25 +192,25 @@ class EventCardState extends State<EventCard> {
   }
 
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, parentCard: this, eventList: widget.eventList));
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, parentCard: this));
     if(widget.moderation)
-      route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true, eventList: widget.eventList));
+      route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true));
     Navigator.push(
       context,
       route,
     );
   }
 
-  clubName(ClubsBloc club) {
-    return Text("\n" + widget.club.name);
+  clubName(AsyncSnapshot<ClubModel> snapshot) {
+    return Text("\n" + snapshot.data.name);
   }
 
-  clubLogo(ClubsBloc club) {
+  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
     return Positioned(
       top: 0,
       right: 0,
       child: CircleAvatar(
-        backgroundImage: NetworkImage(widget.club.urlPhoto),
+        backgroundImage: NetworkImage(snapshot.data.urlPhoto),
         backgroundColor: Theme.of(context).backgroundColor,
         radius: 29,
       ),

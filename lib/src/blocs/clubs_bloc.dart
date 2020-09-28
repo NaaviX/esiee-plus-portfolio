@@ -14,6 +14,7 @@ class ClubsBloc {
 
   fetchAllClubs() async {
     List<ClubModel> clubmodel = await _repository.fetchAllClubs();
+    clubmodel.sort((item1, item2) => item1.name.compareTo(item2.name));
     _clubsFetcher.sink.add(clubmodel);
   }
 

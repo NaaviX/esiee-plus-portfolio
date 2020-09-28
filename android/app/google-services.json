@@ -27,6 +27,26 @@
           "client_type": 1,
           "android_info": {
             "package_name": "bde.esiee.fr.bde_esiee_mobile",
+          "client_id": "479442277479-flddvrc76vguk6j1ubkcnfjggpqlf9de.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "807a4369ba841c03bb00dfe523bd0a58b979f441"
+          }
+        },
+        {
+          "client_id": "479442277479-a1u9o7ss6glv1818hds865i807qulg8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "c0a70f1b7aa6d323cc1f051875b1a2e44adc9402"
+          }
+        },
+        {
+          "client_id": "479442277479-m68jfnmcmgkonbkcjofdct64puqmdgul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
             "certificate_hash": "1de76a8cc27af04d5976ea790da8dee37463801e"
           }
         },

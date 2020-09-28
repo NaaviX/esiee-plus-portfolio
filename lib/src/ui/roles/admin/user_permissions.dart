@@ -215,72 +215,70 @@ class StudentPermissionsState extends State<StudentPermissions>
     return StreamBuilder(
         stream: studentsBloc.allStudents,
         builder: (context, AsyncSnapshot<List<StudentModel>> studentSnapshot) {
-          if (studentSnapshot.hasData) {
-            return Column(children: <Widget>[
-              Container(
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                            child: Container(
-                                margin: EdgeInsets.all(10),
-                                child:
-                                CustomTextFormField(
-                                    "Rechercher...",
-                                    "Prenom et/ou nom de l'élève",
-                                    Icons.search,
-                                    searchController))),
-                        Container(
-                            margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                            padding: EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1.0, color: Colors.black38),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: DropdownButton<String>(
-                              underline: Column(),
-                              value: selectedRole,
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  selectedRole = newValue;
-                                });
-                              },
-                              items: dropDownRoles.map<DropdownMenuItem<String>>((String role) {
-                                return DropdownMenuItem<String>(
-                                  value: role,
-                                  child: Text(role, style: TextStyle(color: role == selectedRole ? Colors.black : Colors.black54)),
-                                );
-                              }).toList(),
-                              style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),
-                            )),
-                      ])),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: studentSnapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        filter = searchController.text;
-                        StudentModel student = studentSnapshot.data[index];
-                        return (filter == null || filter == "") && selectedRole == "Tous"
-                            ? _studentTile(student, index)
-                            : (student.firstname
-                            .toLowerCase()
-                            .startsWith(filter.toLowerCase()) ||
-                            student.lastname
-                                .toLowerCase()
-                                .startsWith(filter.toLowerCase()) ||
-                            (student.firstname + " " + student.lastname)
-                                .toLowerCase()
-                                .startsWith(filter.toLowerCase())) &&
-                            (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)) || selectedRole == "Tous")
-                            ? _studentTile(student,index)
-                            : new Container();
-                      }))
-            ]);
-          }
-
-          return Center(child: CircularProgressIndicator());
-        });
+          return Column(children: <Widget>[
+            Container(
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                          child: Container(
+                              margin: EdgeInsets.all(10),
+                              child:
+                              CustomTextFormField(
+                                  "Rechercher...",
+                                  "Prenom et/ou nom de l'élève",
+                                  Icons.search,
+                                  searchController))),
+                      Container(
+                          margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
+                          padding: EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.0, color: Colors.black38),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: DropdownButton<String>(
+                            underline: Column(),
+                            value: selectedRole,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                selectedRole = newValue;
+                              });
+                            },
+                            items: dropDownRoles.map<DropdownMenuItem<String>>((String role) {
+                              return DropdownMenuItem<String>(
+                                value: role,
+                                child: Text(role, style: TextStyle(color: role == selectedRole ? Colors.black : Colors.black54)),
+                              );
+                            }).toList(),
+                            style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),
+                          )),
+                    ])),
+            studentSnapshot.hasData ? Expanded(
+                child: ListView.builder(
+                    itemCount: studentSnapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      filter = searchController.text;
+                      StudentModel student = studentSnapshot.data[index];
+                      return (filter == null || filter == "") && selectedRole == "Tous"
+                          ? _studentTile(student, index)
+                          : (student.firstname
+                          .toLowerCase()
+                          .startsWith(filter.toLowerCase()) ||
+                          student.lastname
+                              .toLowerCase()
+                              .startsWith(filter.toLowerCase()) ||
+                          (student.firstname + " " + student.lastname)
+                              .toLowerCase()
+                              .startsWith(filter.toLowerCase())) &&
+                          (selectedRole != "Tous" && student.roles.contains(Base.allRoles.firstWhere((element) => element.toString() == selectedRole)) || selectedRole == "Tous")
+                          ? _studentTile(student,index)
+                          : new Container();
+                    })
+            ) : Text("Aucun " + selectedRole + " pour le moment")
+          ]);
+        }
+    );
   }
 
   _studentTile(StudentModel student, int index) {

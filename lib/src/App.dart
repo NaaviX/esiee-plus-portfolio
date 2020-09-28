@@ -536,7 +536,7 @@ class _Base extends State<Base> {
                 fontSize: 16,
               )),
         ),
-        ListTile(
+        /*ListTile(
           leading: Icon(Icons.info_outline),
           title: Text("Informations importantes"),
           onTap: () {
@@ -544,7 +544,7 @@ class _Base extends State<Base> {
               return BdeInfos();
             }));
           },
-        ),
+        ),*/
         ListTile(
           leading: Icon(Icons.beenhere),
           title: Text("Ajout Cotisants"),

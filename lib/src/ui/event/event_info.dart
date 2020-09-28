@@ -346,7 +346,7 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
               backgroundColor: Theme.of(context).primaryColor,
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(widget.event)),);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event)),);
               },
               child: Icon(Icons.edit, color: Colors.white,),
               label: "Modifier",

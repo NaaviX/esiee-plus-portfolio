@@ -155,7 +155,9 @@ class CalendarState extends State<Calendar> {
   }
 
   String f(int a, int b, int c){
-    return DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase()+DateFormat('\nd').format(DateTime(a, b, c));
+     String DayLetter = DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase();
+     String DayNum = DateFormat('\nd').format(DateTime(a, b, c));
+     return DayLetter + DayNum;
   }
 
   List<DateTime> getWeekDates(int weekUntilToday, int weekAfterToday){

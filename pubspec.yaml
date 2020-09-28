@@ -52,6 +52,8 @@ dependencies:
   flare_flutter: ^2.0.5
   google_fonts: ^1.1.0
   syncfusion_flutter_barcodes: ^18.1.42-beta
+  flutter_email_sender: ^3.0.1
+
 
 
   # The following adds the Cupertino Icons font to your application.

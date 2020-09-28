@@ -2,9 +2,12 @@ import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:bde_esiee_mobile/src/ui/club/club_fairpay_hich.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'fairpay_form.dart';
 
@@ -129,26 +132,26 @@ class FairpayState extends State<Fairpay>{
 
   _button(Color color, IconData icon, String text) {
     return RaisedButton(
-      shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-      color: color,
-      padding: EdgeInsets.all(10.0),
-      child: Row(
-        children: <Widget>[
-          Icon(icon, color: Colors.white, size: 20,),
-          Container(width: 4,),
-          Text(
-              text,
-              style: TextStyle(fontSize: 15, color: Colors.white)
-          ),
-        ],
-      ),
-      onPressed: () => showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return FairpayForm(text, widget.club);
-          }
-      )
+        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+        color: color,
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          children: <Widget>[
+            Icon(icon, color: Colors.white, size: 20,),
+            Container(width: 4,),
+            Text(
+                text,
+                style: TextStyle(fontSize: 15, color: Colors.white)
+            ),
+          ],
+        ),
+        onPressed: () => showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return FairpayForm(text, widget.club);
+            }
+        )
     );
   }
 
@@ -274,10 +277,10 @@ class FairpayState extends State<Fairpay>{
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             SizedBox(width: 15.0),
-            transIcon(log.amount),
-            transText(log.amount),
+            flowIcon(log),
             SizedBox(width: 25.0),
-            Text(log.description, style: TextStyle(fontSize: 16.0))
+            Text(log.description, style: TextStyle(fontSize: 16.0)),
+            subIcon(log)
           ],
         ),
         SizedBox(
@@ -299,9 +302,41 @@ class FairpayState extends State<Fairpay>{
         child: Icon(Icons.call_made, color: color));
   }
 
-  Widget transText(double amount){
-    Color color = amount < 0 ? Colors.red : Colors.green;
-    String text = amount < 0 ? amount.toStringAsFixed(2) : '+'+amount.toStringAsFixed(2);
+  Widget flowIcon( FairpayLogModel log ){
+    return Row(
+      children: [
+        log.type != "Subvent" ? transIcon(log.amount) :
+        Column(
+          children: [
+            Text('Sub ', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 12)),
+            Icon(Icons.check_circle, size: 12, color: Colors.orange,)
+          ],
+        ),
+        transText(log),
+        //Text(" ${log.amount > 0 ? "+" : ""}${log.amount } ", style: TextStyle(color: log.type == "Subvent" ? Colors.orange : log.amount < 0 ? Colors.red : Colors.green))
+      ],
+    );
+  }
+
+  Widget subIcon( FairpayLogModel log ) {
+    return log.type == "Subvent" ?
+    IconButton(
+        icon: Icon(Icons.link),
+        onPressed: () async {
+          const url = "https://drive.google.com/file/d/1n4sXDo2ayUpzwf2KNdwe9VLUgNcaCPXD/view?usp=sharing";
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            throw 'Could not launch $url';
+          }
+        }
+    )
+        : Container();
+  }
+
+  Widget transText(FairpayLogModel log){
+    Color color = log.type == "Subvent" ? Colors.orange : log.amount < 0 ? Colors.red : Colors.green;
+    String text = log.amount < 0 ? log.amount.toStringAsFixed(2) : '+' + log.amount.toStringAsFixed(2);
     return Text(text.padRight(8,'  '), style: TextStyle(fontSize: 16.0, color: color, fontWeight: FontWeight.bold ));
   }
 }

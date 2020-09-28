@@ -82,9 +82,7 @@ class FairpayFormState extends State<FairpayForm> {
                                 type: widget.type,
                                 amount: _getAmount(),
                                 idClubRef: widget.club.idClubRef,
-                                info: "${Base.thisUser.firstname} ${Base
-                                    .thisUser.lastname} :: ${descController
-                                    .text}"
+                                info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text }"
                             )
                         );
                         if (Navigator.canPop(context)) Navigator.pop(context);

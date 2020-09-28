@@ -56,8 +56,8 @@ class HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _header(context),
-                //HomeComponents(),
-                Container(
+                HomeComponents(),
+                /*Container(
                   height : MediaQuery.of(context).size.height-153-270-62,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +75,7 @@ class HomeState extends State<Home> {
                       Text("Page d'accueil en cours de création...", style: TextStyle(fontSize: 23, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)
                     ],
                   ),
-                ),
+                ),*/
                 _Links()
               ],
             )

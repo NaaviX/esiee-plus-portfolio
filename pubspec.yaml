@@ -11,7 +11,7 @@ description: Application mobile BDE ESIEE Paris
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1+6
+version: 1.0.2+1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -52,6 +52,8 @@ dependencies:
   flare_flutter: ^2.0.5
   google_fonts: ^1.1.0
   syncfusion_flutter_barcodes: ^18.1.42-beta
+  package_info: 0.4.3
+  firebase_remote_config: 0.3.1+1
 
 
   # The following adds the Cupertino Icons font to your application.

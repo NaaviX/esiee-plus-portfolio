@@ -30,6 +30,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/roles_bloc.dart';
+import 'forceUpdate.dart';
 import 'models/club_model.dart';
 import 'models/prof_model.dart';
 import 'models/role_model.dart';
@@ -61,6 +62,12 @@ class AppState extends State<App> {
           systemNavigationBarDividerColor: Colors.transparent,
         )
     );
+    try {
+      versionCheck(context);
+    } catch (e) {
+      print(e);
+    }
+    super.initState();
   }
 
   @override

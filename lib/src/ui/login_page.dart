@@ -6,10 +6,8 @@ import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
 
-  bool withoutButton;
 
-  LoginPage({this.withoutButton}) {
-    this.withoutButton!=null ? this.withoutButton=true : this.withoutButton=false;
+  LoginPage() {
   }
 
   @override
@@ -52,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Positioned(
               bottom: 200,
-              child: widget.withoutButton ? Container() : _isLoading ? CircularProgressIndicator() : _signInButton(context),
+              child: _isLoading ? CircularProgressIndicator() : _signInButton(context),
             ),
             Positioned(
               bottom: 10,
@@ -114,16 +112,14 @@ class _LoginPageState extends State<LoginPage> {
           setState(() => _isLoading = true);
           user = await signInWithGoogle();
           setState(() => _isLoading = false);
-//          if (user != null) {
-//            if(!user.email.endsWith("esiee.fr")) {
-//              signOutGoogle();
-//              Scaffold.of(context).showSnackBar(new SnackBar(
-//                duration: Duration(seconds: 3),
-//                content: Text("Utilisateur non autorisé"),
-//                backgroundColor: Colors.red,
-//              ));
-//            }
-//          }
+          if (user != null) {
+            if(!user.email.endsWith("esiee.fr")) {
+              signOutGoogle();
+
+            }
+          } else {
+            signOutGoogle();
+          }
         });
   }
 }

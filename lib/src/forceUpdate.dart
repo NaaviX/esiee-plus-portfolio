@@ -7,7 +7,7 @@ import 'package:package_info/package_info.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 const APP_STORE_URL = '';
-const PLAY_STORE_URL = '';
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=bde.esiee.fr.bde_esiee_mobile';
 
 versionCheck(context) async {
   //Get Current installed version of app
@@ -22,10 +22,7 @@ versionCheck(context) async {
     await remoteConfig.fetch(expiration: const Duration(seconds: 0));
     await remoteConfig.activateFetched();
     remoteConfig.getString('force_update_current_version');
-    double newVersion = double.parse(remoteConfig
-        .getString('force_update_current_version')
-        .trim()
-        .replaceAll(".", ""));
+    double newVersion = double.parse(remoteConfig.getString('force_update_current_version').trim().replaceAll(".", "").replaceAll("\"", ""));
     if (newVersion > currentVersion) {
       _showVersionDialog(context);
     }
@@ -51,11 +48,11 @@ _showVersionDialog(context) async {
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      String title = "New Update Available";
+      String title = "Nouvelle version disponible";
       String message =
-          "There is a newer version of app available please update it now.";
-      String btnLabel = "Update Now";
-      String btnLabelCancel = "Later";
+          "Il y a une nouvelle veersion de l'appli disponible merci de la télécharger.";
+      String btnLabel = "Télécharger maintenant";
+      String btnLabelCancel = "Plus tard";
       return Platform.isIOS
           ? new CupertinoAlertDialog(
         title: Text(title),

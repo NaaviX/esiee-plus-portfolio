@@ -264,7 +264,7 @@ class _Base extends State<Base> {
                             log.fine("loading");
                             return Container(
                               color: Theme.of(context).backgroundColor,
-                              child: LoginPage(withoutButton: true),
+                              child: LoginPage(),
                             );//Center(child: Text("Loading"));//new CircularProgressIndicator());
                           }
                         },

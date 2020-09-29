@@ -49,9 +49,9 @@ class HomeComponentsState extends State<HomeComponents> {
             infoComponents("Bienvenue","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle te sera utile."),
             SizedBox(height: 5),
             //alertComponents(Icons.warning,"Attention !","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
-            dealComponent("https://upload.wikimedia.org/wikipedia/fr/b/b7/Logo_EVS.png", "Promo permis de conduire", "Si tu n'as pas ton permis c'est surement l'occasion de le passer. Ton BDE cherie t'a négocié une promo sur le permis de conduire au prix de 650€. "
+            /*dealComponent("https://upload.wikimedia.org/wikipedia/fr/b/b7/Logo_EVS.png", "Promo permis de conduire", "Si tu n'as pas ton permis c'est surement l'occasion de le passer. Ton BDE cherie t'a négocié une promo sur le permis de conduire au prix de 650€. "
                 "Sache que si tu es alternant tu peux en plus béneficier d'une aide de 500€. Toutes les infos sont sur notre page Facebook."),
-            SizedBox(height: 5),
+            SizedBox(height: 5),*/
             eventComponent(2),
             SizedBox(height: 5),
           ],
@@ -64,11 +64,11 @@ class HomeComponentsState extends State<HomeComponents> {
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topRight,
-              end: Alignment.topCenter,
-              colors: [Theme.of(context).primaryColor.withOpacity(0.6), Theme.of(context).primaryColor.withOpacity(0.8)])),
+              end: Alignment.bottomCenter,
+              colors: [Colors.lightBlue.withOpacity(0.6), Colors.blue.withOpacity(0.8)])),
       height: height/3-5,
       child:Container(
-        margin: EdgeInsets.only(left: 10),
+        margin: EdgeInsets.all(15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +77,11 @@ class HomeComponentsState extends State<HomeComponents> {
               children: [
                 Icon(Icons.info, color: Colors.white),
                 SizedBox(width: 5),
-                Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white))
+                Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white))
               ],
             ),
             SizedBox(height: 7),
-            Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),)
+            Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),)
           ],
         ),
       ),

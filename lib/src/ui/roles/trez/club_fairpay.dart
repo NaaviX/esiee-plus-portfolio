@@ -305,7 +305,7 @@ class FairpayState extends State<Fairpay>{
   Widget flowIcon( FairpayLogModel log ){
     return Row(
       children: [
-        log.type != "Subvent" ? transIcon(log.amount) :
+        log.type != "Subvention" ? transIcon(log.amount) :
         Column(
           children: [
             Text('Sub ', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 12)),
@@ -319,12 +319,12 @@ class FairpayState extends State<Fairpay>{
   }
 
   Widget subIcon( FairpayLogModel log ) {
-    return log.type == "Subvent" ?
+    return log.type == "Subvention" && log.url.length > 0 ?
     IconButton(
         icon: Icon(Icons.link),
         onPressed: () async {
-          const url = "https://drive.google.com/file/d/1n4sXDo2ayUpzwf2KNdwe9VLUgNcaCPXD/view?usp=sharing";
-          if (await canLaunch(url)) {
+          String url = log.url;
+          if ( await canLaunch(url) ) {
             await launch(url);
           } else {
             throw 'Could not launch $url';
@@ -335,7 +335,7 @@ class FairpayState extends State<Fairpay>{
   }
 
   Widget transText(FairpayLogModel log){
-    Color color = log.type == "Subvent" ? Colors.orange : log.amount < 0 ? Colors.red : Colors.green;
+    Color color = log.type == "Subvention" ? Colors.orange : log.amount < 0 ? Colors.red : Colors.green;
     String text = log.amount < 0 ? log.amount.toStringAsFixed(2) : '+' + log.amount.toStringAsFixed(2);
     return Text(text.padRight(8,'  '), style: TextStyle(fontSize: 16.0, color: color, fontWeight: FontWeight.bold ));
   }

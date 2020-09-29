@@ -26,6 +26,7 @@ class FairpayFormState extends State<FairpayForm> {
   final _formKey = GlobalKey<FormState>();
   final amountController = TextEditingController();
   final descController = TextEditingController();
+  final folderLinkController = TextEditingController();
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class FairpayFormState extends State<FairpayForm> {
   }
 
   getColor() {
+    if(Base.thisUser == null) return Colors.grey;
     switch (widget.type) {
       case "Depot":
         return Colors.green;
@@ -76,20 +78,19 @@ class FairpayFormState extends State<FairpayForm> {
                       widget.type, style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        if(widget.type != "Subvention") clubsBloc.editSolde(widget.club, _getAmount());
+                        if(widget.type != "Subvention" && Base.thisUser != null) clubsBloc.editSolde(widget.club, _getAmount());
                         fairpayBloc.addLog(
                             FairpayLogModel(
                                 type: widget.type,
                                 amount: _getAmount(),
                                 idClubRef: widget.club.idClubRef,
-                                info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text }"
+                                info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
                             )
                         );
-                        if (Navigator.canPop(context)) Navigator.pop(context);
-                        Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (context) {
-                          return Fairpay(club : widget.club, isTrez : true);
-                        }));
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }
                       }
                     }
                 )
@@ -142,7 +143,7 @@ class FairpayFormState extends State<FairpayForm> {
             "Lien dossier",
             "...",
             Icons.picture_as_pdf,
-            TextEditingController(),
+            folderLinkController,
             requiredField: true,
           )
       );

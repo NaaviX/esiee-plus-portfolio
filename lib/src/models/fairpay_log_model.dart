@@ -48,4 +48,9 @@ class FairpayLogModel {
     return splitDescription.length > 1 ? splitDescription[1] : splitDescription[0];
   }
 
+  String get url {
+    List<String> splitDescription = this.info.split(" :: ");
+    return splitDescription.length > 2 ? splitDescription[2] : splitDescription[0];
+  }
+
 }

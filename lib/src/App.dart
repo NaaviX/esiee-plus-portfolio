@@ -12,7 +12,6 @@ import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/contributor_verificator.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_manager.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/admin/bde_infos.dart';
 import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
@@ -143,7 +142,7 @@ class _Base extends State<Base> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   static List<String> _selectedAppbarTitle = [
-    'BDE ESIEE Paris',
+    'ESIEE+',
     'Emploi du temps',
     'Evenements',
   ];

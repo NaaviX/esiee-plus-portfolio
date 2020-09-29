@@ -1,21 +1,12 @@
-import 'dart:ffi';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/event_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/HomeComponents.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../App.dart';
-import 'event/event_info.dart';
 
 class Home extends StatefulWidget {
 

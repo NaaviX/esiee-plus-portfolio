@@ -144,7 +144,7 @@ class FairpayFormState extends State<FairpayForm> {
             "...",
             Icons.picture_as_pdf,
             folderLinkController,
-            requiredField: true,
+            requiredField: false,
           )
       );
 }

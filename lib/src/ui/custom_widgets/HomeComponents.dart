@@ -8,6 +8,7 @@ import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeComponents extends StatefulWidget {
 
@@ -40,22 +41,26 @@ class HomeComponentsState extends State<HomeComponents> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height-153-270-62;
-    return Container(
-        height: height,
-        //color: Colors.orange,
-        child : Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            infoComponents("Bienvenue","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle te sera utile."),
-            SizedBox(height: 5),
-            //alertComponents(Icons.warning,"Attention !","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
-            /*dealComponent("https://upload.wikimedia.org/wikipedia/fr/b/b7/Logo_EVS.png", "Promo permis de conduire", "Si tu n'as pas ton permis c'est surement l'occasion de le passer. Ton BDE cherie t'a négocié une promo sur le permis de conduire au prix de 650€. "
-                "Sache que si tu es alternant tu peux en plus béneficier d'une aide de 500€. Toutes les infos sont sur notre page Facebook."),
-            SizedBox(height: 5),*/
-            eventComponent(2),
-            SizedBox(height: 5),
-          ],
-        ));
+    return SingleChildScrollView(
+        child: Container(
+            height: height,
+            //color: Colors.orange,
+            child : Column(
+              //mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                /*infoComponents("Bienvenue","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle te sera utile."),
+                SizedBox(height: 5),*/
+                //alertComponents(Icons.warning,"Attention !","Bienvenue sur l'appli Esiee plus, une appli conçue pour tout les esieens. On éspère qu'elle vous sera utile."),
+                dealComponent("https://upload.wikimedia.org/wikipedia/fr/b/b7/Logo_EVS.png", "https://www.facebook.com/watch/?v=239657580749804", "Code + Permis pour 650€ avec le code ESIEE", "Si tu n'as pas ton permis c'est surement l'occasion de le passer. "
+                    "Ton BDE chérie t'as négocié les meilleurs offres, n'attend plus. "
+                    "Tu es alternant ? Béneficie d'une aide supplémentaire de 500€."),
+                SizedBox(height: 5),
+                eventComponent(2),
+                SizedBox(height: 5),
+              ],
+            )
+        )
+    );
   }
 
   infoComponents(String title, String text){
@@ -265,45 +270,60 @@ class HomeComponentsState extends State<HomeComponents> {
     );
   }
 
-  dealComponent(String urlLogo, String title, String description){
+  dealComponent(String urlLogo, String link, String title, String description){
     double height = MediaQuery.of(context).size.height-153-270-62;
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [Colors.blue.withOpacity(0.5), Colors.blue.withOpacity(0.8)])),
-      height: height/3-5,
-      child:Container(
-        margin: EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8),
-                Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white)),
-                SizedBox(height: 5),
-                Text("description", textAlign:TextAlign.justify, style: TextStyle(color: Colors.white)),
-              ],
-            ),
-            SizedBox(width: 10),
-            CircleAvatar(
-              backgroundColor: Colors.white.withOpacity(0.5),
-              radius: 45,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(urlLogo),
-                backgroundColor: Theme.of(context).backgroundColor,
-                radius:45,
-              ),
-            ),
-          ],
+    return GestureDetector(
+      child: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                stops: [0.1, 0.4, 1],
+                end: Alignment.bottomLeft,
+                colors: [Colors.lightBlue, Colors.blue, Colors.blueAccent])),
+        height: height/3-5,
+        child:Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              new Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8),
+                      Text(title, textAlign:TextAlign.justify, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
+                      SizedBox(height: 5),
+                      Text(description, textAlign:TextAlign.justify, style: TextStyle(color: Colors.white)),
+                    ],
+                  )),
+              SizedBox(width: 10),
+              Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white.withOpacity(0.5),
+                  radius: 35,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(urlLogo),
+                    backgroundColor: Theme.of(context).backgroundColor,
+                    radius:35,
+                  ),
+                ),
+              ) ,
+            ],
+          ),
         ),
       ),
+      onTap: () async {
+        if (await canLaunch(link)) {
+          await launch(
+            link,
+          );
+        }
+      },
     );
+
   }
 
 }

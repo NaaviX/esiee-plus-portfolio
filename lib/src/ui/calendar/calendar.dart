@@ -92,7 +92,7 @@ class CalendarState extends State<Calendar> {
              List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
              return buildAgenda(snapshot);
            }
-           return Center(child: CircularProgressIndicator());
+           return Container();
          }
      );
    }

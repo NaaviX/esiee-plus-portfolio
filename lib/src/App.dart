@@ -159,7 +159,7 @@ class _Base extends State<Base> {
             _scaffoldKey.currentState.showSnackBar(
                 SnackBar(
                   duration: Duration(seconds: 3),
-                  content: Text("Le BDE ne peut être tenu responsable des erreurs eventuelles de l'agenda.", textAlign: TextAlign.justify),
+                  content: Text("ESIEE+ ne peut être tenu responsable des erreurs eventuelles de l'agenda.", textAlign: TextAlign.justify),
                   backgroundColor: Colors.blueAccent,
                 )
             );

@@ -135,7 +135,7 @@ class EventCardState extends State<EventCard> {
                                                 child: _favCard(),
                                               ),
                                               TextSpan(
-                                                text: snapshot.hasData ? "\n" + snapshot.data.name : "",
+                                                text: snapshot.hasData ? "\n" + snapshot.data.name : "\n",
                                                 style: TextStyle(
                                                   //fontWeight: FontWeight.bold,
                                                   color: Colors.black,
@@ -211,7 +211,7 @@ class EventCardState extends State<EventCard> {
       right: 0,
       child: CircleAvatar(
         backgroundImage: NetworkImage(snapshot.data.urlPhoto),
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor.withOpacity(1),
         radius: 29,
       ),
     );

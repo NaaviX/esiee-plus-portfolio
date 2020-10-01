@@ -99,7 +99,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
           title: Text("Discuter avec..."),
           actions: [
             Tooltip(
-              message: "Le BDE ne peut être tenu pour responssable des propos échanger par message.\n"
+              message: "ESIEE+ ne peut être tenu pour responssable des propos échanger par message.\n"
                   "En cas de problèmes veuillez en informer immédiatement le BDE.",
               child: Container( child: Icon(Icons.info, size: 25,), margin: EdgeInsets.only(right: 15),),
               showDuration: Duration(seconds: 30),

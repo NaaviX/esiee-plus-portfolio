@@ -39,11 +39,11 @@ class CalendarState extends State<Calendar> {
     super.dispose();
   }
 
-  Future<bool> isInternetConnected() async {
+  /*Future<bool> isInternetConnected() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     return connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi;
-  }
+  }*/
 
   Future<String> getLocalCourses() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -55,36 +55,32 @@ class CalendarState extends State<Calendar> {
 
    @override
    Widget build(BuildContext context){
-     WeekViewController scrollController = WeekViewController(dayViewsCount: getWeekDates(10, 8).length);
+     WeekViewController scrollController = WeekViewController(dayViewsCount: getWeekDates(2, 5).length);
      return Scaffold(
-         body: FutureBuilder(
-             future: isInternetConnected(),
-             builder: (BuildContext context, AsyncSnapshot<bool> connected) {
-               return connected.hasData && connected.data
-                   ? StreamBuilder(
-                   stream: bloc.allCourses,
-                   builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
-                     if (!snapshot.hasData) {
-                       return Stack(
-                         children: [
-                           buildEmptyAgenda(),
-                           Center(child: CircularProgressIndicator())
-                         ],
-                       );
-                     } else if (snapshot.hasError) {
-                       return Text(snapshot.error.toString());
-                     }
-                     return buildAgenda(snapshot.data);
-                   }
-               ) : buildLocal();
-             }),
+         body:buildLocal()
+     );
+     /*StreamBuilder(
+             stream: bloc.allCourses,
+             builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
+               if (!snapshot.hasData) {
+
+                 return buildLocal();
+               } else if (snapshot.hasError) {
+                 return Text(snapshot.error.toString());
+               }
+
+               if(snapshot.data.length == 0){
+
+               }
+               return buildAgenda(snapshot.data);
+             }
+       ),*/
        /*floatingActionButton: FloatingActionButton(
            child: Icon(Icons.adjust, color: Colors.yellowAccent,),
            splashColor: Colors.white,
            onPressed: () {
            }
        ),*/
-     );
    }
 
    Widget buildLocal(){
@@ -96,7 +92,7 @@ class CalendarState extends State<Calendar> {
              List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
              return buildAgenda(snapshot);
            }
-           return Center(child: CircularProgressIndicator());
+           return Container();
          }
      );
    }
@@ -117,7 +113,7 @@ class CalendarState extends State<Calendar> {
     return WeekView(
       initialHour: 6,
       initialMinute: 50,
-      dates: getWeekDates(10, 8),
+      dates: getWeekDates(2, 4),
       hoursColumnWidth: 40,
       dayViewWidth: (MediaQuery.of(context).size.width-40)/7,
       events: toAgendaEventList(snapshot),

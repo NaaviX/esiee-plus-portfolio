@@ -218,13 +218,13 @@ class _Base extends State<Base> {
           icon: const Icon(Icons.info_outline),
           padding: EdgeInsets.all(5),
           onPressed: () {
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              duration: Duration(seconds: 3),
-              content: Text(
-                  "Le BDE ne peut être tenu responsable des erreurs eventuelles de l'agenda.",
-                  textAlign: TextAlign.justify),
-              backgroundColor: Colors.blueAccent,
-            ));
+            _scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 3),
+                  content: Text("ESIEE+ ne peut être tenu responsable des erreurs eventuelles de l'agenda.", textAlign: TextAlign.justify),
+                  backgroundColor: Colors.blueAccent,
+                )
+            );
           },
         ),
         /*IconButton(

@@ -221,9 +221,9 @@ class EventInfoState extends State<EventInfoPage> {
 
   Container list(IconData icon, String text)
   {
-    bool hyperlink = false;
+    String hyperlink;
     if(text == "0.0 €") text = "Gratuit";
-    if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = true;
+    if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = text;
     if(text != null && text !="") {
       icon == Icons.payment ? text = "lien de vente" : text = text;
       icon == FontAwesomeIcons.facebookSquare ? text = "lien facebook de l'événement" : text = text;

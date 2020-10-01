@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
@@ -12,7 +14,11 @@ class ClubApiProvider {
 
   Future<List<ClubModel>> fetchClubList() async {
     final response = await client
-        .get("http://137.74.197.140:8080/api-1-SNAPSHOT/club/clubs");
+        .get("http://137.74.197.140:8080/api-2-SNAPSHOT/club/clubs",
+      headers: {
+    HttpHeaders.contentTypeHeader: "application/json",
+    HttpHeaders.authorizationHeader: "Bearer "+Base.token
+      });
     if (response.statusCode == 200) {
       return ClubModel.allClubsFromJson(
           json.decode(utf8.decode(response.bodyBytes)));
@@ -24,8 +30,12 @@ class ClubApiProvider {
 
   Future<ClubModel> fetchClubByMail(String mail) async {
     final response = await client.get(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/club/club?mail=" +
-            Uri.encodeFull(mail));
+        "http://137.74.197.140:8080/api-2-SNAPSHOT/club/club?mail=" +
+            Uri.encodeFull(mail),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
+        });
     log.fine(response.statusCode);
     if (response.statusCode == 200) {
       return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
@@ -59,7 +69,7 @@ class ClubApiProvider {
     }
 
     String url = Uri.encodeFull(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/club/update?idClubRef=" +
+        "http://137.74.197.140:8080/api-2-SNAPSHOT/club/update?idClubRef=" +
             club.idClubRef.toString() +
             "&idClub=" +
             club.idClub.toString() +
@@ -89,6 +99,10 @@ class ClubApiProvider {
             club.urlBackground.toString());
     final response = await client.post(
       url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
+        }
     );
     if (response.statusCode == 200) {
       return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));

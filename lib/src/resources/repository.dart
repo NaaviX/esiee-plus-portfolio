@@ -23,8 +23,13 @@ import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
 import 'club_api_provider.dart';
 import 'event_api_provider.dart';
+import 'jwt_api_provider.dart';
 
 class Repository {
+
+  final jwtApiProvider = JwtApiProvider();
+  Future<String> authenticate(String username, String password) => jwtApiProvider.authenticate(username, password);
+  Future<void> register(String username, String password) => jwtApiProvider.register(username, password);
 
   final rolesApiProvider = RoleApiProvider();
   Future<List<RoleModel>> fetchAllRoles() => rolesApiProvider.fetchRoleList();

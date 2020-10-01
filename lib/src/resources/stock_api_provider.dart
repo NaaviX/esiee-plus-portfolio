@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
+
+import '../App.dart';
 
 
 class StockApiProvider {
@@ -11,7 +14,11 @@ class StockApiProvider {
   Client client = Client();
 
   Future<List<StockModel>> fetchStocksList() async {
-    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/stock/stocks");
+    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/stock/stocks",
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
+        });
     if (response.statusCode == 200) {
       return StockModel.allUnitsFromJson(json.decode(utf8.decode(response.bodyBytes)));
     } else {
@@ -29,6 +36,10 @@ class StockApiProvider {
           "name" : stock.stockName,
           "quantity" : stock.stockQuant.toString(),
           "bottleQuantity" : stock.bottleQuant.toString(),
+        },
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
         });
     if (response.statusCode == 200) {
       return StockModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));

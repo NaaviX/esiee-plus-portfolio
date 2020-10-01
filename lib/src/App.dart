@@ -28,6 +28,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
+import 'blocs/jwt_bloc.dart';
 import 'blocs/roles_bloc.dart';
 import 'forceUpdate.dart';
 import 'models/club_model.dart';
@@ -49,25 +50,27 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   Widget app;
+  final jwtBloc = JwtBloc();
+
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.bottom, SystemUiOverlay.top]);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: LightBackground,
-          systemNavigationBarDividerColor: Colors.transparent,
-        )
-    );
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: LightBackground,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ));
     try {
       versionCheck(context);
     } catch (e) {
       print(e);
     }
+
     super.initState();
   }
 
@@ -82,25 +85,13 @@ class AppState extends State<App> {
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
             user = snapshot.data;
-            //user is logged in
-            return MaterialApp(
-              theme : MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: Base(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-            );
+            //google user is logged in
+          return JwtAuth();
+
           } else {
 //user not logged in
             return MaterialApp(
-              theme : MyTheme.defaultTheme,
+              theme: MyTheme.defaultTheme,
               //theme : MyTheme.darkTheme,
               home: LoginPage(),
               localizationsDelegates: [
@@ -114,9 +105,77 @@ class AppState extends State<App> {
               ],
             );
           }
-        }
+        });
+  }
+}
+
+class JwtAuth extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return JwtAuthState();
+  }
+}
+class JwtAuthState extends State<JwtAuth> {
+  final jwtBloc = JwtBloc();
+
+  @override
+  void initState() {
+    jwtBloc.authenticate(user.email, user.uid);
+  }
+
+
+  @override
+  void dispose() {
+    jwtBloc.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: jwtBloc.token,
+        builder: (context, AsyncSnapshot<String> snapshot)
+    {
+      print("connection state jwt ${snapshot.connectionState}");
+      if (snapshot.hasData) {
+        print("hasdate");
+        Base.token = snapshot.data;
+        return MaterialApp(
+          theme: MyTheme.defaultTheme,
+          //theme : MyTheme.darkTheme,
+          home: Base(),
+          localizationsDelegates: [
+            const TranslationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', ''),
+            const Locale('fr', ''),
+          ],
+        );
+      } else {
+        print("hasNotdate");
+        return MaterialApp(
+          theme: MyTheme.defaultTheme,
+          //theme : MyTheme.darkTheme,
+          home: LoginPage(),
+          localizationsDelegates: [
+            const TranslationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', ''),
+            const Locale('fr', ''),
+          ],
+        );
+      }
+    }
     );
   }
+
+
+
 }
 
 class Base extends StatefulWidget {
@@ -125,6 +184,8 @@ class Base extends StatefulWidget {
   static StudentModel thisUser;
   static ClubModel thisClub;
   static ProfModel thisProf;
+  static String token;
+
   @override
   _Base createState() => _Base();
 }
@@ -137,7 +198,8 @@ class _Base extends State<Base> {
 
   final log = Logger('BASE');
 
-  PageController pageController = PageController(initialPage: Base.selectedIndex);
+  PageController pageController =
+      PageController(initialPage: Base.selectedIndex);
 
   List<Widget> _widgetOptions;
 
@@ -150,19 +212,19 @@ class _Base extends State<Base> {
   ];
 
   List<Widget> actionButton(BuildContext context) {
-    if(Base.selectedIndex == 1) {
+    if (Base.selectedIndex == 1) {
       return [
         IconButton(
           icon: const Icon(Icons.info_outline),
           padding: EdgeInsets.all(5),
           onPressed: () {
-            _scaffoldKey.currentState.showSnackBar(
-                SnackBar(
-                  duration: Duration(seconds: 3),
-                  content: Text("Le BDE ne peut être tenu responsable des erreurs eventuelles de l'agenda.", textAlign: TextAlign.justify),
-                  backgroundColor: Colors.blueAccent,
-                )
-            );
+            _scaffoldKey.currentState.showSnackBar(SnackBar(
+              duration: Duration(seconds: 3),
+              content: Text(
+                  "Le BDE ne peut être tenu responsable des erreurs eventuelles de l'agenda.",
+                  textAlign: TextAlign.justify),
+              backgroundColor: Colors.blueAccent,
+            ));
           },
         ),
         /*IconButton(
@@ -183,13 +245,14 @@ class _Base extends State<Base> {
           width: 10,
         )
       ];
-    }
-    else return null;
+    } else
+      return null;
   }
 
   Future<bool> isInternetConnected() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
-    return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
+    return connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi;
   }
 
   @override
@@ -266,7 +329,7 @@ class _Base extends State<Base> {
                             return Container(
                               color: Theme.of(context).backgroundColor,
                               child: LoginPage(),
-                            );//Center(child: Text("Loading"));//new CircularProgressIndicator());
+                            ); //Center(child: Text("Loading"));//new CircularProgressIndicator());
                           }
                         },
                       );
@@ -287,7 +350,10 @@ class _Base extends State<Base> {
     ];
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(brightness: Brightness.light, title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)), actions: actionButton(context)),
+        appBar: AppBar(
+            brightness: Brightness.light,
+            title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
+            actions: actionButton(context)),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,
@@ -299,14 +365,16 @@ class _Base extends State<Base> {
 
   Widget _getDrawer() {
     return Drawer(
-        child: ListView(
-            children: <Widget>[
-              ListTile(
-                leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-                title: Text(user.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
-                subtitle: Text(user.email),
-              ),
-              /*ListTile(
+        child: ListView(children: <Widget>[
+      ListTile(
+        leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+        title: Text(
+          user.displayName,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(user.email),
+      ),
+      /*ListTile(
             leading: Icon(Icons.settings),
             title: new Text("Paramètres"),
             onTap: () {
@@ -315,23 +383,23 @@ class _Base extends State<Base> {
               }));
             },
           ),*/
-          ListTile(
-            leading: Icon(Icons.power_settings_new),
-            title: new Text(Translations.of(context).text("deco")),
-            onTap: () async {
-              Navigator.of(context).pop();
-              signOutGoogle();
-              Base.selectedIndex = 0;
-            },
-          ),
-          _adminMenu(),
-          _modoMenu(),
-          _trezMenu(),
-          _logMenu(),
-          _clubMenu(),
-          _studentMenu(),
-          _profMenu(),
-        ]));
+      ListTile(
+        leading: Icon(Icons.power_settings_new),
+        title: new Text(Translations.of(context).text("deco")),
+        onTap: () async {
+          Navigator.of(context).pop();
+          signOutGoogle();
+          Base.selectedIndex = 0;
+        },
+      ),
+      _adminMenu(),
+      _modoMenu(),
+      _trezMenu(),
+      _logMenu(),
+      _clubMenu(),
+      _studentMenu(),
+      _profMenu(),
+    ]));
   }
 
   Widget _profMenu() {
@@ -455,7 +523,7 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        _requireConnectionTile( Icons.location_on, "Salles libres", () {
+        _requireConnectionTile(Icons.location_on, "Salles libres", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return FreeRooms();
           }));
@@ -497,42 +565,36 @@ class _Base extends State<Base> {
     return Column();
   }
 
-  Widget _requireConnectionTile( IconData icon, String title, onTap ){
+  Widget _requireConnectionTile(IconData icon, String title, onTap) {
     return FutureBuilder(
         future: isInternetConnected(),
-        builder: (BuildContext context, AsyncSnapshot<bool> connected){
-          return connected.hasData && connected.data ? ListTile(
-              leading: Icon( icon ),
-              title: Text( title ),
-              onTap: onTap
-          ) :
-          ListTile(
-              leading: Icon( icon , color: Colors.grey),
-              title: Text(
-                title,
-                style: TextStyle(color: Colors.grey),
-              ),
-            onTap: () {
-              _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(
-                    duration: Duration(seconds: 1),
-                    content: Text("Non disponible hors connexion"),
-                    backgroundColor: Colors.grey,
-                  )
-              );
-              Navigator.pop(context);
-            }
-          );
+        builder: (BuildContext context, AsyncSnapshot<bool> connected) {
+          return connected.hasData && connected.data
+              ? ListTile(leading: Icon(icon), title: Text(title), onTap: onTap)
+              : ListTile(
+                  leading: Icon(icon, color: Colors.grey),
+                  title: Text(
+                    title,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onTap: () {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      duration: Duration(seconds: 1),
+                      content: Text("Non disponible hors connexion"),
+                      backgroundColor: Colors.grey,
+                    ));
+                    Navigator.pop(context);
+                  });
         });
   }
 
   Widget _adminMenu() {
     if (Base.thisUser != null &&
-        Base.thisUser.roles.contains(
-            Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
+            Base.thisUser.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.admin)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(
-                Base.allRoles.firstWhere((element) => element.role == Role.admin))) {
+            Base.thisClub.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.admin))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -571,7 +633,7 @@ class _Base extends State<Base> {
             }));
           },
         ),*/
-        _requireConnectionTile( Icons.group_add, "Droits utilisateurs", () {
+        _requireConnectionTile(Icons.group_add, "Droits utilisateurs", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return UserPermissions();
           }));
@@ -583,11 +645,11 @@ class _Base extends State<Base> {
 
   Widget _modoMenu() {
     if (Base.thisUser != null &&
-        Base.thisUser.roles.contains(
-            Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
+            Base.thisUser.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.mod)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(
-                Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
+            Base.thisClub.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.mod))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -599,17 +661,17 @@ class _Base extends State<Base> {
                 fontSize: 16,
               )),
         ),
-        _requireConnectionTile( Icons.date_range, "Gestion évènements", () {
+        _requireConnectionTile(Icons.date_range, "Gestion évènements", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return EventManager();
           }));
         }),
-        _requireConnectionTile( Icons.verified_user, "Cotisants", () {
+        _requireConnectionTile(Icons.verified_user, "Cotisants", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return ContributorVerificator();
           }));
         }),
-        _requireConnectionTile( Icons.person_add, "Ajout professeur", () {
+        _requireConnectionTile(Icons.person_add, "Ajout professeur", () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return AddProf();
           }));
@@ -621,11 +683,11 @@ class _Base extends State<Base> {
 
   Widget _trezMenu() {
     if (Base.thisUser != null &&
-        Base.thisUser.roles.contains(
-            Base.allRoles.firstWhere((element) => element.role == Role.trez)) ||
+            Base.thisUser.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.trez)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(
-                Base.allRoles.firstWhere((element) => element.role == Role.trez))) {
+            Base.thisClub.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -662,11 +724,11 @@ class _Base extends State<Base> {
 
   Widget _logMenu() {
     if (Base.thisUser != null &&
-        Base.thisUser.roles.contains(
-            Base.allRoles.firstWhere((element) => element.role == Role.log)) ||
+            Base.thisUser.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.log)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(
-                Base.allRoles.firstWhere((element) => element.role == Role.log))) {
+            Base.thisClub.roles.contains(Base.allRoles
+                .firstWhere((element) => element.role == Role.log))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -696,19 +758,36 @@ class _Base extends State<Base> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.home,),
-          activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
+          icon: Icon(
+            FontAwesomeIcons.home,
+          ),
+          activeIcon: Icon(
+            FontAwesomeIcons.home,
+            color: Theme.of(context).primaryColor,
+          ),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.clock,),
-          activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
+          icon: Icon(
+            FontAwesomeIcons.clock,
+          ),
+          activeIcon: Icon(
+            FontAwesomeIcons.clock,
+            color: Theme.of(context).primaryColor,
+          ),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.calendarAlt,),
-          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
-          title: Text('Event',),
+          icon: Icon(
+            FontAwesomeIcons.calendarAlt,
+          ),
+          activeIcon: Icon(
+            FontAwesomeIcons.calendarAlt,
+            color: Theme.of(context).primaryColor,
+          ),
+          title: Text(
+            'Event',
+          ),
         ),
       ],
       showSelectedLabels: false,

@@ -17,7 +17,7 @@ class GradesUnitApiProvider {
           json.decode(response.body) as List);
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load grades units');
     }
   }
 }

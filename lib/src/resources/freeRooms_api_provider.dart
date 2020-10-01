@@ -12,7 +12,7 @@ class FreeRoomsApiProvider {
     if (response.statusCode == 200) {
       return List<dynamic>.from(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load free rooms');
     }
   }
 }

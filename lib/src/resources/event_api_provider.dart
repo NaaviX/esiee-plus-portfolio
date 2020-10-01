@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:intl/intl.dart';
@@ -7,26 +8,31 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../App.dart';
+
 class EventApiProvider {
   final log = Logger('eventAPI');
   Client client = Client();
-  final _url = 'http://137.74.197.140:8080/api-1-SNAPSHOT/v2/api-docs';
 
   Future<List<EventModel>> fetchEventList() async {
-    final response = await client.get("http://137.74.197.140:8080/api-1-SNAPSHOT/event/events");
+    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/event/events",
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
+        });
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       return EventModel.allEventsFromJson(
           json.decode(utf8.decode(response.bodyBytes)));
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load events');
     }
   }
 
   Future<EventModel> addEvent(EventModel event) async {
     final response = await client.post(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/add",
+        "http://137.74.197.140:8080/api-2-SNAPSHOT/event/add",
         body: {
           'id_event': event.idEvent.toString(),
           'enabled': event.enable.toString(),
@@ -43,6 +49,10 @@ class EventApiProvider {
           'background_url': event.backgroundUrl,
           "points": 0.toString(),
           'enabled_stratif' : event.enabledStratif.toString(),
+        },
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
         });
     if (response.statusCode == 200) {
       return EventModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
@@ -54,7 +64,11 @@ class EventApiProvider {
 
   void deleteEvent(EventModel event) async {
     final response = await client.delete(
-        "http://137.74.197.140:8080/api-1-SNAPSHOT/event/"+event.idEvent.toString());
+        "http://137.74.197.140:8080/api-2-SNAPSHOT/event/"+event.idEvent.toString(),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer "+Base.token
+        });
     if (response.statusCode != 200) {
       throw Exception('Failed to delete event');
     }

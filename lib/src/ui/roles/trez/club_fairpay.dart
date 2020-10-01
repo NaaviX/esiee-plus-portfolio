@@ -2,7 +2,6 @@ import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
-import 'package:bde_esiee_mobile/src/ui/club/club_fairpay_hich.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +47,7 @@ class FairpayState extends State<Fairpay>{
 
   @override
   Widget build(BuildContext context) {
+    Logbloc.fetchClubLogs(widget.club.idClubRef.toString());
     return Scaffold(
       appBar: AppBar(
         title: widget.isTrez ? Text(widget.club.name) : Text("Fairpay"),
@@ -145,13 +145,13 @@ class FairpayState extends State<Fairpay>{
             ),
           ],
         ),
-        onPressed: () => showDialog<void>(
+        onPressed: () => FairpayForm(this, text, widget.club),/*showDialog<void>(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return FairpayForm(text, widget.club);
+              return FairpayForm(context, text, widget.club);
             }
-        )
+        )*/
     );
   }
 

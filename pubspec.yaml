@@ -67,8 +67,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path_ios: "assets/LogoFond.png"
-  image_path_android: "assets/LogoFond.png"
+  image_path_ios: "assets/esieeplus/LogoFond.webp"
+  image_path_android: "assets/esieeplus/LogoFond.webp"
 
 
 
@@ -85,19 +85,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/Logo.png
-    - assets/Logo3.png
-    - assets/LogoFond.png
-    - assets/logoDjango.png
-    - assets/addTeacher.png
-    - assets/freeRooms.png
-    - assets/cours.png
-    - assets/info.png
-    - assets/defaultbanner.png
-    - assets/coverEsieePlus.png
-    - assets/Alarm.flr
-    - assets/medal.flr
-    - assets/intro.flr
+
+    - assets/esieeplus/defaultbanner.png
+    - assets/esieeplus/Logo.webp
+    - assets/esieeplus/LogoFond.webp
+    - assets/esieeplus/logoDjango.webp
+    - assets/esieeplus/coverEsieePlus.webp
+    - assets/illustration/addTeacher.webp
+    - assets/illustration/freeRooms.webp
+    - assets/illustration/cours.webp
+    - assets/illustration/info.webp
+    - assets/flr/medal.flr
+    - assets/flr/intro.flr
     - locale/i18n_en.json
     - locale/i18n_fr.json
   #  - images/a_dot_ham.jpeg

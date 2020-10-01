@@ -44,7 +44,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
     this.onLongPress,
     this.eventTextBuilder,
   })  : assert(course.title != null),
-        assert(course.description != null),
+        assert(course.unite != null),
         assert(course.start != null),
         assert(course.end != null);
 
@@ -67,7 +67,8 @@ class AgendaEventView extends Comparable<AgendaEventView> {
                       end: this.course.end,
                       type: this.course.type,
                       location: this.course.location,
-                      description: this.course.description,
+                      unite: this.course.unite,
+                      group: this.course.group,
                       teachers: this.course.teachers,
                       updated: this.course.updated
                   )

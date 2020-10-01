@@ -32,10 +32,10 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
   final EventsColumnBackgroundPainter eventsColumnBackgroundPainter;
 
   /// The current time rule color.
-  final Color currentTimeRuleColor = SelectedColor;
+  final Color currentTimeRuleColor = MyTheme.SelectedColor;
 
   /// The current time circle color.
-  final Color currentTimeCircleColor = SelectedColor;
+  final Color currentTimeCircleColor = MyTheme.SelectedColor;
 
   /// Creates a new day view instance.
   DayView({

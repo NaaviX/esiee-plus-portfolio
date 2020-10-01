@@ -55,22 +55,22 @@ class AppState extends State<App> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: LightBackground,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: MyTheme.LightBackground,
+          systemNavigationBarDividerColor: Colors.transparent,
+        )
+    );
     try {
       versionCheck(context);
     } catch (e) {
       print(e);
     }
-
     super.initState();
   }
 
@@ -173,9 +173,6 @@ class JwtAuthState extends State<JwtAuth> {
     }
     );
   }
-
-
-
 }
 
 class Base extends StatefulWidget {
@@ -245,8 +242,8 @@ class _Base extends State<Base> {
           width: 10,
         )
       ];
-    } else
-      return null;
+    }
+    else return null;
   }
 
   Future<bool> isInternetConnected() async {
@@ -329,7 +326,7 @@ class _Base extends State<Base> {
                             return Container(
                               color: Theme.of(context).backgroundColor,
                               child: LoginPage(),
-                            ); //Center(child: Text("Loading"));//new CircularProgressIndicator());
+                            );//Center(child: Text("Loading"));//new CircularProgressIndicator());
                           }
                         },
                       );
@@ -590,11 +587,11 @@ class _Base extends State<Base> {
 
   Widget _adminMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.admin)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.admin))) {
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.admin))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -645,11 +642,11 @@ class _Base extends State<Base> {
 
   Widget _modoMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.mod)) ||
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.mod)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.mod))) {
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.mod))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -683,11 +680,11 @@ class _Base extends State<Base> {
 
   Widget _trezMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.trez)) ||
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.trez)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.trez))) {
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -724,11 +721,11 @@ class _Base extends State<Base> {
 
   Widget _logMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.log)) ||
+        Base.thisUser.roles.contains(
+            Base.allRoles.firstWhere((element) => element.role == Role.log)) ||
         Base.thisClub != null &&
-            Base.thisClub.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.log))) {
+            Base.thisClub.roles.contains(
+                Base.allRoles.firstWhere((element) => element.role == Role.log))) {
       return Column(children: [
         Divider(),
         RichText(
@@ -758,36 +755,19 @@ class _Base extends State<Base> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(
-            FontAwesomeIcons.home,
-          ),
-          activeIcon: Icon(
-            FontAwesomeIcons.home,
-            color: Theme.of(context).primaryColor,
-          ),
+          icon: Icon(FontAwesomeIcons.home,),
+          activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            FontAwesomeIcons.clock,
-          ),
-          activeIcon: Icon(
-            FontAwesomeIcons.clock,
-            color: Theme.of(context).primaryColor,
-          ),
+          icon: Icon(FontAwesomeIcons.clock,),
+          activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
           title: Text('EDT'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            FontAwesomeIcons.calendarAlt,
-          ),
-          activeIcon: Icon(
-            FontAwesomeIcons.calendarAlt,
-            color: Theme.of(context).primaryColor,
-          ),
-          title: Text(
-            'Event',
-          ),
+          icon: Icon(FontAwesomeIcons.calendarAlt,),
+          activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
+          title: Text('Event',),
         ),
       ],
       showSelectedLabels: false,

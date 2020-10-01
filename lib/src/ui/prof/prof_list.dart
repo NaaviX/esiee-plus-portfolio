@@ -1,7 +1,6 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_info.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';

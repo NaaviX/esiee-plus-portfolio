@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BdeInfos extends StatelessWidget {
@@ -26,7 +25,7 @@ class BdeInfos extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 20),
           child: Column(
             children: <Widget>[
-              Image(image: AssetImage('assets/info.png'), height: MediaQuery.of(context).size.height/6,),
+              Image(image: AssetImage('assets/illustration/info.webp'), height: MediaQuery.of(context).size.height/6,),
               Expanded(
                   child: ListView (
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

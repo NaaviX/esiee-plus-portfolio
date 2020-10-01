@@ -1,14 +1,11 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
 
 
-  LoginPage() {
-  }
+  LoginPage();
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -42,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Image(image: AssetImage('assets/Logo.png'), width: 200),
+                    Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 200),
                     SizedBox(height: 100),
                   ],
                 ),
@@ -81,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(width: 5,),
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/logoDjango.png'),
+                      backgroundImage: AssetImage('assets/esieeplus/logoDjango.webp'),
                       backgroundColor: Colors.white,
                       radius: 15,
                     ),
@@ -105,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
             alignment: Alignment.center,
-            child: Text("Se connecter avec Google".toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),),
+            child: Text("Se connecter".toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
           ),
         ),
         onPressed: () async {

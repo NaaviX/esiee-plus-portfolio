@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bde_esiee_mobile/src/App.dart';
@@ -7,14 +6,10 @@ import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'event_creation.dart';
-import 'event_info.dart';
 
 class EventList extends StatefulWidget {
   bool moderation;

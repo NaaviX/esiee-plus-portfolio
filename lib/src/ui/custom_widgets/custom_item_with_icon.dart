@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets/Hyperlink.dart';
 
@@ -29,7 +30,7 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
             direction: Axis.horizontal,
             alignment: WrapAlignment.start,
             children: <Widget>[
-              Icon(widget.icon, size: 20.0, color: Theme.of(context).primaryColor),
+              Icon(widget.icon, size: 20.0, color: MyTheme.PrimaryColorLight),
               _type(),
             ]),
       );

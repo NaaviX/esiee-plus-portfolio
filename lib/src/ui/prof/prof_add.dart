@@ -32,7 +32,7 @@ class AddProfState extends State<AddProf> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 5,),
-            Image(image: AssetImage('assets/addTeacher.png'),height: MediaQuery.of(context).size.height/6,),
+            Image(image: AssetImage('assets/illustration/addTeacher.webp'),height: MediaQuery.of(context).size.height/6,),
             SizedBox(height: 5,),
             form,
             SizedBox(

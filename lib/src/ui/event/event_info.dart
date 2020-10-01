@@ -6,11 +6,9 @@ import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
-import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,13 +140,14 @@ class EventInfoState extends State<EventInfoPage> {
               _validationMod(),
               SizedBox(height: 10,),
               _suppressionMod(),
+              SizedBox(height: 50,),
             ]
         ),
         floatingActionButton: _floatingActionButton()
     );
   }
 
-  Widget _floatingActionButton() {
+  _floatingActionButton() {
     if (!widget.isModeration)
       return FutureBuilder(
           future: getSavedEvents(),
@@ -172,7 +171,7 @@ class EventInfoState extends State<EventInfoPage> {
                       _isFav = !_isFav;
                       widget.parentCard.setState(() {
 
-                      });;
+                      });
                     });
                   },
                 );
@@ -226,13 +225,15 @@ class EventInfoState extends State<EventInfoPage> {
     if(text == "0.0 €") text = "Gratuit";
     if(icon == Icons.payment || icon == FontAwesomeIcons.facebookSquare) hyperlink = true;
     if(text != null && text !="") {
+      icon == Icons.payment ? text = "lien de vente" : text = text;
+      icon == FontAwesomeIcons.facebookSquare ? text = "lien facebook de l'événement" : text = text;
       return Container(
         padding: EdgeInsets.fromLTRB(10, 0, 0, 15),
         child: CustomItemWithIcon(icon, text, hyperlink : hyperlink,),);
     }
     else {
       return Container(
-        padding: EdgeInsets.fromLTRB(10, 0, 0, 15),
+        //padding: EdgeInsets.fromLTRB(10, 0, 0, 15),
       );
     }
   }
@@ -460,7 +461,7 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
 

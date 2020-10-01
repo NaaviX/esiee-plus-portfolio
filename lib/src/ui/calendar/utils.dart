@@ -49,9 +49,9 @@ class DefaultBuilders {
       TextSpan(
         text: ' ' + dayView.hourFormatter(event.course.start.hour, event.course.start.minute) + '\n' + dayView.hourFormatter(event.course.end.hour, event.course.end.minute) + '\n\n',
       ),
-      TextSpan(
-        text: event.course.description,
-      ),
+      /*TextSpan(
+        text: event.course.unite,
+      ),*/
     ];
 
     bool exceedHeight;

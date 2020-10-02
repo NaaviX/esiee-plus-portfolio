@@ -126,6 +126,7 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewController> {
   /// A day view width.
   double dayViewWidth;
+  int index = 0;
 
   @override
   void initState() {
@@ -244,7 +245,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView, WeekViewContro
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
 
-    int index = 0;
+    //int index = 0;
     if (widget.dateCount != null) {
       for (; index < widget.dateCount; index++) {
         DateTime idxDay = widget.dateCreator(index);

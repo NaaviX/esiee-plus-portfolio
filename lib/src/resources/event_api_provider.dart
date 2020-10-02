@@ -51,7 +51,6 @@ class EventApiProvider {
           'enabled_stratif' : event.enabledStratif.toString(),
         },
         headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
         });
     if (response.statusCode == 200) {

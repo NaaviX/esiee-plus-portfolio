@@ -38,7 +38,6 @@ class StockApiProvider {
           "bottleQuantity" : stock.bottleQuant.toString(),
         },
         headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
         });
     if (response.statusCode == 200) {

@@ -1,5 +1,6 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,8 +76,8 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
                       return TabBarView(
                         controller: _tabController,
                         children: [
-                          Tac(context, stocks, snapshot),
-                          Reserve(context, stocks, snapshot),
+                          Tac(stocks, snapshot),
+                          Reserve(stocks, snapshot),
                         ],
                       );
                     }
@@ -111,7 +112,7 @@ class Tac extends StatefulWidget {
 
   StockBloc stocks;
   AsyncSnapshot<List<StockModel>> snapshot;
-  Tac(context, this.stocks, this.snapshot);
+  Tac(this.stocks, this.snapshot);
 
   @override
   State<StatefulWidget> createState() {
@@ -134,21 +135,21 @@ class TacState extends State<Tac> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 10,),
-                      Text("Cannettes", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("Cannettes", style: TextStyle(color: MyTheme.PrimaryColorLight, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
-                        children: _List(context, widget.snapshot, widget.stocks, "Cannette"),
+                        children: _List(this, widget.snapshot, widget.stocks, "Cannette"),
                       ),
                       SizedBox(height: 20,),
-                      Text("Snacks", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("Snacks", style: TextStyle(color: MyTheme.PrimaryColorLight, fontSize: 25, fontWeight: FontWeight.bold),),
                       Column(
-                        children: _List(context, widget.snapshot, widget.stocks, "Snack"),
+                        children: _List(this, widget.snapshot, widget.stocks, "Snack"),
                       ),
                       SizedBox(height: 20,),
-                      Text("Autres", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: Theme.of(context).primaryColor.withOpacity(0.8), fontSize: 15),),
+                      Text("Autres", style: TextStyle(color: MyTheme.PrimaryColorLight, fontSize: 25, fontWeight: FontWeight.bold),),
+                      Text("DLC = Date Limite de Consomation", style: TextStyle(color: MyTheme.PrimaryColorLight.withOpacity(0.8), fontSize: 15),),
                       SizedBox(height: 5,),
                       Column(
-                        children: _List(context, widget.snapshot, widget.stocks, "Autre"),
+                        children: _List(this, widget.snapshot, widget.stocks, "Autre"),
                       ),
                     ],
                   ),
@@ -276,7 +277,7 @@ class Reserve extends StatefulWidget {
 
   StockBloc stocks;
   AsyncSnapshot<List<StockModel>> snapshot;
-  Reserve(context, this.stocks, this.snapshot);
+  Reserve(this.stocks, this.snapshot);
 
   @override
   State<StatefulWidget> createState() {
@@ -325,8 +326,8 @@ class ReserveState extends State<Reserve> {
                         }).toList(),
                       ),
                       SizedBox(height: 10,),
-                      selected == "Hard" ? _hard(context, widget.snapshot, widget.stocks) : Container(),
-                      selected == "Soft" ? _soft(context, widget.snapshot, widget.stocks) : Container(),
+                      selected == "Hard" ? _hard(this, widget.snapshot, widget.stocks) : Container(),
+                      selected == "Soft" ? _soft(this, widget.snapshot, widget.stocks) : Container(),
                     ],
                   ),
                 );

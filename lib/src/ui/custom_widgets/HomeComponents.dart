@@ -1,9 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,10 +38,9 @@ class HomeComponentsState extends State<HomeComponents> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height-153-270-62;
     return SingleChildScrollView(
-        child: Container(
-            height: height,
+      scrollDirection: Axis.vertical,
+        //child: Container(
             //color: Colors.orange,
             child : Column(
               //mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -59,19 +56,19 @@ class HomeComponentsState extends State<HomeComponents> {
                 SizedBox(height: 5),
               ],
             )
-        )
+        //)
     );
   }
 
   infoComponents(String title, String text){
-    double height = MediaQuery.of(context).size.height-153-270-62;
+    //double height = MediaQuery.of(context).size.height-153-270-62;
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomCenter,
               colors: [Colors.lightBlue.withOpacity(0.6), Colors.blue.withOpacity(0.8)])),
-      height: height/3-5,
+      height: 120,
       child:Container(
         margin: EdgeInsets.all(15),
         child: Column(
@@ -94,10 +91,10 @@ class HomeComponentsState extends State<HomeComponents> {
   }
 
   alertComponents(IconData icon, String title, String text){
-    double height = MediaQuery.of(context).size.height-153-270-62;
+    //double height = MediaQuery.of(context).size.height-153-270-62;
     return Container(
       color: Colors.red.withOpacity(0.6),
-      height: height/3-5,
+      //height: 120,
       child:Container(
         margin: EdgeInsets.only(left: 10),
         child: Column(
@@ -120,7 +117,7 @@ class HomeComponentsState extends State<HomeComponents> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
   pushEventInfo(EventModel event, ClubModel club) {
@@ -212,13 +209,13 @@ class HomeComponentsState extends State<HomeComponents> {
   }
 
   eventComponent(int idEvent){
-    double height = MediaQuery.of(context).size.height-153-270-62;
+    //double height = MediaQuery.of(context).size.height-153-270-62;
     return StreamBuilder(
         stream: eventBloc.allEvents,
         builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
           if (!snapshot.hasData) {
             return Container(
-              height: height / 3 - 5,
+              height: 120,
               color: Colors.grey.withOpacity(0.2),
             );
           } else if (snapshot.hasError) {
@@ -231,7 +228,7 @@ class HomeComponentsState extends State<HomeComponents> {
                 if (!snapshot.hasData) {
                   return Container(
                       child: _eventInfo(event),
-                      height: height / 3 - 5,
+                      height: 120,
                       decoration: BoxDecoration(
                           color: Colors.black,
                           image: new DecorationImage(
@@ -249,7 +246,7 @@ class HomeComponentsState extends State<HomeComponents> {
                       children: [
                         Container(
                             child: _eventInfo(event),
-                            height: height / 3 - 5,
+                            height: 120,
                             decoration: BoxDecoration(
                                 color: Colors.black,
                                 image: new DecorationImage(
@@ -271,7 +268,7 @@ class HomeComponentsState extends State<HomeComponents> {
   }
 
   dealComponent(String urlLogo, String link, String title, String description){
-    double height = MediaQuery.of(context).size.height-153-270-62;
+    //double height = MediaQuery.of(context).size.height-153-270-62;
     return GestureDetector(
       child: Container(
         decoration: BoxDecoration(
@@ -280,16 +277,16 @@ class HomeComponentsState extends State<HomeComponents> {
                 stops: [0.1, 0.4, 1],
                 end: Alignment.bottomLeft,
                 colors: [Colors.lightBlue, Colors.blue, Colors.blueAccent])),
-        height: height/3-5,
+        //height: 120,
         child:Container(
-          margin: EdgeInsets.only(left: 10),
+          margin: EdgeInsets.only(left: 10, top: 10, bottom: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               new Flexible(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 8),

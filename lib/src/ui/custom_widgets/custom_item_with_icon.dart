@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets/Hyperlink.dart';
 
@@ -5,11 +6,11 @@ import '../custom_widgets/Hyperlink.dart';
 class CustomItemWithIcon extends StatefulWidget {
   final IconData icon;
   final String text;
-  bool hyperlink;
+  String hyperlink;
 
   CustomItemWithIcon(this.icon, this.text, {this.hyperlink}){
     if(this.hyperlink != null) this.hyperlink = this.hyperlink;
-    else this.hyperlink = false;
+    else this.hyperlink = null;
   }
 
   @override
@@ -29,7 +30,7 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
             direction: Axis.horizontal,
             alignment: WrapAlignment.start,
             children: <Widget>[
-              Icon(widget.icon, size: 20.0, color: Theme.of(context).primaryColor),
+              Icon(widget.icon, size: 20.0, color: MyTheme.PrimaryColorLight),
               _type(),
             ]),
       );
@@ -38,8 +39,8 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
   }
 
   _type() {
-    if(widget.hyperlink)
-      return Hyperlink(widget.text, widget.text);
+    if(widget.hyperlink != null)
+      return Hyperlink(widget.hyperlink, widget.text);
     else return Text(widget.text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,);
   }
 

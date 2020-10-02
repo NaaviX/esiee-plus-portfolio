@@ -15,7 +15,7 @@ class ClassDocumentState extends State<ClassDocument> {
         ),
         body:Column(
             children: <Widget>[
-              Image(image: AssetImage('assets/cours.png'),width: MediaQuery.of(context).size.width,),
+              Image(image: AssetImage('assets/illustration/cours.webp'),width: MediaQuery.of(context).size.width,),
             ]
         )
     );

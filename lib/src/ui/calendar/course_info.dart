@@ -36,7 +36,7 @@ class EventInfoState extends State<CourseInfoPage> {
         borderRadius: BorderRadius.circular(10),
       ),
       elevation: 10.0,
-      backgroundColor: Theme.of(context).backgroundColor,
+      //backgroundColor: Theme.of(context).backgroundColor,
       child: dialogContent(context),
     );
   }
@@ -117,8 +117,8 @@ class EventInfoState extends State<CourseInfoPage> {
                   //CustomItemWithIcon(Icons.place, getPlace()),
                   getPlace(),
                   CustomItemWithIcon(Icons.timer, getTime()),
-                  CustomItemWithIcon(Icons.class_, getUnit()),
-                  CustomItemWithIcon(Icons.group, getGroup()),
+                  CustomItemWithIcon(Icons.class_, widget.course.unite),
+                  CustomItemWithIcon(Icons.group, widget.course.group),
                 ],
               )
           ),
@@ -131,22 +131,10 @@ class EventInfoState extends State<CourseInfoPage> {
     );
   }
 
-
-  getGroup() {
-    List<String> desc =  widget.course.description.split("\n");
-    desc.removeLast();
-    String unit = desc.toString();
-    return unit.substring(1, unit.length-1);
-  }
-
   CustomItemWithIcon getPlace() {
     String place = widget.course.location.replaceAll("[", "").replaceAll("]", "");
     if(place == "Classe virtuelle") return CustomItemWithIcon(Icons.home, place);
     else return CustomItemWithIcon(Icons.place, place);
-  }
-
-  getUnit() {
-    return widget.course.description.split("\n").last;
   }
 
   update() {

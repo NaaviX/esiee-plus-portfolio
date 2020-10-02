@@ -76,7 +76,7 @@ class FairpayLogCardState extends State<FairpayLogCard> {
                       Container(
                           alignment: Alignment.centerRight,
                           width: 95,
-                          child: AutoSizeText(log.amount.toString() + ' €', style: amountStyle(log.amount.toString()), maxLines: 1,)
+                          child: AutoSizeText(log.amount.toString() + ' €', style: TextStyle(color: colorStyle(widget.log.type), fontSize: 20, fontWeight: FontWeight.bold,), maxLines: 1,)
                       )
                     ],
                   ),
@@ -115,10 +115,14 @@ class FairpayLogCardState extends State<FairpayLogCard> {
     return DateFormat.yMd('fr_FR').format(date);
   }
 
-  TextStyle amountStyle(String amount)
-  {
-    if(amount.toString().contains("-"))
-      return TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold,);
-    else return TextStyle(color: Colors.green, fontSize: 20, fontWeight: FontWeight.bold,);
+  MaterialColor colorStyle(String type) {
+    switch (type) {
+      case "Depot":
+        return Colors.green;
+      case "Retrait":
+        return Colors.red;
+      case "Subvention":
+        return Colors.orange;
+    }
   }
 }

@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-const PrimaryColorLight = const Color(0xFF296faa);
-const PrimaryColorDark = const Color(0xFF1A91DA);
-
-const AccentColorLight = const Color(0xFF52C9ED);
-const AccentColorDark = const Color(0xFF296faa);
-
-const LightBackground = const Color(0xFFFDFDFD);
-const DarkBackground = const Color(0xFF0e283d);
-
-const WidgetBackgroundLight = const Color(0xFFFFFFFF);
-const WidgetDarkBackground = const Color(0xFF184366);
-
-const SelectedColor = const Color(0xFFEC4D9C);
-
 class MyTheme {
+  static const PrimaryColorLight = const Color(0xFF296faa);
+  static const PrimaryColorDark = const Color(0xFFFDFDFD);
+
+  static const AccentColorLight = const Color(0xFF52C9ED);
+  static const AccentColorDark = const Color(0xFF296faa);
+
+  static const LightBackground = const Color(0xFFFDFDFD);
+  static const DarkBackground = const Color(0xFF0e283d);
+
+  static const WidgetBackgroundLight = const Color(0xFFFFFFFF);
+  static const WidgetDarkBackground = const Color(0xFF184366);
+
+  static const SelectedColor = const Color(0xFFEC4D9C);
+
   static final ThemeData defaultTheme = _buildTheme();
   static final ThemeData darkTheme = _buildDarkTheme();
 
@@ -62,6 +61,8 @@ class MyTheme {
       cardTheme: CardTheme(
         color: WidgetBackgroundLight,
       ),
+
+      dialogBackgroundColor: WidgetBackgroundLight,
     );
   }
 
@@ -108,7 +109,9 @@ class MyTheme {
 
         textTheme: TextTheme(
           caption: TextStyle(color: Colors.white),
-        )
+        ),
+
+        dialogBackgroundColor: WidgetDarkBackground,
     );
   }
 }

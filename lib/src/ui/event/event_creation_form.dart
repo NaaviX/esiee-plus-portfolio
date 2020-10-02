@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -87,7 +86,7 @@ class _createEventFormState extends State<createEventForm> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.7), BlendMode.dstOut),
+                        colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut),
                         image: NetworkImage(widget.uploadedFileURL)
                     ),
                     color: Colors.white,

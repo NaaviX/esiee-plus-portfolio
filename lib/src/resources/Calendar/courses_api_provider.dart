@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../App.dart';

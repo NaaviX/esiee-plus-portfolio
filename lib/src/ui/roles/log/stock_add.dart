@@ -1,6 +1,5 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:flutter/cupertino.dart';

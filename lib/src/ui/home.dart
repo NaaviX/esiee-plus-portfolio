@@ -44,10 +44,13 @@ class HomeState extends State<Home> {
     return Scaffold(
         body: SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 _header(context),
-                HomeComponents(),
+                Container(
+                  height: MediaQuery.of(context).size.height-460,
+                  child: HomeComponents(),
+                ),
                 /*Container(
                   height : MediaQuery.of(context).size.height-153-270-62,
                   child: Column(
@@ -57,7 +60,7 @@ class HomeState extends State<Home> {
                         height : MediaQuery.of(context).size.height-153-270-62-150,
                         width: MediaQuery.of(context).size.width-75,
                         child: FlareActor(
-                          "assets/intro.flr",
+                          "assets/flr/intro.flr",
                           alignment: Alignment.center,
                           fit: BoxFit.fill,
                           animation: "coding",
@@ -77,7 +80,7 @@ class HomeState extends State<Home> {
   _Links() {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
-      height: 62,
+      //height: 62,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,7 +96,7 @@ class HomeState extends State<Home> {
 
   _header(BuildContext context) {
     return Container(
-      height: 270.0-30.0,
+      //height: 270.0-30.0,
       //color: Colors.blueGrey,
       child: Stack(
         children: <Widget>[
@@ -106,7 +109,7 @@ class HomeState extends State<Home> {
                       color: Colors.black,
                       image: new DecorationImage(
                           fit: BoxFit.fill,
-                          image : AssetImage("assets/defaultbanner.png")
+                          image : AssetImage("assets/esieeplus/defaultbanner.png")
                       )
                   )
               ),
@@ -122,7 +125,7 @@ class HomeState extends State<Home> {
                       width: 20.0,
                       height: 20.0,
                       child: FlareActor(
-                        "assets/medal.flr",
+                        "assets/flr/medal.flr",
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
                         animation: "default",

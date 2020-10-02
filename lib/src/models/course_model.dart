@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +14,8 @@ class CourseModel {
   String type;
   String location;
   String teachers;
-  String description;
+  String unite;
+  String group;
   DateTime updated;
   //Color color;
 
@@ -26,7 +26,8 @@ class CourseModel {
     this.type,
     this.location,
     this.teachers,
-    this.description,
+    this.unite,
+    this.group,
     this.updated
   });
 
@@ -42,10 +43,10 @@ class CourseModel {
       e.end = DateTime.parse("$date ${parsedJson["end_hour"]}:00");
       e.location = parsedJson["classrooms"].toString();
       e.teachers = parsedJson["instructors"].toString();
-      e.description = parsedJson["info"];
+      e.unite = parsedJson["unite"];
+      e.group = parsedJson["trainees"].toString().replaceAll("[", "").replaceAll("]", "");
       e.updated = DateTime.parse("$lastUpdateDate ${parsedJson["updated_at"].split(' ')[1]}");
-      e.type = parsedJson["name"].split(":")[1];
-      e.type = e.type.replaceAll(" ", "");
+      e.type = parsedJson["name"].split(":")[1].replaceAll(" ", "");
       //e.color = Color.fromRGBO( int.parse(colors[0]), int.parse(colors[1]), int.parse(colors[2]), 1.0);
       /*"classrooms"
     "color"

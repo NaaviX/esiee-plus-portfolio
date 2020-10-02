@@ -70,8 +70,8 @@ abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulW
     @required this.userZoomable,
   })  : assert(dateFormatter != null),
         assert(hourFormatter != null),
-        dayBarHeight = math.max(0, dayBarHeight ?? 40),
-        hoursColumnWidth = math.max(0, hoursColumnWidth ?? 60),
+        dayBarHeight = math.max(0, dayBarHeight ?? 55),
+        hoursColumnWidth = math.max(0, hoursColumnWidth ?? 0),
         hourRowHeight = math.max(0, hourRowHeight ?? 60),
         initialHour = math.min(23, math.max(0, initialHour ?? 0)),
         initialMinute = math.min(59, math.max(0, initialMinute ?? 0)),
@@ -226,35 +226,56 @@ class DayBar extends StatelessWidget {
     @required ZoomableHeadersWidget parent,
     DateTime date,
   }) : this(
-          date: date ?? DateTime.now(),
-          height: parent.dayBarHeight,
-          backgroundColor: parent.dayBarBackgroundColor ?? Theme.of(context).backgroundColor,
-          textStyle: parent.dayBarTextStyle,
-          dateFormatter: parent.dateFormatter,
-        );
+    date: date ?? DateTime.now(),
+    height: parent.dayBarHeight,
+    backgroundColor: parent.dayBarBackgroundColor ?? Theme.of(context).backgroundColor,
+    textStyle: parent.dayBarTextStyle,
+    dateFormatter: parent.dateFormatter,
+  );
 
   @override
   Widget build(BuildContext context) => Container(
-        height: height,
-        color: backgroundColor,
-        foregroundDecoration: new BoxDecoration(
-          border: Border(
-              bottom: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.2)),
-              //right: BorderSide(width: 0.5, color: Colors.grey.withOpacity(0.1))
-          )
-        ),
-        child: Center(
-          child: Text(
+    height: height,
+    color: backgroundColor,
+    foregroundDecoration: new BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.2)),
+          //right: BorderSide(width: 0.5, color: Colors.grey.withOpacity(0.1))
+        )
+    ),
+    child: Column(
+        children: <Widget>[
+          Text(
             dateFormatter(date.year, date.month, date.day),
             style: textStyle ??
                 TextStyle(
-                  color: Utils.sameDay(date) ? Colors.blue[800] : Colors.black54,
-                  fontWeight: FontWeight.bold,
+                  color: Utils.sameDay(date) ? Theme.of(context).primaryColor : Colors.black54,
+                  fontWeight: Utils.sameDay(date) ? FontWeight.w900 : FontWeight.w700,
                 ),
             textAlign: TextAlign.center,
           ),
-        ),
-      );
+          SizedBox(height: 3,),
+          Container(
+            height: 30,
+            width: 30,
+            child:Center(
+              child:Text(
+                date.day.toString(),
+                style: textStyle ??
+                    TextStyle(
+                      color: Utils.sameDay(date) ? Colors.white : Colors.black54,
+                      fontWeight: FontWeight.bold,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            decoration: new BoxDecoration(
+              color: Utils.sameDay(date) ? Theme.of(context).primaryColor.withOpacity(0.7) : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ]),
+  );
 }
 
 /// A column which is showing a day hours.
@@ -289,37 +310,37 @@ class HoursColumn extends StatelessWidget {
   HoursColumn.fromHeadersWidget(context,{
     @required ZoomableHeadersWidget parent,
   }) : this(
-          hourRowHeight: parent._calculateHourRowHeight(),
-          width: parent.hoursColumnWidth,
-          backgroundColor: parent.hoursColumnBackgroundColor ?? Theme.of(context).backgroundColor,
-          textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54),
-          hourFormatter: parent.hourFormatter,
-        );
+    hourRowHeight: parent._calculateHourRowHeight(),
+    width: parent.hoursColumnWidth,
+    backgroundColor: parent.hoursColumnBackgroundColor ?? Theme.of(context).backgroundColor,
+    textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54),
+    hourFormatter: parent.hourFormatter,
+  );
 
   @override
   Widget build(BuildContext context) => Container(
-        foregroundDecoration: new BoxDecoration(
-            border: Border(
-                //right: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.1))
-            )
-        ),
-        height: 24 * hourRowHeight,
-        width: width,
-        color: backgroundColor,
-        child: Stack(
-          children: List.generate(
-            23,
+    foregroundDecoration: new BoxDecoration(
+        border: Border(
+          //right: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.1))
+        )
+    ),
+    height: 24 * hourRowHeight,
+    width: width,
+    color: backgroundColor,
+    child: Stack(
+      children: List.generate(
+        23,
             (hour) => Positioned(
-              top: (hour + 1) * hourRowHeight - ((textStyle?.fontSize ?? 14) / 2),
-              left: 0,
-              right: 0,
-              child: Text(
-                hourFormatter(hour + 1, 0),
-                style: textStyle,
-                textAlign: TextAlign.center,
-              ),
-            ),
+          top: (hour + 1) * hourRowHeight - ((textStyle?.fontSize ?? 14) / 2),
+          left: 0,
+          right: 0,
+          child: Text(
+            hourFormatter(hour + 1, 0),
+            style: textStyle,
+            textAlign: TextAlign.center,
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

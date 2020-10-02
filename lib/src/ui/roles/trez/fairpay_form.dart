@@ -108,6 +108,7 @@ FairpayForm(FairpayState parent, String type, ClubModel club) {
                             )
                         );
                         if (Navigator.canPop(context)) {
+                          parent.setState(() { });
                           Navigator.pop(context);
                         }
                       }

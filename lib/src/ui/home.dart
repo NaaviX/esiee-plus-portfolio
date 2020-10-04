@@ -97,6 +97,8 @@ class HomeState extends State<Home> {
     return localEvents;
   }
 
+  //DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, 14, 00);
+
   _StudentNextCurses() {
     return FutureBuilder(
         future: getLocalCourses(),
@@ -104,7 +106,8 @@ class HomeState extends State<Home> {
           if (eventsJson.hasData) {
             dynamic jsonData = jsonDecode(eventsJson.data);
             List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).toList();
-            CourseModel course = snapshot.firstWhere((course) => (DateTime.now().isAfter(course.start) && DateTime.now().isBefore(course.end)) || (DateTime.now().isBefore(course.start) && DateTime.now().isBefore(course.end)));
+            DateTime now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute-30);
+            CourseModel course = snapshot.firstWhere((course) => now.isBefore(course.start) && now.isBefore(course.end));
             return _StudentNextCursesCard(course);
           }
           return Container();
@@ -114,7 +117,6 @@ class HomeState extends State<Home> {
 
   _StudentNextCursesCard(CourseModel course) {
     String place = course.location.replaceAll("[", '').replaceAll("]", '');
-    //DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-4, 11, 35);
 
     int diffDay = 0;
     Duration diffTime = Duration(hours: 0);
@@ -122,11 +124,12 @@ class HomeState extends State<Home> {
     DateTime.now().day != course.start.day ?
     diffDay = course.start.day-DateTime.now().day :
     diffTime = course.start.difference(DateTime.now());
+    course.start.isBefore(DateTime.now()) || course.start == DateTime.now() ? diff = "En cours" :
     diffDay < -7 ? diff = "Dans " + (diffDay.abs()/7).toString().split('.').first + " semaines" :
     diffDay == 1 ? diff = "Demain à " + DateFormat("HH:mm","fr_FR").format(course.start) :
     diffDay > 1 ? diff = DateFormat("EEE à HH:mm","fr_FR").format(course.start) :
     diffTime.inHours >= 1 ? diff = "Dans " + diffTime.inHours.toString() + "h" + (diffTime.inMinutes%60).toString() + "min" :
-    diff = "Dans " + (diffTime.inMinutes%60).toString() + "min" + diffDay.toString();
+    diff = "Dans " + (diffTime.inMinutes%60).toString() + "min";
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),

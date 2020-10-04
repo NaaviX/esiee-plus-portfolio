@@ -24,6 +24,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
@@ -202,14 +203,29 @@ class _Base extends State<Base> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  static List<String> _selectedAppbarTitle = [
-    'ESIEE+',
-    'Emploi du temps',
-    'Evenements',
+  static List<Widget> _selectedAppbarTitleWidget = [
+    Center(
+      child: Text('ESIEE+'),
+    ),
+    Text('Emploi du temps'),
+    Text('Evenements'),
   ];
 
-  List<Widget> actionButton(BuildContext context) {
-    if (Base.selectedIndex == 1) {
+  List<Widget> actionButton() {
+    if (Base.selectedIndex == 0) {
+      return [
+        Container(
+          padding: EdgeInsets.all(15),
+          child: Image.asset(
+            'assets/esieeplus/Logo.webp',
+          ),
+        ),
+        SizedBox(
+          width: 10,
+        )
+      ];
+    }
+    else if (Base.selectedIndex == 1) {
       return [
         IconButton(
           icon: const Icon(Icons.info_outline),
@@ -224,20 +240,6 @@ class _Base extends State<Base> {
             );
           },
         ),
-        /*IconButton(
-          icon: const Icon(Icons.event),
-          onPressed: () {
-          },
-        ),*/
-        /*IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Calendar()),
-            );
-          },
-        ),*/
         SizedBox(
           width: 10,
         )
@@ -349,8 +351,8 @@ class _Base extends State<Base> {
         key: _scaffoldKey,
         appBar: AppBar(
             brightness: Brightness.light,
-            title: Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
-            actions: actionButton(context)),
+            title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex),//Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
+            actions: actionButton()),
         body: PageView(
           controller: pageController,
           onPageChanged: _onPageChanged,

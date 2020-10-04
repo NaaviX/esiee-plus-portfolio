@@ -1,12 +1,15 @@
-import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/HomeComponents.dart';
-import 'package:flare_flutter/flare_actor.dart';
+import 'dart:convert';
+
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
+import 'package:bde_esiee_mobile/src/models/club_model.dart';
+import 'package:bde_esiee_mobile/src/models/course_model.dart';
+import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../App.dart';
 
 class Home extends StatefulWidget {
 
@@ -18,21 +21,20 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
 
-  final eventBloc = EventsBloc();
-  final rate = 10;
+  ClubsBloc clubsBloc = ClubsBloc();
+  CourseBloc courseBloc = CourseBloc();
 
   @override
   void initState() {
-    eventBloc.fetchAllEvents();
-    /*SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);*/
+    clubsBloc.fetchAllClubs();
+    courseBloc.fetchAllCourses(getGradeUnitsID().toString());
     super.initState();
   }
 
   @override
   void dispose() {
-    eventBloc.dispose();
+    clubsBloc.dispose();
+    courseBloc.dispose();
     super.dispose();
   }
 
@@ -42,40 +44,177 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _header(context),
-                Container(
-                  height: MediaQuery.of(context).size.height-460,
-                  child: HomeComponents(),
+        body: Stack(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(bottom: 80),
+              child: SingleChildScrollView(
+                //padding: EdgeInsets.only(left: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _Component('Mes Clubs', 0),
+                    _Component('Mon Prochain Cours', 1),
+                    _Component('Top Events', 2),
+                  ],
                 ),
-                /*Container(
-                  height : MediaQuery.of(context).size.height-153-270-62,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height : MediaQuery.of(context).size.height-153-270-62-150,
-                        width: MediaQuery.of(context).size.width-75,
-                        child: FlareActor(
-                          "assets/flr/intro.flr",
-                          alignment: Alignment.center,
-                          fit: BoxFit.fill,
-                          animation: "coding",
-                        ),
-                      ),
-                      Text("Page d'accueil en cours de création...", style: TextStyle(fontSize: 23, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)
-                    ],
-                  ),
-                ),*/
-                _Links()
-              ],
-            )
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              width: MediaQuery.of(context).size.width,
+              child:_Links(),
+            ),
+          ],
         )
     );
   }
+
+  _Component(String title, int type) {
+    return Container(
+        margin: EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 15),
+              child: Text(title, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.w900),),
+            ),
+            type == 0 ? _StudentClub() :
+            type == 1 ? _StudentNextCurses() :
+            type == 2 ? Container() :
+            Container()
+          ],
+        )
+    );
+  }
+
+  Future<String> getLocalCourses() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('coursesJson');
+    return localEvents;
+  }
+
+  _StudentNextCurses() {
+    return FutureBuilder(
+        future: getLocalCourses(),
+        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+          if (eventsJson.hasData) {
+            dynamic jsonData = jsonDecode(eventsJson.data);
+            List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).toList();
+            CourseModel course = snapshot.firstWhere((course) => (DateTime.now().isAfter(course.start) && DateTime.now().isBefore(course.end)) || (DateTime.now().isBefore(course.start) && DateTime.now().isBefore(course.end)));
+            return _StudentNextCursesCard(course);
+          }
+          return Container();
+        }
+    );
+  }
+
+  _StudentNextCursesCard(CourseModel course) {
+    String place = course.location.replaceAll("[", '').replaceAll("]", '');
+    //DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-4, 11, 35);
+
+    int diffDay = 0;
+    Duration diffTime = Duration(hours: 0);
+    String diff;
+    DateTime.now().day != course.start.day ?
+    diffDay = course.start.day-DateTime.now().day :
+    diffTime = course.start.difference(DateTime.now());
+    diffDay < -7 ? diff = "Dans " + (diffDay.abs()/7).toString().split('.').first + " semaines" :
+    diffDay == 1 ? diff = "Demain à " + DateFormat("HH:mm","fr_FR").format(course.start) :
+    diffDay > 1 ? diff = DateFormat("EEE à HH:mm","fr_FR").format(course.start) :
+    diffTime.inHours >= 1 ? diff = "Dans " + diffTime.inHours.toString() + "h" + (diffTime.inMinutes%60).toString() + "min" :
+    diff = "Dans " + (diffTime.inMinutes%60).toString() + "min" + diffDay.toString();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))
+        ),
+        color: Theme.of(context).primaryColor.withOpacity(0.7),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: 150,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(right: 120),
+                    child: Text(course.type + ' : ' + course.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),),
+                  ),
+                  SizedBox(height: 10),
+                  Text('Enseigné par ' + course.teachers.replaceAll("[", '').replaceAll("]", ''), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
+                  SizedBox(height: 5),
+                  Text('De ' + DateFormat("HH:mm","fr_FR").format(course.start) + ' à ' + DateFormat("HH:mm","fr_FR").format(course.end), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 10,
+              child: Chip(label: Container(padding: EdgeInsets.symmetric(horizontal: 2), child : Center(child: Text(diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),)), padding: EdgeInsets.all(0), ),
+            ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child:
+              place == 'Classe virtuelle' ?
+              Icon(Icons.home, color: Colors.white, size: 25,) :
+              Row(
+                children: <Widget>[
+                  Icon(Icons.location_on, color: Colors.white, size: 15,),
+                  Text(place, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _StudentClub() {
+    final List<int> idClub = [100, 106, 1, 2, 3];
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      height: 80,
+      //child:
+      child: StreamBuilder(
+          stream: clubsBloc.allClubs,
+          builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
+            return snapshot.hasData ?
+            ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: idClub.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.blueGrey.withOpacity(0.2),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            snapshot.data.firstWhere((club) => club.idClubRef == idClub[index]).urlPhoto),
+                        backgroundColor: Colors.white,
+                        radius: 35,
+                      ),
+                      radius: 38,
+                    ),
+                  );
+                }
+            ) : Container();
+          }
+      ),
+    );
+  }
+
+
 
   _Links() {
     return Container(
@@ -94,119 +233,10 @@ class HomeState extends State<Home> {
     );
   }
 
-  _header(BuildContext context) {
-    return Container(
-      //height: 270.0-30.0,
-      //color: Colors.blueGrey,
-      child: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 150.0,
-                  decoration: BoxDecoration(
-                      color: Colors.black,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image : AssetImage("assets/esieeplus/defaultbanner.png")
-                      )
-                  )
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 50),
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: Row(
-                  children: <Widget>[
-                    Text(user.displayName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor,),),
-                    Base.thisUser != null && Base.thisUser.isContributor ?
-                    Container(
-                      margin: EdgeInsets.only(left: 5),
-                      width: 20.0,
-                      height: 20.0,
-                      child: FlareActor(
-                        "assets/flr/medal.flr",
-                        alignment: Alignment.center,
-                        fit: BoxFit.fill,
-                        animation: "default",
-                      ),
-                    ) : Container(),
-                  ],
-                ),
-              ),
-              /*Container(
-                //color: Colors.blue,
-                alignment: Alignment.centerLeft,
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Wrap(
-                  direction: Axis.horizontal,
-                  spacing: 5,
-                  children: _ListStudentClub(),
-                ),
-              ),*/
-            ],
-          ),
-          Positioned(
-            top: 100,
-            child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                width: 100.0,
-                height: 100.0,
-                alignment: Alignment.center,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    fit: BoxFit.fill,
-                    image:
-                    new NetworkImage(user.photoUrl),
-                  ),
-                  //border: Border.all(color: Background, width: 2),
-                )
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _ListStudentClub() {
-    List<Widget> list = List<Widget>();
-    list.add(
-      Container(
-          width: 30.0,
-          height: 30.0,
-          alignment: Alignment.center,
-          decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            image: new DecorationImage(
-              fit: BoxFit.fill,
-              image:
-              new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FBDE.png?alt=media&token=85e40648-55ce-4096-8f5b-fc0ce5955167"),
-            ),
-          )
-      ),
-    );
-    list.add(
-      Container(
-          width: 30.0,
-          height: 30.0,
-          alignment: Alignment.center,
-          decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            image: new DecorationImage(
-              fit: BoxFit.fill,
-              image:
-              new NetworkImage("https://firebasestorage.googleapis.com/v0/b/bde-esiee-mobile.appspot.com/o/clubs%2FFZY.png?alt=media&token=cdb5de46-6b14-4d1b-b387-ac31541737d4"),
-            ),
-          )
-      ),
-    );
-    return list;
-  }
-
   _homeStudentUsefulLinks(String nom, String site, String image,) {
     return InkWell(
       child: Container(
+        padding: EdgeInsets.all(2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -224,26 +254,16 @@ class HomeState extends State<Home> {
                   ),
                 )
             ),
-            Text(nom, style: TextStyle(fontSize: 10),),
+            Text(nom, style: TextStyle(fontSize: 10, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w700),),
           ],
         ),
       ),
-      customBorder: CircleBorder(),
+      customBorder: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(10.0),
+      ),
       onTap: () async {
         await launch(site);
       },
     );
   }
-
-  List<Widget> _ListProfUnits() {
-    List<Widget> list = List<Widget>();
-    Base.thisProf.units.forEach((element) {list.add(
-        Chip(
-          label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-          //backgroundColor: PrimaryColor,
-        )
-    );});
-    return list;
-  }
-
 }

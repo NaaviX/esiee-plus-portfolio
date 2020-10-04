@@ -215,7 +215,7 @@ class EventInfoState extends State<EventInfoPage> {
     else {
       return list(
           Icons.access_time,
-          'Du ' + formatDate(widget.event.startDate) + DateFormat(' - HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(" - HH:mm",'fr_FR').format(widget.event.startDate));
+          'Du ' + formatDate(widget.event.startDate) + DateFormat(' - HH:mm','fr_FR').format(widget.event.startDate) + ' \nAu ' + formatDate(widget.event.endDate) + DateFormat(" - HH:mm",'fr_FR').format(widget.event.endDate));
     }
   }
 

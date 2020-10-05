@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
+import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +27,13 @@ class HomeState extends State<Home> {
 
   ClubsBloc clubsBloc = ClubsBloc();
   CourseBloc courseBloc = CourseBloc();
+  EventsBloc eventBloc = EventsBloc();
 
   @override
   void initState() {
     clubsBloc.fetchAllClubs();
     courseBloc.fetchAllCourses(getGradeUnitsID().toString());
+    eventBloc.fetchAllEvents();
     super.initState();
   }
 
@@ -36,6 +41,7 @@ class HomeState extends State<Home> {
   void dispose() {
     clubsBloc.dispose();
     courseBloc.dispose();
+    eventBloc.dispose();
     super.dispose();
   }
 
@@ -56,7 +62,7 @@ class HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _Component('Mes Clubs', 0),
+                    Base.thisUser.isContributor ? _Component('Mes Clubs', 0) : Container(),
                     _Component('Mon Prochain Cours', 1),
                     _Component('Top Events', 2),
                   ],
@@ -85,10 +91,37 @@ class HomeState extends State<Home> {
             ),
             type == 0 ? _StudentClub() :
             type == 1 ? _StudentNextCurses() :
-            type == 2 ? Container() :
+            type == 2 ? _TopEvents() :
             Container()
           ],
         )
+    );
+  }
+
+  _TopEvents() {
+    List<EventModel> tops = List();
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: StreamBuilder(
+          stream: eventBloc.allEvents,
+          builder: (BuildContext context, AsyncSnapshot<List<EventModel>> events) {
+            if (events.hasData) {
+              events.data.removeWhere((event) => !event.enable || event.startDate.isBefore(DateTime.now()));
+              if(events.data.isEmpty) return Text("Aucun évenement à venir... 😭", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),);
+              tops.addAll(events.data.where((event) => event.enabledStratif));
+              tops.isEmpty ? tops.add(events.data.last) : tops=tops;
+              return _TopEventsList(tops);
+            }
+            return Container();
+          }
+      ),
+    );
+  }
+
+  _TopEventsList(List<EventModel> tops) {
+    return Card(
+      elevation: 0,
+
     );
   }
 
@@ -100,7 +133,7 @@ class HomeState extends State<Home> {
 
   _StudentNextCurses() {
     return TimerBuilder.periodic(
-        Duration(seconds: 1),
+        Duration(minutes: 1),
         builder: (context) {
           return FutureBuilder(
               future: getLocalCourses(),

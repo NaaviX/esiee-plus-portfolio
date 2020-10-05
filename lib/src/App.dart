@@ -92,8 +92,8 @@ class AppState extends State<App> {
           } else {
 //user not logged in
             return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
+              //theme: MyTheme.defaultTheme,
+              theme : MyTheme.darkTheme,
               home: LoginPage(),
               localizationsDelegates: [
                 const TranslationsDelegate(),
@@ -157,8 +157,8 @@ class JwtAuthState extends State<JwtAuth> {
       } else {
         print("hasNotdate");
         return MaterialApp(
-          theme: MyTheme.defaultTheme,
-          //theme : MyTheme.darkTheme,
+          //theme: MyTheme.defaultTheme,
+          theme : MyTheme.darkTheme,
           home: LoginPage(),
           localizationsDelegates: [
             const TranslationsDelegate(),
@@ -229,7 +229,7 @@ class _Base extends State<Base> {
       return [
         IconButton(
           icon: const Icon(Icons.info_outline),
-          padding: EdgeInsets.all(2),
+          padding: EdgeInsets.all(5),
           onPressed: () {
             _scaffoldKey.currentState.showSnackBar(
                 SnackBar(
@@ -240,13 +240,13 @@ class _Base extends State<Base> {
             );
           },
         ),
-        IconButton(
+        /*IconButton(
           icon: const Icon(Icons.today),
           padding: EdgeInsets.all(2),
           onPressed: () {
             pageController.jumpToPage(1);
           },
-        ),
+        ),*/
         SizedBox(
           width: 10,
         )

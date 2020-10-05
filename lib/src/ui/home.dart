@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timer_builder/timer_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -97,20 +98,23 @@ class HomeState extends State<Home> {
     return localEvents;
   }
 
-  //DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, 14, 00);
-
   _StudentNextCurses() {
-    return FutureBuilder(
-        future: getLocalCourses(),
-        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-          if (eventsJson.hasData) {
-            dynamic jsonData = jsonDecode(eventsJson.data);
-            List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).toList();
-            DateTime now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute-30);
-            CourseModel course = snapshot.firstWhere((course) => now.isBefore(course.start) && now.isBefore(course.end));
-            return _StudentNextCursesCard(course);
-          }
-          return Container();
+    return TimerBuilder.periodic(
+        Duration(seconds: 1),
+        builder: (context) {
+          return FutureBuilder(
+              future: getLocalCourses(),
+              builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+                if (eventsJson.hasData) {
+                  dynamic jsonData = jsonDecode(eventsJson.data);
+                  List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).toList();
+                  DateTime now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute-30);
+                  CourseModel course = snapshot.firstWhere((course) => now.isBefore(course.start) && now.isBefore(course.end));
+                  return _StudentNextCursesCard(course);
+                }
+                return Container();
+              }
+          );
         }
     );
   }
@@ -152,17 +156,24 @@ class HomeState extends State<Home> {
                     margin: EdgeInsets.only(right: 120),
                     child: Text(course.type + ' : ' + course.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),),
                   ),
-                  SizedBox(height: 10),
-                  Text('Enseigné par ' + course.teachers.replaceAll("[", '').replaceAll("]", ''), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
+                  SizedBox(height: 15),
+                  Row(
+                    children: <Widget>[
+                      Text('Enseigné par ', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
+                      Text(course.teachers.replaceAll("[", '').replaceAll("]", ''), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.white),),
+                    ],
+                  ),
                   SizedBox(height: 5),
                   Text('De ' + DateFormat("HH:mm","fr_FR").format(course.start) + ' à ' + DateFormat("HH:mm","fr_FR").format(course.end), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
+                  SizedBox(height: 5),
+                  Text(course.group.replaceAll("[", '').replaceAll("]", ''), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white),),
                 ],
               ),
             ),
             Positioned(
               top: 0,
               right: 10,
-              child: Chip(label: Container(padding: EdgeInsets.symmetric(horizontal: 2), child : Center(child: Text(diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),)), padding: EdgeInsets.all(0), ),
+              child: Chip(backgroundColor: Colors.white30,label: Container(padding: EdgeInsets.symmetric(horizontal: 2), child : Center(child: Text(diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Theme.of(context).primaryColor)),)), padding: EdgeInsets.all(0), ),
             ),
             Positioned(
               bottom: 10,
@@ -216,8 +227,6 @@ class HomeState extends State<Home> {
       ),
     );
   }
-
-
 
   _Links() {
     return Container(

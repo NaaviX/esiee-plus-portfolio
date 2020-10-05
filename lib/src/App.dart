@@ -229,7 +229,7 @@ class _Base extends State<Base> {
       return [
         IconButton(
           icon: const Icon(Icons.info_outline),
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(2),
           onPressed: () {
             _scaffoldKey.currentState.showSnackBar(
                 SnackBar(
@@ -238,6 +238,13 @@ class _Base extends State<Base> {
                   backgroundColor: Colors.blueAccent,
                 )
             );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.today),
+          padding: EdgeInsets.all(2),
+          onPressed: () {
+            pageController.jumpToPage(1);
           },
         ),
         SizedBox(
@@ -341,6 +348,7 @@ class _Base extends State<Base> {
         });
   }
 
+  Widget cal = Calendar();
   Widget _getApp() {
     _widgetOptions = <Widget>[
       Home(),

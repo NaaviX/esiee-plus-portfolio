@@ -87,13 +87,13 @@ class AppState extends State<App> {
           if (snapshot.hasData) {
             user = snapshot.data;
             //google user is logged in
-          return JwtAuth();
+            return JwtAuth();
 
           } else {
 //user not logged in
             return MaterialApp(
-              //theme: MyTheme.defaultTheme,
-              theme : MyTheme.darkTheme,
+              theme: MyTheme.defaultTheme,
+              //theme : MyTheme.darkTheme,
               home: LoginPage(),
               localizationsDelegates: [
                 const TranslationsDelegate(),
@@ -135,43 +135,43 @@ class JwtAuthState extends State<JwtAuth> {
     return StreamBuilder(
         stream: jwtBloc.token,
         builder: (context, AsyncSnapshot<String> snapshot)
-    {
-      print("connection state jwt ${snapshot.connectionState}");
-      if (snapshot.hasData) {
-        print("hasdate");
-        Base.token = snapshot.data;
-        return MaterialApp(
-          theme: MyTheme.defaultTheme,
-          //theme : MyTheme.darkTheme,
-          home: Base(),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ],
-        );
-      } else {
-        print("hasNotdate");
-        return MaterialApp(
-          //theme: MyTheme.defaultTheme,
-          theme : MyTheme.darkTheme,
-          home: LoginPage(),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ],
-        );
-      }
-    }
+        {
+          print("connection state jwt ${snapshot.connectionState}");
+          if (snapshot.hasData) {
+            print("hasdate");
+            Base.token = snapshot.data;
+            return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              //theme : MyTheme.darkTheme,
+              home: Base(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+            );
+          } else {
+            print("hasNotdate");
+            return MaterialApp(
+              //theme: MyTheme.defaultTheme,
+              theme : MyTheme.darkTheme,
+              home: LoginPage(),
+              localizationsDelegates: [
+                const TranslationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', ''),
+                const Locale('fr', ''),
+              ],
+            );
+          }
+        }
     );
   }
 }
@@ -197,7 +197,7 @@ class _Base extends State<Base> {
   final log = Logger('BASE');
 
   PageController pageController =
-      PageController(initialPage: Base.selectedIndex);
+  PageController(initialPage: Base.selectedIndex);
 
   List<Widget> _widgetOptions;
 
@@ -215,13 +215,16 @@ class _Base extends State<Base> {
     if (Base.selectedIndex == 0) {
       return [
         Container(
-          padding: EdgeInsets.all(15),
-          child: Image.asset(
+          //padding: EdgeInsets.all(15),
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child:
+          CircleAvatar(backgroundImage: NetworkImage(user.photoUrl), radius: 20,),
+          /*Image.asset(
             'assets/esieeplus/Logo.webp',
-          ),
+          ),*/
         ),
         SizedBox(
-          width: 10,
+          width: 20,
         )
       ];
     }
@@ -358,6 +361,10 @@ class _Base extends State<Base> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.dehaze, size: 30,),
+              onPressed: () => _scaffoldKey.currentState.openDrawer(),
+            ),
             brightness: Brightness.light,
             title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex),//Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
             actions: actionButton()),
@@ -373,15 +380,15 @@ class _Base extends State<Base> {
   Widget _getDrawer() {
     return Drawer(
         child: ListView(children: <Widget>[
-      ListTile(
-        leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-        title: Text(
-          user.displayName,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(user.email),
-      ),
-      /*ListTile(
+          ListTile(
+            leading: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+            title: Text(
+              user.displayName,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(user.email),
+          ),
+          /*ListTile(
             leading: Icon(Icons.settings),
             title: new Text("Paramètres"),
             onTap: () {
@@ -390,23 +397,23 @@ class _Base extends State<Base> {
               }));
             },
           ),*/
-      ListTile(
-        leading: Icon(Icons.power_settings_new),
-        title: new Text(Translations.of(context).text("deco")),
-        onTap: () async {
-          Navigator.of(context).pop();
-          signOutGoogle();
-          Base.selectedIndex = 0;
-        },
-      ),
-      _adminMenu(),
-      _modoMenu(),
-      _trezMenu(),
-      _logMenu(),
-      _clubMenu(),
-      _studentMenu(),
-      _profMenu(),
-    ]));
+          ListTile(
+            leading: Icon(Icons.power_settings_new),
+            title: new Text(Translations.of(context).text("deco")),
+            onTap: () async {
+              Navigator.of(context).pop();
+              signOutGoogle();
+              Base.selectedIndex = 0;
+            },
+          ),
+          _adminMenu(),
+          _modoMenu(),
+          _trezMenu(),
+          _logMenu(),
+          _clubMenu(),
+          _studentMenu(),
+          _profMenu(),
+        ]));
   }
 
   Widget _profMenu() {
@@ -579,19 +586,19 @@ class _Base extends State<Base> {
           return connected.hasData && connected.data
               ? ListTile(leading: Icon(icon), title: Text(title), onTap: onTap)
               : ListTile(
-                  leading: Icon(icon, color: Colors.grey),
-                  title: Text(
-                    title,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  onTap: () {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text("Non disponible hors connexion"),
-                      backgroundColor: Colors.grey,
-                    ));
-                    Navigator.pop(context);
-                  });
+              leading: Icon(icon, color: Colors.grey),
+              title: Text(
+                title,
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text("Non disponible hors connexion"),
+                  backgroundColor: Colors.grey,
+                ));
+                Navigator.pop(context);
+              });
         });
   }
 

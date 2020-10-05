@@ -62,6 +62,7 @@ class HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    SizedBox(height: 5,),
                     Base.thisUser.isContributor ? _Component('Mes Clubs', 0) : Container(),
                     _Component('Mon Prochain Cours', 1),
                     _Component('Top Events', 2),

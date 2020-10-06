@@ -7,10 +7,12 @@ import 'package:rxdart/rxdart.dart';
 class StudentsBloc {
   final _repository = Repository();
   final _studentsFetcher = PublishSubject<List<StudentModel>>();
+  final _studentsClubFetcher = PublishSubject<List<ClubModel>>();
   final _studentFetcher = PublishSubject<StudentModel>();
 
   Observable<List<StudentModel>> get allStudents => _studentsFetcher.stream;
   Observable<StudentModel> get thisStudent => _studentFetcher.stream;
+  Observable<List<ClubModel>> get thisStudentClubs => _studentsClubFetcher.stream;
 
   fetchAllStudents() async {
     List<StudentModel> studentmodel = await _repository.fetchAllStudents();
@@ -35,10 +37,11 @@ class StudentsBloc {
   fetchAllStudentClubs(StudentModel student) async {
     List<ClubModel> studentClubs=await _repository.fetchAllClubs();
     studentClubs.removeWhere((element) => !element.students.contains(student));
-    return studentClubs;
+    _studentsClubFetcher.sink.add(studentClubs);
   }
 
   dispose() {
+    _studentsClubFetcher.close();
     _studentsFetcher.close();
     _studentFetcher.close();
   }

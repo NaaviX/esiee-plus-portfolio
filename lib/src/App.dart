@@ -3,11 +3,13 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/ColorMean.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/units_list.dart';
+import 'package:bde_esiee_mobile/src/ui/profile.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/contributor_verificator.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
@@ -213,17 +215,40 @@ class _Base extends State<Base> {
   ];
 
   List<Widget> actionButton() {
+    ColorDetect c = ColorDetect(user.photoUrl);
     if (Base.selectedIndex == 0) {
       return [
-        Container(
-          //padding: EdgeInsets.all(15),
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child:
-          CircleAvatar(backgroundImage: NetworkImage(user.photoUrl), radius: 20,),
-          /*Image.asset(
+        FutureBuilder(
+            future: c.getColor(),
+            builder: (_, AsyncSnapshot<Color> data){
+              if (data.connectionState==ConnectionState.done) {
+                Color color = data.data;
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profile(color)
+                  ),
+                ),
+              child: Container(
+              //padding: EdgeInsets.all(15),
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Hero(
+              tag: "photo",
+              child: CircleAvatar(
+              backgroundImage: NetworkImage(user.photoUrl),
+              radius: 20,
+              )),
+              /*Image.asset(
             'assets/esieeplus/Logo.webp',
           ),*/
-        ),
+              ),
+              );
+              }
+              return CircleAvatar(
+                backgroundColor: Colors.blueAccent,
+                radius: 20,
+              );
+            }),
         SizedBox(
           width: 20,
         )

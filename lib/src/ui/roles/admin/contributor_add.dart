@@ -84,17 +84,19 @@ class ContributorAddState extends State<ContributorAdd> {
   Widget _popupListItemBuilder(StudentModel item) {
     if (!item.isContributor) {
       return ListTile(
+          onTap: () {
+            widget.parent.addStudentToContributor(item);
+            widget.parent.currentFocus.unfocus();
+          },
           subtitle: Text(
             item.firstname + " " + item.lastname + "\n" +
                 item.mailEsiee.toString(),
           ),
           trailing: Builder(
               builder: (context) => IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green,),
-            onPressed: () {
-              widget.parent.addStudentToContributor(item);
-              widget.parent.currentFocus.unfocus();
-            },))
+                  icon: Icon(Icons.add_circle_outline, color: Colors.green,)
+              )
+          )
       );
     }
     return Column();

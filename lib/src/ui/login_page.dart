@@ -104,11 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() => _isLoading = true);
                             user = await signInWithGoogle();
                             setState(() => _isLoading = false);
-                            if (user != null) {
-                              if(!user.email.endsWith("esiee.fr")) {
-                                signOutGoogle();
-                              }
-                            } else {
+                            if (user == null) {
                               signOutGoogle();
                             }
                           }

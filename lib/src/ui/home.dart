@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +31,15 @@ class HomeState extends State<Home> {
   ClubsBloc clubsBloc = ClubsBloc();
   CourseBloc courseBloc = CourseBloc();
   EventsBloc eventBloc = EventsBloc();
+  StudentsBloc studentBloc = StudentsBloc();
+  List<ClubModel> studentClub = List();
 
   @override
   void initState() {
     clubsBloc.fetchAllClubs();
     courseBloc.fetchAllCourses(getGradeUnitsID().toString());
     eventBloc.fetchAllEvents();
+    if(Base.thisUser != null) studentBloc.fetchAllStudentClubs(Base.thisUser);
     super.initState();
   }
 
@@ -63,7 +69,14 @@ class HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 5,),
-                    Base.thisUser.isContributor ? _Component('Mes Clubs', 0) : Container(),
+                    StreamBuilder(
+                        stream: studentBloc.thisStudentClubs,
+                        builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
+                          return snapshot.hasData
+                              ? _Component('Mes Clubs', 0, snapshot.data)
+                              : Container();
+                        }
+                    ),
                     _Component('Mon Prochain Cours', 1),
                     _Component('Top Events', 2),
                   ],
@@ -80,7 +93,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  _Component(String title, int type) {
+  _Component(String title, int type, [List<ClubModel> clubs]) {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -90,7 +103,7 @@ class HomeState extends State<Home> {
               margin: EdgeInsets.only(left: 15),
               child: Text(title, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.w900),),
             ),
-            type == 0 ? _StudentClub() :
+            type == 0 ? _StudentClub(clubs) :
             type == 1 ? _StudentNextCurses() :
             type == 2 ? _TopEvents() :
             Container()
@@ -172,22 +185,29 @@ class HomeState extends State<Home> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Card(
-        elevation: 0,
+        elevation: 3,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0))
         ),
-        color: Theme.of(context).primaryColor.withOpacity(0.7),
+        //color: Theme.of(context).primaryColor.withOpacity(0.7),
         child: Stack(
           children: <Widget>[
             Container(
-              height: 150,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [Colors.blueAccent.withOpacity(0.8), Colors.blueAccent],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20.0)
+              ),
+              constraints: BoxConstraints(minHeight: 150.0),
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(right: 120),
+                    margin: EdgeInsets.only(right: 125),
                     child: Text(course.type + ' : ' + course.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),),
                   ),
                   SizedBox(height: 15),
@@ -228,88 +248,81 @@ class HomeState extends State<Home> {
     );
   }
 
-  _StudentClub() {
-    final List<int> idClub = [100, 106, 1, 2, 3];
+  _StudentClub(List<ClubModel> clubs) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.0),
-      height: 80,
-      //child:
-      child: StreamBuilder(
-          stream: clubsBloc.allClubs,
-          builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-            return snapshot.hasData ?
-            ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: idClub.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.blueGrey.withOpacity(0.2),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            snapshot.data.firstWhere((club) => club.idClubRef == idClub[index]).urlPhoto),
-                        backgroundColor: Colors.white,
-                        radius: 35,
-                      ),
-                      radius: 38,
-                    ),
-                  );
-                }
-            ) : Container();
-          }
-      ),
-    );
-  }
+        margin: EdgeInsets.symmetric(vertical: 10.0),
+        height: 80,
+        //child:
+        child:
+        ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: clubs.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: CircleAvatar(
+                  backgroundColor: Colors.blueGrey.withOpacity(0.2),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(clubs[index].urlPhoto),
+                    backgroundColor: Colors.white,
+                    radius: 35,
+                  ),
+                  radius: 38,
+                ),
+              );
+            }
+        )
+  );
+}
 
-  _Links() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      //height: 62,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
+_Links() {
+  return Container(
+    margin: EdgeInsets.only(bottom: 10),
+    //height: 62,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
+        _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
+        _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
+        _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
+      ],
+    ),
+  );
+}
+
+_homeStudentUsefulLinks(String nom, String site, String image,) {
+  return InkWell(
+    child: Container(
+      padding: EdgeInsets.all(2),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
-          _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
-          _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
-          _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              width: 40.0,
+              height: 40.0,
+              alignment: Alignment.center,
+              decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                image: new DecorationImage(
+                  fit: BoxFit.scaleDown,
+                  image:
+                  new NetworkImage(image),
+                ),
+              )
+          ),
+          Text(nom, style: TextStyle(fontSize: 10, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w700),),
         ],
       ),
-    );
-  }
-
-  _homeStudentUsefulLinks(String nom, String site, String image,) {
-    return InkWell(
-      child: Container(
-        padding: EdgeInsets.all(2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                width: 40.0,
-                height: 40.0,
-                alignment: Alignment.center,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    fit: BoxFit.scaleDown,
-                    image:
-                    new NetworkImage(image),
-                  ),
-                )
-            ),
-            Text(nom, style: TextStyle(fontSize: 10, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w700),),
-          ],
-        ),
-      ),
-      customBorder: RoundedRectangleBorder(
-        borderRadius: new BorderRadius.circular(10.0),
-      ),
-      onTap: () async {
-        await launch(site);
-      },
-    );
-  }
+    ),
+    customBorder: RoundedRectangleBorder(
+      borderRadius: new BorderRadius.circular(10.0),
+    ),
+    onTap: () async {
+      await launch(site);
+    },
+  );
+}
 }

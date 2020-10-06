@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-class createEventForm extends StatefulWidget {
+class CreateEventForm extends StatefulWidget {
   EventModel event;
 
   BuildContext context;
@@ -24,7 +24,7 @@ class createEventForm extends StatefulWidget {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  createEventForm({this.event}) {
+  CreateEventForm({this.event}) {
     if (event != null) {
       this.event = this.event;
       this.titre = TextEditingController(text: this.event.name);
@@ -55,10 +55,10 @@ class createEventForm extends StatefulWidget {
   }
 
   @override
-  _createEventFormState createState() => _createEventFormState();
+  CreateEventFormState createState() => CreateEventFormState();
 }
 
-class _createEventFormState extends State<createEventForm> {
+class CreateEventFormState extends State<CreateEventForm> {
   @override
   void initState() {
     super.initState();

@@ -44,6 +44,11 @@ class StockModel {
   }
 
   @override
+  bool operator ==(other) {
+    return idStock == other.idStock;
+  }
+
+  @override
   int get hashCode =>
       idStock.hashCode ^
       date.hashCode ^

@@ -15,7 +15,7 @@ class ContributorManager extends StatefulWidget {
 }
 
 class ContributorManagerState extends State<ContributorManager> {
-  StudentsBloc studentsBloc = StudentsBloc();
+  StudentsBlocOld studentsBloc = StudentsBlocOld();
 
   final searchController = TextEditingController();
 

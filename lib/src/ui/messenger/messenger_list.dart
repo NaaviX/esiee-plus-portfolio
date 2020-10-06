@@ -48,6 +48,7 @@ class MessengerListState extends State<MessengerList> {
       links.add(MessengerClubList());
       links.add(MessengerProfList());
     }
+    super.initState();
   }
 
   @override
@@ -76,8 +77,7 @@ class MessengerClubList extends StatefulWidget {
   }
 }
 
-class MessengerClubListState extends State<MessengerClubList>
-    with AutomaticKeepAliveClientMixin {
+class MessengerClubListState extends State<MessengerClubList> {
   ClubsBloc clubsBloc = ClubsBloc();
 
   @override
@@ -127,9 +127,6 @@ class MessengerClubListState extends State<MessengerClubList>
       },
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class MessengerStudentList extends StatefulWidget {
@@ -139,9 +136,8 @@ class MessengerStudentList extends StatefulWidget {
   }
 }
 
-class MessengerStudentListState extends State<MessengerStudentList>
-    with AutomaticKeepAliveClientMixin {
-  StudentsBloc studentsBloc = StudentsBloc();
+class MessengerStudentListState extends State<MessengerStudentList> {
+  StudentsBlocOld studentsBloc = StudentsBlocOld();
 
   final searchController = TextEditingController();
 
@@ -245,8 +241,6 @@ class MessengerStudentListState extends State<MessengerStudentList>
         ));
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class MessengerProfList extends StatefulWidget {
@@ -256,8 +250,7 @@ class MessengerProfList extends StatefulWidget {
   }
 }
 
-class MessengerProfListState extends State<MessengerProfList>
-    with AutomaticKeepAliveClientMixin {
+class MessengerProfListState extends State<MessengerProfList> {
   ProfsBloc profsBloc = ProfsBloc();
 
   final searchController = TextEditingController();
@@ -358,6 +351,4 @@ class MessengerProfListState extends State<MessengerProfList>
         ));
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -1,6 +1,12 @@
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/role_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/student_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
@@ -24,12 +30,19 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:logging/logging.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/jwt_bloc.dart';
 import 'blocs/roles_bloc.dart';
+import 'blocs/roles_event.dart';
+import 'blocs/roles_state.dart';
+import 'blocs/stock_bloc.dart';
+import 'blocs/student_event.dart';
+import 'blocs/student_state.dart';
 import 'forceUpdate.dart';
 import 'models/club_model.dart';
 import 'models/prof_model.dart';
@@ -121,12 +134,14 @@ class JwtAuthState extends State<JwtAuth> {
   @override
   void initState() {
     jwtBloc.authenticate(user.email, user.uid);
+    super.initState();
   }
 
 
   @override
   void dispose() {
     jwtBloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,10 +154,30 @@ class JwtAuthState extends State<JwtAuth> {
       if (snapshot.hasData) {
         print("hasdate");
         Base.token = snapshot.data;
+        final RoleRepository roleRepository = RoleRepository(
+          roleApiProvider: RoleApiProvider(
+            client: Client(),
+          ),
+        );
+        final StudentRepository studentRepository = StudentRepository(
+          studentApiProvider: StudentApiProvider(
+            client: Client(),
+          ),
+        );
+
         return MaterialApp(
           theme: MyTheme.defaultTheme,
           //theme : MyTheme.darkTheme,
-          home: Base(),
+          home: MultiBlocProvider(
+              providers: [
+                BlocProvider<RolesBloc>(
+                  create: (BuildContext context) => RolesBloc(roleRepository: roleRepository),
+                ),
+                BlocProvider<StudentsBloc>(
+                  create: (BuildContext context) => StudentsBloc(studentRepository: studentRepository),
+                ),
+              ],
+              child: Base()),
           localizationsDelegates: [
             const TranslationsDelegate(),
             GlobalMaterialLocalizations.delegate,
@@ -175,7 +210,7 @@ class JwtAuthState extends State<JwtAuth> {
   }
 }
 
-class Base extends StatefulWidget {
+class Base extends StatefulWidget{
   static int selectedIndex = 0;
   static List<RoleModel> allRoles;
   static StudentModel thisUser;
@@ -188,10 +223,8 @@ class Base extends StatefulWidget {
 }
 
 class _Base extends State<Base> {
-  final studentBloc = StudentsBloc();
   final clubsBloc = ClubsBloc();
   final profsBloc = ProfsBloc();
-  RolesBloc rolesBloc = RolesBloc();
 
   final log = Logger('BASE');
 
@@ -254,8 +287,10 @@ class _Base extends State<Base> {
 
   @override
   void initState() {
-    rolesBloc.fetchAllRoles();
-    studentBloc.fetchStudent(user.email);
+    BlocProvider.of<RolesBloc>(context)
+        .add(RolesRequested());
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentRequested(email: user.email));
     clubsBloc.fetchClub(user.email);
     profsBloc.fetchProf(user.email);
     super.initState();
@@ -263,15 +298,17 @@ class _Base extends State<Base> {
 
   @override
   void dispose() {
-    rolesBloc.dispose();
-    studentBloc.dispose();
     clubsBloc.dispose();
     profsBloc.dispose();
     super.dispose();
   }
 
   void _onItemTapped(int index) {
-    pageController.jumpToPage(index);
+    pageController.animateToPage(
+      index,
+      curve: Curves.bounceIn,
+      duration: Duration(milliseconds: 100),
+    );
   }
 
   void _onPageChanged(int index) {
@@ -280,6 +317,8 @@ class _Base extends State<Base> {
     });
   }
 
+  int i = 0;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -287,56 +326,85 @@ class _Base extends State<Base> {
       DeviceOrientation.portraitDown,
     ]);
     log.fine("base");
-    return StreamBuilder(
-        stream: rolesBloc.allRoles,
-        builder: (context, AsyncSnapshot<List<RoleModel>> roleSnapshot) {
-          Base.allRoles = roleSnapshot.data;
-          return StreamBuilder(
-            stream: studentBloc.thisStudent,
-            builder: (context, AsyncSnapshot<StudentModel> snapshot) {
-              print("connection state student ${snapshot.connectionState}");
-              if (snapshot.hasData) {
-                //isStudent
-                log.fine("student");
-                Base.thisUser = snapshot.data;
-                return _getApp();
-              } else {
-                //isClub
-                return StreamBuilder(
-                  stream: clubsBloc.thisClub,
-                  builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-                    print("connection state club ${snapshot.connectionState}");
-                    if (snapshot.hasData) {
-                      log.fine("club");
-                      Base.thisClub = snapshot.data;
-                      return _getApp();
-                    } else {
-                      //C'est un prof
-                      return StreamBuilder(
-                        stream: profsBloc.thisProf,
-                        builder: (context, AsyncSnapshot<ProfModel> snapshot) {
-                          print(
-                              "connection state prof ${snapshot.connectionState}");
-                          if (snapshot.hasData) {
-                            log.fine("prof");
-                            Base.thisProf = snapshot.data;
-                            return _getApp();
-                          } else {
-                            log.fine("loading");
-                            return Container(
-                              color: Theme.of(context).backgroundColor,
-                              child: LoginPage(),
-                            );//Center(child: Text("Loading"));//new CircularProgressIndicator());
-                          }
-                        },
-                      );
-                    }
-                  },
-                );
-              }
-            },
-          );
-        });
+
+
+
+    return BlocBuilder<RolesBloc, RolesState>(
+    builder: (context, state) {
+      if (state is RolesInitial) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is RolesLoadInProgress) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is RolesLoadSuccess) {
+        Base.allRoles = state.roles;
+        return BlocBuilder<StudentsBloc, StudentState>(
+          buildWhen: (previous, current) {
+            return false;
+          },
+          builder: (context, state) {
+            if (state is StudentInitial) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is StudentLoadInProgress) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is StudentLoadSuccess) {
+              //isStudent
+              log.fine("student");
+              Base.thisUser = state.student;
+              return _getApp();
+            }
+            if (state is StudentLoadFailure) {
+              //isClub
+              return StreamBuilder(
+                stream: clubsBloc.thisClub,
+                builder: (context, AsyncSnapshot<ClubModel> snapshot) {
+                  print("connection state club ${snapshot.connectionState}");
+                  if (snapshot.hasData) {
+                    log.fine("club");
+                    Base.thisClub = snapshot.data;
+                    return _getApp();
+                  } else {
+                    //C'est un prof
+                    return StreamBuilder(
+                      stream: profsBloc.thisProf,
+                      builder: (context, AsyncSnapshot<ProfModel> snapshot) {
+                        print(
+                            "connection state prof ${snapshot.connectionState}");
+                        if (snapshot.hasData) {
+                          log.fine("prof");
+                          Base.thisProf = snapshot.data;
+                          return _getApp();
+                        } else {
+                          log.fine("loading");
+                          return Container(
+                            color: Theme.of(context).backgroundColor,
+                            child: LoginPage(),
+                          );//Center(child: Text("Loading"));//new CircularProgressIndicator());
+                        }
+                      },
+                    );
+                  }
+                },
+              );
+            }
+            return Container();
+          },
+        );
+      }
+      if (state is RolesLoadFailure) {
+        return Text(
+          'Something went wrong!',
+          style: TextStyle(color: Colors.red),
+        );
+      }
+      return Container();
+    }
+    );
+
+
   }
 
   Widget _getApp() {
@@ -742,7 +810,15 @@ class _Base extends State<Base> {
           title: Text("Réserve"),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Stock();
+              final StockRepository stockRepository = StockRepository(
+                stockApiProvider: StockApiProvider(
+                  client: Client(),
+                ),
+              );
+              return BlocProvider(
+                  create: (context) =>
+                  StockBloc(stockRepository: stockRepository),
+              child: Stocks(stockRepository: stockRepository));
             }));
           },
         )

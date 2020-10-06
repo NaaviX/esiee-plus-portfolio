@@ -1,9 +1,10 @@
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
+import 'package:bde_esiee_mobile/src/models/user_model.dart';
 import 'package:logging/logging.dart';
 
 import 'class_model.dart';
 
-class ProfModel {
+class ProfModel extends UserModel {
   final log = Logger('ProfModel');
 
   int idProf;

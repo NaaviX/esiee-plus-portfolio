@@ -11,7 +11,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class addProfForm extends StatefulWidget {
+class AddProfForm extends StatefulWidget {
   ProfModel prof;
 
   BuildContext context;
@@ -25,7 +25,7 @@ class addProfForm extends StatefulWidget {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  addProfForm({this.prof, AddProfState parent} ) {
+  AddProfForm({this.prof, AddProfState parent} ) {
     if (this.prof != null) {
       this.prof = this.prof;
       this.firstname = TextEditingController(text: this.prof.firstname);
@@ -48,10 +48,10 @@ class addProfForm extends StatefulWidget {
   }
 
   @override
-  addProfFormState createState() => addProfFormState();
+  AddProfFormState createState() => AddProfFormState();
 }
 
-class addProfFormState extends State<addProfForm> {
+class AddProfFormState extends State<AddProfForm> {
 
   UnitBloc units = UnitBloc();
 
@@ -185,7 +185,7 @@ class addProfFormState extends State<addProfForm> {
     );
   }
 
-  _downloadImage() =>
+  /*_downloadImage() =>
       ButtonTheme(
           minWidth: MediaQuery
               .of(context)
@@ -211,16 +211,16 @@ class addProfFormState extends State<addProfForm> {
             ),
             color: _verifImage(),
           )
-      );
+      );*/
 
   File image;
 
-  Color _verifImage() {
+  /*Color _verifImage() {
     if (image == null)
       return Colors.grey.withOpacity(0.7);
     else
       return Colors.green.withOpacity(0.7);
-  }
+  }*/
 
   Future chooseFile() async {
     image = null;
@@ -240,7 +240,7 @@ class addProfFormState extends State<addProfForm> {
     nomFichier = widget.lastname.text+widget.firstname.text.substring(0, 0);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child('prof/${nomFichier}');
+        .child('prof/$nomFichier');
     StorageUploadTask uploadTask = storageReference.putFile(image);
     await uploadTask.onComplete;
     print('File Uploaded');

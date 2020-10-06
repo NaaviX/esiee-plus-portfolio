@@ -1,20 +1,27 @@
+import 'package:bde_esiee_mobile/src/blocs/roles_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/roles_state.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
+import 'package:bde_esiee_mobile/src/resources/role_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
+class RolesBloc extends Bloc<RolesEvent, RolesState> {
+  final RoleRepository roleRepository;
 
-class RolesBloc {
-  final _repository = Repository();
-  final _rolesFetcher = PublishSubject<List<RoleModel>>();
+  RolesBloc({@required this.roleRepository})
+      : assert(roleRepository != null),
+        super(RolesInitial());
 
-  Observable<List<RoleModel>> get allRoles => _rolesFetcher.stream;
-
-  fetchAllRoles() async {
-    List<RoleModel> rolemodel = await _repository.fetchAllRoles();
-    _rolesFetcher.sink.add(rolemodel);
-  }
-
-  dispose() {
-    _rolesFetcher.close();
+  @override
+  Stream<RolesState> mapEventToState(RolesEvent event) async* {
+    if (event is RolesRequested) {
+      yield RolesLoadInProgress();
+      try {
+        final List<RoleModel> roles = await roleRepository.fetchRoles();
+        yield RolesLoadSuccess(roles: roles);
+      } catch (_) {
+        yield RolesLoadFailure();
+      }
+    }
   }
 }

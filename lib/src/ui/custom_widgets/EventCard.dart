@@ -13,8 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EventCard extends StatefulWidget {
 
-  @required BuildContext context;
-  @required EventModel event;
+  @required final BuildContext context;
+  @required final EventModel event;
   bool moderation;
 
   EventCard(this.event, this.context, {this.moderation}) {
@@ -59,7 +59,9 @@ class EventCardState extends State<EventCard> {
         builder: (context, AsyncSnapshot<ClubModel> snapshot) {
           return GestureDetector(
               onTap: () {
-                snapshot.hasData ? pushEventInfo(event, snapshot.data) : null;
+                if(snapshot.hasData) {
+                  pushEventInfo(event, snapshot.data);
+                }
               },
               child: Container(
                 child: Card(

@@ -23,8 +23,6 @@ class ClubInfoPage extends StatefulWidget{
 }
 
 class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveClientMixin*/ {
-
-  @override
   final events = EventsBloc();
 
   int nbrEvent = 0;
@@ -369,7 +367,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
       if(snapshot.data.length != null)
         for(int i = 0; i<snapshot.data.length; i++) {
           EventModel event = snapshot.data[i];
-          bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
+          //bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
           bool dateInf = event.startDate.isAfter(DateTime(DateTime.now().year-1, 8, 15));
           if(event.enable && dateInf && event.idClubRef == widget.club.idClubRef) nbrEvent++;
         }

@@ -18,12 +18,12 @@ class EventsBloc {
   }
 
   deleteEvent(EventModel event) async {
-    await _repository.deleteEvent(event);
+    _repository.deleteEvent(event);
 
   }
 
   addSaveEvent(EventModel event) async {
-    EventModel eventmodel = await _repository.addSaveEvent(event);
+    await _repository.addSaveEvent(event);
   }
 
   dispose() {

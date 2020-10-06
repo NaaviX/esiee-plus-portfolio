@@ -15,12 +15,13 @@ class AddProf extends StatefulWidget {
 class AddProfState extends State<AddProf> {
 
   final bloc = ProfsBloc();
-  addProfForm form;
+  AddProfForm form;
 
   @override
   void initState() {
-    (widget.thisProf != null) ? form = addProfForm(prof: widget.thisProf, parent: this)
-        : form = addProfForm(parent: this);
+    (widget.thisProf != null) ? form = AddProfForm(prof: widget.thisProf, parent: this)
+        : form = AddProfForm(parent: this);
+    super.initState();
   }
 
   @override Widget build(BuildContext context) {

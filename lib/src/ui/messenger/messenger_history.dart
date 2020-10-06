@@ -23,7 +23,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
   List<String> groupChatIds = new List();
   List<String> discussions = new List();
 
-  StudentsBloc studentsBloc = StudentsBloc();
+  StudentsBlocOld studentsBloc = StudentsBlocOld();
   ClubsBloc clubsBloc = ClubsBloc();
   ProfsBloc profsBloc = ProfsBloc();
 
@@ -209,5 +209,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
     studentsBloc.fetchAllStudents();
     clubsBloc.fetchAllClubs();
     profsBloc.fetchAllProfs();
+    super.initState();
   }
 }

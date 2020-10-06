@@ -8,8 +8,8 @@ import 'package:intl/intl.dart';
 
 class FairpayLogCard extends StatefulWidget {
 
-  @required BuildContext context;
-  @required FairpayLogModel log;
+  @required final BuildContext context;
+  @required final FairpayLogModel log;
 
   FairpayLogCard(this.log, this.context);
 
@@ -124,5 +124,6 @@ class FairpayLogCardState extends State<FairpayLogCard> {
       case "Subvention":
         return Colors.orange;
     }
+    return Colors.grey;
   }
 }

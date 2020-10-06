@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 class CourseInfoPage extends StatefulWidget {
 
-  CourseModel course;
+  final CourseModel course;
   CourseInfoPage({this.course});
 
   @override

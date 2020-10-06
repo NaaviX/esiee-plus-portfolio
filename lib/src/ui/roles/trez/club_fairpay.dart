@@ -28,18 +28,18 @@ class Fairpay extends StatefulWidget {
 }
 
 class FairpayState extends State<Fairpay>{
-  final Logbloc = FairpayLogBloc();
+  final logbloc = FairpayLogBloc();
   int filtre = 0;
 
   @override
   void initState() {
     super.initState();
-    Logbloc.fetchClubLogs(widget.club.idClubRef.toString());
+    logbloc.fetchClubLogs(widget.club.idClubRef.toString());
   }
 
   @override
   void dispose() {
-    Logbloc.dispose();
+    logbloc.dispose();
     super.dispose();
   }
 
@@ -47,13 +47,13 @@ class FairpayState extends State<Fairpay>{
 
   @override
   Widget build(BuildContext context) {
-    Logbloc.fetchClubLogs(widget.club.idClubRef.toString());
+    logbloc.fetchClubLogs(widget.club.idClubRef.toString());
     return Scaffold(
       appBar: AppBar(
         title: widget.isTrez ? Text(widget.club.name) : Text("Fairpay"),
       ),
       body: StreamBuilder(
-          stream: Logbloc.ClubFairpayLog,
+          stream: logbloc.clubFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Container(
@@ -145,7 +145,7 @@ class FairpayState extends State<Fairpay>{
             ),
           ],
         ),
-        onPressed: () => FairpayForm(this, text, widget.club),/*showDialog<void>(
+        onPressed: () => fairpayForm(this, text, widget.club),/*showDialog<void>(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {

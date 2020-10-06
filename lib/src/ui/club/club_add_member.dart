@@ -1,9 +1,13 @@
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:search_widget/search_widget.dart';
 
@@ -22,7 +26,6 @@ class ClubAddMember extends StatefulWidget {
 }
 
 class ClubAddMemberState extends State<ClubAddMember> {
-  StudentsBloc studentsBloc = StudentsBloc();
 
   ClubsBloc clubsBloc = ClubsBloc();
 
@@ -37,24 +40,30 @@ class ClubAddMemberState extends State<ClubAddMember> {
 
   @override
   void initState() {
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentListRequested());
     super.initState();
-    studentsBloc.fetchAllStudents();
   }
 
   @override
   void dispose() {
-    studentsBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-          stream: studentsBloc.allStudents,
-          builder: (context, AsyncSnapshot<List<StudentModel>> snapshot) {
-            if (snapshot.hasData) {
+    return BlocBuilder<StudentsBloc, StudentState>(
+      builder: (context, state) {
+        if (state is StudentListInitial) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is StudentListLoadInProgress) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is StudentListLoadSuccess) {
+          List studentList = state.students;
               for(StudentModel student in Base.thisClub.students) {
-                snapshot.data.removeWhere((element) => element.idStudent == student.idStudent);
+                studentList.removeWhere((element) => element.idStudent == student.idStudent);
               }
               return Form(
                 key: _formKey,
@@ -65,7 +74,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
                         padding: EdgeInsets.all(8.0),
                         child: SearchWidget<StudentModel>(
 
-                          dataList: snapshot.data,
+                          dataList: studentList,
                           hideSearchBoxWhenItemSelected: false,
                           listContainerHeight:
                               MediaQuery.of(context).size.height / 4,
@@ -106,10 +115,13 @@ class ClubAddMemberState extends State<ClubAddMember> {
                   ],
                 ),
               );
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
+            } if (state is StudentListLoadFailure) {
+          return Text(
+            'Something went wrong!',
+            style: TextStyle(color: Colors.red),
+          );
+        }
+        return Container();
           },
         );
   }

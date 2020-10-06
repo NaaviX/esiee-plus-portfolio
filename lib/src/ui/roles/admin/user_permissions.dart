@@ -51,8 +51,7 @@ class ClubPermissions extends StatefulWidget {
   }
 }
 
-class ClubPermissionsState extends State<ClubPermissions>
-    with AutomaticKeepAliveClientMixin {
+class ClubPermissionsState extends State<ClubPermissions> {
   ClubsBloc clubsBloc = ClubsBloc();
 
   @override
@@ -165,8 +164,6 @@ class ClubPermissionsState extends State<ClubPermissions>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class StudentPermissions extends StatefulWidget {
@@ -176,9 +173,8 @@ class StudentPermissions extends StatefulWidget {
   }
 }
 
-class StudentPermissionsState extends State<StudentPermissions>
-    with AutomaticKeepAliveClientMixin {
-  StudentsBloc studentsBloc = StudentsBloc();
+class StudentPermissionsState extends State<StudentPermissions> {
+  StudentsBlocOld studentsBloc = StudentsBlocOld();
 
   final searchController = TextEditingController();
 
@@ -372,6 +368,4 @@ class StudentPermissionsState extends State<StudentPermissions>
         ));
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

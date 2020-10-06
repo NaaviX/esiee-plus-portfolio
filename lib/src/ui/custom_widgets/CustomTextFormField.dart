@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
-  @required String label, hint;
+  @required final String label, hint;
 
-  @required IconData icon;
-  @required TextEditingController controller;
-  FocusNode focusNode;
+  @required final IconData icon;
+  @required final TextEditingController controller;
+  final FocusNode focusNode;
 
-  String type ;
+  final String type ;
   TextStyle textstyle;
   int maxlines;
   TextInputType keyboard;
   bool requiredField;
-  bool isPositive;
+  final bool isPositive;
   int maxLength;
 
   InputDecoration decoration;

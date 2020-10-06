@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../App.dart';
 
 class EventApiProvider {

@@ -28,6 +28,6 @@ class ProfsBloc {
   }
 
   addSaveProf(ProfModel prof) async {
-    ProfModel profmodel = await _repository.addSaveProf(prof);
+    await _repository.addSaveProf(prof);
   }
 }

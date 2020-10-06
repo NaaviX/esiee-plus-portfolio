@@ -15,7 +15,7 @@ class TreasuryManager extends StatefulWidget {
 
 class TreasuryManagerState extends State<TreasuryManager>{
   final clubsBloc = ClubsBloc();
-  final Logbloc = FairpayLogBloc();
+  final logbloc = FairpayLogBloc();
 
   List<ClubModel> clubList = List();
 
@@ -23,13 +23,13 @@ class TreasuryManagerState extends State<TreasuryManager>{
   void initState() {
     super.initState();
     clubsBloc.fetchAllClubs();
-    Logbloc.fetchAllLogs();
+    logbloc.fetchAllLogs();
   }
 
   @override
   void dispose() {
     clubsBloc.dispose();
-    Logbloc.dispose();
+    logbloc.dispose();
     super.dispose();
   }
 
@@ -40,7 +40,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
           title: Text("Gestion Trésorerie"),
         ),
         body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
+          stream: logbloc.allFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(

@@ -16,7 +16,7 @@ class TreasuryManager extends StatefulWidget {
 
 class TreasuryManagerState extends State<TreasuryManager>{
   final clubsBloc = ClubsBloc();
-  final Logbloc = FairpayLogBloc();
+  final logbloc = FairpayLogBloc();
 
   List<ClubModel> clubList = List();
 
@@ -24,13 +24,13 @@ class TreasuryManagerState extends State<TreasuryManager>{
   void initState() {
     super.initState();
     clubsBloc.fetchAllClubs();
-    Logbloc.fetchAllLogs();
+    logbloc.fetchAllLogs();
   }
 
   @override
   void dispose() {
     clubsBloc.dispose();
-    Logbloc.dispose();
+    logbloc.dispose();
     super.dispose();
   }
 
@@ -41,7 +41,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
           title: Text("Gestion Trésorerie"),
         ),
         body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
+          stream: logbloc.allFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(
@@ -121,7 +121,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
             });
             return Column(
               children: <Widget>[
-                Text("${total} €",
+                Text("$total €",
                   style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 30.0,
@@ -152,7 +152,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
               if( club.idClubRef != 100 )
                 total += club.solde;
             });
-            return Text("Hors BDE : ${total} €",
+            return Text("Hors BDE : $total €",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
             );
           }
@@ -165,34 +165,34 @@ class TreasuryManagerState extends State<TreasuryManager>{
 
   _log(AsyncSnapshot<List<FairpayLogModel>> snapshot) {
     List<FairpayLogModel> ajd = new List<FairpayLogModel>();
-    List<FairpayLogModel> same_month = new List<FairpayLogModel>();
+    List<FairpayLogModel> sameMonth = new List<FairpayLogModel>();
     List<FairpayLogModel> mandat = new List<FairpayLogModel>();
-    List<FairpayLogModel> avant_mandat = new List<FairpayLogModel>();
+    List<FairpayLogModel> avantMandat = new List<FairpayLogModel>();
 
     //mai de l'année dernière
-    DateTime mandat_pressedants = DateTime(DateTime.now().year-1, 05);
+    DateTime mandatPrecedents = DateTime(DateTime.now().year-1, 05);
     //mai de cette année
-    DateTime mandat_actuel = DateTime(DateTime.now().year, 05);
+    DateTime mandatActuel = DateTime(DateTime.now().year, 05);
 
     DateTime jour = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime mois = DateTime(DateTime.now().year, DateTime.now().month);
 
     snapshot.data.forEach((element) {
-      DateTime date_log = element.date;
-      DateTime mois_log = DateTime(date_log.year, date_log.month);
-      DateTime jour_log = DateTime(date_log.year, date_log.month, date_log.day);
-      if(jour_log == jour) ajd.add(element);
-      else if(mois_log == mois) same_month.add(element);
+      DateTime dateLog = element.date;
+      DateTime moisLog = DateTime(dateLog.year, dateLog.month);
+      DateTime jourLog = DateTime(dateLog.year, dateLog.month, dateLog.day);
+      if(jourLog == jour) ajd.add(element);
+      else if(moisLog == mois) sameMonth.add(element);
       else if(DateTime.now().month < 05) {
-        if(mois_log.isAfter(mandat_pressedants)) mandat.add(element);
-        else avant_mandat.add(element);
+        if(moisLog.isAfter(mandatPrecedents)) mandat.add(element);
+        else avantMandat.add(element);
       }
       else if(DateTime.now().month >= 05)
       {
-        if(mois_log.isAfter(mandat_actuel)) mandat.add(element);
-        else avant_mandat.add(element);
+        if(moisLog.isAfter(mandatActuel)) mandat.add(element);
+        else avantMandat.add(element);
       }
-      else avant_mandat.add(element);
+      else avantMandat.add(element);
     });
 
     return ListView(
@@ -204,14 +204,14 @@ class TreasuryManagerState extends State<TreasuryManager>{
               ajd.isNotEmpty ? Text("Aujourd'hui", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
               ajd.isNotEmpty ? getTextWidgets(ajd) : Container(),
               ajd.isNotEmpty ? SizedBox(height: 20,) : Container(),
-              same_month.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
-              same_month.isNotEmpty ? getTextWidgets(same_month) : Container(),
-              same_month.isNotEmpty ? SizedBox(height: 20,) : Container(),
+              sameMonth.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              sameMonth.isNotEmpty ? getTextWidgets(sameMonth) : Container(),
+              sameMonth.isNotEmpty ? SizedBox(height: 20,) : Container(),
               mandat.isNotEmpty ?  Text("Plus tôt dans le mandat", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
               mandat.isNotEmpty ? getTextWidgets(mandat) : Container(),
               mandat.isNotEmpty ? SizedBox(height: 20,) : Container(),
-              avant_mandat.isNotEmpty ?  Text("Pendant les mandats précédents", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
-              avant_mandat.isNotEmpty ? getTextWidgets(avant_mandat) : Container(),
+              avantMandat.isNotEmpty ?  Text("Pendant les mandats précédents", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              avantMandat.isNotEmpty ? getTextWidgets(avantMandat) : Container(),
             ],
           )
         ]

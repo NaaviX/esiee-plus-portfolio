@@ -23,7 +23,7 @@ class SearchContributorState extends State<SearchContributor> {
 
   final _formKey = GlobalKey<FormState>();
 
-  StudentsBloc students = StudentsBloc();
+  StudentsBlocOld students = StudentsBlocOld();
 
   @override
   void initState() {

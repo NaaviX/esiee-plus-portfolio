@@ -1,24 +1,35 @@
+import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/stock_state.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
-import 'package:bde_esiee_mobile/src/resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 
-class StockBloc {
-  final _repository = Repository();
-  final _stocksAllFetcher = PublishSubject<List<StockModel>>();
+class StockBloc extends Bloc<StockEvent, StockState> {
+  final StockRepository stockRepository;
 
-  Observable<List<StockModel>> get allStocks => _stocksAllFetcher.stream;
+  StockBloc({@required this.stockRepository})
+      : assert(stockRepository != null),
+        super(StockInitial());
 
-  fetchAllStocks() async {
-    List<StockModel> stocks = await _repository.fetchStocks();
-    print(stocks);
-    _stocksAllFetcher.sink.add(stocks);
-  }
+  @override
+  Stream<StockState> mapEventToState(StockEvent event) async* {
+    if (event is StockRequested) {
+      yield StockLoadInProgress();
+      try {
+        final List<StockModel> stocks = await stockRepository.fetchStocks();
+        yield StockLoadSuccess(stocks: stocks);
+      } catch (_) {
+        yield StockLoadFailure();
+      }
+    }
 
-  addSaveStock(StockModel stock) async {
-    StockModel stockmodel = await _repository.addSaveStock(stock);
-  }
-
-  dispose() {
-    _stocksAllFetcher.close();
+    else if (event is StockToBeSaved) {
+      try {
+        await stockRepository.saveStock(event.stock);
+      } catch (_) {
+        yield StockSaveLoadFailure();
+      }
+    }
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'club_fairpay.dart';
 
-FairpayForm(FairpayState parent, String type, ClubModel club) {
+fairpayForm(FairpayState parent, String type, ClubModel club) {
   final clubsBloc = ClubsBloc();
   final fairpayBloc = FairpayLogBloc();
 
@@ -27,6 +27,7 @@ FairpayForm(FairpayState parent, String type, ClubModel club) {
       case "Subvention":
         return Colors.orange;
     }
+    return Colors.grey;
   }
 
   _amountInput() =>

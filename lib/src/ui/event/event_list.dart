@@ -26,8 +26,6 @@ class EventList extends StatefulWidget {
 }
 
 class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
-  @override
-  bool get wantKeepAlive => true;
   final eventBloc = EventsBloc();
   final clubBloc = ClubsBloc();
 
@@ -195,7 +193,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   getCoverModerator(EventModel event, List<ClubModel> clubs, BuildContext context){
-    ClubModel club = clubs.firstWhere((club) => club.idClubRef == event.idClubRef);
+    //ClubModel club = clubs.firstWhere((club) => club.idClubRef == event.idClubRef);
     if(event.endDate.isAfter(DateTime.now()))
       return EventCard(event, context, moderation: true);
     return Container();

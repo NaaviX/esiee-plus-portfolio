@@ -9,7 +9,7 @@ class FairpayLogBloc {
   final _fpLogFetcher =PublishSubject<List<FairpayLogModel>>();
 
   Observable<List<FairpayLogModel>> get allFairpayLog => _fpAllLogFetcher.stream;
-  Observable<List<FairpayLogModel>> get ClubFairpayLog => _fpLogFetcher.stream;
+  Observable<List<FairpayLogModel>> get clubFairpayLog => _fpLogFetcher.stream;
 
   fetchAllLogs() async {
     List<FairpayLogModel> fairpaylogmodel = await _repository.fetchFairpayLogs();

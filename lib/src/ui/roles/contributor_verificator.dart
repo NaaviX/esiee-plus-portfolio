@@ -15,7 +15,7 @@ class ContributorVerificator extends StatefulWidget {
 
 
 class ContributorVerificatorState extends State<ContributorVerificator> {
-  StudentsBloc studentsBloc = StudentsBloc();
+  StudentsBlocOld studentsBloc = StudentsBlocOld();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   FocusNode currentFocus;
@@ -25,12 +25,13 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
   @override
   void initState() {
     studentsBloc.fetchAllStudents();
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     studentsBloc.dispose();
+    super.dispose();
   }
 
   @override

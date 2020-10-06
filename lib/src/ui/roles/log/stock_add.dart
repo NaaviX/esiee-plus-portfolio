@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
 
-  StockState stock;
+  StocksState stock;
   AddStock(this.stock);
 
   @override
@@ -18,8 +18,6 @@ class AddStock extends StatefulWidget {
   }
 }
 class AddStockState extends State<AddStock> {
-
-  final bloc = StockBloc();
 
   final _formKey = GlobalKey<FormState>();
   final name = TextEditingController();
@@ -193,7 +191,7 @@ class AddStockState extends State<AddStock> {
                       stockQuant: double.parse(quant.text),
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
-                    bloc.addSaveStock(stock);
+                    //bloc.addSaveStock(stock);
                     //widget.stock.getData();
                     Navigator.of(context).pop();
                   }

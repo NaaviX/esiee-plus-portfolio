@@ -37,9 +37,6 @@ class HomeState extends State<Home> {
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
@@ -70,14 +67,14 @@ class HomeState extends State<Home> {
                     ],
                   ),
                 ),*/
-                _Links()
+                _links()
               ],
             )
         )
     );
   }
 
-  _Links() {
+  _links() {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       //height: 62,
@@ -169,7 +166,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  List<Widget> _ListStudentClub() {
+  /*List<Widget> _ListStudentClub() {
     List<Widget> list = List<Widget>();
     list.add(
       Container(
@@ -202,7 +199,7 @@ class HomeState extends State<Home> {
       ),
     );
     return list;
-  }
+  }*/
 
   _homeStudentUsefulLinks(String nom, String site, String image,) {
     return InkWell(
@@ -235,7 +232,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  List<Widget> _ListProfUnits() {
+  /*List<Widget> _ListProfUnits() {
     List<Widget> list = List<Widget>();
     Base.thisProf.units.forEach((element) {list.add(
         Chip(
@@ -244,6 +241,6 @@ class HomeState extends State<Home> {
         )
     );});
     return list;
-  }
+  }*/
 
 }

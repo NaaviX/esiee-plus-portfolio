@@ -116,10 +116,10 @@ class HomeComponentsState extends State<HomeComponents> {
     );
   }
 
-  _filter(EventModel event) {
+  /*_filter(EventModel event) {
     if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
-  }
+  }*/
   pushEventInfo(EventModel event, ClubModel club) {
     MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club));
     Navigator.push(

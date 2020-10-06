@@ -42,7 +42,7 @@ class MyTheme {
         elevation: 0.0,
         color: LightBackground,
         textTheme: TextTheme(
-          title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+          headline6: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
         ),
       ),
 
@@ -90,7 +90,7 @@ class MyTheme {
           elevation: 1.0,
           color: DarkBackground,
           textTheme: TextTheme(
-            title: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
+            headline6: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
           ),
         ),
 

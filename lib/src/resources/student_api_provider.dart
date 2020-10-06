@@ -5,15 +5,21 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 
 import '../App.dart';
 
 class StudentApiProvider {
   final log = Logger('studentAPI');
-  Client client = Client();
+  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  final Client client;
+
+  StudentApiProvider({
+    @required this.client,
+  }) : assert(client != null);
 
   Future<List<StudentModel>> fetchStudentList() async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/student/students",
+    final response = await client.get("$baseUrl/student/students",
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -29,7 +35,7 @@ class StudentApiProvider {
   }
 
   Future<StudentModel> fetchStudent(String mailEsiee) async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/student/student?mail_esiee="+Uri.encodeFull(mailEsiee),
+    final response = await client.get("$baseUrl/student/student?mail_esiee="+Uri.encodeFull(mailEsiee),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -45,7 +51,7 @@ class StudentApiProvider {
   }
 
   Future<StudentModel> fetchStudentById(String idStudent) async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/student/student/"+Uri.encodeFull(idStudent),
+    final response = await client.get("$baseUrl/student/student/"+Uri.encodeFull(idStudent),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -72,7 +78,7 @@ class StudentApiProvider {
     }
 
     String url = Uri.encodeFull(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/student/update?id_student=" +
+        "$baseUrl/student/update?id_student=" +
             student.idStudent.toString() +
             "&mail_esiee=" +
             student.mailEsiee.toString() +

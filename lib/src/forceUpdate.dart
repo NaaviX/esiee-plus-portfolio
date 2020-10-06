@@ -52,7 +52,6 @@ _showVersionDialog(context) async {
       String message =
           "Il y a une nouvelle veersion de l'appli disponible merci de la télécharger.";
       String btnLabel = "Télécharger maintenant";
-      String btnLabelCancel = "Plus tard";
       return Platform.isIOS
           ? new CupertinoAlertDialog(
         title: Text(title),

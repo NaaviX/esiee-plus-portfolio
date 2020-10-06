@@ -9,12 +9,12 @@ import 'event_info.dart';
 import 'event_list.dart';
 
 class EventCreation extends StatefulWidget {
-  createEventForm form;
+  CreateEventForm form;
   EventListState parentList;
 
   EventCreation(parentList, {EventModel event}){
-    if(event != null) this.form = createEventForm(event: event,);
-    else form = createEventForm();
+    if(event != null) this.form = CreateEventForm(event: event,);
+    else form = CreateEventForm();
   }
 
   @override

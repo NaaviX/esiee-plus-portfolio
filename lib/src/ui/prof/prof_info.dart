@@ -82,7 +82,7 @@ class ProfInfoPage extends StatelessWidget{
           prof.units.isNotEmpty ?
           Wrap(
             spacing: 10,
-            children: _ListProfUnits(context),
+            children: _listProfUnits(context),
           ) : Container(),
           //Text(prof.units.toString()),
         ],
@@ -90,7 +90,7 @@ class ProfInfoPage extends StatelessWidget{
     );
   }
 
-  List<Widget> _ListProfUnits(context) {
+  List<Widget> _listProfUnits(context) {
     List<Widget> list = List<Widget>();
     prof.units.forEach((element) {list.add(
       Chip(

@@ -121,13 +121,13 @@ class GradeUnitsCheckListState extends State<GradeUnitsCheckList>{
         itemBuilder: (c, unit) {
           return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _CheckboxTile(unit)
+              child: _checkboxTile(unit)
           );
         }
     );
   }
 
-  CheckboxListTile _CheckboxTile(GradesUnitModel unit) => CheckboxListTile(
+  CheckboxListTile _checkboxTile(GradesUnitModel unit) => CheckboxListTile(
       title: new Text(unit.name),
       value: unitsState[unit],
       onChanged: (bool value) {

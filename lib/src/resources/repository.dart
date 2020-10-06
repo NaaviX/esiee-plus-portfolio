@@ -17,6 +17,7 @@ import 'package:bde_esiee_mobile/src/resources/freeRooms_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/unit_api_provider.dart';
+import 'package:http/http.dart';
 import 'Calendar/gradesUnit_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/Calendar/grades_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
@@ -30,9 +31,6 @@ class Repository {
   final jwtApiProvider = JwtApiProvider();
   Future<String> authenticate(String username, String password) => jwtApiProvider.authenticate(username, password);
   Future<void> register(String username, String password) => jwtApiProvider.register(username, password);
-
-  final rolesApiProvider = RoleApiProvider();
-  Future<List<RoleModel>> fetchAllRoles() => rolesApiProvider.fetchRoleList();
 
   final eventsApiProvider = EventApiProvider();
   Future<List<EventModel>> fetchAllEvents() => eventsApiProvider.fetchEventList();
@@ -51,7 +49,7 @@ class Repository {
       profApiProvider.fetchProfByMail(mailEsiee);
   Future<ProfModel> addSaveProf(ProfModel prof) => profApiProvider.addProf(prof);
 
-  final studentApiProvider = StudentApiProvider();
+  final studentApiProvider = StudentApiProvider(client : Client());
   Future<List<StudentModel>> fetchAllStudents() =>
       studentApiProvider.fetchStudentList();
   Future<StudentModel> fetchStudent(String mailEsiee) =>
@@ -80,9 +78,5 @@ class Repository {
 
   final unitApiProvider = UnitApiProvider();
   Future<List<UnitModel>> fetchUnits() => unitApiProvider.fetchUnitsList();
-
-  final stockApiProvider = StockApiProvider();
-  Future<List<StockModel>> fetchStocks() => stockApiProvider.fetchStocksList();
-  Future<StockModel> addSaveStock(StockModel stock) => stockApiProvider.addStock(stock);
 
 }

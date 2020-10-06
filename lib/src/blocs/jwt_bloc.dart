@@ -1,5 +1,3 @@
-import 'package:bde_esiee_mobile/src/models/role_model.dart';
-
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 

@@ -136,17 +136,17 @@ class FairPayClubManager extends StatefulWidget {
 }
 
 class FairPayClubManagerState extends State<FairPayClubManager>{
-  final Logbloc = FairpayLogBloc();
+  final logbloc = FairpayLogBloc();
 
   @override
   void initState() {
     super.initState();
-    Logbloc.fetchClubLogs(widget.thisClub.idClubRef.toString());
+    logbloc.fetchClubLogs(widget.thisClub.idClubRef.toString());
   }
 
   @override
   void dispose() {
-    Logbloc.dispose();
+    logbloc.dispose();
     super.dispose();
   }
 
@@ -159,7 +159,7 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
           title: Text(widget.thisClub.name.toString()),
         ),
         body: StreamBuilder(
-          stream: Logbloc.ClubFairpayLog,
+          stream: logbloc.clubFairpayLog,
           builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
             if (snapshot.hasData){
               return Column(
@@ -224,7 +224,7 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
             barrierDismissible: true,
             // user must tap button!
             builder: (BuildContext context) {
-              return fairPayActionForm(title, widget.thisClub);
+              return FairPayActionForm(title, widget.thisClub);
             }
         );
       }
@@ -292,18 +292,18 @@ class FairPayClubManagerState extends State<FairPayClubManager>{
 
 }
 
-class fairPayActionForm extends StatefulWidget{
+class FairPayActionForm extends StatefulWidget{
   final String type;
   final ClubModel club;
-  fairPayActionForm(this.type, this.club);
+  FairPayActionForm(this.type, this.club);
 
   @override
   State<StatefulWidget> createState() {
-    return fairPayActionFormState();
+    return FairPayActionFormState();
   }
 }
 
-class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_case_types
+class FairPayActionFormState extends State<FairPayActionForm>{ // ignore: camel_case_types
   final clubsBloc = ClubsBloc();
   final fairpayBloc = FairpayLogBloc();
 
@@ -368,7 +368,7 @@ class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_
       )
   );
 
-  _linkInput() => Container(
+  /*_linkInput() => Container(
       padding: EdgeInsets.only(right: 25.0, left: 25.0, top: 10.0, bottom: 10.0),
       alignment: Alignment.topCenter,
       child: CustomTextFormField(
@@ -378,7 +378,7 @@ class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_
         TextEditingController(),
         requiredField: true,
       )
-  );
+  );*/
 
   _depotForm(BuildContext context) => Wrap(
       children: <Widget>[
@@ -440,7 +440,7 @@ class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_
                 }
             ))]);
 
-  _subventionForm() => Wrap(
+  /*_subventionForm() => Wrap(
       children: <Widget>[
         _amountInput(),
         _descriptionInput(),
@@ -457,14 +457,14 @@ class fairPayActionFormState extends State<fairPayActionForm>{ // ignore: camel_
                       barrierDismissible: true,
                       // user must tap button!
                       builder: (BuildContext context) {
-                        return fairPayActionForm("Subv.",widget.club);
+                        return FairPayActionForm("Subv.",widget.club);
                       }
                   );
                 }
             )
         )
       ]
-  );
+  );*/
 
 }
 

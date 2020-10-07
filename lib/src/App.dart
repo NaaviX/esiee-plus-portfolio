@@ -422,15 +422,6 @@ class _Base extends State<Base> {
               ],
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.power_settings_new, color: Theme.of(context).primaryColor.withOpacity(0.8)),
-            title: new Text(Translations.of(context).text("deco"), style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
-            onTap: () async {
-              Navigator.of(context).pop();
-              signOutGoogle();
-              Base.selectedIndex = 0;
-            },
-          ),
           _adminMenu(),
           _modoMenu(),
           _trezMenu(),

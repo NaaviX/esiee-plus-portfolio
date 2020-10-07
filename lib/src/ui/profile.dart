@@ -84,7 +84,7 @@ class ProfileState extends State<Profile> {
                       SizedBox(height: 5),
                       Text(user.email, style: TextStyle(color: Colors.white70, fontSize: 17)),
                       SizedBox(height: 10),
-                      Base.thisUser != null ? Text(parsePromo(Base.thisUser) + ', ' + parseRole(Base.thisUser.roles), style: TextStyle(color: Colors.white, fontSize: 17)) : Text(parseRole(Base.thisClub.roles), style: TextStyle(color: Colors.white, fontSize: 17)),
+                      Base.thisUser != null ? Text(parsePromo(Base.thisUser) + "${Base.thisUser.roles.isNotEmpty ? ', ' : '' }" + parseRole(Base.thisUser.roles), style: TextStyle(color: Colors.white, fontSize: 17)) : Base.thisProf == null ? Text(parseRole(Base.thisClub.roles), style: TextStyle(color: Colors.white, fontSize: 17)) : Container(),
                       Container(
                           margin: EdgeInsets.only(top: 20),
                           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -147,6 +147,7 @@ class ProfileState extends State<Profile> {
   parseRole(List roles) {
     return roles.length > 0 ?  roles.toString().replaceFirst("[", "").replaceFirst("]", "") : "";
   }
+
 
   sectionCotisant() => Column(
     children: [

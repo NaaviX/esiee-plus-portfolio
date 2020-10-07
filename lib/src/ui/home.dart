@@ -77,7 +77,7 @@ class HomeState extends State<Home> {
                         stream: studentBloc.thisStudentClubs,
                         builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
                           return snapshot.hasData
-                              ? _Component('Mes Clubs', 0, snapshot.data)
+                              ? snapshot.data.isNotEmpty ? _Component('Mes Clubs', 0, snapshot.data) : Container()
                               : Container();
                         }
                     ),

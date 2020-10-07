@@ -13,6 +13,7 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
   StudentsBloc({@required this.studentRepository})
       : assert(studentRepository != null),
         super(StudentInitial());
+  Observable<List<ClubModel>> get thisStudentClubs => _studentsClubFetcher.stream;
 
   @override
   Stream<StudentState> mapEventToState(StudentEvent event) async* {

@@ -533,17 +533,14 @@ class _Base extends State<Base> {
     );*/
   }
 
-  Widget _MenuElmt(IconData icon, String title, Widget route, Bloc bloc) {
+  Widget _MenuElmt(IconData icon, String title, Widget route) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15),
       leading: Icon(icon, color: Theme.of(context).primaryColor.withOpacity(0.8)),
       title: Text(title, style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return BlocProvider(
-              create: (context) =>
-              bloc,
-              child: route);
+          return route;
         }));
       },
     );
@@ -554,7 +551,7 @@ class _Base extends State<Base> {
         future: isInternetConnected(),
         builder: (BuildContext context, AsyncSnapshot<bool> connected) {
           return connected.hasData && connected.data
-              ? _MenuElmt(icon, title, route, null)
+              ? _MenuElmt(icon, title, route)
               : ListTile(
               leading: Icon(icon, color: Colors.grey),
               title: Text(
@@ -576,9 +573,9 @@ class _Base extends State<Base> {
     if (Base.thisProf != null) {
       return Column(children: [
         _MenuTitle(),
-        _MenuElmt(Icons.import_contacts, "Cours", ClassDocumentUpload(), null),
-        _MenuElmt(Icons.group, "Notification Classe", ClassNotification(), null),
-        _MenuElmt(Icons.chat, "Messenger", MessengerHistory(), null),
+        _MenuElmt(Icons.import_contacts, "Cours", ClassDocumentUpload()),
+        _MenuElmt(Icons.group, "Notification Classe", ClassNotification()),
+        _MenuElmt(Icons.chat, "Messenger", MessengerHistory()),
       ]);
     }
     return Column();
@@ -588,9 +585,9 @@ class _Base extends State<Base> {
     if (Base.thisClub != null) {
       return Column(children: [
         _MenuTitle(),
-        _MenuElmt(Icons.account_balance_wallet, "Mon Fairpay", Fairpay(), null),
-        _MenuElmt(Icons.group_add, "Gestion des Membres", ClubMemberManager(), null),
-        _MenuElmt(Icons.chat, "Messenger", MessengerHistory(), null),
+        _MenuElmt(Icons.account_balance_wallet, "Mon Fairpay", Fairpay()),
+        _MenuElmt(Icons.group_add, "Gestion des Membres", ClubMemberManager()),
+        _MenuElmt(Icons.chat, "Messenger", MessengerHistory()),
       ]);
     }
     return Column();
@@ -601,9 +598,9 @@ class _Base extends State<Base> {
       return Column(children: [
         _MenuTitle(),
         //_MenuElmt(Icons.credit_card, "Ma carte", EsieeCard()),
-        _MenuElmt(Icons.group, "Clubs", ClubList(), null),
+        _MenuElmt(Icons.group, "Clubs", ClubList()),
         _requireConnectionTile(Icons.location_on, "Salles Libres", FreeRooms()),
-        _MenuElmt(Icons.contacts, "Liste des Professeurs", UnitsList(), null),
+        _MenuElmt(Icons.contacts, "Liste des Professeurs", UnitsList()),
         //_MenuElmt(Icons.import_contacts, "Cours", ClassDocument()),
         //_MenuElmt(Icons.class_, "Annales", AnnalsList()),
         //_MenuElmt(Icons.chat, "Messenger", MessengerHistory()),
@@ -622,7 +619,7 @@ class _Base extends State<Base> {
       return Column(children: [
         _MenuTitle(),
         //_MenuElmt(Icons.info_outline, "Informations importantes", BdeInfos()),
-        _MenuElmt(Icons.beenhere, "Ajout Cotisants", ContributorManager(), null),
+        _MenuElmt(Icons.beenhere, "Ajout Cotisants", ContributorManager()),
         //_MenuElmt(Icons.account_balance, "Dashboard trésorerie", TreasuryDashboard()),
         _requireConnectionTile(Icons.group_add, "Droits Utilisateurs", UserPermissions())
       ]);
@@ -656,8 +653,8 @@ class _Base extends State<Base> {
                 Base.allRoles.firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
         _MenuTitle(),
-        _MenuElmt(Icons.euro_symbol, "Gestion Trésorerie", TreasuryManager(), null),
-        _MenuElmt(Icons.equalizer, "Gestion Fairpay", FairPayManager(), null),
+        _MenuElmt(Icons.euro_symbol, "Gestion Trésorerie", TreasuryManager()),
+        _MenuElmt(Icons.equalizer, "Gestion Fairpay", FairPayManager()),
       ]);
     }
     return Column();
@@ -670,15 +667,36 @@ class _Base extends State<Base> {
         Base.thisClub != null &&
             Base.thisClub.roles.contains(
                 Base.allRoles.firstWhere((element) => element.role == Role.log))) {
-      final StockRepository stockRepository = StockRepository(
-        stockApiProvider: StockApiProvider(
-          client: Client(),
-        ),
-      );
       return Column(children: [
         _MenuTitle(),
-        _MenuElmt(Icons.local_grocery_store, "Réserve", Stocks(stockRepository: stockRepository), StockBloc(stockRepository: stockRepository)),
-
+        _MenuElmt(Icons.local_grocery_store, "Réserve", Stock()),
+        Divider(),
+        RichText(
+          text: TextSpan(
+              text: 'Logistique',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 16,
+              )),
+        ),
+        ListTile(
+          leading: Icon(Icons.local_grocery_store),
+          title: Text("Réserve"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              final StockRepository stockRepository = StockRepository(
+                stockApiProvider: StockApiProvider(
+                  client: Client(),
+                ),
+              );
+              return BlocProvider(
+                  create: (context) =>
+                  StockBloc(stockRepository: stockRepository),
+              child: Stocks(stockRepository: stockRepository));
+            }));
+          },
+        )
       ]);
     }
     return Column();

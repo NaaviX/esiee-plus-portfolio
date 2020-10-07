@@ -37,14 +37,12 @@ class HomeState extends State<Home> {
   ClubsBloc clubsBloc = ClubsBloc();
   CourseBloc courseBloc = CourseBloc();
   EventsBloc eventBloc = EventsBloc();
-  StudentsBloc studentBloc = StudentsBloc();
 
   @override
   void initState() {
     clubsBloc.fetchAllClubs();
     courseBloc.fetchAllCourses(getGradeUnitsID().toString());
     eventBloc.fetchAllEvents();
-    if(Base.thisUser != null) studentBloc.fetchAllStudentClubs(Base.thisUser);
     super.initState();
   }
 
@@ -53,7 +51,6 @@ class HomeState extends State<Home> {
     clubsBloc.dispose();
     courseBloc.dispose();
     eventBloc.dispose();
-    studentBloc.dispose();
     super.dispose();
   }
 
@@ -72,14 +69,14 @@ class HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 5,),
-                    StreamBuilder(
+                    /*StreamBuilder(
                         stream: studentBloc.thisStudentClubs,
                         builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
                           return snapshot.hasData
                               ? snapshot.data.isNotEmpty ? _Component('Mes Clubs', 0, snapshot.data) : Container()
                               : Container();
                         }
-                    ),
+                    ),*/
                     _Component('Mon Prochain Cours', 1),
                     _Component('Top Events', 2),
                   ],
@@ -89,7 +86,7 @@ class HomeState extends State<Home> {
             Positioned(
               bottom: 0,
               width: MediaQuery.of(context).size.width,
-              child:_Links(),
+              child:_links(),
             ),
           ],
         )

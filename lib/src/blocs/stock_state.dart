@@ -17,6 +17,10 @@ class StockLoadSuccess extends StockState {
 
 }
 
+class StockLoadFailure extends StockState {}
+
+
+
 class StockSaveLoadSuccess extends StockState {
   final StockModel stock;
 
@@ -25,7 +29,7 @@ class StockSaveLoadSuccess extends StockState {
 }
 
 
-class StockLoadFailure extends StockState {}
+
 
 class StockSaveLoadFailure extends StockState {}
 

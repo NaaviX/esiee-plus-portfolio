@@ -111,8 +111,8 @@ class ClubAddMemberState extends State<ClubAddMember> {
 
                       },
                     )
-                ),
-              );
+                ),]
+              ));
             } if (state is StudentListLoadFailure) {
           return Text(
             'Something went wrong!',

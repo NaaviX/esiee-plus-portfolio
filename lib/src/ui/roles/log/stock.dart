@@ -2,18 +2,21 @@ import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_state.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
+import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
 class Stocks extends StatefulWidget {
   final StockRepository stockRepository;
+  final StockBloc bloc;
 
-  Stocks({Key key, @required this.stockRepository})
+  Stocks({Key key, @required this.stockRepository, @required this.bloc})
       : assert(stockRepository != null),
         super(key: key);
 
@@ -33,6 +36,8 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
         .add(StockRequested());
     super.initState();
   }
+
+
 
   @override
   void dispose() {
@@ -63,7 +68,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
             body: Container(child: BlocBuilder<StockBloc, StockState>(
                     builder: (context, state) {
               if (state is StockInitial) {
-                return Center(child: Text('Please Select a Location'));
+                return Center(child: CircularProgressIndicator());
               }
               if (state is StockLoadInProgress) {
                 return Center(child: CircularProgressIndicator());
@@ -114,7 +119,13 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return AddStock(this);
+              final StockRepository stockRepository = StockRepository(
+                stockApiProvider: StockApiProvider(
+                  client: Client(),
+                ),
+              );
+              return BlocProvider(create: (BuildContext context) => widget.bloc,
+                  child: AddStock(stockRepository: stockRepository));
             }),
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(

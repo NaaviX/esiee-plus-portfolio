@@ -12,6 +12,7 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
+import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
@@ -353,17 +354,28 @@ class HomeState extends State<Home> {
             scrollDirection: Axis.horizontal,
             itemCount: clubs.length,
             itemBuilder: (BuildContext context, int index) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: CircleAvatar(
-                  backgroundColor: Colors.blueGrey.withOpacity(0.2),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(clubs[index].urlPhoto),
-                    backgroundColor: Colors.white,
-                    radius: 35,
-                  ),
-                  radius: 38,
-                ),
+              return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ClubInfoPage(club: clubs[index],)),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Hero(
+                      tag: 'logoClub'+clubs[index].idClubRef.toString(),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.blueGrey.withOpacity(0.2),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(clubs[index].urlPhoto),
+                          backgroundColor: Colors.white,
+                          radius: 35,
+                        ),
+                        radius: 38,
+                      ),
+                    ),
+                  )
               );
             }
         )

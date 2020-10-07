@@ -81,38 +81,36 @@ class ClubAddMemberState extends State<ClubAddMember> {
                           queryBuilder:
                               (String query, List<StudentModel> list) {
 
-                            return list
-                                .where((StudentModel student) => (
-                                student
-                                        .firstname
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase()) ||
-                                    student.lastname
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase()) ||
-                                    (student.firstname+" "+student.lastname)
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase())))
-                                .toList();
-                          },
-                          popupListItemBuilder: (StudentModel item) {
-                            return _popupListItemBuilder(item);
-                          },
-                          selectedItemBuilder: (StudentModel selectedItem,
-                              VoidCallback addSelectedItem) {
-                            return;
-                          },
-                          // widget customization
-                          noItemsFoundWidget: _noItemsFoundWidget(),
-                          textFieldBuilder: (TextEditingController controller,
-                              FocusNode focusNode) {
-                            focus = focusNode;
-                            return CustomTextFormField("Ajouter un membre", "Prenom ou nom de l'élève", Icons.search, controller, focusNode: focusNode);
+                        return list
+                            .where((StudentModel student) => (
+                            student
+                                .firstname
+                                .toLowerCase()
+                                .startsWith(query.toLowerCase()) ||
+                                student.lastname
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase()) ||
+                                (student.firstname+" "+student.lastname)
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase())))
+                            .toList();
+                      },
+                      popupListItemBuilder: (StudentModel item) {
+                        return _popupListItemBuilder(item);
+                      },
+                      selectedItemBuilder: (StudentModel selectedItem,
+                          VoidCallback addSelectedItem) {
+                        return;
+                      },
+                      // widget customization
+                      noItemsFoundWidget: _noItemsFoundWidget(),
+                      textFieldBuilder: (TextEditingController controller,
+                          FocusNode focusNode) {
+                        focus = focusNode;
+                        return CustomTextFormField("Ajouter un membre", "Prenom ou nom de l'élève", Icons.search, controller, focusNode: focusNode);
 
-                          },
-                        )
-                        ),
-                  ],
+                      },
+                    )
                 ),
               );
             } if (state is StudentListLoadFailure) {
@@ -133,31 +131,27 @@ class ClubAddMemberState extends State<ClubAddMember> {
             item.firstname + " " + item.lastname + "\n" +
                 item.mailEsiee.toString(),
           ),
+          onTap: () {
+            if(!item.isContributor) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                duration: Duration(seconds: 1),
+                content: Text("Erreur : cet élève n'est pas cotisant au BDE"),
+                backgroundColor: Colors.red,
+              ));
+            } else {
+              clubsBloc.addStudentToClub(item, Base.thisClub);
+              Scaffold.of(context).showSnackBar(SnackBar(
+                duration: Duration(seconds: 1),
+                content: Text("Membre ajouté !"),
+                backgroundColor: Colors.green,
+              ));
+              widget.parent.setState(() {});
+            }
+            focus.unfocus();
+          },
           trailing: IconButton(
             icon: Icon(Icons.add_circle_outline, color: Colors.green,),
-            onPressed: () {
-              if(!item.isContributor) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  duration: Duration(seconds: 1),
-                  content: Text("Erreur : cet élève n'est pas cotisant au BDE"),
-                  backgroundColor: Colors.red,
-                ));
-              } else {
-                clubsBloc.addStudentToClub(item, Base.thisClub);
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  duration: Duration(seconds: 1),
-                  content: Text("Membre ajouté !"),
-                  backgroundColor: Colors.green,
-                ));
-                widget.parent.setState(() {
-
-                });
-              }
-
-              focus.unfocus();
-
-
-            },)
+          )
       );
     }
     return Column();

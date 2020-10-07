@@ -20,9 +20,6 @@ class StudentModel extends UserModel {
   List<RoleModel> roles;
   List<ClubModel> clubs;
 
-
-
-
   StudentModel({
     this.idStudent,
     this.mailEsiee,
@@ -77,5 +74,4 @@ class StudentModel extends UserModel {
   bool operator ==(other) {
     return idStudent == other.idStudent;
   }
-
 }

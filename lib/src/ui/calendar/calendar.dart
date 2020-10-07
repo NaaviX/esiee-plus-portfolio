@@ -109,7 +109,7 @@ class CalendarState extends State<Calendar> {
 
   Widget buildAgenda(List<CourseModel> snapshot) {
     return WeekView(
-      initialHour: 6,
+      initialHour: 7,
       initialMinute: 50,
       dates: getWeekDates(2, 4),
       hoursColumnWidth: 40,

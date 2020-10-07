@@ -250,7 +250,7 @@ class DayBar extends StatelessWidget {
             style: textStyle ??
                 TextStyle(
                   color: Utils.sameDay(date) ? Theme.of(context).primaryColor : Colors.black54,
-                  fontWeight: Utils.sameDay(date) ? FontWeight.w900 : FontWeight.w700,
+                  fontWeight: Utils.sameDay(date) ? FontWeight.w900 : FontWeight.w600,
                 ),
             textAlign: TextAlign.center,
           ),
@@ -313,7 +313,7 @@ class HoursColumn extends StatelessWidget {
     hourRowHeight: parent._calculateHourRowHeight(),
     width: parent.hoursColumnWidth,
     backgroundColor: parent.hoursColumnBackgroundColor ?? Theme.of(context).backgroundColor,
-    textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54),
+    textStyle: parent.hoursColumnTextStyle ?? const TextStyle(color: Colors.black54, fontSize: 16),
     hourFormatter: parent.hourFormatter,
   );
 

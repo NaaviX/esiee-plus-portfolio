@@ -13,6 +13,7 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
   StudentsBloc({@required this.studentRepository})
       : assert(studentRepository != null),
         super(StudentInitial());
+  Observable<List<ClubModel>> get thisStudentClubs => _studentsClubFetcher.stream;
 
   @override
   Stream<StudentState> mapEventToState(StudentEvent event) async* {
@@ -47,7 +48,7 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
   /*fetchAllStudentClubs(StudentModel student) async {
     List<ClubModel> studentClubs=await _repository.fetchAllClubs();
     studentClubs.removeWhere((element) => !element.students.contains(student));
-    return studentClubs;
+    _studentsClubFetcher.sink.add(studentClubs);
   }*/
 
 }

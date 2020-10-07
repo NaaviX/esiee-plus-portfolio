@@ -17,6 +17,5 @@ class JwtBloc {
   }
 
   dispose() {
-    _tokenFetcher.close();
   }
 }

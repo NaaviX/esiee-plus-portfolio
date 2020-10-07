@@ -315,7 +315,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                               Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    AutoSizeText("Evénements", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
+                                    AutoSizeText("Événements", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
                                     StreamBuilder(
                                         stream: events.allEvents,
                                         builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
@@ -329,7 +329,8 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     AutoSizeText("Classement", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
-                                    AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
+                                    AutoSizeText("à venir", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black26),),
+                                    //AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
                                   ]
                               ),
                             ],

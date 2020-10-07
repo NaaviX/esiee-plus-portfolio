@@ -173,10 +173,25 @@ class ProfileState extends State<Profile> {
     ],
   );
 
-  sectionClub() => Column(
+  sectionClub() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      solde(),
+      classement()
+    ],
+  );
+
+  solde() => Column(
     children: [
       Text("${Base.thisClub.solde.toString()}  €", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700),),
       Text("Solde Actuel", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.blue[100]),),
+    ],
+  );
+
+  classement() => Column(
+    children: [
+      Text("${Base.thisClub.students.length.toString()}", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700),),
+      Text("Membres", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.blue[100]),),
     ],
   );
 

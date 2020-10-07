@@ -517,7 +517,7 @@ class _Base extends State<Base> {
     if (Base.thisClub != null) {
       return Column(children: [
         _MenuTitle(),
-        _MenuElmt(Icons.account_balance_wallet, "Fairpay", Fairpay()),
+        _MenuElmt(Icons.account_balance_wallet, "Mon Fairpay", Fairpay()),
         _MenuElmt(Icons.group_add, "Gestion des Membres", ClubMemberManager()),
         _MenuElmt(Icons.chat, "Messenger", MessengerHistory()),
       ]);

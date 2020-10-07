@@ -93,7 +93,7 @@ class ProfileState extends State<Profile> {
                               Divider(color: Colors.white54, thickness: 2, indent: 20, endIndent: 20,),
                               SizedBox(height: 15),
                               Base.thisUser != null && Base.thisUser.isContributor ?
-                              sectionCotisant() : Container(),
+                              sectionCotisant() : Base.thisClub != null ? sectionClub() : Container(),
                             ],
                           )
                       )
@@ -170,6 +170,13 @@ class ProfileState extends State<Profile> {
           )
 
       )
+    ],
+  );
+
+  sectionClub() => Column(
+    children: [
+      Text("${Base.thisClub.solde.toString()}  €", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700),),
+      Text("Solde Actuel", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.blue[100]),),
     ],
   );
 

@@ -94,6 +94,7 @@ flutter:
     - assets/esieeplus/coverEsieePlus.webp
     - assets/esieeplus/color_LetterLogo.webp
     - assets/esieeplus/primary_LetterLogo.webp
+    - assets/esieeplus/white_LetterLogo.webp
     - assets/illustration/addTeacher.webp
     - assets/illustration/freeRooms.webp
     - assets/illustration/cours.webp

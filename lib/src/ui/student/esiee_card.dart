@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 import '../../App.dart';
 
@@ -184,14 +185,14 @@ class EsieeCard extends StatelessWidget {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget> [
-                              Container(
+                              /*Container(
                                 padding: orientation == Orientation.portrait ? EdgeInsets.all(0) : EdgeInsets.only(bottom: 2),
                                 height: orientation == Orientation.portrait ? 100 : 45,
                                 width: orientation == Orientation.portrait ? 100 : 193,
-                                /*child: SfBarcodeGenerator(
+                                child: SfBarcodeGenerator(
                                   value: Base.thisUser.idStudent.toString(),
-                                ),*/
-                              ),
+                                ),
+                              ),*/
                               Container(
                                 padding: EdgeInsets.only(right: 5),
                                 child: Image(image: NetworkImage("https://www.gescia.fr/sites/default/files/thumbnails/image/logo_une%20ecole_de_la_ccipidf171px.png"), height: 30,),

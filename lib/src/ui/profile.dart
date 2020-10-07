@@ -1,27 +1,14 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/course_model.dart';
-import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/translations.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/card_esiee_plus.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timer_builder/timer_builder.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 import 'custom_widgets/ColorMean.dart';
 
@@ -99,6 +86,7 @@ class ProfileState extends State<Profile> {
                       )
                     ],
                   ),
+                  _CardEsieePlus(),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 70),
                     child: RaisedButton(
@@ -148,7 +136,6 @@ class ProfileState extends State<Profile> {
     return roles.length > 0 ?  roles.toString().replaceFirst("[", "").replaceFirst("]", "") : "";
   }
 
-
   sectionCotisant() => Column(
     children: [
       Text("TU ES COTISANT", style: TextStyle(color: Colors.white, fontSize: 25)),
@@ -173,6 +160,18 @@ class ProfileState extends State<Profile> {
       )
     ],
   );
+
+  _CardEsieePlus() {
+    double cardHeight = (MediaQuery.of(context).size.width-70)*0.6;
+    double cardWidth = MediaQuery.of(context).size.width-70;
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CardEsieePlus(asPage: true,)),
+      ),
+      child:  CardEsieePlus(asPage: false,)
+    );
+  }
 
   sectionClub() => Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

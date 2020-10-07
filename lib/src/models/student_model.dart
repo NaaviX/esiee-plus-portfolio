@@ -19,9 +19,6 @@ class StudentModel {
   List<RoleModel> roles;
   List<ClubModel> clubs;
 
-
-
-
   StudentModel({
     this.idStudent,
     this.mailEsiee,
@@ -63,5 +60,4 @@ class StudentModel {
   bool operator ==(other) {
     return idStudent == other.idStudent;
   }
-
 }

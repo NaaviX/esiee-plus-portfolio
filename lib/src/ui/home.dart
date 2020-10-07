@@ -10,13 +10,17 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
+import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timer_builder/timer_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Home extends StatefulWidget {
 
@@ -32,7 +36,6 @@ class HomeState extends State<Home> {
   CourseBloc courseBloc = CourseBloc();
   EventsBloc eventBloc = EventsBloc();
   StudentsBloc studentBloc = StudentsBloc();
-  List<ClubModel> studentClub = List();
 
   @override
   void initState() {
@@ -48,6 +51,7 @@ class HomeState extends State<Home> {
     clubsBloc.dispose();
     courseBloc.dispose();
     eventBloc.dispose();
+    studentBloc.dispose();
     super.dispose();
   }
 
@@ -115,16 +119,17 @@ class HomeState extends State<Home> {
   _TopEvents() {
     List<EventModel> tops = List();
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      margin: EdgeInsets.only(top: 10),
+      //padding: EdgeInsets.symmetric(vertical: 10,),
       child: StreamBuilder(
           stream: eventBloc.allEvents,
           builder: (BuildContext context, AsyncSnapshot<List<EventModel>> events) {
             if (events.hasData) {
               events.data.removeWhere((event) => !event.enable || event.startDate.isBefore(DateTime.now()));
-              if(events.data.isEmpty) return Text("Aucun évenement à venir... 😭", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),);
+              if(events.data.isEmpty) return Container(margin: EdgeInsets.only(left: 15) ,child: Text("Aucun évenement à venir... 😭", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),));
               tops.addAll(events.data.where((event) => event.enabledStratif));
               tops.isEmpty ? tops.add(events.data.last) : tops=tops;
-              return _TopEventsList(tops);
+              return _TopEventsList(events.data);
             }
             return Container();
           }
@@ -133,10 +138,100 @@ class HomeState extends State<Home> {
   }
 
   _TopEventsList(List<EventModel> tops) {
-    return Card(
-      elevation: 0,
-
+    return StreamBuilder(
+        stream: clubsBloc.allClubs,
+        builder: (BuildContext context, AsyncSnapshot<List<ClubModel>> clubs) {
+          return clubs.hasData ?
+          Container(
+            height: 250,
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overscroll) {
+                overscroll.disallowGlow();
+                return false;
+              },
+              child: PageView.builder(
+                itemCount: tops.length,
+                controller: PageController(viewportFraction: 0.8),
+                itemBuilder: (context, i) {
+                  return Transform.scale(
+                    scale: 1,
+                    child:  GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EventInfoPage(tops[i], clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef))),//FairPayClubManager(club)),
+                      ),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        child: Column(
+                          children: <Widget>[
+                            Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                child: Container(
+                                  height: 130,
+                                  width: MediaQuery.of(context).size.width/1.25,
+                                  decoration: new BoxDecoration(
+                                    image: new DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: new NetworkImage(
+                                        tops[i].backgroundUrl,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                  ),
+                                  color: MyTheme.SelectedColor,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(DateFormat("MMM","fr_FR").format(tops[i].startDate).toUpperCase().replaceAll(".", ''), style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w600),),
+                                        Text(tops[i].startDate.day.toString(), style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.w600),),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                  width: MediaQuery.of(context).size.width/1.25 - 70,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      AutoSizeText(tops[i].name, maxLines: 2, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.w800),),
+                                      AutoSizeText("Organisé par " + clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef).name, maxLines: 2,style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.w800),),
+                                      Text(DateFormat("HH:mm","fr_FR").format(tops[i].startDate) + _hours(tops[i]), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13, fontWeight: FontWeight.w700),),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ) : Container();
+        }
     );
+  }
+
+  _hours(EventModel event) {
+    return event.startDate != event.endDate ? " à " + DateFormat("HH:mm","fr_FR").format(event.endDate) : '';
   }
 
   Future<String> getLocalCourses() async {
@@ -253,8 +348,7 @@ class HomeState extends State<Home> {
         margin: EdgeInsets.symmetric(vertical: 10.0),
         height: 80,
         //child:
-        child:
-        ListView.builder(
+        child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: clubs.length,
             itemBuilder: (BuildContext context, int index) {
@@ -272,57 +366,57 @@ class HomeState extends State<Home> {
               );
             }
         )
-  );
-}
+    );
+  }
 
-_Links() {
-  return Container(
-    margin: EdgeInsets.only(bottom: 10),
-    //height: 62,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
-        _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
-        _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
-        _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
-      ],
-    ),
-  );
-}
-
-_homeStudentUsefulLinks(String nom, String site, String image,) {
-  return InkWell(
-    child: Container(
-      padding: EdgeInsets.all(2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+  _Links() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      //height: 62,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              width: 40.0,
-              height: 40.0,
-              alignment: Alignment.center,
-              decoration: new BoxDecoration(
-                shape: BoxShape.circle,
-                image: new DecorationImage(
-                  fit: BoxFit.scaleDown,
-                  image:
-                  new NetworkImage(image),
-                ),
-              )
-          ),
-          Text(nom, style: TextStyle(fontSize: 10, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w700),),
+          _homeStudentUsefulLinks("Webaurion", "https://webaurion.esiee.fr/", "https://media-exp1.licdn.com/dms/image/C4D0BAQFbOzrZBcQXgA/company-logo_200_200/0?e=2159024400&v=beta&t=TzGOdwYwDfAOQ51SmYuSV6XaC8-uHv39pj-xLw3H2y0"),
+          _homeStudentUsefulLinks("Blackboard", "https://esiee.blackboard.com/", "https://www.osa.fu-berlin.de/studieneinstieg/en/_media/grafiken/BlackboardMobileLearnAppIcon.png"),
+          _homeStudentUsefulLinks("ICampus", "https://icampus.esiee.fr/", "https://enovationsolutions.fr/wp-content/uploads/2018/02/moodle-logo-300x225.png"),
+          _homeStudentUsefulLinks("Intra", "https://intra.esiee.fr/", "https://www.esiee.fr/sites/all/themes/custom/esiee_theme/logo.png"),
         ],
       ),
-    ),
-    customBorder: RoundedRectangleBorder(
-      borderRadius: new BorderRadius.circular(10.0),
-    ),
-    onTap: () async {
-      await launch(site);
-    },
-  );
-}
+    );
+  }
+
+  _homeStudentUsefulLinks(String nom, String site, String image,) {
+    return InkWell(
+      child: Container(
+        padding: EdgeInsets.all(2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                width: 40.0,
+                height: 40.0,
+                alignment: Alignment.center,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    fit: BoxFit.scaleDown,
+                    image:
+                    new NetworkImage(image),
+                  ),
+                )
+            ),
+            Text(nom, style: TextStyle(fontSize: 10, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w700),),
+          ],
+        ),
+      ),
+      customBorder: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(10.0),
+      ),
+      onTap: () async {
+        await launch(site);
+      },
+    );
+  }
 }

@@ -404,41 +404,47 @@ class _Base extends State<Base> {
   }
 
   Widget _getDrawer() {
-    return Container(
-      width: 270,
-      color: Theme.of(context).backgroundColor,
-      child: Drawer(
-        elevation: 20,
-        child: ListView(children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
-            height: 40,
-            child : Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 35),
-                SizedBox(width: 15,),
-                Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
-              ],
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (overscroll) {
+        overscroll.disallowGlow();
+        return false;
+      },
+      child: Container(
+        width: 270,
+        color: Theme.of(context).backgroundColor,
+        child: Drawer(
+          elevation: 20,
+          child: ListView(children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
+              height: 40,
+              child : Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 35),
+                  SizedBox(width: 15,),
+                  Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
+                ],
+              ),
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.power_settings_new, color: Theme.of(context).primaryColor.withOpacity(0.8)),
-            title: new Text(Translations.of(context).text("deco"), style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
-            onTap: () async {
-              Navigator.of(context).pop();
-              signOutGoogle();
-              Base.selectedIndex = 0;
-            },
-          ),
-          _adminMenu(),
-          _modoMenu(),
-          _trezMenu(),
-          _logMenu(),
-          _clubMenu(),
-          _studentMenu(),
-          _profMenu(),
-        ]),
+            ListTile(
+              leading: Icon(Icons.power_settings_new, color: Theme.of(context).primaryColor.withOpacity(0.8)),
+              title: new Text(Translations.of(context).text("deco"), style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
+              onTap: () async {
+                Navigator.of(context).pop();
+                signOutGoogle();
+                Base.selectedIndex = 0;
+              },
+            ),
+            _adminMenu(),
+            _modoMenu(),
+            _trezMenu(),
+            _logMenu(),
+            _clubMenu(),
+            _studentMenu(),
+            _profMenu(),
+          ]),
+        ),
       ),
     );
   }

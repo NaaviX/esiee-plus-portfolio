@@ -28,11 +28,13 @@ class ProfileState extends State<Profile> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
+    super.initState();
   }
 
   @override
   void dispose() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    super.dispose();
   }
 
   @override
@@ -86,7 +88,7 @@ class ProfileState extends State<Profile> {
                       )
                     ],
                   ),
-                  _CardEsieePlus(),
+                  Base.thisUser != null ?_CardEsieePlus() : Container(),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 70),
                     child: RaisedButton(

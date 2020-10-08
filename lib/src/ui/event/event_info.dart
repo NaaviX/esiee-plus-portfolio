@@ -49,6 +49,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   bool _isEnabled = false;
   bool _isForStratif = false;
+  bool _isTopEvent = false;
 
   bool _isFav = false;
 
@@ -333,7 +334,7 @@ class EventInfoState extends State<EventInfoPage> {
           splashColor: Colors.white,
           onPressed: () {
             eventBloc.addSaveEvent(widget.event);
-            Base.selectedIndex = 2;
+            Base.selectedIndex = 1;
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
           }
       );
@@ -370,6 +371,7 @@ class EventInfoState extends State<EventInfoPage> {
   _validationMod() {
     _isEnabled = widget.event.enable;
     _isForStratif = widget.event.enabledStratif;
+    _isTopEvent = widget.event.topEvent;
     if(widget.isModeration)
     {
       return Column(
@@ -385,6 +387,21 @@ class EventInfoState extends State<EventInfoPage> {
                 widget.event.enable = _isEnabled;
                 eventBloc.addSaveEvent(widget.event);
               });
+            },
+            activeColor : Colors.green,
+            inactiveThumbColor : Colors.red,
+          ),
+          SwitchListTile(
+            title:const Text('Top Event '),
+            value: _isTopEvent,
+            onChanged: (bool value)
+            {
+              setState( ()
+              {
+                _isTopEvent = value;
+              });
+              widget.event.topEvent = _isTopEvent;
+              eventBloc.addSaveEvent(widget.event);
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,

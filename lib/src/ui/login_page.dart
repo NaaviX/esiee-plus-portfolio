@@ -47,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Image(image: AssetImage('assets/esieeplus/LogoFond.webp'), width: 150),
                       elevation: 5,
                     ),
+
                     /*Container(
                       constraints: BoxConstraints(maxWidth: 250.0, minHeight: 60.0),
                       margin: EdgeInsets.symmetric(vertical: 70),

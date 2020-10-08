@@ -61,40 +61,27 @@ class CardEsieePlusState extends State<CardEsieePlus> {
                   child: _CardEsieePlus(),
                 )
             ),
-            Positioned(
-                top: 15,
-                left: 15,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).primaryColor,
-                    size: 45,
-                  ),
-                  color: Colors.transparent,
-                  onPressed: () { if(Navigator.canPop(context)) Navigator.pop(context); },
-                )
+            Align(
+              alignment: Alignment.centerRight,
+              //right: 20,
+              child: RawMaterialButton(
+                onPressed: () { if(Navigator.canPop(context)) Navigator.pop(context); },
+                elevation: 2.0,
+                fillColor: Theme.of(context).primaryColor,
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 30.0,
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.all(15.0),
+                shape: CircleBorder(),
+              ),
             ),
           ],
         )
     ) :
     _CardEsieePlus();
   }
-
-  backButton() => Container(
-      padding: EdgeInsets.all(5),
-      margin: EdgeInsets.only(bottom: 10, left: 10),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Theme.of(context).primaryColor,
-      ),
-      child: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-        ),
-        onPressed: () { if(Navigator.canPop(context)) Navigator.pop(context); },
-      )
-  );
 
   _CardEsieePlus() {
     double cardHeight = 650;

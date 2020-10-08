@@ -128,7 +128,7 @@ class HomeState extends State<Home> {
           builder: (BuildContext context, AsyncSnapshot<List<EventModel>> events) {
             if (events.hasData) {
               events.data.removeWhere((event) => !event.enable || event.startDate.isBefore(DateTime.now()));
-              if(events.data.isEmpty) return Container(margin: EdgeInsets.only(left: 15) ,child: Text("Aucun évenement à venir... 😭", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),));
+              if(events.data.isEmpty) return Container(margin: EdgeInsets.only(left: 15) ,child: Text("Aucun évenement à venir... 😔", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),));
               tops.addAll(events.data.where((event) => event.topEvent));
               tops.isEmpty ? tops.add(events.data.last) : tops=tops;
               return _TopEventsList(tops);

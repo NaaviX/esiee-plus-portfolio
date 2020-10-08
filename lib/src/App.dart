@@ -225,27 +225,30 @@ class _Base extends State<Base> {
                 Color color = data.data;
                 return GestureDetector(
                   onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile(color)
+                    context,
+                    MaterialPageRoute(builder: (context) => Profile(color)
+                    ),
                   ),
-                ),
-              child: Container(
-              //padding: EdgeInsets.all(15),
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Hero(
-              tag: "photo",
-              child: CircleAvatar(
-              backgroundImage: NetworkImage(user.photoUrl),
-              radius: 20,
-              )),
-              /*Image.asset(
+                  child: Container(
+                    //padding: EdgeInsets.all(15),
+                    color: Theme.of(context).backgroundColor,
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Hero(
+                        tag: "photo",
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(user.photoUrl),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          radius: 20,
+                        )
+                    ),
+                    /*Image.asset(
             'assets/esieeplus/Logo.webp',
           ),*/
-              ),
-              );
+                  ),
+                );
               }
               return CircleAvatar(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Theme.of(context).backgroundColor,
                 radius: 20,
               );
             }),

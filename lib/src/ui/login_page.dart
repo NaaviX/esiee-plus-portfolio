@@ -165,7 +165,6 @@ class _LoginPageState extends State<LoginPage> {
           if (user != null) {
             if(!user.email.endsWith("esiee.fr")) {
               signOutGoogle();
-
             }
           } else {
             signOutGoogle();

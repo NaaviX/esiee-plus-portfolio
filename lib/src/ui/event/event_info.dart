@@ -509,7 +509,7 @@ class EventInfoState extends State<EventInfoPage> {
               onPressed: () {
                 eventBloc.deleteEvent(widget.event);
                 if(Base.thisClub != null && !widget.isModeration) {
-                  Base.selectedIndex = 2;
+                  Base.selectedIndex = 1;
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
                 }
                 else {

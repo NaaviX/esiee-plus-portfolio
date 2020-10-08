@@ -360,6 +360,7 @@ class _Base extends State<Base> {
                             Base.thisProf = snapshot.data;
                             return _getApp();
                           } else {
+                            signOutGoogle();
                             log.fine("loading");
                             return Container(
                               color: Theme.of(context).backgroundColor,

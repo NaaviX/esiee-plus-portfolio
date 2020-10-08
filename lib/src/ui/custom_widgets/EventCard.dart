@@ -90,8 +90,18 @@ class EventCardState extends State<EventCard> {
                               Positioned(
                                   top: 15,
                                   right: 15,
-                                  child : _favCard(),
-                              )
+                                  child : GestureDetector(
+                                    onTap: () {
+                                      _isFav ? unfavEvent() : favEvent();
+                                      setState(() {
+                                        _isFav = !_isFav;
+                                        setState(() {
+                                        });
+                                      });
+                                    },
+                                    child: _favCard(),
+                                  ),
+                                ),
                             ]),
                         Container(
                           width: MediaQuery
@@ -269,5 +279,22 @@ class EventCardState extends State<EventCard> {
     else if(event.enable == false) return "en attente d'approbation";
     else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
     else return "";
+  }
+
+  void favEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.add( widget.event );
+    String savedEventsJson = json.encode(savedEvents);
+    prefs.setString("savedEventsJson", savedEventsJson);
+  }
+
+  void unfavEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.removeWhere((event) => event["idEvent"] == widget.event.idEvent);
+    prefs.setString("savedEventsJson", json.encode(savedEvents));
   }
 }

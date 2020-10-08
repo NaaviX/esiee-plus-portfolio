@@ -82,13 +82,16 @@ class CardEsieePlusState extends State<CardEsieePlus> {
 
   backButton() => Container(
       padding: EdgeInsets.all(5),
-      margin: EdgeInsets.only(top: 10, left: 10),
+      margin: EdgeInsets.only(bottom: 10, left: 10),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Theme.of(context).primaryColor,
+      ),
       child: IconButton(
         icon: Icon(
           Icons.arrow_back,
           color: Colors.white,
         ),
-        color: Colors.transparent,
         onPressed: () { if(Navigator.canPop(context)) Navigator.pop(context); },
       )
   );

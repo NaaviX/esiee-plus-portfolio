@@ -13,8 +13,9 @@ import 'package:flutter/services.dart';
 class ColorDetect {
   final coverData;
   img.Image photo;
+  BuildContext context;
 
-  ColorDetect(this.coverData);
+  ColorDetect(this.coverData, this.context);
 
   void setImageBytes(imageBytes) {
     print("setImageBytes");
@@ -28,6 +29,16 @@ class ColorDetect {
     int r = (argbColor >> 16) & 0xFF;
     int b = argbColor & 0xFF;
     return (argbColor & 0xFF00FF00) | (b << 16) | r;
+  }
+
+  int getLuminance( Color color ){
+    double Y = 0.2126*color.red + 0.7152*color.green + 0.0722*color.blue;
+    return Y.toInt();
+  }
+
+  bool isNearFromWhite( Color color, int treshold ){
+    int Y = getLuminance(color);
+    return Y > 255-treshold;
   }
 
   Future<Color> getColor() async {
@@ -56,7 +67,10 @@ class ColorDetect {
     int hex = abgrToArgb(pixel32);
     print("Value of int: $hex ");
 
-    return Color(hex);
+    Color meanColor = Color(hex);
+    int l = getLuminance(meanColor);
+
+    return !isNearFromWhite(meanColor, 50) ? meanColor : Theme.of(context).primaryColor;
   }
 }
 

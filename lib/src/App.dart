@@ -3,7 +3,7 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/ColorMean.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
@@ -215,7 +215,7 @@ class _Base extends State<Base> {
   ];
 
   List<Widget> actionButton() {
-    ColorDetect c = ColorDetect(user.photoUrl);
+    ColorDetect c = ColorDetect(user.photoUrl, context);
     if (Base.selectedIndex == 0) {
       return [
         FutureBuilder(
@@ -426,15 +426,6 @@ class _Base extends State<Base> {
                   Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
                 ],
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.power_settings_new, color: Theme.of(context).primaryColor.withOpacity(0.8)),
-              title: new Text(Translations.of(context).text("deco"), style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),),
-              onTap: () async {
-                Navigator.of(context).pop();
-                signOutGoogle();
-                Base.selectedIndex = 0;
-              },
             ),
             _adminMenu(),
             _modoMenu(),

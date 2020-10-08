@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
-import 'custom_widgets/ColorMean.dart';
+import 'custom_widgets/Color.dart';
 
 class Profile extends StatefulWidget {
 
@@ -39,7 +39,6 @@ class ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    ColorDetect c = ColorDetect(user.photoUrl);
     return Material(
         type: MaterialType.transparency,
         child: SingleChildScrollView(
@@ -66,7 +65,7 @@ class ProfileState extends State<Profile> {
                           ),
                           child: CircleAvatar(
                             backgroundImage: NetworkImage(user.photoUrl),
-                            radius: 60,
+                            radius: 50,
                           ),
                         )),
                     Column(
@@ -90,7 +89,7 @@ class ProfileState extends State<Profile> {
                         )
                       ],
                     ),
-                    Base.thisUser != null ?_CardEsieePlus() : Container(),
+                    Base.thisUser != null ? _CardEsieePlus() : Container(),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 70),
                       child: RaisedButton(

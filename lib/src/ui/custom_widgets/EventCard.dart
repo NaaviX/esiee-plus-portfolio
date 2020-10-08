@@ -79,14 +79,14 @@ class EventCardState extends State<EventCard> {
                                   color: Colors.black,
                                   image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    //colorFilter: _filter(event),
+                                    colorFilter: _filter(event),
                                     image: new NetworkImage(
                                       event.backgroundUrl,
                                     ),
                                   ),
                                 ),
                               ),
-                              //_isEnded(context, event),
+                              _isEnded(context, event),
                               Positioned(
                                   top: 15,
                                   right: 15,

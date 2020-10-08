@@ -68,6 +68,7 @@ class ProfileState extends State<Profile> {
                             radius: 50,
                           ),
                         )),
+                    SizedBox(height: 20,),
                     Column(
                       children: [
                         Text(user.displayName.toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 30)),

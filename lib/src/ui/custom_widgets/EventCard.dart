@@ -74,22 +74,24 @@ class EventCardState extends State<EventCard> {
                             children: <Widget>[
                               Container(
                                 height: 150,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
+                                width: MediaQuery.of(context).size.width,
                                 decoration: new BoxDecoration(
                                   color: Colors.black,
                                   image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    colorFilter: _filter(event),
+                                    //colorFilter: _filter(event),
                                     image: new NetworkImage(
                                       event.backgroundUrl,
                                     ),
                                   ),
                                 ),
                               ),
-                              _isEnded(context, event),
+                              //_isEnded(context, event),
+                              Positioned(
+                                  top: 15,
+                                  right: 15,
+                                  child : _favCard(),
+                              )
                             ]),
                         Container(
                           width: MediaQuery
@@ -127,11 +129,11 @@ class EventCardState extends State<EventCard> {
                                                     color: Colors.black,
                                                     fontSize: 19.0),
                                               ),
-                                              WidgetSpan(
+                                              /*WidgetSpan(
                                                 alignment: PlaceholderAlignment
                                                     .top,
                                                 child: _favCard(),
-                                              ),
+                                              ),*/
                                               TextSpan(
                                                 text: snapshot.hasData ? "\n" + snapshot.data.name : "\n",
                                                 style: TextStyle(
@@ -177,14 +179,15 @@ class EventCardState extends State<EventCard> {
           dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
           List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
           _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
-          return _isFav ? Container(
+          return Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
+              color: (_isFav ? Colors.red : Colors.grey));/*_isFav ? Container(
             child: Icon(FontAwesomeIcons.solidHeart, size: 15, color: Colors.red),
             margin: EdgeInsets.only(left: 5),
           ) :
           Container(
             child: Icon(null, size: 15, color: Colors.red),
             margin: EdgeInsets.only(left: 5),
-          );
+          );*/
         }
     );
   }

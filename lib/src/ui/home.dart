@@ -40,7 +40,7 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-    BlocProvider.of<ClubsBloc>(context).add(ClubsRequested());
+
     if(Base.thisUser != null) {
       courseBloc.fetchAllCourses(getGradeUnitsID().toString());
     }
@@ -72,21 +72,8 @@ class HomeState extends State<Home> {
                 SizedBox(
                   height: 5,
                 ),
-                BlocBuilder<ClubsBloc, ClubState>(builder: (context, state) {
-                  if (state is ClubsInitial) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is ClubsLoadInProgress) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is ClubsLoadSuccess) {
-                    Base.allClubs = state.clubs;
-                    print(Base.allClubs.length);
+                Base.allClubs != null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
 
-                    return _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList());
-                  }
-                  return Container();
-                }),
                 Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
                 _Component('Top Events', 2),
               ],

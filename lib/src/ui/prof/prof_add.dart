@@ -1,7 +1,9 @@
+import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProf extends StatefulWidget {
   ProfModel thisProf;
@@ -13,8 +15,6 @@ class AddProf extends StatefulWidget {
   }
 }
 class AddProfState extends State<AddProf> {
-
-  final bloc = ProfsBloc();
   AddProfForm form;
 
   @override
@@ -56,7 +56,8 @@ class AddProfState extends State<AddProf> {
                           units: form.selectedChoices.toList(),
                           urlPhoto: verifURL(),
                         );
-                        bloc.addSaveProf(prof);
+                        BlocProvider.of<ProfsBloc>(context)
+                            .add(ProfToBeSaved(prof: prof));
                         Navigator.of(context).pop();
                   }
                 },

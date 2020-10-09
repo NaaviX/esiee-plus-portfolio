@@ -92,21 +92,6 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
               return Container();
             })
 
-                /*StreamBuilder(
-                    stream: stocks.allStocks,
-                    builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
-                      if (snapshot.hasData) {
-                        return TabBarView(
-                          controller: _tabController,
-                          children: [
-                            Tac(context, stocks, snapshot),
-                            Reserve(context, stocks, snapshot),
-                          ],
-                        );
-                      }
-                      else return Center(child: CircularProgressIndicator());
-                    })*/
-
                 ),
             floatingActionButton: _bottomButtons()));
   }
@@ -215,38 +200,6 @@ class TacState extends State<Tac> {
             })
     );*/
   }
-
-  /*_hard(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
-    return Column(
-        children: [
-          Text("Hard Pack", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-          Column(
-            children: _List(context, snapshot, stocks, "Hard Pack"),
-          ),
-          SizedBox(height: 20,),
-          Text("Hard", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-          Column(
-            children: _List(context, snapshot, stocks, "Hard"),
-          ),
-        ]
-    );
-  }
-
-  _soft(context, AsyncSnapshot<List<StockModel>> snapshot, StockBloc stocks) {
-    return Column(
-        children: [
-          Text("Soft Pack", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-          Column(
-            children: _List(context, snapshot, stocks, "Soft Pack"),
-          ),
-          SizedBox(height: 20,),
-          Text("Soft", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.bold),),
-          Column(
-            children: _List(context, snapshot, stocks, "Soft"),
-          ),
-        ]
-    );
-  }*/
 
   _list(context, List<StockModel> stocks,
       String type) {

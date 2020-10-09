@@ -1,11 +1,22 @@
+import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_list.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/search_prof.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
+import 'package:meta/meta.dart';
+
 class UnitsList extends StatefulWidget {
+  final ProfsBloc profsBloc;
+
+  UnitsList({Key key, @required this.profsBloc})
+      : assert(profsBloc != null),
+        super(key: key);
+
+
   @override
   State<StatefulWidget> createState() {
     return UnitsListState();
@@ -14,6 +25,10 @@ class UnitsList extends StatefulWidget {
 
 class UnitsListState extends State<UnitsList> {
   UnitBloc units = UnitBloc();
+
+
+
+
 
   FocusNode currentFocus;
 
@@ -52,7 +67,8 @@ class UnitsListState extends State<UnitsList> {
                           },
                           child: Container(
                             margin: EdgeInsets.all(5),
-                            child: SearchProf(this),
+                            child: BlocProvider(create: (BuildContext context) => widget.profsBloc,
+                child: SearchProf(this))
                           )
                       ),
                       Container(
@@ -69,7 +85,11 @@ class UnitsListState extends State<UnitsList> {
                                 child: new InkWell(
                                   onTap: () => {Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ProfList(selectedUnit: snapshot.data[index],)),
+                                    MaterialPageRoute(builder: (context) {
+                                      return BlocProvider(create: (BuildContext context) => widget.profsBloc,
+                                          child: ProfList(
+                                            selectedUnit: snapshot.data[index],));
+                                    }),
                                   )},
                                   borderRadius: BorderRadius.circular(10.0),
                                   child: new Container(

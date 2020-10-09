@@ -22,7 +22,7 @@ class ClubRepository {
     return clubApiProvider.fetchClubByMail(mail);
   }
 
-  Future<ClubModel> saveStock(ClubModel club) async {
+  Future<ClubModel> saveClub(ClubModel club) async {
     return clubApiProvider.updateClub(club);
   }
 }

@@ -37,13 +37,6 @@ class Repository {
   Future<EventModel> addSaveEvent(EventModel event) => eventsApiProvider.addEvent(event);
   void deleteEvent(EventModel event) => eventsApiProvider.deleteEvent(event);
 
-  final profApiProvider = ProfApiProvider();
-  Future<List<ProfModel>> fetchAllProfs() =>
-      profApiProvider.fetchProfList();
-  Future<ProfModel> fetchProfByMail(String mailEsiee) =>
-      profApiProvider.fetchProfByMail(mailEsiee);
-  Future<ProfModel> addSaveProf(ProfModel prof) => profApiProvider.addProf(prof);
-
   final studentApiProvider = StudentApiProvider(client : Client());
   Future<List<StudentModel>> fetchAllStudents() =>
       studentApiProvider.fetchStudentList();

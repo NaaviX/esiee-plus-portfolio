@@ -11,6 +11,11 @@ import '../../App.dart';
 import 'messenger.dart';
 
 class MessengerList extends StatefulWidget {
+  final List<ProfModel> profs;
+
+  MessengerList({Key key, @required this.profs})
+      : assert(profs != null),
+        super(key: key);
   @override
   State<StatefulWidget> createState() {
     return MessengerListState();
@@ -30,8 +35,8 @@ class MessengerListState extends State<MessengerList> {
       ));
       tabs.add(Tab(icon: Icon(Icons.people), text: "Clubs"));
 
-      links.add(MessengerStudentList());
-      links.add(MessengerClubList());
+      links.add(KeepAlivePage(child: MessengerStudentList()));
+      links.add(KeepAlivePage(child: MessengerClubList()));
     } else if(Base.thisClub != null) {
       tabs.add(Tab(
         icon: Icon(Icons.person),
@@ -39,14 +44,14 @@ class MessengerListState extends State<MessengerList> {
       ));
       tabs.add(Tab(icon: Icon(Icons.school), text: "Professeurs"));
 
-      links.add(MessengerStudentList());
-      links.add(MessengerProfList());
+      links.add(KeepAlivePage(child: MessengerStudentList()));
+      links.add(KeepAlivePage(child: MessengerProfList(profs: widget.profs)));
     } else {
       tabs.add(Tab(icon: Icon(Icons.people), text: "Clubs"));
       tabs.add(Tab(icon: Icon(Icons.school), text: "Professeurs"));
 
-      links.add(MessengerClubList());
-      links.add(MessengerProfList());
+      links.add(KeepAlivePage(child: MessengerClubList()));
+      links.add(KeepAlivePage(child: MessengerProfList(profs: widget.profs)));
     }
     super.initState();
   }
@@ -227,6 +232,11 @@ class MessengerStudentListState extends State<MessengerStudentList> {
 }
 
 class MessengerProfList extends StatefulWidget {
+  final List<ProfModel> profs;
+
+  MessengerProfList({Key key, @required this.profs})
+      : assert(profs != null),
+        super(key: key);
   @override
   State<StatefulWidget> createState() {
     return MessengerProfListState();
@@ -234,7 +244,6 @@ class MessengerProfList extends StatefulWidget {
 }
 
 class MessengerProfListState extends State<MessengerProfList> {
-  ProfsBloc profsBloc = ProfsBloc();
 
   final searchController = TextEditingController();
 
@@ -243,7 +252,6 @@ class MessengerProfListState extends State<MessengerProfList> {
   @override
   void initState() {
     super.initState();
-    profsBloc.fetchAllProfs();
     searchController.addListener(() {
       setState(() {
         filter = searchController.text;
@@ -253,17 +261,13 @@ class MessengerProfListState extends State<MessengerProfList> {
 
   @override
   void dispose() {
-    profsBloc.dispose();
     searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: profsBloc.allProfs,
-        builder: (context, AsyncSnapshot<List<ProfModel>> profSnapshot) {
-          if (profSnapshot.hasData) {
+          if (widget.profs!=null && widget.profs.length != 0) {
             return Column(children: <Widget>[
               Container(
                   decoration: BoxDecoration(
@@ -283,10 +287,10 @@ class MessengerProfListState extends State<MessengerProfList> {
                       ])),
               Expanded(
                   child: ListView.builder(
-                      itemCount: profSnapshot.data.length,
+                      itemCount: widget.profs.length,
                       itemBuilder: (BuildContext context, int index) {
                         filter = searchController.text;
-                        ProfModel prof = profSnapshot.data[index];
+                        ProfModel prof = widget.profs[index];
                         return (filter == null || filter == "")
                             ? _profTile(prof, index)
                             : (prof.firstname
@@ -305,7 +309,6 @@ class MessengerProfListState extends State<MessengerProfList> {
           }
 
           return Center(child: CircularProgressIndicator());
-        });
   }
 
   _profTile(ProfModel prof, int index) {

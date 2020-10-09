@@ -1,5 +1,7 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -7,6 +9,7 @@ import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../App.dart';
@@ -14,6 +17,8 @@ import 'messenger.dart';
 import 'messenger_list.dart';
 
 class MessengerHistory extends StatefulWidget {
+
+
   @override
   State<StatefulWidget> createState() {
     return MessengerHistoryState();
@@ -25,7 +30,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
   List<String> discussions = new List();
 
   StudentsBlocOld studentsBloc = StudentsBlocOld();
-  ProfsBloc profsBloc = ProfsBloc();
 
   List<StudentModel> allStudents = new List();
   List<ClubModel> allClubs = new List();
@@ -35,7 +39,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
   void dispose() {
     super.dispose();
     studentsBloc.dispose();
-    profsBloc.dispose();
   }
 
   @override
@@ -49,15 +52,28 @@ class MessengerHistoryState extends State<MessengerHistory> {
               if (Base.allClubs != null && Base.allClubs.length != 0) {
                 allClubs.addAll(Base.allClubs);
               }
-              return StreamBuilder(
-                stream: profsBloc.allProfs,
-                builder: (context, AsyncSnapshot<List<ProfModel>> snapshot) {
-                  if (snapshot.hasData) {
-                    allProfs.addAll(snapshot.data);
-                  }
-                  return getConvs();
-                },
-              );
+              return BlocBuilder<ProfsBloc, ProfState>(
+                  builder: (context, state) {
+                    if (state is ProfsInitial) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (state is ProfsLoadInProgress) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (state is ProfsLoadSuccess) {
+                      final profs = state.profs;
+
+                      allProfs.addAll(profs);
+                      return getConvs();
+                    }
+                    if (state is ProfsLoadFailure) {
+                      return Text(
+                        'Something went wrong!',
+                        style: TextStyle(color: Colors.red),
+                      );
+                    }
+                    return Container();
+                  });
             });
   }
 
@@ -179,7 +195,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return MessengerList();
+            return MessengerList(profs: allProfs,);
           }));
         },
         child: const Icon(FontAwesomeIcons.solidCommentDots),
@@ -201,7 +217,8 @@ class MessengerHistoryState extends State<MessengerHistory> {
   @override
   void initState() {
     studentsBloc.fetchAllStudents();
-    profsBloc.fetchAllProfs();
+    BlocProvider.of<ProfsBloc>(context)
+        .add(ProfsRequested());
     super.initState();
   }
 }

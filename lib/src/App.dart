@@ -3,6 +3,8 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/prof_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/role_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
@@ -45,6 +47,8 @@ import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/jwt_bloc.dart';
+import 'blocs/prof_event.dart';
+import 'blocs/prof_state.dart';
 import 'blocs/roles_bloc.dart';
 import 'blocs/roles_event.dart';
 import 'blocs/roles_state.dart';
@@ -173,6 +177,11 @@ class JwtAuthState extends State<JwtAuth> {
                 client: Client(),
               ),
             );
+            final ProfRepository profRepository = ProfRepository(
+              profApiProvider: ProfApiProvider(
+                client: Client(),
+              ),
+            );
 
             return MaterialApp(
               theme: MyTheme.defaultTheme,
@@ -189,6 +198,10 @@ class JwtAuthState extends State<JwtAuth> {
                 BlocProvider<ClubsBloc>(
                   create: (BuildContext context) =>
                       ClubsBloc(clubRepository: clubRepository),
+                ),
+                BlocProvider<ProfsBloc>(
+                  create: (BuildContext context) =>
+                      ProfsBloc(profRepository: profRepository),
                 ),
               ], child: UserAuth()),
               localizationsDelegates: [
@@ -236,7 +249,8 @@ class UserAuthState extends State<UserAuth> {
     BlocProvider.of<RolesBloc>(context).add(RolesRequested());
     BlocProvider.of<StudentsBloc>(context)
         .add(StudentRequested(email: user.email));
-    BlocProvider.of<ClubsBloc>(context).add(ClubRequested(mail: user.email));
+    BlocProvider.of<ClubsBloc>(context).add(ClubsRequested());
+    BlocProvider.of<ProfsBloc>(context).add(ProfRequested(mail: user.email));
   }
 
   @override
@@ -267,25 +281,41 @@ class UserAuthState extends State<UserAuth> {
             if (state is StudentLoadFailure) {
               //isClub
               return BlocBuilder<ClubsBloc, ClubState>(
-                buildWhen: (context, state) {
-                  return false;
-                },
                 builder: (context, state) {
-                  if (state is ClubInitial) {
+                  if (state is ClubsInitial) {
                     return Center(child: CircularProgressIndicator());
                   }
-                  if (state is ClubLoadInProgress) {
+                  if (state is ClubsLoadInProgress) {
                     return Center(child: CircularProgressIndicator());
                   }
-                  if (state is ClubLoadSuccess) {
+                  if (state is ClubsLoadSuccess) {
                     //isStudent
                     log.fine("club");
-                    Base.thisClub = state.club;
-                    return Base();
-                  }
-                  if (state is ClubLoadFailure) {
-                    //C'est un prof
-                    return Base();
+                    Base.allClubs = state.clubs;
+                    Base.thisClub = state.clubs.firstWhere((element) => element.mail == user.email);
+
+                    if(Base.thisClub != null) {
+                      return Base();
+                    } else {
+                      //C'est un prof
+                      return BlocBuilder<ProfsBloc, ProfState>(
+                          builder: (context, state) {
+                        if (state is ProfInitial) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is ProfLoadInProgress) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is ProfLoadSuccess) {
+                          //isStudent
+                          log.fine("prof");
+                          Base.thisProf = state.prof;
+                          return Base();
+                        }
+                        if (state is ProfLoadFailure) {}
+                        return Container();
+                      });
+                    }
                   }
                   return Container();
                 },
@@ -307,7 +337,7 @@ class UserAuthState extends State<UserAuth> {
 }
 
 class Base extends StatefulWidget {
-  static double selectedIndex = 0;
+  static int selectedIndex = 0;
   static List<RoleModel> allRoles;
   static List<ClubModel> allClubs;
   static StudentModel thisUser;
@@ -320,19 +350,13 @@ class Base extends StatefulWidget {
 }
 
 class _Base extends State<Base> {
-  final profsBloc = ProfsBloc();
 
   final log = Logger('BASE');
 
   PageController pageController =
-      PageController(initialPage: Base.selectedIndex.toInt());
+      PageController(initialPage: Base.selectedIndex);
 
-
-  List<Widget> _widgetOptions = <Widget>[
-    KeepAlivePage(child: Home()),
-    KeepAlivePage(child: Calendar()),
-    KeepAlivePage(child: EventList()),
-  ];
+  List<Widget> _widgetOptions;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -424,18 +448,17 @@ class _Base extends State<Base> {
 
   @override
   void initState() {
-    profsBloc.fetchProf(user.email);
-    pageController.addListener(() {
-      setState(() {
-        Base.selectedIndex = pageController.page;
-      });
-    });
+    _widgetOptions = <Widget>[
+      KeepAlivePage(child: Home()),
+      KeepAlivePage(child: Calendar()),
+      KeepAlivePage(child: EventList()),
+    ];
+    if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
   }
 
   @override
   void dispose() {
-    profsBloc.dispose();
     super.dispose();
   }
 
@@ -449,7 +472,7 @@ class _Base extends State<Base> {
 
   void _onPageChanged(int index) {
     setState(() {
-      Base.selectedIndex = index.toDouble();
+      Base.selectedIndex = index;
     });
   }
 
@@ -463,24 +486,11 @@ class _Base extends State<Base> {
     ]);
     log.fine("base");
 
-    if (Base.thisUser == null && Base.thisClub == null) {
-      return StreamBuilder(
-        stream: profsBloc.thisProf,
-        builder: (context, AsyncSnapshot<ProfModel> snapshot) {
-          print("connection state prof ${snapshot.connectionState}");
-          if (snapshot.hasData) {
-            log.fine("prof");
-            Base.thisProf = snapshot.data;
-            return _getApp();
-          } else {
-            log.fine("loading");
-            return Container(
+    if (Base.thisUser == null && Base.thisClub == null && Base.thisProf == null) {
+      return Container(
               color: Theme.of(context).backgroundColor,
               child: LoginPage(),
-            ); //Center(child: Text("Loading"));//new CircularProgressIndicator());
-          }
-        },
-      );
+            );
     } else {
       return _getApp();
     }
@@ -488,7 +498,6 @@ class _Base extends State<Base> {
 
   Widget _getApp() {
 
-    if (Base.thisUser == null) _widgetOptions.removeAt(1);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -500,12 +509,13 @@ class _Base extends State<Base> {
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
             brightness: Brightness.light,
-            title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex.toInt()),
-            //Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
+            title: _selectedAppbarTitleWidget
+                .elementAt(Base.selectedIndex),
             actions: actionButton()),
         body: PageView(
           controller: pageController,
           children: _widgetOptions,
+          onPageChanged: _onPageChanged,
         ),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: _getDrawer());
@@ -763,7 +773,16 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return MessengerHistory();
+              final ProfRepository profRepository = ProfRepository(
+                profApiProvider: ProfApiProvider(
+                  client: Client(),
+                ),
+              );
+              ProfsBloc profsBloc =
+              ProfsBloc(profRepository: profRepository);
+              return BlocProvider(
+                  create: (BuildContext context) => profsBloc,
+              child: MessengerHistory());
             }));
           },
         ),
@@ -804,7 +823,14 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return UnitsList();
+              final ProfRepository profRepository = ProfRepository(
+                profApiProvider: ProfApiProvider(
+                  client: Client(),
+                ),
+              );
+              ProfsBloc profsBloc =
+              ProfsBloc(profRepository: profRepository);
+              return UnitsList(profsBloc: profsBloc);
             }));
           },
         ),
@@ -989,7 +1015,7 @@ class _Base extends State<Base> {
       items: items,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      currentIndex: Base.selectedIndex.toInt(),
+      currentIndex: Base.selectedIndex,
       selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );

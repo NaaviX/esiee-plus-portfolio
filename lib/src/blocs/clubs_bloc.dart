@@ -42,71 +42,10 @@ class ClubsBloc extends Bloc<ClubEvent, ClubState> {
 
     else if (event is ClubToBeSaved) {
       try {
-        await clubRepository.saveStock(event.club);
+        await clubRepository.saveClub(event.club);
       } catch (_) {
         yield ClubSaveLoadFailure();
       }
     }
   }
 }
-
-/*
-class ClubsBloc {
-  final _repository = Repository();
-  final _clubsFetcher = PublishSubject<List<ClubModel>>();
-  final _clubFetcher = PublishSubject<ClubModel>();
-
-  Observable<List<ClubModel>> get allClubs => _clubsFetcher.stream;
-  Observable<ClubModel> get thisClub => _clubFetcher.stream;
-
-  fetchAllClubs() async {
-    List<ClubModel> clubmodel = await _repository.fetchAllClubs();
-    clubmodel.sort((item1, item2) => item1.name.compareTo(item2.name));
-    _clubsFetcher.sink.add(clubmodel);
-  }
-
-  fetchClub(String email) async {
-    ClubModel clubModel = await _repository.fetchClubByMail(email);
-    _clubFetcher..sink.add(clubModel);
-  }
-
-  fetchClubById(int id) async {
-    List<ClubModel> clubModel = await _repository.fetchAllClubs();
-    for(ClubModel c in clubModel) {
-      if(c.idClubRef == id) {
-        _clubFetcher..sink.add(c);
-      }
-    }
-  }
-
-  fetchTotalAmount() async {
-    List<ClubModel> clubModel = await _repository.fetchAllClubs();
-    double total = 0;
-    for(ClubModel c in clubModel){
-      total += c.solde;
-    }
-    return total;
-  }
-  addStudentToClub(StudentModel student, ClubModel club) async {
-    club.students.add(student);
-    await _repository.updateClub(club);
-  }
-  removeStudentFromClub(StudentModel student, ClubModel club) async {
-    club.students.remove(student);
-    await _repository.updateClub(club);
-  }
-
-  updateClub(ClubModel club) async {
-    await _repository.updateClub(club);
-  }
-
-  editSolde(ClubModel club, double diff) async {
-    club.solde += diff;
-    await _repository.updateClub(club);
-  }
-
-  dispose() {
-    _clubsFetcher.close();
-    _clubFetcher.close();
-  }
-}*/

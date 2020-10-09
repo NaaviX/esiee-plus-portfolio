@@ -1,10 +1,12 @@
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'club_fairpay.dart';
 
@@ -99,7 +101,13 @@ fairpayForm(FairpayState parent, String type, ClubModel club) {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         parent.setState(() { });
-                        if(type != "Subvention" && Base.thisUser != null) clubsBloc.editSolde(club, _getAmount());
+                        if(type != "Subvention" && Base.thisUser != null) {
+                          club.solde += _getAmount();
+                          BlocProvider.of<ClubsBloc>(context)
+                              .add(ClubToBeSaved(club: club));
+                          BlocProvider.of<ClubsBloc>(context)
+                              .add(ClubsRequested());
+                        }
                         fairpayBloc.addLog(
                             FairpayLogModel(
                                 type: type,

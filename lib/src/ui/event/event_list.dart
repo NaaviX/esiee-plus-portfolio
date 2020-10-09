@@ -27,7 +27,6 @@ class EventList extends StatefulWidget {
 
 class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
   final eventBloc = EventsBloc();
-  final clubBloc = ClubsBloc();
 
   String selected;
 
@@ -35,14 +34,12 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     eventBloc.fetchAllEvents();
-    clubBloc.fetchAllClubs();
     selected = "Mes évents";
   }
 
   @override
   void dispose() {
     eventBloc.dispose();
-    clubBloc.dispose();
     super.dispose();
   }
 
@@ -143,13 +140,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
           );
         }
     )
-        : StreamBuilder(
-        stream: clubBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return ListView.builder(
+        : ListView.builder(
             //scrollDirection: Axis.horizontal,
               itemCount: events.length,
               itemBuilder: (BuildContext context, int index) {
@@ -157,14 +148,12 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        getCoverModerator(events[index], snapshot.data, context),
+                        getCoverModerator(events[index], Base.allClubs, context),
                       ]
                   ),
                 );
               }
           );
-        }
-    );
   }
 
   getCover(EventModel event, BuildContext context) {

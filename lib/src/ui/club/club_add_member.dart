@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
@@ -26,8 +27,6 @@ class ClubAddMember extends StatefulWidget {
 }
 
 class ClubAddMemberState extends State<ClubAddMember> {
-
-  ClubsBloc clubsBloc = ClubsBloc();
 
   final log = Logger('clubaddmember');
 
@@ -139,7 +138,9 @@ class ClubAddMemberState extends State<ClubAddMember> {
                 backgroundColor: Colors.red,
               ));
             } else {
-              clubsBloc.addStudentToClub(item, Base.thisClub);
+              Base.thisClub.students.add(item);
+              BlocProvider.of<ClubsBloc>(context)
+                  .add(ClubToBeSaved(club: Base.thisClub));
               Scaffold.of(context).showSnackBar(SnackBar(
                 duration: Duration(seconds: 1),
                 content: Text("Membre ajouté !"),

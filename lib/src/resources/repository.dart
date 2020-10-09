@@ -37,11 +37,6 @@ class Repository {
   Future<EventModel> addSaveEvent(EventModel event) => eventsApiProvider.addEvent(event);
   void deleteEvent(EventModel event) => eventsApiProvider.deleteEvent(event);
 
-  final clubsApiProvider = ClubApiProvider();
-  Future<List<ClubModel>> fetchAllClubs() => clubsApiProvider.fetchClubList();
-  Future<ClubModel> fetchClubByMail(String mail) => clubsApiProvider.fetchClubByMail(mail);
-  Future<ClubModel> updateClub(ClubModel club) => clubsApiProvider.updateClub(club);
-
   final profApiProvider = ProfApiProvider();
   Future<List<ProfModel>> fetchAllProfs() =>
       profApiProvider.fetchProfList();

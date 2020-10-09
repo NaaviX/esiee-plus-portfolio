@@ -43,8 +43,6 @@ class EventInfoPage extends StatefulWidget {
 }
 
 class EventInfoState extends State<EventInfoPage> {
-
-  final bloc = ClubsBloc();
   final eventBloc = EventsBloc();
 
   bool _isEnabled = false;
@@ -73,18 +71,6 @@ class EventInfoState extends State<EventInfoPage> {
     List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
     savedEvents.removeWhere((event) => event["idEvent"] == widget.event.idEvent);
     prefs.setString("savedEventsJson", json.encode(savedEvents));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    bloc.fetchClubById(widget.event.idClubRef);
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
   }
 
   @override Widget build(BuildContext context) {

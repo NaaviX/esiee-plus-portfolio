@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../App.dart';
+
 class FairpayLogCard extends StatefulWidget {
 
   @required final BuildContext context;
@@ -21,27 +23,10 @@ class FairpayLogCard extends StatefulWidget {
 
 class FairpayLogCardState extends State<FairpayLogCard> {
 
-  final club = ClubsBloc();
-
-  @override
-  void initState() {
-    super.initState();
-    club.fetchClubById(widget.log.idClubRef);
-  }
-
-  @override
-  void dispose() {
-    club.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final FairpayLogModel log = widget.log;
-    return StreamBuilder(
-        stream: club.thisClub,
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return Column(
+    return Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.all(15),
@@ -49,7 +34,7 @@ class FairpayLogCardState extends State<FairpayLogCard> {
                     //direction: Axis.horizontal,
                     //alignment: WrapAlignment.start,
                     children: <Widget>[
-                      clubLogo(snapshot),
+                      clubLogo(Base.allClubs.firstWhere((element) => element.idClubRef == widget.log.idClubRef)),
                       SizedBox(width: 15,),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,24 +69,15 @@ class FairpayLogCardState extends State<FairpayLogCard> {
                 Divider(height: 1, thickness: 1,),
               ]
           );
-        }
-    );
   }
 
   nameToInitial(String name){
     return name == "unknown" ? "" : "${name.split(" ")[0][0]}. ${name.split(" ")[1]}";
   }
 
-  clubName(AsyncSnapshot<ClubModel> snapshot) {
-    if(snapshot.hasData){
-      return Text(snapshot.data.name);
-    }
-    else return Container();
-  }
-
-  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
+  clubLogo(ClubModel club) {
     NetworkImage backgroundImage;
-    snapshot.hasData ? backgroundImage = NetworkImage(snapshot.data.urlPhoto) : backgroundImage = null;
+    club!=null ? backgroundImage = NetworkImage(club.urlPhoto) : backgroundImage = null;
     return Container(
       child: CircleAvatar(
         backgroundImage: backgroundImage,

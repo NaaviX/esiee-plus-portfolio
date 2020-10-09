@@ -13,11 +13,10 @@ import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
 class Stocks extends StatefulWidget {
-  final StockRepository stockRepository;
   final StockBloc bloc;
 
-  Stocks({Key key, @required this.stockRepository, @required this.bloc})
-      : assert(stockRepository != null),
+  Stocks({Key key, @required this.bloc})
+      : assert(bloc != null),
         super(key: key);
 
   @override
@@ -125,7 +124,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
                 ),
               );
               return BlocProvider(create: (BuildContext context) => widget.bloc,
-                  child: AddStock(stockRepository: stockRepository));
+                  child: AddStock());
             }),
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(

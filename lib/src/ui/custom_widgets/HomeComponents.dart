@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../App.dart';
+
 class HomeComponents extends StatefulWidget {
 
   @override
@@ -19,20 +21,17 @@ class HomeComponents extends StatefulWidget {
 class HomeComponentsState extends State<HomeComponents> {
 
   final eventBloc = EventsBloc();
-  final clubBloc = ClubsBloc();
   final rate = 10;
 
   @override
   void initState() {
     eventBloc.fetchAllEvents();
-    clubBloc.fetchAllClubs();
     super.initState();
   }
 
   @override
   void dispose() {
     eventBloc.dispose();
-    clubBloc.dispose();
     super.dispose();
   }
 
@@ -222,10 +221,7 @@ class HomeComponentsState extends State<HomeComponents> {
             return Text(snapshot.error.toString());
           }
           EventModel event = snapshot.data.firstWhere((event) => event.idEvent == idEvent);
-          return StreamBuilder(
-              stream: clubBloc.allClubs,
-              builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-                if (!snapshot.hasData) {
+                if (Base.allClubs == null || Base.allClubs.length == 0) {
                   return Container(
                       child: _eventInfo(event),
                       height: 120,
@@ -237,10 +233,8 @@ class HomeComponentsState extends State<HomeComponents> {
                           )
                       )
                   );
-                } else if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
                 }
-                ClubModel club = snapshot.data.firstWhere((club) => club.idClubRef == event.idEvent);
+                ClubModel club = Base.allClubs.firstWhere((club) => club.idClubRef == event.idEvent);
                 return GestureDetector(
                     child: Stack(
                       children: [
@@ -263,8 +257,6 @@ class HomeComponentsState extends State<HomeComponents> {
                     )
                 );}
           );
-        }
-    );
   }
 
   dealComponent(String urlLogo, String link, String title, String description){

@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../App.dart';
 import 'messenger.dart';
 import 'messenger_list.dart';
 
@@ -24,7 +25,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
   List<String> discussions = new List();
 
   StudentsBlocOld studentsBloc = StudentsBlocOld();
-  ClubsBloc clubsBloc = ClubsBloc();
   ProfsBloc profsBloc = ProfsBloc();
 
   List<StudentModel> allStudents = new List();
@@ -35,7 +35,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
   void dispose() {
     super.dispose();
     studentsBloc.dispose();
-    clubsBloc.dispose();
     profsBloc.dispose();
   }
 
@@ -47,11 +46,8 @@ class MessengerHistoryState extends State<MessengerHistory> {
         if (snapshot.hasData) {
           allStudents.addAll(snapshot.data);
         }
-        return StreamBuilder(
-            stream: clubsBloc.allClubs,
-            builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-              if (snapshot.hasData) {
-                allClubs.addAll(snapshot.data);
+              if (Base.allClubs != null && Base.allClubs.length != 0) {
+                allClubs.addAll(Base.allClubs);
               }
               return StreamBuilder(
                 stream: profsBloc.allProfs,
@@ -63,8 +59,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
                 },
               );
             });
-      },
-    );
   }
 
 
@@ -207,7 +201,6 @@ class MessengerHistoryState extends State<MessengerHistory> {
   @override
   void initState() {
     studentsBloc.fetchAllStudents();
-    clubsBloc.fetchAllClubs();
     profsBloc.fetchAllProfs();
     super.initState();
   }

@@ -16,19 +16,6 @@ class ClubList extends StatefulWidget {
 }
 
 class ClubListState extends State<ClubList> {
-  final bloc = ClubsBloc();
-
-  @override
-  void initState() {
-    super.initState();
-    bloc.fetchAllClubs();
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
-  }
 
   final log = Logger('clubList');
 
@@ -38,46 +25,37 @@ class ClubListState extends State<ClubList> {
         appBar: AppBar(
           title: Text("Les clubs"),
         ),
-        body: StreamBuilder(
-          stream: bloc.allClubs,
-          builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-            if (snapshot.hasData) {
-              return buildList(snapshot);
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        )
-    );
+        body: buildList(Base.allClubs)
+
+        );
   }
 
-  Widget buildList(AsyncSnapshot<List<ClubModel>> snapshot) {
-    snapshot.data.removeWhere((element) => element.idClubRef > 100);
+  Widget buildList(List<ClubModel> clubs) {
+    clubs.removeWhere((element) => element.idClubRef > 100);
     return ListView.builder(
-        itemCount: snapshot.data.length,
+        itemCount: clubs.length,
         itemBuilder: (BuildContext context, int index) {
             return ListTile(
               leading:
               GestureDetector(
                 child: Hero(
-                  tag: 'logoClub'+snapshot.data[index].idClubRef.toString(),
+                  tag: 'logoClub'+clubs[index].idClubRef.toString(),
                   child: CircleAvatar(
                     backgroundColor: Colors.blueGrey.withOpacity(0.2),
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
+                      backgroundImage: NetworkImage(clubs[index].urlPhoto),
                       backgroundColor: Colors.white,
                       radius:19,
                     ),
                   ),
                 ),
               ),
-              title: Text(snapshot.data[index].name),
-              trailing: snapshot.data[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),
+              title: Text(clubs[index].name),
+              trailing: clubs[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : snapshot.data[index]),),
+                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : clubs[index]),),
                 );
               },
             );

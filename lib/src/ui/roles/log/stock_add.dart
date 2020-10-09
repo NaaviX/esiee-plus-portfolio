@@ -12,12 +12,6 @@ import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
 
-  final StockRepository stockRepository;
-
-  AddStock({Key key, @required this.stockRepository})
-      : assert(stockRepository != null),
-        super(key: key);
-
   @override
   AddStockState createState() {
     return AddStockState();

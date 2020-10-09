@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
+import '../../../App.dart';
+
 class FairPayManager extends StatefulWidget {
 
   @override
@@ -16,18 +18,15 @@ class FairPayManager extends StatefulWidget {
 }
 
 class FairPayManagerState extends State<FairPayManager> {
-  final clubsBloc = ClubsBloc();
   final fairPayBloc = FairpayLogBloc();
 
   @override
   void initState() {
     super.initState();
-    clubsBloc.fetchAllClubs();
   }
 
   @override
   void dispose() {
-    clubsBloc.dispose();
     super.dispose();
   }
 
@@ -39,17 +38,7 @@ class FairPayManagerState extends State<FairPayManager> {
         appBar: AppBar(
           title: Text("Gestion Fairpay"),
         ),
-        body: StreamBuilder(
-          stream: clubsBloc.allClubs,
-          builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-            if (snapshot.hasData) {
-              return buildList(snapshot);
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        )
+        body: buildList(Base.allClubs)
     );
   }
 
@@ -57,11 +46,11 @@ class FairPayManagerState extends State<FairPayManager> {
     return new DateFormat('yyyy MMMM dd').format(date);
   }
 
-  GridView buildList( AsyncSnapshot<List<ClubModel>> snapshot ){
+  GridView buildList(List<ClubModel> clubs ){
     return new GridView.count(
       crossAxisCount: 3,
-      children: new List<Widget>.generate(snapshot.data.length, (index) {
-        return _clubTile(snapshot.data[index]);
+      children: new List<Widget>.generate(clubs.length, (index) {
+        return _clubTile(clubs[index]);
       }),
     );
   }

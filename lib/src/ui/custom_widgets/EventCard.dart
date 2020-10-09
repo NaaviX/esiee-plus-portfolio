@@ -11,6 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../App.dart';
+
 class EventCard extends StatefulWidget {
 
   @required final BuildContext context;
@@ -29,8 +31,6 @@ class EventCard extends StatefulWidget {
 
 class EventCardState extends State<EventCard> {
 
-  final club = ClubsBloc();
-
   bool _isFav = false;
 
   Future<String> getSavedEvents() async {
@@ -40,27 +40,13 @@ class EventCardState extends State<EventCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    club.fetchClubById(widget.event.idClubRef);
-  }
-
-  @override
-  void dispose() {
-    club.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    return StreamBuilder(
-        stream: club.thisClub,
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return GestureDetector(
+    final ClubModel thisClub = Base.allClubs.firstWhere((element) => element.idClubRef == event.idClubRef);
+    return GestureDetector(
               onTap: () {
-                if(snapshot.hasData) {
-                  pushEventInfo(event, snapshot.data);
+                if(thisClub != null) {
+                  pushEventInfo(event, thisClub);
                 }
               },
               child: Container(
@@ -135,7 +121,7 @@ class EventCardState extends State<EventCard> {
                                                 child: _favCard(),
                                               ),
                                               TextSpan(
-                                                text: snapshot.hasData ? "\n" + snapshot.data.name : "\n",
+                                                text: thisClub!=null ? "\n" + thisClub.name : "\n",
                                                 style: TextStyle(
                                                   //fontWeight: FontWeight.bold,
                                                   color: Colors.black,
@@ -150,7 +136,7 @@ class EventCardState extends State<EventCard> {
 
                                   ],
                                 ),
-                                snapshot.hasData ? clubLogo(snapshot) : Container(height: 29, width: 29,),
+                                thisClub!=null ? clubLogo(thisClub) : Container(height: 29, width: 29,),
                               ]
                           ),
                         ),
@@ -168,8 +154,6 @@ class EventCardState extends State<EventCard> {
                     .width,
               )
           );
-        }
-    );
   }
 
   Widget _favCard() {
@@ -205,12 +189,12 @@ class EventCardState extends State<EventCard> {
     return Text("\n" + snapshot.data.name);
   }
 
-  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
+  clubLogo(ClubModel club) {
     return Positioned(
       top: 0,
       right: 0,
       child: CircleAvatar(
-        backgroundImage: NetworkImage(snapshot.data.urlPhoto),
+        backgroundImage: NetworkImage(club.urlPhoto),
         backgroundColor: Theme.of(context).backgroundColor.withOpacity(1),
         radius: 29,
       ),

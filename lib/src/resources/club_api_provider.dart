@@ -7,14 +7,20 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 
 class ClubApiProvider {
   final log = Logger('clubAPI');
-  Client client = Client();
+  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  final Client client;
+
+  ClubApiProvider({
+    @required this.client,
+  }) : assert(client != null);
 
   Future<List<ClubModel>> fetchClubList() async {
     final response = await client
-        .get("http://137.74.197.140:8080/api-2-SNAPSHOT/club/clubs",
+        .get("$baseUrl/club/clubs",
       headers: {
     HttpHeaders.contentTypeHeader: "application/json",
     HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -24,13 +30,13 @@ class ClubApiProvider {
           json.decode(utf8.decode(response.bodyBytes)));
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load clubs');
     }
   }
 
   Future<ClubModel> fetchClubByMail(String mail) async {
     final response = await client.get(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/club/club?mail=" +
+        "$baseUrl/club/club?mail=" +
             Uri.encodeFull(mail),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -41,7 +47,7 @@ class ClubApiProvider {
       return ClubModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load club');
     }
   }
 
@@ -69,7 +75,7 @@ class ClubApiProvider {
     }
 
     String url = Uri.encodeFull(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/club/update?idClubRef=" +
+        "$baseUrl/club/update?idClubRef=" +
             club.idClubRef.toString() +
             "&idClub=" +
             club.idClub.toString() +

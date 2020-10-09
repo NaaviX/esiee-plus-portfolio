@@ -6,6 +6,8 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../App.dart';
+
 class TreasuryManager extends StatefulWidget {
 
   @override
@@ -15,7 +17,6 @@ class TreasuryManager extends StatefulWidget {
 }
 
 class TreasuryManagerState extends State<TreasuryManager>{
-  final clubsBloc = ClubsBloc();
   final logbloc = FairpayLogBloc();
 
   List<ClubModel> clubList = List();
@@ -23,13 +24,11 @@ class TreasuryManagerState extends State<TreasuryManager>{
   @override
   void initState() {
     super.initState();
-    clubsBloc.fetchAllClubs();
     logbloc.fetchAllLogs();
   }
 
   @override
   void dispose() {
-    clubsBloc.dispose();
     logbloc.dispose();
     super.dispose();
   }
@@ -111,12 +110,9 @@ class TreasuryManagerState extends State<TreasuryManager>{
   }
 
   Widget _fairpayTotal(){
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-          if(clubList.hasData) {
+    List<ClubModel> clubs = Base.allClubs;
             double total = 0;
-            clubList.data.forEach((club) {
+    clubs.forEach((club) {
               total += club.solde;
             });
             return Column(
@@ -130,37 +126,18 @@ class TreasuryManagerState extends State<TreasuryManager>{
                 ),
               ],
             );
-          }
-          return Text("Loading...",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold
-              )
-          );
-        }
-    );
   }
 
   Widget _fairpayTotalWithoutBDE(){
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-          if(clubList.hasData) {
+    List<ClubModel> clubs = Base.allClubs;
             double total = 0;
-            clubList.data.forEach((club) {
+    clubs.forEach((club) {
               if( club.idClubRef != 100 )
                 total += club.solde;
             });
             return Text("Hors BDE : $total €",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
             );
-          }
-          return Text("Hors BDE : loading...",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
-          );
-        }
-    );
   }
 
   _log(AsyncSnapshot<List<FairpayLogModel>> snapshot) {

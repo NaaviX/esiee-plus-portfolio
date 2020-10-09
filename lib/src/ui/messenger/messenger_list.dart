@@ -78,35 +78,18 @@ class MessengerClubList extends StatefulWidget {
 }
 
 class MessengerClubListState extends State<MessengerClubList> {
-  ClubsBloc clubsBloc = ClubsBloc();
-
-  @override
-  void initState() {
-    clubsBloc.fetchAllClubs();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    clubsBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubSnapshot) {
-          if (clubSnapshot.hasData) {
+          if (Base.allClubs != null && Base.allClubs.length != 0) {
             return ListView.builder(
-                itemCount: clubSnapshot.data.length,
+                itemCount: Base.allClubs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  ClubModel club = clubSnapshot.data[index];
+                  ClubModel club = Base.allClubs[index];
                   return _clubTile(club);
                 });
           }
           return Center(child: CircularProgressIndicator());
-        });
   }
 
   ListTile _clubTile(ClubModel club) {

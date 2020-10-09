@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -7,6 +8,7 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserPermissions extends StatefulWidget {
   @override
@@ -52,35 +54,18 @@ class ClubPermissions extends StatefulWidget {
 }
 
 class ClubPermissionsState extends State<ClubPermissions> {
-  ClubsBloc clubsBloc = ClubsBloc();
-
-  @override
-  void initState() {
-    clubsBloc.fetchAllClubs();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    clubsBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubSnapshot) {
-          if (clubSnapshot.hasData) {
+          if (Base.allClubs != null && Base.allClubs.length != 0) {
             return ListView.builder(
-                itemCount: clubSnapshot.data.length,
+                itemCount: Base.allClubs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  ClubModel club = clubSnapshot.data[index];
+                  ClubModel club = Base.allClubs[index];
                   return _clubTile(club);
                 });
           }
           return Center(child: CircularProgressIndicator());
-        });
   }
 
   ListTile _clubTile(ClubModel club) {
@@ -144,7 +129,10 @@ class ClubPermissionsState extends State<ClubPermissions> {
                     textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       club.roles = List.from(currentRoles);
-                      clubsBloc.updateClub(club);
+                      BlocProvider.of<ClubsBloc>(context)
+                          .add(ClubToBeSaved(club: club));
+                      BlocProvider.of<ClubsBloc>(context)
+                          .add(ClubsRequested());
                       setState(() {});
                       Navigator.of(context).pop();
                     },

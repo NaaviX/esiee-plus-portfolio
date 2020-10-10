@@ -1,8 +1,11 @@
+import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/jwt_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/jwt_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
@@ -47,6 +50,7 @@ import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/jwt_bloc.dart';
+import 'blocs/jwt_state.dart';
 import 'blocs/prof_event.dart';
 import 'blocs/prof_state.dart';
 import 'blocs/roles_bloc.dart';
@@ -74,8 +78,6 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  Widget app;
-  final jwtBloc = JwtBloc();
 
   @override
   void initState() {
@@ -109,7 +111,16 @@ class AppState extends State<App> {
           if (snapshot.hasData) {
             user = snapshot.data;
             //google user is logged in
-            return JwtAuth();
+            final JwtRepository jwtRepository = JwtRepository(
+              jwtApiProvider: JwtApiProvider(
+                client: Client(),
+              ),
+            );
+            return BlocProvider<JwtBloc>(
+              create: (BuildContext context) =>
+                  JwtBloc(jwtRepository: jwtRepository),
+              child: JwtAuth()
+            );
           } else {
 //user not logged in
             return MaterialApp(
@@ -139,99 +150,96 @@ class JwtAuth extends StatefulWidget {
 }
 
 class JwtAuthState extends State<JwtAuth> {
-  final jwtBloc = JwtBloc();
 
   @override
   void initState() {
-    jwtBloc.authenticate(user.email, user.uid);
+    BlocProvider.of<JwtBloc>(context).add(JwtAuthenticate(username: user.email, password: user.uid));
     super.initState();
   }
 
   @override
-  void dispose() {
-    jwtBloc.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: jwtBloc.token,
-        builder: (context, AsyncSnapshot<String> snapshot) {
-          print("connection state jwt ${snapshot.connectionState}");
-          if (snapshot.hasData) {
-            print("hasdate");
-            Base.token = snapshot.data;
-            final RoleRepository roleRepository = RoleRepository(
-              roleApiProvider: RoleApiProvider(
-                client: Client(),
-              ),
-            );
-            final StudentRepository studentRepository = StudentRepository(
-              studentApiProvider: StudentApiProvider(
-                client: Client(),
-              ),
-            );
-            final ClubRepository clubRepository = ClubRepository(
-              clubApiProvider: ClubApiProvider(
-                client: Client(),
-              ),
-            );
-            final ProfRepository profRepository = ProfRepository(
-              profApiProvider: ProfApiProvider(
-                client: Client(),
-              ),
-            );
+    return BlocBuilder<JwtBloc, JwtState>(builder: (context, state) {
+      if (state is JwtAuthenticateInitial) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is JwtAuthenticateInProgress) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is JwtAuthenticateSuccess) {
+        Base.token = state.token;
+        final RoleRepository roleRepository = RoleRepository(
+          roleApiProvider: RoleApiProvider(
+            client: Client(),
+          ),
+        );
+        final StudentRepository studentRepository = StudentRepository(
+          studentApiProvider: StudentApiProvider(
+            client: Client(),
+          ),
+        );
+        final ClubRepository clubRepository = ClubRepository(
+          clubApiProvider: ClubApiProvider(
+            client: Client(),
+          ),
+        );
+        final ProfRepository profRepository = ProfRepository(
+          profApiProvider: ProfApiProvider(
+            client: Client(),
+          ),
+        );
 
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: MultiBlocProvider(providers: [
-                BlocProvider<RolesBloc>(
-                  create: (BuildContext context) =>
-                      RolesBloc(roleRepository: roleRepository),
-                ),
-                BlocProvider<StudentsBloc>(
-                  create: (BuildContext context) =>
-                      StudentsBloc(studentRepository: studentRepository),
-                ),
-                BlocProvider<ClubsBloc>(
-                  create: (BuildContext context) =>
-                      ClubsBloc(clubRepository: clubRepository),
-                ),
-                BlocProvider<ProfsBloc>(
-                  create: (BuildContext context) =>
-                      ProfsBloc(profRepository: profRepository),
-                ),
-              ], child: UserAuth()),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-            );
-          } else {
-            print("hasNotdate");
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: LoginPage(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-            );
-          }
-        });
+        return MaterialApp(
+          theme: MyTheme.defaultTheme,
+          //theme : MyTheme.darkTheme,
+          home: MultiBlocProvider(providers: [
+            BlocProvider<RolesBloc>(
+              create: (BuildContext context) =>
+                  RolesBloc(roleRepository: roleRepository),
+            ),
+            BlocProvider<StudentsBloc>(
+              create: (BuildContext context) =>
+                  StudentsBloc(studentRepository: studentRepository),
+            ),
+            BlocProvider<ClubsBloc>(
+              create: (BuildContext context) =>
+                  ClubsBloc(clubRepository: clubRepository),
+            ),
+            BlocProvider<ProfsBloc>(
+              create: (BuildContext context) =>
+                  ProfsBloc(profRepository: profRepository),
+            ),
+          ], child: UserAuth()),
+          localizationsDelegates: [
+            const TranslationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', ''),
+            const Locale('fr', ''),
+          ],
+        );
+      }
+      if (state is JwtAuthenticateFailure) {
+        return MaterialApp(
+          theme: MyTheme.defaultTheme,
+          //theme : MyTheme.darkTheme,
+          home: LoginPage(),
+          localizationsDelegates: [
+            const TranslationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', ''),
+            const Locale('fr', ''),
+          ],
+        );
+      }
+      return Container();
+    });
+
   }
 }
 
@@ -264,66 +272,67 @@ class UserAuthState extends State<UserAuth> {
       }
       if (state is RolesLoadSuccess) {
         Base.allRoles = state.roles;
-        return BlocBuilder<StudentsBloc, StudentState>(
+        return BlocBuilder<ClubsBloc, ClubState>(
           builder: (context, state) {
-            if (state is StudentInitial) {
+            if (state is ClubsInitial) {
               return Center(child: CircularProgressIndicator());
             }
-            if (state is StudentLoadInProgress) {
+            if (state is ClubsLoadInProgress) {
               return Center(child: CircularProgressIndicator());
             }
-            if (state is StudentLoadSuccess) {
+            if (state is ClubsLoadSuccess) {
               //isStudent
-              log.fine("student");
-              Base.thisUser = state.student;
-              return Base();
-            }
-            if (state is StudentLoadFailure) {
-              //isClub
-              return BlocBuilder<ClubsBloc, ClubState>(
-                builder: (context, state) {
-                  if (state is ClubsInitial) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is ClubsLoadInProgress) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is ClubsLoadSuccess) {
-                    //isStudent
-                    log.fine("club");
-                    Base.allClubs = state.clubs;
-                    Base.thisClub = state.clubs.firstWhere((element) => element.mail == user.email);
-
-                    if(Base.thisClub != null) {
+              log.fine("club");
+              Base.allClubs = state.clubs;
+              try {
+                Base.thisClub =
+                    state.clubs.firstWhere((element) => element.mail ==
+                        user.email);
+              } catch(_) {
+                return BlocBuilder<StudentsBloc, StudentState>(
+                  builder: (context, state) {
+                    if (state is StudentInitial) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (state is StudentLoadInProgress) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (state is StudentLoadSuccess) {
+                      //isStudent
+                      log.fine("student");
+                      Base.thisUser = state.student;
                       return Base();
-                    } else {
+                    }
+                    if (state is StudentLoadFailure) {
                       //C'est un prof
                       return BlocBuilder<ProfsBloc, ProfState>(
                           builder: (context, state) {
-                        if (state is ProfInitial) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (state is ProfLoadInProgress) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (state is ProfLoadSuccess) {
-                          //isStudent
-                          log.fine("prof");
-                          Base.thisProf = state.prof;
-                          return Base();
-                        }
-                        if (state is ProfLoadFailure) {}
-                        return Container();
-                      });
+                            if (state is ProfInitial) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (state is ProfLoadInProgress) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (state is ProfLoadSuccess) {
+                              //isStudent
+                              log.fine("prof");
+                              Base.thisProf = state.prof;
+                              return Base();
+                            }
+                            if (state is ProfLoadFailure) {}
+                            return Container();
+                          });
                     }
-                  }
-                  return Container();
-                },
-              );
+                    return Container();
+                  },
+                );
+              }
+                return Base();
             }
             return Container();
           },
         );
+
       }
       if (state is RolesLoadFailure) {
         return Text(

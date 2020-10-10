@@ -1,21 +1,27 @@
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:bde_esiee_mobile/src/resources/jwt_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class JwtBloc {
-  final _repository = Repository();
-  final _tokenFetcher = PublishSubject<String>();
+import 'jwt_event.dart';
+import 'jwt_state.dart';
+import 'package:meta/meta.dart';
 
-  Observable<String> get token => _tokenFetcher.stream;
+class JwtBloc extends Bloc<JwtEvent, JwtState> {
+  final JwtRepository jwtRepository;
 
-  authenticate(String username, String password) async {
-    String token = await _repository.authenticate(username, password);
-    _tokenFetcher.sink.add(token);
-  }
+  JwtBloc({@required this.jwtRepository})
+      : assert(jwtRepository != null),
+        super(JwtAuthenticateInitial());
 
-  register(String username, String password) async {
-    await _repository.register(username, password);
-  }
-
-  dispose() {
+  @override
+  Stream<JwtState> mapEventToState(JwtEvent event) async* {
+    if (event is JwtAuthenticate) {
+      yield JwtAuthenticateInProgress();
+      try {
+        final String token = await jwtRepository.authenticateJwt(event.username, event.password);
+        yield JwtAuthenticateSuccess(token: token);
+      } catch (_) {
+        yield JwtAuthenticateFailure();
+      }
+    }
   }
 }

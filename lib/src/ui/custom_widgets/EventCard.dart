@@ -42,7 +42,13 @@ class EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    final ClubModel thisClub = Base.allClubs.firstWhere((element) => element.idClubRef == event.idClubRef);
+    ClubModel thisClub;
+    try {
+      thisClub = Base.allClubs.firstWhere((element) =>
+      element.idClubRef == event.idClubRef);
+    } catch(_) {
+
+    }
     return GestureDetector(
               onTap: () {
                 if(thisClub != null) {

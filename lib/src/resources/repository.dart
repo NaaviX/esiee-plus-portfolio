@@ -28,10 +28,6 @@ import 'jwt_api_provider.dart';
 
 class Repository {
 
-  final jwtApiProvider = JwtApiProvider();
-  Future<String> authenticate(String username, String password) => jwtApiProvider.authenticate(username, password);
-  Future<void> register(String username, String password) => jwtApiProvider.register(username, password);
-
   final eventsApiProvider = EventApiProvider();
   Future<List<EventModel>> fetchAllEvents() => eventsApiProvider.fetchEventList();
   Future<EventModel> addSaveEvent(EventModel event) => eventsApiProvider.addEvent(event);

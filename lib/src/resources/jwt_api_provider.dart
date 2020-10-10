@@ -2,15 +2,21 @@ import 'dart:async';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 
 class JwtApiProvider {
-  final log = Logger('roleAPI');
-  Client client = Client();
+  final log = Logger('jwtAPI');
+  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  final Client client;
+
+  JwtApiProvider({
+    @required this.client,
+  }) : assert(client != null);
 
   //return token
   Future<String> authenticate(String username, String password) async {
-    print("authAAAAAAAAAA");
-    await client.post("http://137.74.197.140:8080/api-2-SNAPSHOT/register",
+    print("authenticateAAAAAAAAAA");
+    await client.post("$baseUrl/register",
         headers: {
           "content-type" : "application/json",
           "accept" : "application/json",
@@ -21,7 +27,7 @@ class JwtApiProvider {
         }));
 
     final response = await client.post(
-      "http://137.74.197.140:8080/api-2-SNAPSHOT/authenticate",
+      "$baseUrl/authenticate",
         headers: {
           "content-type" : "application/json",
           "accept" : "application/json",
@@ -35,29 +41,7 @@ class JwtApiProvider {
       print(json.decode(utf8.decode(response.bodyBytes))["token"]);
       return json.decode(utf8.decode(response.bodyBytes))["token"];
     } else {
-      //await register(username, password);
-      return "";
-    }
-  }
-
-  //return nothing
-  Future<void> register(String username, String password) async {
-    print("registerAAAAAAAAAA");
-    final response = await client.post("http://137.74.197.140:8080/api-2-SNAPSHOT/register",
-        headers: {
-          "content-type" : "application/json",
-          "accept" : "application/json",
-        },
-        body: jsonEncode(<String, String>{
-          'username': username,
-          'password': password,
-        }));
-
-    if (response.statusCode == 200) {
-      return;
-    } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to register');
+      return null;
     }
   }
 }

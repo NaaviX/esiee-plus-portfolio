@@ -6,12 +6,16 @@ import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/club_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
@@ -21,6 +25,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timer_builder/timer_builder.dart';
@@ -36,7 +41,6 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   CourseBloc courseBloc = CourseBloc();
-  EventsBloc eventBloc = EventsBloc();
 
   @override
   void initState() {
@@ -44,14 +48,14 @@ class HomeState extends State<Home> {
     if(Base.thisUser != null) {
       courseBloc.fetchAllCourses(getGradeUnitsID().toString());
     }
-    eventBloc.fetchAllEvents();
+    BlocProvider.of<EventsBloc>(context)
+        .add(EventsRequested());
     super.initState();
   }
 
   @override
   void dispose() {
     courseBloc.dispose();
-    eventBloc.dispose();
     super.dispose();
   }
 
@@ -119,14 +123,22 @@ class HomeState extends State<Home> {
     return Container(
       margin: EdgeInsets.only(top: 10),
       //padding: EdgeInsets.symmetric(vertical: 10,),
-      child: StreamBuilder(
-          stream: eventBloc.allEvents,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EventModel>> events) {
-            if (events.hasData) {
-              events.data.removeWhere((event) =>
-                  !event.enable || event.startDate.isBefore(DateTime.now()));
-              if (events.data.isEmpty)
+      child: BlocBuilder<EventsBloc, EventState>(
+          builder: (context, state) {
+            if (state is EventsInitial) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is EventsLoadInProgress) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is EventsLoadSuccess) {
+              final events = state.events;
+
+              Base.allEvents = events.toList();
+
+              events.removeWhere((event) =>
+              !event.enable || event.startDate.isBefore(DateTime.now()));
+              if (events.isEmpty)
                 return Container(
                     margin: EdgeInsets.only(left: 15),
                     child: Text(
@@ -136,12 +148,18 @@ class HomeState extends State<Home> {
                           fontSize: 18,
                           fontWeight: FontWeight.w600),
                     ));
-              tops.addAll(events.data.where((event) => event.enabledStratif));
-              tops.isEmpty ? tops.add(events.data.last) : tops = tops;
-              return _TopEventsList(events.data);
+              tops.addAll(events.where((event) => event.enabledStratif));
+              tops.isEmpty ? tops.add(events.last) : tops = tops;
+              return _TopEventsList(events);
+            }
+            if (state is EventsLoadFailure) {
+              return Text(
+                'Something went wrong!',
+                style: TextStyle(color: Colors.red),
+              );
             }
             return Container();
-          }),
+          })
     );
   }
 
@@ -157,17 +175,25 @@ class HomeState extends State<Home> {
           itemCount: tops.length,
           controller: PageController(viewportFraction: 0.8),
           itemBuilder: (context, i) {
+            final EventRepository eventRepository = EventRepository(
+              eventApiProvider: EventApiProvider(
+                client: Client(),
+              ),
+            );
+            EventsBloc bloc = EventsBloc(eventRepository: eventRepository);
             return Transform.scale(
               scale: 1,
               child: GestureDetector(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => EventInfoPage(
+                      builder: (context) => BlocProvider(
+                          create: (BuildContext context) => bloc,
+                          child: EventInfoPage(
                           tops[i],
                           Base.allClubs.firstWhere((club) =>
                               club.idClubRef ==
-                              tops[i].idClubRef))), //FairPayClubManager(club)),
+                              tops[i].idClubRef), eventsBloc: bloc,))), //FairPayClubManager(club)),
                 ),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 5),

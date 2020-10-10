@@ -28,11 +28,6 @@ import 'jwt_api_provider.dart';
 
 class Repository {
 
-  final eventsApiProvider = EventApiProvider();
-  Future<List<EventModel>> fetchAllEvents() => eventsApiProvider.fetchEventList();
-  Future<EventModel> addSaveEvent(EventModel event) => eventsApiProvider.addEvent(event);
-  void deleteEvent(EventModel event) => eventsApiProvider.deleteEvent(event);
-
   final studentApiProvider = StudentApiProvider(client : Client());
   Future<List<StudentModel>> fetchAllStudents() =>
       studentApiProvider.fetchStudentList();

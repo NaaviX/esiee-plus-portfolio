@@ -2,14 +2,17 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meta/meta.dart';
 
 import '../../App.dart';
 
@@ -18,9 +21,11 @@ class EventCard extends StatefulWidget {
   @required final BuildContext context;
   @required final EventModel event;
   bool moderation;
+  final EventsBloc eventsBloc;
 
-  EventCard(this.event, this.context, {this.moderation}) {
+  EventCard(this.event, this.context, {this.moderation, @required this.eventsBloc}) {
     this.moderation = this.moderation == null ? false : this.moderation;
+    assert(eventsBloc != null);
   }
 
   @override
@@ -182,9 +187,13 @@ class EventCardState extends State<EventCard> {
   }
 
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, parentCard: this));
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => BlocProvider(
+        create: (BuildContext context) => widget.eventsBloc,
+        child: EventInfoPage(event, club, parentCard: this, eventsBloc: widget.eventsBloc)));
     if(widget.moderation)
-      route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true));
+      route = MaterialPageRoute(builder: (context) => BlocProvider(
+          create: (BuildContext context) => widget.eventsBloc,
+          child: EventInfoPage(event, club, isModeration: true, eventsBloc: widget.eventsBloc)));
     Navigator.push(
       context,
       route,

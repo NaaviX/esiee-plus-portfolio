@@ -1,34 +1,52 @@
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EventsBloc {
-  final _repository = Repository();
-  final _eventsFetcher = PublishSubject<List<EventModel>>();
-  final _eventFetcher = PublishSubject<EventModel>();
+import 'package:meta/meta.dart';
 
-  Observable<List<EventModel>> get allEvents => _eventsFetcher.stream;
-  Observable<EventModel> get event => _eventFetcher.stream;
+import 'event_event.dart';
+import 'event_state.dart';
 
-  fetchAllEvents() async {
-    List<EventModel> eventmodel = await _repository.fetchAllEvents();
-    eventmodel = sort(eventmodel);
-    _eventsFetcher.sink.add(eventmodel);
-  }
+class EventsBloc extends Bloc<EventEvent, EventState> {
+  final EventRepository eventRepository;
 
-  deleteEvent(EventModel event) async {
-    _repository.deleteEvent(event);
+  EventsBloc({@required this.eventRepository})
+      : assert(eventRepository != null),
+        super(EventsInitial());
 
-  }
+  @override
+  Stream<EventState> mapEventToState(EventEvent event) async* {
+    if (event is EventDeleteRequested) {
+      yield EventDeleteInProgress();
+      try {
+        final EventModel eventToDelete = await eventRepository.deleteEvent(event.event);
+        yield EventDeleteSuccess(event: eventToDelete);
+      } catch (_) {
+        yield EventDeleteFailure();
+      }
+    }
 
-  addSaveEvent(EventModel event) async {
-    await _repository.addSaveEvent(event);
-  }
+    if (event is EventsRequested) {
+      yield EventsLoadInProgress();
+      try {
+        final List<EventModel> events = await eventRepository.fetchEvents();
 
-  dispose() {
-    _eventsFetcher.close();
-    _eventFetcher.close();
+        yield EventsLoadSuccess(events: events);
+      } catch (_) {
+        yield EventsLoadFailure();
+      }
+    }
+
+    else if (event is EventToBeSaved) {
+      try {
+        await eventRepository.saveEvent(event.event);
+      } catch (_) {
+        yield EventSaveLoadFailure();
+      }
+    }
   }
 
   List<EventModel> sort(List<EventModel> events){

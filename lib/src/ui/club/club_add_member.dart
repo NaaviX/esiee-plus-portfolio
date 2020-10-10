@@ -150,9 +150,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
             }
             focus.unfocus();
           },
-          trailing: IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green,),
-          )
+          trailing: Icon(Icons.add_circle_outline, color: Colors.green,)
       );
     }
     return Column();

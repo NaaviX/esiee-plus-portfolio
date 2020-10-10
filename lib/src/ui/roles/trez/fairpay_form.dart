@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'club_fairpay.dart';
 
 fairpayForm(FairpayState parent, String type, ClubModel club) {
-  final clubsBloc = ClubsBloc();
   final fairpayBloc = FairpayLogBloc();
 
   final _formKey = GlobalKey<FormState>();

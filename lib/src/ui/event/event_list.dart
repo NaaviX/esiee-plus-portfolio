@@ -1,22 +1,28 @@
 import 'dart:ui';
 
-import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
+import '../../App.dart';
 import 'event_creation.dart';
 
 class EventList extends StatefulWidget {
   bool moderation;
+  final EventsBloc eventsBloc;
 
-  EventList({this.moderation}) {
+  EventList({this.moderation, @required this.eventsBloc}) {
     if(this.moderation != null) this.moderation = this.moderation;
     else this.moderation = false;
+    assert(eventsBloc != null);
   }
 
   @override
@@ -25,43 +31,17 @@ class EventList extends StatefulWidget {
   }
 }
 
-class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMixin*/ {
-  final eventBloc = EventsBloc();
+class EventListState extends State<EventList> {
 
   String selected;
 
   @override
   void initState() {
     super.initState();
-    eventBloc.fetchAllEvents();
     selected = "Mes évents";
   }
 
-  @override
-  void dispose() {
-    eventBloc.dispose();
-    super.dispose();
-  }
-
   final log = Logger('eventList');
-
-  /*Future<bool> isInternetConnected() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    return connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi;
-  }*/
-
-  /*Future<String> getLocalEvents() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String localEvents = prefs.getString('eventsJson');
-    return localEvents;
-  }*/
-
-  /*Future<String> getLocalClubs() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String localEvents = prefs.getString('clubsJson');
-    return localEvents;
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -78,63 +58,30 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   }
 
   Widget builEventList() {
-    return StreamBuilder(
-      stream: eventBloc.allEvents,
-      builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            if(Base.thisClub != null) dropDown(),
-            Expanded(
-              child: buildList(snapshot.data),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  /*Widget builEventListLocal() {
-    return FutureBuilder(
-        future: getLocalEvents(),
-        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-          if (eventsJson.hasData) {
-            dynamic jsonData = jsonDecode(eventsJson.data);
-            List<EventModel> snapshot = EventModel
-                .allEventsFromJson(jsonData)
-                .reversed
-                .toList();
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 if(Base.thisClub != null) dropDown(),
                 Expanded(
-                  child: buildList(snapshot),
+                  child: buildList(),
                 ),
               ],
             );
-          }
-          return Center(child: CircularProgressIndicator());
-        }
-    );
-  }*/
+  }
 
-  Widget buildList(List<EventModel> events) {
+  Widget buildList() {
+
     return !widget.moderation
         ? ListView.builder(
       //scrollDirection: Axis.horizontal,
-        itemCount: events.length,
+        itemCount: Base.allEvents.length,
         itemBuilder: (BuildContext context, int index) {
           return Center(
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  getCover(events[index], context),
+                  getCover(Base.allEvents[index], context),
                 ]
             ),
           );
@@ -142,13 +89,13 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
     )
         : ListView.builder(
             //scrollDirection: Axis.horizontal,
-              itemCount: events.length,
+              itemCount: Base.allEvents.length,
               itemBuilder: (BuildContext context, int index) {
                 return Center(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        getCoverModerator(events[index], Base.allClubs, context),
+                        getCoverModerator(Base.allEvents[index], Base.allClubs, context),
                       ]
                   ),
                 );
@@ -159,23 +106,24 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   getCover(EventModel event, BuildContext context) {
     if(widget.moderation == true) {
       if(event.endDate.isAfter(DateTime.now()))
-        return EventCard(event, context, moderation: true);
+        return EventCard(event, context, moderation: true, eventsBloc: widget.eventsBloc,);
     }
     if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
       if (Base.thisClub != null && selected != "Tous") {
+
         if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
-          return EventCard(event, context);
+          return EventCard(event, context, eventsBloc: widget.eventsBloc);
         else return Container();
       }
       else if (Base.thisProf != null){
-        if(event.enabledStratif == true) return EventCard(event, context);
+        if(event.enabledStratif == true) return EventCard(event, context, eventsBloc: widget.eventsBloc);
         else return Container();
       }
       else
-        return EventCard(event, context);
+        return EventCard(event, context, eventsBloc: widget.eventsBloc);
     }
     else if (Base.thisClub != null && selected == "En attente") {
-      if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(event, context);
+      if (event.idClubRef == Base.thisClub.idClubRef) return EventCard(event, context, eventsBloc: widget.eventsBloc);
       else return Container();
     }
     else return Container();
@@ -184,7 +132,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
   getCoverModerator(EventModel event, List<ClubModel> clubs, BuildContext context){
     //ClubModel club = clubs.firstWhere((club) => club.idClubRef == event.idClubRef);
     if(event.endDate.isAfter(DateTime.now()))
-      return EventCard(event, context, moderation: true);
+      return EventCard(event, context, moderation: true, eventsBloc: widget.eventsBloc);
     return Container();
   }
 
@@ -194,7 +142,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventCreation(this)),
+            MaterialPageRoute(builder: (context) => EventCreation(this, eventsBloc: widget.eventsBloc)),
           );
         },
         child: Icon(Icons.add, color: Colors.white,),

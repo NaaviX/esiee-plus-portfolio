@@ -5,23 +5,30 @@ import 'package:http/http.dart' show Client;
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 
 import '../App.dart';
 
 class EventApiProvider {
   final log = Logger('eventAPI');
-  Client client = Client();
+  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  final Client client;
+
+  EventApiProvider({
+    @required this.client,
+  }) : assert(client != null);
 
   Future<List<EventModel>> fetchEventList() async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/event/events",
+    final response = await client.get("$baseUrl/event/events",
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
         });
     if (response.statusCode == 200) {
-      // If the call to the server was successful, parse the JSON
-      return EventModel.allEventsFromJson(
+      List<EventModel> events = EventModel.allEventsFromJson(
           json.decode(utf8.decode(response.bodyBytes)));
+      // If the call to the server was successful, parse the JSON
+      return events;
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to load events');
@@ -30,7 +37,7 @@ class EventApiProvider {
 
   Future<EventModel> addEvent(EventModel event) async {
     final response = await client.post(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/event/add",
+        "$baseUrl/event/add",
         body: {
           'id_event': event.idEvent.toString(),
           'enabled': event.enable.toString(),
@@ -59,9 +66,9 @@ class EventApiProvider {
   }
 
 
-  void deleteEvent(EventModel event) async {
+  Future<EventModel> deleteEvent(EventModel event) async {
     final response = await client.delete(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/event/"+event.idEvent.toString(),
+        "$baseUrl/event/"+event.idEvent.toString(),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -69,5 +76,6 @@ class EventApiProvider {
     if (response.statusCode != 200) {
       throw Exception('Failed to delete event');
     }
+    return event;
   }
 }

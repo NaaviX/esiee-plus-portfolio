@@ -4,6 +4,8 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/jwt_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/jwt_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
@@ -27,11 +29,11 @@ import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/contributor_verificator.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/fairpay_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/treasury_manager.dart';
+import 'package:bde_esiee_mobile/src/ui/splash_screen.dart';
 import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
-import 'package:bde_esiee_mobile/src/ui/student/esiee_card.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
@@ -49,6 +51,7 @@ import 'package:logging/logging.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
+import 'blocs/events_bloc.dart';
 import 'blocs/jwt_bloc.dart';
 import 'blocs/jwt_state.dart';
 import 'blocs/prof_event.dart';
@@ -61,6 +64,7 @@ import 'blocs/student_event.dart';
 import 'blocs/student_state.dart';
 import 'forceUpdate.dart';
 import 'models/club_model.dart';
+import 'models/event_model.dart';
 import 'models/prof_model.dart';
 import 'models/role_model.dart';
 import 'ui/event/event_list.dart';
@@ -78,7 +82,6 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays(
@@ -117,10 +120,9 @@ class AppState extends State<App> {
               ),
             );
             return BlocProvider<JwtBloc>(
-              create: (BuildContext context) =>
-                  JwtBloc(jwtRepository: jwtRepository),
-              child: JwtAuth()
-            );
+                create: (BuildContext context) =>
+                    JwtBloc(jwtRepository: jwtRepository),
+                child: JwtAuth());
           } else {
 //user not logged in
             return MaterialApp(
@@ -150,10 +152,10 @@ class JwtAuth extends StatefulWidget {
 }
 
 class JwtAuthState extends State<JwtAuth> {
-
   @override
   void initState() {
-    BlocProvider.of<JwtBloc>(context).add(JwtAuthenticate(username: user.email, password: user.uid));
+    BlocProvider.of<JwtBloc>(context)
+        .add(JwtAuthenticate(username: user.email, password: user.uid));
     super.initState();
   }
 
@@ -161,10 +163,10 @@ class JwtAuthState extends State<JwtAuth> {
   Widget build(BuildContext context) {
     return BlocBuilder<JwtBloc, JwtState>(builder: (context, state) {
       if (state is JwtAuthenticateInitial) {
-        return Center(child: CircularProgressIndicator());
+        return SplashScreen();
       }
       if (state is JwtAuthenticateInProgress) {
-        return Center(child: CircularProgressIndicator());
+        return SplashScreen();
       }
       if (state is JwtAuthenticateSuccess) {
         Base.token = state.token;
@@ -239,7 +241,6 @@ class JwtAuthState extends State<JwtAuth> {
       }
       return Container();
     });
-
   }
 }
 
@@ -265,37 +266,36 @@ class UserAuthState extends State<UserAuth> {
   Widget build(BuildContext context) {
     return BlocBuilder<RolesBloc, RolesState>(builder: (context, state) {
       if (state is RolesInitial) {
-        return Center(child: CircularProgressIndicator());
+        return SplashScreen();
       }
       if (state is RolesLoadInProgress) {
-        return Center(child: CircularProgressIndicator());
+        return SplashScreen();
       }
       if (state is RolesLoadSuccess) {
         Base.allRoles = state.roles;
         return BlocBuilder<ClubsBloc, ClubState>(
           builder: (context, state) {
             if (state is ClubsInitial) {
-              return Center(child: CircularProgressIndicator());
+              return SplashScreen();
             }
             if (state is ClubsLoadInProgress) {
-              return Center(child: CircularProgressIndicator());
+              return SplashScreen();
             }
             if (state is ClubsLoadSuccess) {
               //isStudent
               log.fine("club");
               Base.allClubs = state.clubs;
               try {
-                Base.thisClub =
-                    state.clubs.firstWhere((element) => element.mail ==
-                        user.email);
-              } catch(_) {
+                Base.thisClub = state.clubs
+                    .firstWhere((element) => element.mail == user.email);
+              } catch (_) {
                 return BlocBuilder<StudentsBloc, StudentState>(
                   builder: (context, state) {
                     if (state is StudentInitial) {
-                      return Center(child: CircularProgressIndicator());
+                      return SplashScreen();
                     }
                     if (state is StudentLoadInProgress) {
-                      return Center(child: CircularProgressIndicator());
+                      return SplashScreen();
                     }
                     if (state is StudentLoadSuccess) {
                       //isStudent
@@ -307,32 +307,31 @@ class UserAuthState extends State<UserAuth> {
                       //C'est un prof
                       return BlocBuilder<ProfsBloc, ProfState>(
                           builder: (context, state) {
-                            if (state is ProfInitial) {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                            if (state is ProfLoadInProgress) {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                            if (state is ProfLoadSuccess) {
-                              //isStudent
-                              log.fine("prof");
-                              Base.thisProf = state.prof;
-                              return Base();
-                            }
-                            if (state is ProfLoadFailure) {}
-                            return Container();
-                          });
+                        if (state is ProfInitial) {
+                          return SplashScreen();
+                        }
+                        if (state is ProfLoadInProgress) {
+                          return SplashScreen();
+                        }
+                        if (state is ProfLoadSuccess) {
+                          //isStudent
+                          log.fine("prof");
+                          Base.thisProf = state.prof;
+                          return Base();
+                        }
+                        if (state is ProfLoadFailure) {}
+                        return Container();
+                      });
                     }
                     return Container();
                   },
                 );
               }
-                return Base();
+              return Base();
             }
             return Container();
           },
         );
-
       }
       if (state is RolesLoadFailure) {
         return Text(
@@ -349,17 +348,18 @@ class Base extends StatefulWidget {
   static int selectedIndex = 0;
   static List<RoleModel> allRoles;
   static List<ClubModel> allClubs;
+  static List<EventModel> allEvents;
   static StudentModel thisUser;
   static ClubModel thisClub;
   static ProfModel thisProf;
   static String token;
+
 
   @override
   _Base createState() => _Base();
 }
 
 class _Base extends State<Base> {
-
   final log = Logger('BASE');
 
   PageController pageController =
@@ -368,6 +368,12 @@ class _Base extends State<Base> {
   List<Widget> _widgetOptions;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  EventRepository eventRepository = EventRepository(
+    eventApiProvider: EventApiProvider(
+      client: Client(),
+    ),
+  );
+  EventsBloc eventsBloc;
 
   static List<Widget> _selectedAppbarTitleWidget = [
     Center(
@@ -457,10 +463,24 @@ class _Base extends State<Base> {
 
   @override
   void initState() {
+    final EventRepository eventRepository = EventRepository(
+      eventApiProvider: EventApiProvider(
+        client: Client(),
+      ),
+    );
+    eventsBloc = EventsBloc(eventRepository: eventRepository);
     _widgetOptions = <Widget>[
-      KeepAlivePage(child: Home()),
+      KeepAlivePage(
+          child: BlocProvider<EventsBloc>(
+              create: (BuildContext context) =>
+              eventsBloc,
+              child: Home())),
       KeepAlivePage(child: Calendar()),
-      KeepAlivePage(child: EventList()),
+      KeepAlivePage(
+          child: BlocProvider<EventsBloc>(
+              create: (BuildContext context) =>
+              eventsBloc,
+              child: EventList(eventsBloc: eventsBloc))),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
@@ -495,18 +515,19 @@ class _Base extends State<Base> {
     ]);
     log.fine("base");
 
-    if (Base.thisUser == null && Base.thisClub == null && Base.thisProf == null) {
+    if (Base.thisUser == null &&
+        Base.thisClub == null &&
+        Base.thisProf == null) {
       return Container(
-              color: Theme.of(context).backgroundColor,
-              child: LoginPage(),
-            );
+        color: Theme.of(context).backgroundColor,
+        child: LoginPage(),
+      );
     } else {
       return _getApp();
     }
   }
 
   Widget _getApp() {
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -518,8 +539,7 @@ class _Base extends State<Base> {
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
             brightness: Brightness.light,
-            title: _selectedAppbarTitleWidget
-                .elementAt(Base.selectedIndex),
+            title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex),
             actions: actionButton()),
         body: PageView(
           controller: pageController,
@@ -595,35 +615,6 @@ class _Base extends State<Base> {
       height: 1,
       thickness: 1.5,
       color: Colors.black12,
-    );
-    /*return Container(
-      margin: EdgeInsets.all(30),
-      child: RichText(
-        text: TextSpan(
-            text: type ?? user.displayName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-              fontSize: 16,
-            )),
-      ),
-    );*/
-  }
-
-  Widget _MenuElmt(IconData icon, String title, Widget route) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 15),
-      leading:
-          Icon(icon, color: Theme.of(context).primaryColor.withOpacity(0.8)),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
-      ),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return route;
-        }));
-      },
     );
   }
 
@@ -787,11 +778,10 @@ class _Base extends State<Base> {
                   client: Client(),
                 ),
               );
-              ProfsBloc profsBloc =
-              ProfsBloc(profRepository: profRepository);
+              ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
               return BlocProvider(
                   create: (BuildContext context) => profsBloc,
-              child: MessengerHistory());
+                  child: MessengerHistory());
             }));
           },
         ),
@@ -837,8 +827,7 @@ class _Base extends State<Base> {
                   client: Client(),
                 ),
               );
-              ProfsBloc profsBloc =
-              ProfsBloc(profRepository: profRepository);
+              ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
               return UnitsList(profsBloc: profsBloc);
             }));
           },
@@ -894,7 +883,7 @@ class _Base extends State<Base> {
       return Column(children: [
         _MenuTitle(),
         _requireConnectionTile(
-            Icons.date_range, "Gestion Evènements", EventManager()),
+            Icons.date_range, "Gestion Evènements", EventManager(eventsBloc: eventsBloc,)),
         _requireConnectionTile(
             Icons.verified_user, "Cotisants", ContributorVerificator()),
         _requireConnectionTile(Icons.person_add, "Ajout Professeur", AddProf())

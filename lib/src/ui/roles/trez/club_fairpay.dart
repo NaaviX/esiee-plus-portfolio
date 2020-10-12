@@ -1,22 +1,30 @@
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'fairpay_form.dart';
+import 'package:meta/meta.dart';
 
 
 class Fairpay extends StatefulWidget {
 
   ClubModel club;
   bool isTrez;
+  final FairpayLogsBloc bloc;
 
-  Fairpay({this.club, this.isTrez}) {
+  Fairpay({this.club, this.isTrez, @required this.bloc}) {
     this.club != null ? this.club = this.club : this.club = Base.thisClub;
     this.isTrez != null ? this.isTrez = this.isTrez : this.isTrez = false;
   }
@@ -28,34 +36,34 @@ class Fairpay extends StatefulWidget {
 }
 
 class FairpayState extends State<Fairpay>{
-  final logbloc = FairpayLogBloc();
   int filtre = 0;
 
   @override
   void initState() {
     super.initState();
-    logbloc.fetchClubLogs(widget.club.idClubRef.toString());
-  }
-
-  @override
-  void dispose() {
-    logbloc.dispose();
-    super.dispose();
+    BlocProvider.of<FairpayLogsBloc>(context)
+        .add(FairpayLogsByClubRequested(id: widget.club.idClubRef.toString()));
   }
 
   final log = Logger('Fairpay Club');
 
   @override
   Widget build(BuildContext context) {
-    logbloc.fetchClubLogs(widget.club.idClubRef.toString());
     return Scaffold(
       appBar: AppBar(
         title: widget.isTrez ? Text(widget.club.name) : Text("Fairpay"),
       ),
-      body: StreamBuilder(
-          stream: logbloc.clubFairpayLog,
-          builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
-            if (snapshot.hasData){
+      body: BlocBuilder<FairpayLogsBloc, FairpayLogState>(
+          builder: (context, state) {
+            if (state is FairpayLogsByClubInitial) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is FairpayLogsByClubLoadInProgress) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is FairpayLogsByClubLoadSuccess) {
+              final fairpayLogs = state.fairpayLog;
+
               return Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -63,18 +71,16 @@ class FairpayState extends State<Fairpay>{
                 child: Stack(
                   children: <Widget>[
                     _header(),
-                    _log(snapshot),
+                    _log(fairpayLogs),
                   ],
                 ),
               );
             }
-            else if (snapshot.hasError) {
-              return
-                Text(snapshot.error.toString());
+            if (state is FairpayLogsByClubLoadFailure) {
+              return Center(child: CircularProgressIndicator(),);
             }
-            return Center(child: CircularProgressIndicator());
-          }
-      ),
+            return Container();
+          }),
     );
   }
 
@@ -145,7 +151,16 @@ class FairpayState extends State<Fairpay>{
             ),
           ],
         ),
-        onPressed: () => fairpayForm(this, text, widget.club),/*showDialog<void>(
+        onPressed: () {
+          final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+            fairpayLogApiProvider: FairpayLogApiProvider(
+              client: Client(),
+            ),
+          );
+          return BlocProvider<FairpayLogsBloc>(
+              create: (BuildContext context) => widget.bloc,
+              child: fairpayForm(this, text, widget.club));
+        }/*showDialog<void>(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
@@ -155,7 +170,7 @@ class FairpayState extends State<Fairpay>{
     );
   }
 
-  _log(AsyncSnapshot<List<FairpayLogModel>> snapshot,) {
+  _log(List<FairpayLogModel> fairpayLogs,) {
     return DraggableScrollableSheet(
       builder: (context, scrollController){
         return Container(
@@ -191,7 +206,7 @@ class FairpayState extends State<Fairpay>{
                           color: Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(20))
                       ),
-                      child: buildList(snapshot,)
+                      child: buildList(fairpayLogs)
                   ),
                 ],
               ),
@@ -232,24 +247,24 @@ class FairpayState extends State<Fairpay>{
     );
   }
 
-  Widget buildList(AsyncSnapshot<List<FairpayLogModel>> snapshot,) {
+  Widget buildList(List<FairpayLogModel> fairpayLogs,) {
     return ListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.all(0),
         controller: ScrollController(keepScrollOffset: false),
-        itemCount: snapshot.data.length,
+        itemCount: fairpayLogs.length,
         itemBuilder: (context, index) {
           switch (filtre) {
             case 0:
-              return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
             case 1:
-              if(snapshot.data[index].type == "Depot") {
-                return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              if(fairpayLogs[index].type == "Depot") {
+                return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
               }
               return Container();
             case 2:
-              if(snapshot.data[index].type == "Retrait") {
-                return transactionRow(snapshot.data[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              if(fairpayLogs[index].type == "Retrait") {
+                return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
               }
               return Container();
           }

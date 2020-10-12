@@ -1,10 +1,13 @@
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../App.dart';
 
@@ -17,20 +20,14 @@ class TreasuryManager extends StatefulWidget {
 }
 
 class TreasuryManagerState extends State<TreasuryManager>{
-  final logbloc = FairpayLogBloc();
 
   List<ClubModel> clubList = List();
 
   @override
   void initState() {
     super.initState();
-    logbloc.fetchAllLogs();
-  }
-
-  @override
-  void dispose() {
-    logbloc.dispose();
-    super.dispose();
+    BlocProvider.of<FairpayLogsBloc>(context)
+        .add(FairpayLogsRequested());
   }
 
   @override
@@ -39,39 +36,44 @@ class TreasuryManagerState extends State<TreasuryManager>{
         appBar: AppBar(
           title: Text("Gestion Trésorerie"),
         ),
-        body: StreamBuilder(
-          stream: logbloc.allFairpayLog,
-          builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
-            if (snapshot.hasData){
-              return Column(
-                  children: <Widget>[
-                    _topArea(),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child:  _log(snapshot),
-                      ),
-                    )
-                  ]
-              );
-            }
-            else if (snapshot.hasError) {
-              return
-                Text(snapshot.error.toString());
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _topArea(),
-                  SizedBox(height: 3,),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Text("Aucune log pour le moment", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                  )
-                ]
-            ) ;
-          },
-        )
+        body: BlocBuilder<FairpayLogsBloc, FairpayLogState>(
+            builder: (context, state) {
+              if (state is FairpayLogsInitial) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is FairpayLogsLoadInProgress) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is FairpayLogsLoadSuccess) {
+                final fairpayLogs = state.fairpayLogs;
+
+                return Column(
+                    children: <Widget>[
+                      _topArea(),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child:  _log(fairpayLogs),
+                        ),
+                      )
+                    ]
+                );
+              }
+              if (state is FairpayLogsLoadFailure) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _topArea(),
+                      SizedBox(height: 3,),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Text("Aucune log pour le moment", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                      )
+                    ]
+                ) ;
+              }
+              return Container();
+            })
     );
   }
 
@@ -140,7 +142,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
             );
   }
 
-  _log(AsyncSnapshot<List<FairpayLogModel>> snapshot) {
+  _log(List<FairpayLogModel> fairpayLogs) {
     List<FairpayLogModel> ajd = new List<FairpayLogModel>();
     List<FairpayLogModel> sameMonth = new List<FairpayLogModel>();
     List<FairpayLogModel> mandat = new List<FairpayLogModel>();
@@ -154,7 +156,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
     DateTime jour = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime mois = DateTime(DateTime.now().year, DateTime.now().month);
 
-    snapshot.data.forEach((element) {
+    fairpayLogs.forEach((element) {
       DateTime dateLog = element.date;
       DateTime moisLog = DateTime(dateLog.year, dateLog.month);
       DateTime jourLog = DateTime(dateLog.year, dateLog.month, dateLog.day);

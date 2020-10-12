@@ -73,10 +73,7 @@ class EventCardState extends State<EventCard> {
                             children: <Widget>[
                               Container(
                                 height: 150,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
+                                width: MediaQuery.of(context).size.width,
                                 decoration: new BoxDecoration(
                                   color: Colors.black,
                                   image: new DecorationImage(
@@ -89,6 +86,21 @@ class EventCardState extends State<EventCard> {
                                 ),
                               ),
                               _isEnded(context, event),
+                              Positioned(
+                                  top: 15,
+                                  right: 15,
+                                  child : GestureDetector(
+                                    onTap: () {
+                                      _isFav ? unfavEvent() : favEvent();
+                                      setState(() {
+                                        _isFav = !_isFav;
+                                        setState(() {
+                                        });
+                                      });
+                                    },
+                                    child: _favCard(),
+                                  ),
+                                ),
                             ]),
                         Container(
                           width: MediaQuery
@@ -126,11 +138,11 @@ class EventCardState extends State<EventCard> {
                                                     color: Colors.black,
                                                     fontSize: 19.0),
                                               ),
-                                              WidgetSpan(
+                                              /*WidgetSpan(
                                                 alignment: PlaceholderAlignment
                                                     .top,
                                                 child: _favCard(),
-                                              ),
+                                              ),*/
                                               TextSpan(
                                                 text: thisClub!=null ? "\n" + thisClub.name : "\n",
                                                 style: TextStyle(
@@ -174,14 +186,15 @@ class EventCardState extends State<EventCard> {
           dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
           List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
           _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
-          return _isFav ? Container(
+          return Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
+              color: (_isFav ? Colors.red : Colors.grey));/*_isFav ? Container(
             child: Icon(FontAwesomeIcons.solidHeart, size: 15, color: Colors.red),
             margin: EdgeInsets.only(left: 5),
           ) :
           Container(
             child: Icon(null, size: 15, color: Colors.red),
             margin: EdgeInsets.only(left: 5),
-          );
+          );*/
         }
     );
   }
@@ -267,5 +280,22 @@ class EventCardState extends State<EventCard> {
     else if(event.enable == false) return "en attente d'approbation";
     else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
     else return "";
+  }
+
+  void favEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.add( widget.event );
+    String savedEventsJson = json.encode(savedEvents);
+    prefs.setString("savedEventsJson", savedEventsJson);
+  }
+
+  void unfavEvent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String localEvents = prefs.getString('savedEventsJson');
+    List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
+    savedEvents.removeWhere((event) => event["idEvent"] == widget.event.idEvent);
+    prefs.setString("savedEventsJson", json.encode(savedEvents));
   }
 }

@@ -54,6 +54,7 @@ class EventApiProvider {
           'background_url': event.backgroundUrl,
           "points": 0.toString(),
           'enabled_stratif' : event.enabledStratif.toString(),
+          'is_top_event' : event.topEvent.toString(),
         },
         headers: {
           HttpHeaders.authorizationHeader: "Bearer "+Base.token

@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -11,8 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'club_fairpay.dart';
 
 fairpayForm(FairpayState parent, String type, ClubModel club) {
-  final fairpayBloc = FairpayLogBloc();
-
   final _formKey = GlobalKey<FormState>();
   final amountController = TextEditingController();
   final descController = TextEditingController();
@@ -107,14 +106,13 @@ fairpayForm(FairpayState parent, String type, ClubModel club) {
                           BlocProvider.of<ClubsBloc>(context)
                               .add(ClubsRequested());
                         }
-                        fairpayBloc.addLog(
-                            FairpayLogModel(
-                                type: type,
-                                amount: _getAmount(),
-                                idClubRef: club.idClubRef,
-                                info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
-                            )
-                        );
+                        BlocProvider.of<FairpayLogsBloc>(context)
+                            .add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
+                            type: type,
+                            amount: _getAmount(),
+                            idClubRef: club.idClubRef,
+                            info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
+                        )));
                         if (Navigator.canPop(context)) {
                           parent.setState(() { });
                           Navigator.pop(context);

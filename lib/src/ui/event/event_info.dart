@@ -52,6 +52,7 @@ class EventInfoState extends State<EventInfoPage> {
 
   bool _isEnabled = false;
   bool _isForStratif = false;
+  bool _isTopEvent = false;
 
   bool _isFav = false;
 
@@ -365,6 +366,7 @@ class EventInfoState extends State<EventInfoPage> {
   _validationMod() {
     _isEnabled = widget.event.enable;
     _isForStratif = widget.event.enabledStratif;
+    _isTopEvent = widget.event.topEvent;
     if(widget.isModeration)
     {
       return Column(
@@ -381,6 +383,23 @@ class EventInfoState extends State<EventInfoPage> {
                 BlocProvider.of<EventsBloc>(context)
                     .add(EventToBeSaved(event: widget.event));
               });
+            },
+            activeColor : Colors.green,
+            inactiveThumbColor : Colors.red,
+          ),
+          SwitchListTile(
+            title:const Text('Top Event '),
+            value: _isTopEvent,
+            onChanged: (bool value)
+            {
+              setState( ()
+              {
+                _isTopEvent = value;
+              });
+              widget.event.topEvent = _isTopEvent;
+              BlocProvider.of<EventsBloc>(context)
+                  .add(EventToBeSaved(event: widget.event));
+
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,

@@ -2,6 +2,8 @@ import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
@@ -18,7 +20,7 @@ import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/student_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/ColorMean.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
@@ -52,6 +54,7 @@ import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/events_bloc.dart';
+import 'blocs/fairpay_log_bloc.dart';
 import 'blocs/jwt_bloc.dart';
 import 'blocs/jwt_state.dart';
 import 'blocs/prof_event.dart';
@@ -388,7 +391,7 @@ class _Base extends State<Base> {
   ];
 
   List<Widget> actionButton() {
-    ColorDetect c = ColorDetect(user.photoUrl);
+    ColorDetect c = ColorDetect(user.photoUrl, context);
     if (Base.selectedIndex == 0) {
       return [
         FutureBuilder(
@@ -403,13 +406,16 @@ class _Base extends State<Base> {
                   ),
                   child: Container(
                     //padding: EdgeInsets.all(15),
+                    color: Theme.of(context).backgroundColor,
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Hero(
                         tag: "photo",
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(user.photoUrl),
+                          backgroundColor: Theme.of(context).backgroundColor,
                           radius: 20,
-                        )),
+                        )
+                    ),
                     /*Image.asset(
             'assets/esieeplus/Logo.webp',
           ),*/
@@ -417,7 +423,7 @@ class _Base extends State<Base> {
                 );
               }
               return CircleAvatar(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Theme.of(context).backgroundColor,
                 radius: 20,
               );
             }),
@@ -477,10 +483,7 @@ class _Base extends State<Base> {
               child: Home())),
       KeepAlivePage(child: Calendar()),
       KeepAlivePage(
-          child: BlocProvider<EventsBloc>(
-              create: (BuildContext context) =>
-              eventsBloc,
-              child: EventList(eventsBloc: eventsBloc))),
+          child: EventList(eventsBloc: eventsBloc)),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
@@ -582,20 +585,6 @@ class _Base extends State<Base> {
                       fit: BoxFit.fill),
                 ],
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.power_settings_new,
-                  color: Theme.of(context).primaryColor.withOpacity(0.8)),
-              title: new Text(
-                Translations.of(context).text("deco"),
-                style: TextStyle(
-                    fontSize: 15, color: Theme.of(context).primaryColor),
-              ),
-              onTap: () async {
-                Navigator.of(context).pop();
-                signOutGoogle();
-                Base.selectedIndex = 0;
-              },
             ),
             _adminMenu(),
             _modoMenu(),
@@ -725,7 +714,15 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Fairpay();
+              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+                fairpayLogApiProvider: FairpayLogApiProvider(
+                  client: Client(),
+                ),
+              );
+              return BlocProvider<FairpayLogsBloc>(
+                  create: (BuildContext context) =>
+                      FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository),
+                  child: Fairpay());
             }));
           },
         ),
@@ -912,7 +909,15 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return TreasuryManager();
+              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+                fairpayLogApiProvider: FairpayLogApiProvider(
+                  client: Client(),
+                ),
+              );
+              return BlocProvider<FairpayLogsBloc>(
+                  create: (BuildContext context) =>
+                      FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository),
+                  child: TreasuryManager());
             }));
           },
         ),
@@ -927,7 +932,13 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return FairPayManager();
+              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+                fairpayLogApiProvider: FairpayLogApiProvider(
+                  client: Client(),
+                ),
+              );
+              FairpayLogsBloc fairpayLogsBloc = FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+              return FairPayManager(bloc: fairpayLogsBloc);
             }));
           },
         ),

@@ -1,35 +1,52 @@
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FairpayLogBloc {
-  final _repository = Repository();
-  final _fpAllLogFetcher = PublishSubject<List<FairpayLogModel>>();
-  final _fpLogFetcher =PublishSubject<List<FairpayLogModel>>();
+import 'fairpay_log_event.dart';
+import 'fairpay_log_state.dart';
 
-  Observable<List<FairpayLogModel>> get allFairpayLog => _fpAllLogFetcher.stream;
-  Observable<List<FairpayLogModel>> get clubFairpayLog => _fpLogFetcher.stream;
+import 'package:meta/meta.dart';
 
-  fetchAllLogs() async {
-    List<FairpayLogModel> fairpaylogmodel = await _repository.fetchFairpayLogs();
-    fairpaylogmodel.sort((item1, item2) => item2.date.compareTo(item1.date));
-    _fpAllLogFetcher.sink.add(fairpaylogmodel);
-  }
 
-  fetchClubLogs(String id) async {
-    List<FairpayLogModel> fairpaylogmodel = await _repository.fetchLogsByClub(id);
-    fairpaylogmodel.sort((item1, item2) => item2.date.compareTo(item1.date));
-    _fpLogFetcher.sink.add(fairpaylogmodel);
-  }
+class FairpayLogsBloc extends Bloc<FairpayLogEvent, FairpayLogState> {
+  final FairpayLogRepository fairpayLogRepository;
 
-  addLog(FairpayLogModel log) async {
-    FairpayLogModel logModel = await _repository.addLog(log);
-    return logModel;
-  }
+  FairpayLogsBloc({@required this.fairpayLogRepository})
+      : assert(fairpayLogRepository != null),
+        super(FairpayLogsInitial());
 
-  dispose() {
-    _fpAllLogFetcher.close();
-    _fpLogFetcher.close();
+  @override
+  Stream<FairpayLogState> mapEventToState(FairpayLogEvent event) async* {
+    if (event is FairpayLogsRequested) {
+      yield FairpayLogsLoadInProgress();
+      try {
+        final List<FairpayLogModel> fairpayLogs = await fairpayLogRepository.fetchFairpayLogs();
+        yield FairpayLogsLoadSuccess(fairpayLogs: fairpayLogs);
+      } catch (_) {
+        yield FairpayLogsLoadFailure();
+      }
+    }
+
+    if (event is FairpayLogsByClubRequested) {
+      yield FairpayLogsByClubLoadInProgress();
+      try {
+        final List<FairpayLogModel> fairpayLogs = await fairpayLogRepository.fetchFairpayLogsByClub(event.id);
+        yield FairpayLogsByClubLoadSuccess(fairpayLog: fairpayLogs);
+      } catch (_) {
+        yield FairpayLogsByClubLoadFailure();
+      }
+    }
+
+    else if (event is FairpayLogToBeSaved) {
+      try {
+        await fairpayLogRepository.saveFairpayLog(event.fairpayLog);
+      } catch (_) {
+        yield FairpayLogSaveLoadFailure();
+      }
+    }
   }
 }
+

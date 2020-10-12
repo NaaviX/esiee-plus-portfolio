@@ -133,11 +133,7 @@ class Tac extends StatefulWidget {
 class TacState extends State<Tac> {
   @override
   Widget build(BuildContext context) {
-    /*return Container(
-        child: StreamBuilder(
-            stream: widget.stocks.allStocks,
-            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
-              if (snapshot.hasData) {*/
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       child: Column(

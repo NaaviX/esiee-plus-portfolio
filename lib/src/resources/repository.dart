@@ -47,11 +47,6 @@ class Repository {
   final coursesApiProvider = CoursesApiProvider();
   Future<List<CourseModel>> fetchAllCourses(String ids) => coursesApiProvider.fetchCoursesList();
 
-  final fairpayLogApiProvider = FairpayLogApiProvider();
-  Future<List<FairpayLogModel>> fetchFairpayLogs() => fairpayLogApiProvider.fetchFairpayLogList();
-  Future<List<FairpayLogModel>> fetchLogsByClub(String id) => fairpayLogApiProvider.fetchLogsByClub(id);
-  Future<FairpayLogModel> addLog(FairpayLogModel log) => fairpayLogApiProvider.addLog(log);
-
   final freeRoomsApiProvider = FreeRoomsApiProvider();
   Future<List<dynamic>> fetchFreeRooms() => freeRoomsApiProvider.fetchFreeRoomsList();
 

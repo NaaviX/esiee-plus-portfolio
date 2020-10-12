@@ -34,7 +34,7 @@ class EventsBloc extends Bloc<EventEvent, EventState> {
       try {
         final List<EventModel> events = await eventRepository.fetchEvents();
 
-        yield EventsLoadSuccess(events: events);
+        yield EventsLoadSuccess(events: sort(events));
       } catch (_) {
         yield EventsLoadFailure();
       }

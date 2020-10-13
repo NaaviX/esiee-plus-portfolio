@@ -351,6 +351,8 @@ class HomeState extends State<Home> {
     diffTime.inHours >= 1 ? diff = "Dans " + diffTime.inHours.toString() + "h" + (diffTime.inMinutes%60).toString() + "min" :
     diff = "Dans " + (diffTime.inMinutes%60).toString() + "min";
 
+    Color color = Colors.blueAccent;
+
     return Padding(
       padding: EdgeInsets.all(10),
       child: Card(
@@ -363,7 +365,7 @@ class HomeState extends State<Home> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [Colors.blueAccent.withOpacity(0.8), Colors.blueAccent],
+                  gradient: LinearGradient(colors: [color.withOpacity(0.8), color],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),

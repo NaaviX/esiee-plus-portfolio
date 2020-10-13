@@ -57,7 +57,7 @@ class CalendarState extends State<Calendar> {
    Widget build(BuildContext context){
      WeekViewController scrollController = WeekViewController(dayViewsCount: getWeekDates(2, 5).length);
      return Scaffold(
-         body:buildLocal()
+         body: buildLocal()
      );
      /*StreamBuilder(
              stream: bloc.allCourses,

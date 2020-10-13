@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyTheme {
   static const PrimaryColorLight = const Color(0xFF296faa);
@@ -22,7 +23,7 @@ class MyTheme {
   static final ThemeData darkTheme = _buildDarkTheme();
 
   static SetStatusBarColor(context) {
-    if (Provider.of<AppStateNotifier>(context, listen: false).isDarkMode) {
+    if (Provider.of<ThemeNotifier>(context, listen: false).isDarkMode) {
       SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle.dark.copyWith(
             statusBarColor: DarkBackground,
@@ -41,12 +42,12 @@ class MyTheme {
   }
 
   static ColorTheme(context, {Color colorLight, Color colorDark}) {
-    return Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ?
+    return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
     colorDark ?? PrimaryColorDark : colorLight ?? PrimaryColorLight;
   }
 
   static ColorDial(context,) {
-    return Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ?
+    return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
     DarkBackground : WidgetBackgroundLight;
   }
 
@@ -177,12 +178,41 @@ class MyTheme {
   }
 }
 
-class AppStateNotifier extends ChangeNotifier {
-  //
+class ThemeNotifier extends ChangeNotifier {
+
+  final String key = "theme";
+  SharedPreferences _preferences;
+  bool _darkMode;
   bool isDarkMode = false;
 
-  void updateTheme(bool isDarkMode) {
-    this.isDarkMode = isDarkMode;
+  bool get darkMode => _darkMode;
+
+  ThemeNotifier() {
+    _darkMode = true;
+    _loadFromPreferences();
+  }
+
+  _initialPreferences() async {
+    if(_preferences == null)
+      _preferences = await SharedPreferences.getInstance();
+  }
+
+  _savePreferences()async {
+    await _initialPreferences();
+    _preferences.setBool(key, _darkMode);
+  }
+
+  _loadFromPreferences() async {
+    await _initialPreferences();
+    _darkMode = _preferences.getBool(key) ?? true;
+    isDarkMode = _preferences.getBool(key) ?? true;
+    notifyListeners();
+  }
+
+  toggleChangeTheme() {
+    isDarkMode = !isDarkMode;
+    _darkMode = !_darkMode;
+    _savePreferences();
     notifyListeners();
   }
 }

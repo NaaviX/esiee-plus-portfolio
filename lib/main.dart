@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 void main() {
   runApp(
-    ChangeNotifierProvider<AppStateNotifier>(
-      create: (context) => AppStateNotifier(),
+    ChangeNotifierProvider<ThemeNotifier>(
+      create: (context) => ThemeNotifier(),
       child: App(),
     ),
   );

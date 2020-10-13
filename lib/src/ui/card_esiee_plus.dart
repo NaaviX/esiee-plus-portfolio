@@ -11,7 +11,7 @@ class CardEsieePlus extends StatefulWidget {
 
   bool asPage;
   CardEsieePlus({this.asPage}) {
-    this.asPage == null ? false : this.asPage = this.asPage;
+    this.asPage != null ? this.asPage = null : this.asPage = this.asPage;
   }
 
   @override

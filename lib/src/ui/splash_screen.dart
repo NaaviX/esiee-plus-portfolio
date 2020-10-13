@@ -17,7 +17,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(home: Scaffold(
       body: Stack(
           alignment: Alignment.center,
           children: <Widget>[
@@ -39,6 +39,6 @@ class SplashScreenState extends State<SplashScreen> {
             ),
           ]
       ),
-    );
+    ));
   }
 }

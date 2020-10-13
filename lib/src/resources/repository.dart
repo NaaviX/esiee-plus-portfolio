@@ -27,13 +27,7 @@ import 'jwt_api_provider.dart';
 
 class Repository {
 
-  final gradesApiProvider = GradesApiProvider();
-  Future<List<GradesModel>> fetchAllGrades() => gradesApiProvider.fetchGradesList();
-
-  final gradesUnitApiProvider = GradesUnitApiProvider();
-  Future<List<GradesUnitModel>> fetchAllGradesUnit(String gradesID) => gradesUnitApiProvider.fetchGradesUnitList(gradesID);
-
   final coursesApiProvider = CoursesApiProvider();
-  Future<List<CourseModel>> fetchAllCourses(String ids) => coursesApiProvider.fetchCoursesList();
+  Future<List<CourseModel>> fetchAllCourses() => coursesApiProvider.fetchCoursesList();
 
 }

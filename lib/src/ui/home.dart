@@ -17,7 +17,6 @@ import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
-import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
@@ -46,7 +45,7 @@ class HomeState extends State<Home> {
   void initState() {
 
     if(Base.thisUser != null) {
-      courseBloc.fetchAllCourses(getGradeUnitsID().toString());
+      courseBloc.fetchAllCourses();
     }
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());

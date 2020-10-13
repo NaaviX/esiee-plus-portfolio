@@ -12,8 +12,8 @@ class CourseBloc {
 
   Observable<List<CourseModel>> get allCourses => _coursesFetcher.stream;
 
-  fetchAllCourses(String ids) async {
-    List<CourseModel> coursesModel = await _repository.fetchAllCourses(ids);
+  fetchAllCourses() async {
+    List<CourseModel> coursesModel = await _repository.fetchAllCourses();
     _coursesFetcher.sink.add(coursesModel);
   }
 

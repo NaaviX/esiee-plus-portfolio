@@ -12,8 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'controller.dart';
 
 class Calendar extends StatefulWidget {
-  final String ids;
-  Calendar({this.ids});
 
   @override
   State<StatefulWidget> createState() {
@@ -29,7 +27,7 @@ class CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    bloc.fetchAllCourses(widget.ids);
+    bloc.fetchAllCourses();
   }
 
   @override

@@ -3,11 +3,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -260,7 +263,12 @@ class ClubInfoPageState extends State<ClubInfoPage> {
   }
 
   getCover(EventModel event, BuildContext context) {
-    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(event, context);
+    EventRepository eventRepository = EventRepository(
+      eventApiProvider: EventApiProvider(
+        client: Client(),
+      ),
+    );
+    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(event, context, eventsBloc: EventsBloc(eventRepository: eventRepository),);
     else return Container();
   }
 

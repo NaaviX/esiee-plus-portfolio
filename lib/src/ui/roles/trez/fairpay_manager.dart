@@ -69,7 +69,7 @@ class FairPayManagerState extends State<FairPayManager> {
           context,
           MaterialPageRoute(builder: (context) => BlocProvider<FairpayLogsBloc>(
               create: (BuildContext context) => widget.bloc,
-              child: Fairpay(club: club, isTrez: true))),//FairPayClubManager(club)),
+              child: Fairpay(club: club, isTrez: true, bloc: widget.bloc,))),//FairPayClubManager(club)),
         );
       }
   );

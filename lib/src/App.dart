@@ -80,6 +80,7 @@ class AppState extends State<App> {
         builder: (context, appState, child)
         {
           return MaterialApp(
+              debugShowCheckedModeBanner: false,
               home: StreamBuilder<FirebaseUser>(
                   stream: FirebaseAuth.instance.onAuthStateChanged,
                   builder: (BuildContext context, snapshot) {

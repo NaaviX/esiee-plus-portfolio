@@ -14,6 +14,7 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/grades/grades_utils.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,7 @@ class HomeState extends State<Home> {
               events.data.removeWhere((event) => !event.enable || event.endDate.isBefore(DateTime.now()));
               if(events.data.isEmpty) return Container(margin: EdgeInsets.only(left: 15) ,child: Text("Aucun évenement à venir... 😔", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),));
               tops.addAll(events.data.where((event) => event.topEvent));
+              //tops.addAll(events.data);
               tops.isEmpty ? tops.add(events.data.last) : tops=tops;
               return _TopEventsList(tops);
             }
@@ -145,19 +147,90 @@ class HomeState extends State<Home> {
         builder: (BuildContext context, AsyncSnapshot<List<ClubModel>> clubs) {
           return clubs.hasData ?
           Container(
-            height: 250,
+            height: 200,
             child: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (overscroll) {
                 overscroll.disallowGlow();
                 return false;
               },
-              child: PageView.builder(
+              child: ListView.builder(
+                physics: CustomScrollPhysics(itemDimension: MediaQuery.of(context).size.width/1.25 + 28),
+                scrollDirection: Axis.horizontal,
                 itemCount: tops.length,
-                controller: PageController(viewportFraction: 0.8),
-                itemBuilder: (context, i) {
-                  return Transform.scale(
-                    scale: 1,
-                    child:  GestureDetector(
+                itemBuilder: (context, i) =>
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EventInfoPage(tops[i], clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef))),//FairPayClubManager(club)),
+                      ),
+                      child: Container(
+                        margin: i==0 ? const EdgeInsets.only(left: 15, right: 15) : const EdgeInsets.only(right: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                child: Container(
+                                  height: 130,
+                                  width: MediaQuery.of(context).size.width/1.25,
+                                  decoration: new BoxDecoration(
+                                    image: new DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: new NetworkImage(
+                                        tops[i].backgroundUrl,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                  ),
+                                  color: MyTheme.SelectedColor,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(DateFormat("MMM","fr_FR").format(tops[i].startDate).toUpperCase().replaceAll(".", ''), style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600),),
+                                        Text(tops[i].startDate.day.toString(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                  width: MediaQuery.of(context).size.width/1.25 - 70,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      AutoSizeText(tops[i].name, maxLines: 2, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.w800),),
+                                      AutoSizeText("Organisé par " + clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef).name, maxLines: 2,style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13, fontWeight: FontWeight.w800),),
+                                      Text(DateFormat("HH:mm","fr_FR").format(tops[i].startDate) + _hours(tops[i]), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontWeight: FontWeight.w700),),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    //Container(
+                      //width: MediaQuery.of(context).size.width/1.25,
+                      //color: Colors.yellow,
+                      //margin: i==0 ? const EdgeInsets.only(left: 15, right: 15) : const EdgeInsets.only(right: 15),
+                      /*GestureDetector(
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => EventInfoPage(tops[i], clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef))),//FairPayClubManager(club)),
@@ -222,9 +295,8 @@ class HomeState extends State<Home> {
                           ],
                         ),
                       ),
-                    ),
-                  );
-                },
+                    ),*/
+                    //),
               ),
             ),
           ) : Container();
@@ -280,7 +352,7 @@ class HomeState extends State<Home> {
     diff = "Dans " + (diffTime.inMinutes%60).toString() + "min";
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.all(10),
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(
@@ -357,6 +429,7 @@ class HomeState extends State<Home> {
 
   _StudentClub(List<ClubModel> clubs) {
     return Container(
+        padding: EdgeInsets.only(left: 10),
         margin: EdgeInsets.symmetric(vertical: 10.0),
         height: 80,
         //child:

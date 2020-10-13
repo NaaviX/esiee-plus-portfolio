@@ -22,25 +22,6 @@ class Calendar extends StatefulWidget {
 class CalendarState extends State<Calendar> {
 
   final log = Logger('Calendar');
-  final bloc = CourseBloc();
-
-  @override
-  void initState() {
-    super.initState();
-    bloc.fetchAllCourses();
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
-  }
-
-  /*Future<bool> isInternetConnected() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    return connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi;
-  }*/
 
   Future<String> getLocalCourses() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

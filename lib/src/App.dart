@@ -2,6 +2,8 @@ import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/resources/Calendar/courses_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/Calendar/courses_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
@@ -60,6 +62,7 @@ import 'package:provider/provider.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
+import 'blocs/courses_bloc.dart';
 import 'blocs/events_bloc.dart';
 import 'blocs/fairpay_log_bloc.dart';
 import 'blocs/free_rooms_bloc.dart';
@@ -491,11 +494,17 @@ class _Base extends State<Base> {
         client: Client(),
       ),
     );
+    final CoursesRepository coursesRepository = CoursesRepository(
+      courseApiProvider: CoursesApiProvider(
+        client: Client(),
+      ),
+    );
     eventsBloc = EventsBloc(eventRepository: eventRepository);
     _widgetOptions = <Widget>[
       KeepAlivePage(
           child: BlocProvider<EventsBloc>(
-              create: (BuildContext context) => eventsBloc, child: Home())),
+              create: (BuildContext context) => eventsBloc, child: BlocProvider<CoursesBloc>(
+    create: (BuildContext context) => CoursesBloc(coursesRepository: coursesRepository), child: Home()))),
       KeepAlivePage(child: Calendar()),
       KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
     ];

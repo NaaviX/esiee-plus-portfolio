@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/club_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/course_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
@@ -40,23 +41,17 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  CourseBloc courseBloc = CourseBloc();
 
   @override
   void initState() {
 
     if(Base.thisUser != null) {
-      courseBloc.fetchAllCourses();
+      BlocProvider.of<CoursesBloc>(context)
+          .add(CoursesRequested());
     }
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    courseBloc.dispose();
-    super.dispose();
   }
 
   @override

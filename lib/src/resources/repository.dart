@@ -5,7 +5,4 @@ import 'package:bde_esiee_mobile/src/resources/Calendar/courses_api_provider.dar
 
 class Repository {
 
-  final coursesApiProvider = CoursesApiProvider();
-  Future<List<CourseModel>> fetchAllCourses() => coursesApiProvider.fetchCoursesList();
-
 }

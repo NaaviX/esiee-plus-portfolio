@@ -1,23 +1,32 @@
 
 
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
+import 'package:bde_esiee_mobile/src/resources/Calendar/courses_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
+import 'course_event.dart';
+import 'course_state.dart';
 
-class CourseBloc {
-  final _repository = Repository();
+import 'package:meta/meta.dart';
 
-  final _coursesFetcher = PublishSubject<List<CourseModel>>();
+class CoursesBloc extends Bloc<CourseEvent, CourseState> {
+  final CoursesRepository coursesRepository;
 
-  Observable<List<CourseModel>> get allCourses => _coursesFetcher.stream;
+  CoursesBloc({@required this.coursesRepository})
+      : assert(coursesRepository != null),
+        super(CoursesInitial());
 
-  fetchAllCourses() async {
-    List<CourseModel> coursesModel = await _repository.fetchAllCourses();
-    _coursesFetcher.sink.add(coursesModel);
-  }
+  @override
+  Stream<CourseState> mapEventToState(CourseEvent event) async* {
 
-  dispose() {
-    _coursesFetcher.close();
+    if (event is CoursesRequested) {
+      yield CoursesLoadInProgress();
+      try {
+        final List<CourseModel> courses = await coursesRepository.fetchCourses();
+        yield CoursesLoadSuccess(courses: courses);
+      } catch (_) {
+        yield CoursesLoadFailure();
+      }
+    }
   }
 }

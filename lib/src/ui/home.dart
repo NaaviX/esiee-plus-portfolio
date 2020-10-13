@@ -71,7 +71,7 @@ class HomeState extends State<Home> {
                     SizedBox(
                       height: 5,
                     ),
-                    Base.allClubs != null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
+                    Base.allClubs != null && Base.thisUser!=null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
 
                     Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
                     _Component('Top Events', 2),

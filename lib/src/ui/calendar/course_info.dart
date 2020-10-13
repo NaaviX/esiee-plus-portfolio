@@ -38,7 +38,7 @@ class EventInfoState extends State<CourseInfoPage> {
         borderRadius: BorderRadius.circular(10),
       ),
       elevation: 10.0,
-      backgroundColor: Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? MyTheme.DarkBackground : MyTheme.WidgetBackgroundLight,
+      backgroundColor: MyTheme.ColorDial(context),
       child: dialogContent(context),
     );
   }
@@ -109,7 +109,7 @@ class EventInfoState extends State<CourseInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: Divider(
-              color: Colors.black,
+              color: MyTheme.ColorTheme(context, colorLight: Colors.black, colorDark: Colors.grey),
             ),
           ),
           Container(

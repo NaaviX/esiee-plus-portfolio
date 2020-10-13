@@ -98,7 +98,6 @@ class StockState extends State<Stock> with SingleTickerProviderStateMixin{
               return AddStock(this);
             }
         ),
-        backgroundColor: Theme.of(context).primaryColor,
         child: Icon(
           Icons.add_shopping_cart,
           size: 20.0,

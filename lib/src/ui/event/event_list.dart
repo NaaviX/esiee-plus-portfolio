@@ -210,8 +210,7 @@ class EventListState extends State<EventList>  /*with AutomaticKeepAliveClientMi
             MaterialPageRoute(builder: (context) => EventCreation(this)),
           );
         },
-        child: Icon(Icons.add, color: Colors.white,),
-        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add,),
       );
   }
 

@@ -45,6 +45,11 @@ class MyTheme {
     colorDark ?? PrimaryColorDark : colorLight ?? PrimaryColorLight;
   }
 
+  static ColorDial(context,) {
+    return Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ?
+    DarkBackground : WidgetBackgroundLight;
+  }
+
   static ThemeData _buildTheme() {
     final ThemeData base = ThemeData.light();
 
@@ -71,15 +76,19 @@ class MyTheme {
           color: PrimaryColorLight
       ),
 
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: PrimaryColorLight,
+        foregroundColor: LightBackground,
+      ),
+
+      dialogBackgroundColor: WidgetBackgroundLight,
+
       /*iconTheme: IconThemeData(
         color: PrimaryColorLight,
       ),*/
 
       /*
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: PrimaryColorLight,
-        foregroundColor: LightBackground,
-      ),
+
 
 
 
@@ -93,7 +102,7 @@ class MyTheme {
         color: WidgetBackgroundLight,
       ),
 
-      dialogBackgroundColor: WidgetBackgroundLight,
+
        */
     );
   }
@@ -104,6 +113,7 @@ class MyTheme {
     return base.copyWith(
       primaryColor: PrimaryColorDark,
       backgroundColor: DarkBackground,
+      accentColor: AccentColorDark,
       scaffoldBackgroundColor: DarkBackground,
 
       textSelectionColor: AccentColorDark,
@@ -128,6 +138,12 @@ class MyTheme {
         color: WidgetDarkBackground.withOpacity(0.7),
       ),
 
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: PrimaryColorDark,
+        foregroundColor: SelectedColor,
+      ),
+
+      dialogBackgroundColor: DarkBackground,
 /*
         primaryIconTheme: IconThemeData(
             color: PrimaryColorDark

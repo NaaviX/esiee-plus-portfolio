@@ -331,8 +331,7 @@ class EventInfoState extends State<EventInfoPage> {
   _manage(int clubRef) {
     if(widget.isValidator) {
       return FloatingActionButton(
-          child: Icon(Icons.check, color: Colors.white,),
-          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(Icons.check,),
           splashColor: Colors.white,
           onPressed: () {
             eventBloc.addSaveEvent(widget.event);
@@ -343,16 +342,13 @@ class EventInfoState extends State<EventInfoPage> {
     }
     else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
       return SpeedDial(
-        backgroundColor: Theme.of(context).primaryColor,
         animatedIcon: AnimatedIcons.menu_arrow,
-        foregroundColor: Colors.white,
         children: [
           SpeedDialChild(
-              backgroundColor: Theme.of(context).primaryColor,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event)),);
               },
-              child: Icon(Icons.edit, color: Colors.white,),
+              child: Icon(Icons.edit,),
               label: "Modifier",
               labelStyle: TextStyle(color: Colors.black)
           ),

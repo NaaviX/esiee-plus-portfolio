@@ -264,9 +264,6 @@ class _Base extends State<Base> {
                           radius: 20,
                         )
                     ),
-                    /*Image.asset(
-            'assets/esieeplus/Logo.webp',
-          ),*/
                   ),
                 );
               }
@@ -295,13 +292,6 @@ class _Base extends State<Base> {
             );
           },
         ),
-        /*IconButton(
-          icon: const Icon(Icons.today),
-          padding: EdgeInsets.all(2),
-          onPressed: () {
-            pageController.jumpToPage(1);
-          },
-        ),*/
         SizedBox(
           width: 10,
         )
@@ -468,12 +458,6 @@ class _Base extends State<Base> {
                         _clubMenu(),
                         _studentMenu(),
                         _profMenu(),
-                        /*Switch(
-                      value: Provider.of<AppStateNotifier>(context).isDarkMode,
-                      onChanged: (boolVal) {
-                        Provider.of<AppStateNotifier>(context).updateTheme(boolVal);
-                      },
-                    )*/
                       ],
                     ),
                   ),
@@ -517,52 +501,13 @@ class _Base extends State<Base> {
                 ],
               ),
             )
-          /*child: ListView(children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
-              height: 40,
-              child : Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 35),
-                  SizedBox(width: 15,),
-                  Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
-                ],
-              ),
-            ),
-            _adminMenu(),
-            _modoMenu(),
-            _trezMenu(),
-            _logMenu(),
-            _clubMenu(),
-            _studentMenu(),
-            _profMenu(),
-            Switch(
-              value: Provider.of<AppStateNotifier>(context).isDarkMode,
-              onChanged: (boolVal) {
-                Provider.of<AppStateNotifier>(context).updateTheme(boolVal);
-              },
-            )
-          ]),*/
         ),
       ),
     );
   }
 
   Widget _MenuTitle() {
-    return Divider(height: 1, thickness: 1.5, color: Colors.black12,);
-    /*return Container(
-      margin: EdgeInsets.all(30),
-      child: RichText(
-        text: TextSpan(
-            text: type ?? user.displayName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-              fontSize: 16,
-            )),
-      ),
-    );*/
+    return Divider(height: 1, thickness: 1.5, color: MyTheme.ColorTheme(context, colorLight: Colors.black12, colorDark: Colors.white10),);
   }
 
   Widget _MenuElmt(IconData icon, String title, Widget route) {

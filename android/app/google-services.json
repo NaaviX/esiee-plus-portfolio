@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "479442277479-a1u9o7ss6glv1818hds865i807qulg8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bde.esiee.fr.bde_esiee_mobile",
+            "certificate_hash": "c0a70f1b7aa6d323cc1f051875b1a2e44adc9402"
+          }
+        },
+        {
           "client_id": "479442277479-m68jfnmcmgkonbkcjofdct64puqmdgul.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

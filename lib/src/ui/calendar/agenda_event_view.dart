@@ -59,7 +59,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
             context: context,
             barrierDismissible: true,
             // user must tap button!
-            builder: (BuildContext context) {
+            builder: (context) {
               return CourseInfoPage(
                   course: new CourseModel(
                       title: this.course.title,

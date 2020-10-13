@@ -61,6 +61,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
+import 'package:provider/provider.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/courses_bloc.dart';
 import 'blocs/events_bloc.dart';
@@ -99,8 +100,7 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
     MyTheme.SetStatusBarColor(context);
     try {
       versionCheck(context);
@@ -116,7 +116,12 @@ class AppState extends State<App> {
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
-    return StreamBuilder<FirebaseUser>(
+    return Consumer<ThemeNotifier>(
+        builder: (context, appState, child)
+        {
+          return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: StreamBuilder<FirebaseUser>(
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
@@ -132,6 +137,7 @@ class AppState extends State<App> {
                     JwtBloc(jwtRepository: jwtRepository),
                 child: JwtAuth());
           } else {
+    
 //user not logged in
             return Consumer<ThemeNotifier>(
                 builder: (context, appState, child) {
@@ -153,8 +159,9 @@ class AppState extends State<App> {
               );
             });
           }
-        });
-  }
+        }));
+  });
+}
 }
 
 class JwtAuth extends StatefulWidget {
@@ -289,6 +296,7 @@ class UserAuthState extends State<UserAuth> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<RolesBloc, RolesState>(builder: (context, state) {
       if (state is RolesInitial) {
         return SplashScreen();
@@ -406,16 +414,15 @@ class _Base extends State<Base> {
     }
     return [
       Center(
-        child: Image(image: image, height: 25, width: 100, fit: BoxFit.fill),
+        child: Image(
+            image: image,
+            height: 25,
+            width: 100,
+            fit: BoxFit.fill
+        ),
       ),
-      Text(
-        'Emploi du temps',
-        style: TextStyle(fontSize: 25),
-      ),
-      Text(
-        'Evenements',
-        style: TextStyle(fontSize: 25),
-      ),
+      Text('Emploi du temps', style: TextStyle(fontSize: 25),),
+      Text('Evenements', style: TextStyle(fontSize: 25),),
     ];
   }
 
@@ -443,7 +450,8 @@ class _Base extends State<Base> {
                           backgroundImage: NetworkImage(user.photoUrl),
                           backgroundColor: Theme.of(context).backgroundColor,
                           radius: 20,
-                        )),
+                        )
+                    ),
                   ),
                 );
               }
@@ -586,7 +594,7 @@ class _Base extends State<Base> {
         color: Theme.of(context).backgroundColor,
         child: Drawer(
             elevation: 20,
-            child: Container(
+            child: Container (
               color: Theme.of(context).backgroundColor,
               child: Column(
                 children: <Widget>[

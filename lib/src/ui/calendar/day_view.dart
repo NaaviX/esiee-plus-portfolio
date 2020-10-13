@@ -66,22 +66,22 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
         eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ?? EventsColumnBackgroundPainter(backgroundColor: /*Utils.sameDay(date) ? Theme.of(context).accentColor.withOpacity(0.15) : */Theme.of(context).backgroundColor),
         events = events ?? [],
         super(
-          controller: controller ?? DayViewController(),
-          dateFormatter: dateFormatter ?? DefaultBuilders.defaultDateFormatter,
-          hourFormatter: hourFormatter ?? DefaultBuilders.defaultHourFormatter,
-          dayBarTextStyle: dayBarTextStyle,
-          dayBarHeight: dayBarHeight,
-          dayBarBackgroundColor: dayBarBackgroundColor,
-          hoursColumnTextStyle: hoursColumnTextStyle,
-          hoursColumnWidth: hoursColumnWidth,
-          hoursColumnBackgroundColor: hoursColumnBackgroundColor,
-          hourRowHeight: hourRowHeight,
-          inScrollableWidget: inScrollableWidget,
-          initialHour: initialHour,
-          initialMinute: initialMinute,
-          scrollToCurrentTime: scrollToCurrentTime,
-          userZoomable: userZoomable,
-        );
+        controller: controller ?? DayViewController(),
+        dateFormatter: dateFormatter ?? DefaultBuilders.defaultDateFormatter,
+        hourFormatter: hourFormatter ?? DefaultBuilders.defaultHourFormatter,
+        dayBarTextStyle: dayBarTextStyle,
+        dayBarHeight: dayBarHeight,
+        dayBarBackgroundColor: dayBarBackgroundColor,
+        hoursColumnTextStyle: hoursColumnTextStyle,
+        hoursColumnWidth: hoursColumnWidth,
+        hoursColumnBackgroundColor: hoursColumnBackgroundColor,
+        hourRowHeight: hourRowHeight,
+        inScrollableWidget: inScrollableWidget,
+        initialHour: initialHour,
+        initialMinute: initialMinute,
+        scrollToCurrentTime: scrollToCurrentTime,
+        userZoomable: userZoomable,
+      );
 
   @override
   State<StatefulWidget> createState() => _DayViewState();
@@ -196,8 +196,8 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
 
   /// Creates the background widgets that should be added to a stack.
   Widget createBackground() => Positioned.fill(
-        child: CustomPaint(painter: widget.eventsColumnBackgroundPainter),
-      );
+    child: CustomPaint(painter: widget.eventsColumnBackgroundPainter),
+  );
 
   /// Creates a positioned horizontal rule in the hours column.
   Widget createCurrentTimeRule() {
@@ -448,10 +448,10 @@ class _EventDrawProperties {
 
   /// Creates the event widget.
   Widget createWidget(BuildContext context, DayView dayView, AgendaEventView event) => Positioned(
-        top: top,
-        height: height,
-        left: left,
-        width: width,
-        child: event.build(context, dayView, height, width),
-      );
+    top: top,
+    height: height,
+    left: left,
+    width: width,
+    child: event.build(context, dayView, height, width),
+  );
 }

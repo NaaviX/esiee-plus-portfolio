@@ -62,7 +62,7 @@ class HomeState extends State<Home> {
             Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(bottom: 80),
+              margin: EdgeInsets.only(bottom: 75),
               child: SingleChildScrollView(
                 //padding: EdgeInsets.only(left: 15),
                 child: Column(
@@ -367,8 +367,10 @@ class HomeState extends State<Home> {
         (diffTime.inMinutes % 60).toString() +
         "min";
 
+    Color color = Colors.blueAccent;
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.all(10),
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(
@@ -566,7 +568,7 @@ class HomeState extends State<Home> {
                 width: 40.0,
                 height: 40.0,
                 alignment: Alignment.center,
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   color: MyTheme.LightBackground,
                   shape: BoxShape.circle,
                   image: new DecorationImage(

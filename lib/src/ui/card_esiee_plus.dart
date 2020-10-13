@@ -10,9 +10,7 @@ import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 class CardEsieePlus extends StatefulWidget {
 
   bool asPage;
-  CardEsieePlus({this.asPage}) {
-    this.asPage != null ? this.asPage = null : this.asPage = this.asPage;
-  }
+  CardEsieePlus({this.asPage});
 
   @override
   State<StatefulWidget> createState() {

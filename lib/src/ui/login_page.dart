@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,6 +16,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    MyTheme.SetStatusBarColor(context);
+    super.initState();
+  }
+
   @override
   void setState(fn) {
     if(mounted){
@@ -92,11 +100,7 @@ class _LoginPageState extends State<LoginPage> {
           setState(() => _isLoading = true);
           user = await signInWithGoogle();
           setState(() => _isLoading = false);
-          if (user != null) {
-            if(!user.email.endsWith("esiee.fr")) {
-              signOutGoogle();
-            }
-          } else {
+          if (user == null) {
             signOutGoogle();
           }
         }

@@ -34,7 +34,7 @@ class CalendarState extends State<Calendar> {
    @override
    Widget build(BuildContext context){
      return Scaffold(
-         body:buildLocal()
+         body: buildLocal()
      );
      /*StreamBuilder(
              stream: bloc.allCourses,

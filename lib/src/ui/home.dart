@@ -68,7 +68,7 @@ class HomeState extends State<Home> {
             Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(bottom: 80),
+              margin: EdgeInsets.only(bottom: 75),
               child: SingleChildScrollView(
                 //padding: EdgeInsets.only(left: 15),
                 child: Column(
@@ -127,7 +127,7 @@ class HomeState extends State<Home> {
           stream: eventBloc.allEvents,
           builder: (BuildContext context, AsyncSnapshot<List<EventModel>> events) {
             if (events.hasData) {
-              events.data.removeWhere((event) => !event.enable || event.startDate.isBefore(DateTime.now()));
+              events.data.removeWhere((event) => !event.enable || event.endDate.isBefore(DateTime.now()));
               if(events.data.isEmpty) return Container(margin: EdgeInsets.only(left: 15) ,child: Text("Aucun évenement à venir... 😔", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),));
               tops.addAll(events.data.where((event) => event.topEvent));
               tops.isEmpty ? tops.add(events.data.last) : tops=tops;
@@ -176,7 +176,7 @@ class HomeState extends State<Home> {
                                   width: MediaQuery.of(context).size.width/1.25,
                                   decoration: new BoxDecoration(
                                     image: new DecorationImage(
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.cover,
                                       image: new NetworkImage(
                                         tops[i].backgroundUrl,
                                       ),
@@ -194,26 +194,26 @@ class HomeState extends State<Home> {
                                   ),
                                   color: MyTheme.SelectedColor,
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        Text(DateFormat("MMM","fr_FR").format(tops[i].startDate).toUpperCase().replaceAll(".", ''), style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w600),),
-                                        Text(tops[i].startDate.day.toString(), style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.w600),),
+                                        Text(DateFormat("MMM","fr_FR").format(tops[i].startDate).toUpperCase().replaceAll(".", ''), style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600),),
+                                        Text(tops[i].startDate.day.toString(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),),
                                       ],
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                   width: MediaQuery.of(context).size.width/1.25 - 70,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      AutoSizeText(tops[i].name, maxLines: 2, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25, fontWeight: FontWeight.w800),),
-                                      AutoSizeText("Organisé par " + clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef).name, maxLines: 2,style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.w800),),
-                                      Text(DateFormat("HH:mm","fr_FR").format(tops[i].startDate) + _hours(tops[i]), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13, fontWeight: FontWeight.w700),),
+                                      AutoSizeText(tops[i].name, maxLines: 2, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.w800),),
+                                      AutoSizeText("Organisé par " + clubs.data.firstWhere((club) => club.idClubRef == tops[i].idClubRef).name, maxLines: 2,style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13, fontWeight: FontWeight.w800),),
+                                      Text(DateFormat("HH:mm","fr_FR").format(tops[i].startDate) + _hours(tops[i]), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontWeight: FontWeight.w700),),
                                     ],
                                   ),
                                 ),
@@ -324,7 +324,17 @@ class HomeState extends State<Home> {
             Positioned(
               top: 0,
               right: 10,
-              child: Chip(backgroundColor: Colors.white30,label: Container(padding: EdgeInsets.symmetric(horizontal: 2), child : Center(child: Text(diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Theme.of(context).primaryColor)),)), padding: EdgeInsets.all(0), ),
+              child: Chip(
+                backgroundColor: MyTheme.LightBackground,
+                label: Container(padding: EdgeInsets.symmetric(horizontal: 2),
+                    child : Center(
+                      child: Text(
+                          diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: MyTheme.PrimaryColorLight)
+                      ),
+                    )
+                ),
+                padding: EdgeInsets.all(0),
+              ),
             ),
             Positioned(
               bottom: 10,
@@ -411,12 +421,12 @@ class HomeState extends State<Home> {
                 width: 40.0,
                 height: 40.0,
                 alignment: Alignment.center,
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
+                  color: MyTheme.LightBackground,
                   shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    fit: BoxFit.scaleDown,
-                    image:
-                    new NetworkImage(image),
+                  image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: NetworkImage(image),
                   ),
                 )
             ),

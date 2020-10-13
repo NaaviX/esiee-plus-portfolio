@@ -119,8 +119,9 @@ class EventCardState extends State<EventCard> {
                                     Text(
                                       getDate(event),
                                       style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 13.0),
+                                          color: Colors.redAccent,
+                                          fontSize: 13.0,
+                                      fontWeight: FontWeight.w500),
                                       textAlign: TextAlign.left,
                                     ),
                                     SizedBox(height: 3),
@@ -135,8 +136,8 @@ class EventCardState extends State<EventCard> {
                                               TextSpan(
                                                 text: event.name,
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Theme.of(context).primaryColor,
                                                     fontSize: 19.0),
                                               ),
                                               /*WidgetSpan(
@@ -147,8 +148,8 @@ class EventCardState extends State<EventCard> {
                                               TextSpan(
                                                 text: snapshot.hasData ? "\n" + snapshot.data.name : "\n",
                                                 style: TextStyle(
-                                                  //fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Theme.of(context).primaryColor,
                                                   //fontSize: 15.0
                                                 ),
                                               ),

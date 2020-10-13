@@ -59,7 +59,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
             context: context,
             barrierDismissible: true,
             // user must tap button!
-            builder: (BuildContext context) {
+            builder: (context) {
               return CourseInfoPage(
                   course: new CourseModel(
                       title: this.course.title,
@@ -79,7 +79,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
       child: Container(
         decoration: decoration ?? (backgroundColor != null ? BoxDecoration(
             color: backgroundColor, borderRadius: BorderRadius.circular(10), border: Border.all(
-            color: Colors.white, width: 0.3, style: BorderStyle.solid
+            color: Theme.of(context).backgroundColor, width: 0.3, style: BorderStyle.solid
         )) : null
         ),
         margin: margin,

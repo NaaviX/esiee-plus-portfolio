@@ -1,6 +1,13 @@
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/ui/AppStateNotifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 void main() {
-  runApp(MaterialApp(home: App()));
+  runApp(
+    ChangeNotifierProvider<AppStateNotifier>(
+      create: (context) => AppStateNotifier(),
+      child: App(),
+    ),
+  );
 }
 

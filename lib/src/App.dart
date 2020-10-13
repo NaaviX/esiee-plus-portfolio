@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:bde_esiee_mobile/src/ui/AppStateNotifier.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
@@ -31,6 +32,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/jwt_bloc.dart';
 import 'blocs/roles_bloc.dart';
@@ -60,16 +62,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: MyTheme.LightBackground,
-          systemNavigationBarDividerColor: Colors.transparent,
-        )
-    );
+    MyTheme.SetStatusBarColor(context);
     try {
       versionCheck(context);
     } catch (e) {
@@ -84,32 +77,40 @@ class AppState extends State<App> {
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });
-    return StreamBuilder<FirebaseUser>(
-        stream: FirebaseAuth.instance.onAuthStateChanged,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            user = snapshot.data;
-            //google user is logged in
-            return JwtAuth();
-
-          } else {
+    return Consumer<AppStateNotifier>(
+        builder: (context, appState, child)
+        {
+          return MaterialApp(
+              home: StreamBuilder<FirebaseUser>(
+                  stream: FirebaseAuth.instance.onAuthStateChanged,
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      user = snapshot.data;
+                      //google user is logged in
+                      return JwtAuth();
+                    } else {
 //user not logged in
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: LoginPage(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-            );
-          }
-        });
+                      return MaterialApp(
+                        theme: MyTheme.defaultTheme,
+                        darkTheme : MyTheme.darkTheme,
+                        themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                        home: LoginPage(),
+                        localizationsDelegates: [
+                          const TranslationsDelegate(),
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                        ],
+                        supportedLocales: [
+                          const Locale('en', ''),
+                          const Locale('fr', ''),
+                        ],
+                      );
+                    }
+                  }
+              )
+          );
+        }
+    );
   }
 }
 
@@ -143,35 +144,47 @@ class JwtAuthState extends State<JwtAuth> {
           if (snapshot.hasData) {
             print("hasdate");
             Base.token = snapshot.data;
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: Base(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
+            return Consumer<AppStateNotifier>(
+                builder: (context, appState, child) {
+                  return MaterialApp(
+                    theme: MyTheme.defaultTheme,
+                    darkTheme: MyTheme.darkTheme,
+                    themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                    home: Base(),
+                    localizationsDelegates: [
+                      const TranslationsDelegate(),
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en', ''),
+                      const Locale('fr', ''),
+                    ],
+                  );
+                }
             );
           } else {
             print("hasNotdate");
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: LoginPage(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
+            return Consumer<AppStateNotifier>(
+                builder: (context, appState, child)
+                {
+                  return
+                    MaterialApp(
+                      theme: MyTheme.defaultTheme,
+                      darkTheme: MyTheme.darkTheme,
+                      themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                      home: LoginPage(),
+                      localizationsDelegates: [
+                        const TranslationsDelegate(),
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                      ],
+                      supportedLocales: [
+                        const Locale('en', ''),
+                        const Locale('fr', ''),
+                      ],
+                    );
+                }
             );
           }
         }
@@ -206,13 +219,24 @@ class _Base extends State<Base> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  static List<Widget> _selectedAppbarTitleWidget = [
-    Center(
-      child: Image(image: AssetImage('assets/esieeplus/color_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
-    ),
-    Text('Emploi du temps'),
-    Text('Evenements'),
-  ];
+  static List<Widget> _selectedAppbarTitleWidget(context) {
+    ImageProvider<Object> image = AssetImage('assets/esieeplus/color_LetterLogo.webp');
+    if(Provider.of<AppStateNotifier>(context, listen: false).isDarkMode) {
+      image = AssetImage('assets/esieeplus/white_LetterLogo.webp');
+    }
+    return [
+      Center(
+        child: Image(
+            image: image,
+            height: 25,
+            width: 100,
+            fit: BoxFit.fill
+        ),
+      ),
+      Text('Emploi du temps', style: TextStyle(fontSize: 25),),
+      Text('Evenements', style: TextStyle(fontSize: 25),),
+    ];
+  }
 
   List<Widget> actionButton() {
     ColorDetect c = ColorDetect(user.photoUrl, context);
@@ -363,7 +387,7 @@ class _Base extends State<Base> {
                             Base.thisProf = snapshot.data;
                             return _getApp();
                           } else {
-                            signOutGoogle();
+                            //signOutGoogle();
                             log.fine("loading");
                             return Container(
                               color: Theme.of(context).backgroundColor,
@@ -392,11 +416,10 @@ class _Base extends State<Base> {
         key: _scaffoldKey,
         appBar: AppBar(
             leading: IconButton(
-              icon: Icon(Icons.dehaze, size: 30,),
+              icon: Icon(Icons.dehaze, size: 30),
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
-            brightness: Brightness.light,
-            title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex),//Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
+            title: _selectedAppbarTitleWidget(context).elementAt(Base.selectedIndex),//Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
             actions: actionButton()),
         body: PageView(
           controller: pageController,
@@ -417,8 +440,85 @@ class _Base extends State<Base> {
         width: 270,
         color: Theme.of(context).backgroundColor,
         child: Drawer(
-          elevation: 20,
-          child: ListView(children: <Widget>[
+            elevation: 20,
+            child: Container (
+              color: Theme.of(context).backgroundColor,
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    // ListView contains a group of widgets that scroll inside the drawer
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                          height: 40,
+                          child : Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 35),
+                              SizedBox(width: 15,),
+                              Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        _adminMenu(),
+                        _modoMenu(),
+                        _trezMenu(),
+                        _logMenu(),
+                        _clubMenu(),
+                        _studentMenu(),
+                        _profMenu(),
+                        /*Switch(
+                      value: Provider.of<AppStateNotifier>(context).isDarkMode,
+                      onChanged: (boolVal) {
+                        Provider.of<AppStateNotifier>(context).updateTheme(boolVal);
+                      },
+                    )*/
+                      ],
+                    ),
+                  ),
+                  // This container holds the align
+                  Container(
+                      child: Align(
+                        //alignment: FractionalOffset.bottomCenter,
+                          child: Container(
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.all(5),
+                              child: Column(
+                                children: <Widget>[
+                                  Divider(),
+                                  Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(
+                                            Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? FontAwesomeIcons.lightbulb : FontAwesomeIcons.solidLightbulb,
+                                            size: 25,
+                                            color: Theme.of(context).primaryColor.withOpacity(0.8)
+                                        ),
+                                        onPressed: () => {
+                                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(!Provider.of<AppStateNotifier>(context, listen: false).isDarkMode),
+                                          MyTheme.SetStatusBarColor(context)
+                                        },
+                                        splashColor: null,
+                                      ),
+                                    ],
+                                  ),
+                                  /*ListTile(
+                                  leading: Icon(Icons.settings),
+                                  title: Text('Settings')),
+                              ListTile(
+                                  leading: Icon(Icons.help),
+                                  title: Text('Help and Feedback'))*/
+                                ],
+                              )
+                          )
+                      )
+                  )
+                ],
+              ),
+            )
+          /*child: ListView(children: <Widget>[
             Container(
               margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
               height: 40,
@@ -438,7 +538,13 @@ class _Base extends State<Base> {
             _clubMenu(),
             _studentMenu(),
             _profMenu(),
-          ]),
+            Switch(
+              value: Provider.of<AppStateNotifier>(context).isDarkMode,
+              onChanged: (boolVal) {
+                Provider.of<AppStateNotifier>(context).updateTheme(boolVal);
+              },
+            )
+          ]),*/
         ),
       ),
     );
@@ -606,19 +712,17 @@ class _Base extends State<Base> {
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
         icon: Icon(FontAwesomeIcons.home,),
-        activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
+        //activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
         title: Text('Home'),
       ),
       BottomNavigationBarItem(
         icon: Icon(FontAwesomeIcons.clock,),
-        activeIcon: Icon(FontAwesomeIcons.clock, color: Theme
-            .of(context)
-            .primaryColor,),
+        //activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
         title: Text('EDT'),
       ),
       BottomNavigationBarItem(
         icon: Icon(FontAwesomeIcons.calendarAlt,),
-        activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
+        //activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
         title: Text('Event',),
       ),
     ];
@@ -628,7 +732,7 @@ class _Base extends State<Base> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      selectedItemColor: Theme.of(context).primaryColor,
+      //selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }

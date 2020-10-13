@@ -1,10 +1,13 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/search_contributor.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContributorVerificator extends StatefulWidget {
   @override
@@ -15,7 +18,6 @@ class ContributorVerificator extends StatefulWidget {
 
 
 class ContributorVerificatorState extends State<ContributorVerificator> {
-  StudentsBlocOld studentsBloc = StudentsBlocOld();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   FocusNode currentFocus;
@@ -24,14 +26,9 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
 
   @override
   void initState() {
-    studentsBloc.fetchAllStudents();
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentListRequested());
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    studentsBloc.dispose();
-    super.dispose();
   }
 
   @override
@@ -41,41 +38,50 @@ class ContributorVerificatorState extends State<ContributorVerificator> {
         appBar: AppBar(
           title: Text("Verification cotisants BDE"),
         ),
-        body: StreamBuilder(
-            stream: studentsBloc.allStudents,
-            builder: (context,
-                AsyncSnapshot<List<StudentModel>> studentSnapshot) {
-              if (studentSnapshot.hasData) {
-                allStudents = studentSnapshot.data;
+        body: BlocBuilder<StudentsBloc, StudentState>(
+            builder: (context, state) {
+              if (state is StudentListInitial) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is StudentListLoadInProgress) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is StudentListLoadSuccess) {
+                final students = state.students;
+
+                allStudents = students;
                 return Container(
-                        child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Flexible(
-                                child: Container(
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        currentFocus = FocusScope.of(context);
-                                        currentFocus.unfocus();
-                                      },
-                                      child: Container(
-                                        child: SearchContributor(this),
-                                      )
-                                  ),
-                                ),
+                    child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Flexible(
+                            child: Container(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    currentFocus = FocusScope.of(context);
+                                    currentFocus.unfocus();
+                                  },
+                                  child: Container(
+                                    child: SearchContributor(this, students: allStudents,),
+                                  )
                               ),
-                              Container(
-                                  margin: EdgeInsets.only(
-                                      top: 10, bottom: 10, right: 10),
-                                  child: _scanButton()
-                              ),
-                            ]
-                        )
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(
+                                  top: 10, bottom: 10, right: 10),
+                              child: _scanButton()
+                          ),
+                        ]
+                    )
                 );
               }
-              return Center(child: CircularProgressIndicator(),);
+              if (state is StudentListLoadFailure) {
+                return Center(child: CircularProgressIndicator(),);
+              }
+              return Container();
             }));
 
 

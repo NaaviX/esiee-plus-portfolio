@@ -19,7 +19,8 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
     if (event is StudentListRequested) {
       yield StudentListLoadInProgress();
       try {
-        final List<StudentModel> students = await studentRepository.fetchStudents();
+        final List<StudentModel> students = await studentRepository
+            .fetchStudents();
         yield StudentListLoadSuccess(students: students);
       } catch (_) {
         yield StudentListLoadFailure();
@@ -29,7 +30,8 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
     else if (event is StudentRequested) {
       yield StudentLoadInProgress();
       try {
-        final StudentModel student = await studentRepository.fetchStudent(event.email);
+        final StudentModel student = await studentRepository.fetchStudent(
+            event.email);
         yield StudentLoadSuccess(student: student);
       } catch (_) {
         yield StudentLoadFailure();
@@ -44,43 +46,4 @@ class StudentsBloc extends Bloc<StudentEvent, StudentState> {
       }
     }
   }
-  /*fetchAllStudentClubs(StudentModel student) async {
-    List<ClubModel> studentClubs=await _repository.fetchAllClubs();
-    studentClubs.removeWhere((element) => !element.students.contains(student));
-    _studentsClubFetcher.sink.add(studentClubs);
-  }*/
-
-}
-class StudentsBlocOld {
-final _repository = Repository();
-final _studentsFetcher = PublishSubject<List<StudentModel>>();
-final _studentFetcher = PublishSubject<StudentModel>();
-
-Observable<List<StudentModel>> get allStudents => _studentsFetcher.stream;
-Observable<StudentModel> get thisStudent => _studentFetcher.stream;
-
-fetchAllStudents() async {
-  List<StudentModel> studentmodel = await _repository.fetchAllStudents();
-  studentmodel.sort((item1, item2) => item1.lastname.compareTo(item2.lastname));
-  _studentsFetcher.sink.add(studentmodel);
-}
-
-fetchStudent(String email) async {
-  StudentModel studentModel = await _repository.fetchStudent(email);
-  _studentFetcher.sink.add(studentModel);
-}
-
-fetchStudentById(String idStudent) async {
-  StudentModel studentModel = await _repository.fetchStudentById(idStudent);
-  _studentFetcher.sink.add(studentModel);
-}
-
-updateStudent(StudentModel student) async {
-  await _repository.updateStudent(student);
-}
-
-dispose() {
-  _studentsFetcher.close();
-  _studentFetcher.close();
-}
 }

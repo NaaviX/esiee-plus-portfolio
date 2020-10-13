@@ -21,6 +21,7 @@ import 'package:bde_esiee_mobile/src/resources/student_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_document_upload.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/class_notification.dart';
@@ -357,7 +358,6 @@ class Base extends StatefulWidget {
   static ProfModel thisProf;
   static String token;
 
-
   @override
   _Base createState() => _Base();
 }
@@ -414,8 +414,7 @@ class _Base extends State<Base> {
                           backgroundImage: NetworkImage(user.photoUrl),
                           backgroundColor: Theme.of(context).backgroundColor,
                           radius: 20,
-                        )
-                    ),
+                        )),
                     /*Image.asset(
             'assets/esieeplus/Logo.webp',
           ),*/
@@ -478,12 +477,9 @@ class _Base extends State<Base> {
     _widgetOptions = <Widget>[
       KeepAlivePage(
           child: BlocProvider<EventsBloc>(
-              create: (BuildContext context) =>
-              eventsBloc,
-              child: Home())),
+              create: (BuildContext context) => eventsBloc, child: Home())),
       KeepAlivePage(child: Calendar()),
-      KeepAlivePage(
-          child: EventList(eventsBloc: eventsBloc)),
+      KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
@@ -714,14 +710,15 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+              final FairpayLogRepository fairpayLogRepository =
+                  FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
               return BlocProvider<FairpayLogsBloc>(
-                  create: (BuildContext context) =>
-                      FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository),
+                  create: (BuildContext context) => FairpayLogsBloc(
+                      fairpayLogRepository: fairpayLogRepository),
                   child: Fairpay());
             }));
           },
@@ -775,10 +772,19 @@ class _Base extends State<Base> {
                   client: Client(),
                 ),
               );
+              final StudentRepository studentRepository = StudentRepository(
+                studentApiProvider: StudentApiProvider(
+                  client: Client(),
+                ),
+              );
               ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
+              StudentsBloc studentsBloc =
+                  StudentsBloc(studentRepository: studentRepository);
               return BlocProvider(
                   create: (BuildContext context) => profsBloc,
-                  child: MessengerHistory());
+                  child: BlocProvider<StudentsBloc>(
+                      create: (BuildContext context) => studentsBloc,
+                      child: MessengerHistory()));
             }));
           },
         ),
@@ -844,9 +850,14 @@ class _Base extends State<Base> {
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.admin))) {
+      final StudentRepository studentRepository = StudentRepository(
+        studentApiProvider: StudentApiProvider(
+          client: Client(),
+        ),
+      );
+
       return Column(children: [
         _MenuTitle(),
-        //_MenuElmt(Icons.info_outline, "Informations importantes", BdeInfos()),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.beenhere,
@@ -858,13 +869,20 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ContributorManager();
+              return BlocProvider<StudentsBloc>(
+                  create: (BuildContext context) =>
+                      StudentsBloc(studentRepository: studentRepository),
+                  child: ContributorManager());
             }));
           },
         ),
-        //_MenuElmt(Icons.account_balance, "Dashboard trésorerie", TreasuryDashboard()),
         _requireConnectionTile(
-            Icons.group_add, "Droits Utilisateurs", UserPermissions())
+            Icons.group_add,
+            "Droits Utilisateurs",
+            BlocProvider<StudentsBloc>(
+                create: (BuildContext context) =>
+                    StudentsBloc(studentRepository: studentRepository),
+                child: UserPermissions()))
       ]);
     }
     return Column();
@@ -877,12 +895,26 @@ class _Base extends State<Base> {
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.mod))) {
+      final StudentRepository studentRepository = StudentRepository(
+        studentApiProvider: StudentApiProvider(
+          client: Client(),
+        ),
+      );
       return Column(children: [
         _MenuTitle(),
         _requireConnectionTile(
-            Icons.date_range, "Gestion Evènements", EventManager(eventsBloc: eventsBloc,)),
+            Icons.date_range,
+            "Gestion Evènements",
+            EventManager(
+              eventsBloc: eventsBloc,
+            )),
         _requireConnectionTile(
-            Icons.verified_user, "Cotisants", ContributorVerificator()),
+            Icons.verified_user,
+            "Cotisants",
+            BlocProvider<StudentsBloc>(
+                create: (BuildContext context) =>
+                    StudentsBloc(studentRepository: studentRepository),
+                child: ContributorVerificator())),
         _requireConnectionTile(Icons.person_add, "Ajout Professeur", AddProf())
       ]);
     }
@@ -909,14 +941,15 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+              final FairpayLogRepository fairpayLogRepository =
+                  FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
               return BlocProvider<FairpayLogsBloc>(
-                  create: (BuildContext context) =>
-                      FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository),
+                  create: (BuildContext context) => FairpayLogsBloc(
+                      fairpayLogRepository: fairpayLogRepository),
                   child: TreasuryManager());
             }));
           },
@@ -932,12 +965,14 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
+              final FairpayLogRepository fairpayLogRepository =
+                  FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
-              FairpayLogsBloc fairpayLogsBloc = FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+              FairpayLogsBloc fairpayLogsBloc =
+                  FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return FairPayManager(bloc: fairpayLogsBloc);
             }));
           },
@@ -1031,29 +1066,4 @@ class _Base extends State<Base> {
   }
 }
 
-class KeepAlivePage extends StatefulWidget {
-  KeepAlivePage({
-    Key key,
-    @required this.child,
-  }) : super(key: key);
 
-  final Widget child;
-
-  @override
-  _KeepAlivePageState createState() => _KeepAlivePageState();
-}
-
-class _KeepAlivePageState extends State<KeepAlivePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    /// Dont't forget this
-    super.build(context);
-
-    return widget.child;
-  }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-}

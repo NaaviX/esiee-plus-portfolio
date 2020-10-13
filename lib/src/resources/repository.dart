@@ -28,16 +28,6 @@ import 'jwt_api_provider.dart';
 
 class Repository {
 
-  final studentApiProvider = StudentApiProvider(client : Client());
-  Future<List<StudentModel>> fetchAllStudents() =>
-      studentApiProvider.fetchStudentList();
-  Future<StudentModel> fetchStudent(String mailEsiee) =>
-      studentApiProvider.fetchStudent(mailEsiee);
-  Future<StudentModel> fetchStudentById(String idStudent) =>
-      studentApiProvider.fetchStudentById(idStudent);
-  Future<StudentModel> updateStudent(StudentModel student) =>
-      studentApiProvider.updateStudent(student);
-
   final gradesApiProvider = GradesApiProvider();
   Future<List<GradesModel>> fetchAllGrades() => gradesApiProvider.fetchGradesList();
 

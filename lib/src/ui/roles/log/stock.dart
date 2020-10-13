@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/stock_state.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,12 +32,9 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
-    BlocProvider.of<StockBloc>(context)
-        .add(StockRequested());
+    BlocProvider.of<StockBloc>(context).add(StockRequested());
     super.initState();
   }
-
-
 
   @override
   void dispose() {
@@ -64,8 +62,8 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
               ),
               title: Text("Stock"),
             ),
-            body: Container(child: BlocBuilder<StockBloc, StockState>(
-                    builder: (context, state) {
+            body: Container(child:
+                BlocBuilder<StockBloc, StockState>(builder: (context, state) {
               if (state is StockInitial) {
                 return Center(child: CircularProgressIndicator());
               }
@@ -78,8 +76,8 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
                 return TabBarView(
                   controller: _tabController,
                   children: [
-                    Tac(context, stocks),
-                    Reserve(context, stocks),
+                    KeepAlivePage(child: Tac(context, stocks)),
+                    KeepAlivePage(child: Reserve(context, stocks)),
                   ],
                 );
               }
@@ -90,9 +88,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
                 );
               }
               return Container();
-            })
-
-                ),
+            })),
             floatingActionButton: _bottomButtons()));
   }
 
@@ -108,7 +104,8 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
                   client: Client(),
                 ),
               );
-              return BlocProvider(create: (BuildContext context) => widget.bloc,
+              return BlocProvider(
+                  create: (BuildContext context) => widget.bloc,
                   child: AddStock());
             }),
         backgroundColor: Theme.of(context).primaryColor,
@@ -133,7 +130,6 @@ class Tac extends StatefulWidget {
 class TacState extends State<Tac> {
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       child: Column(
@@ -150,8 +146,7 @@ class TacState extends State<Tac> {
                 fontWeight: FontWeight.bold),
           ),
           Column(
-            children:
-                _list(context, widget.stocks, "Cannette"),
+            children: _list(context, widget.stocks, "Cannette"),
           ),
           SizedBox(
             height: 20,
@@ -197,8 +192,7 @@ class TacState extends State<Tac> {
     );*/
   }
 
-  _list(context, List<StockModel> stocks,
-      String type) {
+  _list(context, List<StockModel> stocks, String type) {
     List<Widget> list = List<Widget>();
     List<StockModel> listOfType = List<StockModel>();
 
@@ -364,12 +358,8 @@ class ReserveState extends State<Reserve> {
           SizedBox(
             height: 10,
           ),
-          selected == "Hard"
-              ? _hard(context, widget.stocks)
-              : Container(),
-          selected == "Soft"
-              ? _soft(context, widget.stocks)
-              : Container(),
+          selected == "Hard" ? _hard(context, widget.stocks) : Container(),
+          selected == "Soft" ? _soft(context, widget.stocks) : Container(),
         ],
       ),
     );
@@ -435,8 +425,7 @@ class ReserveState extends State<Reserve> {
     ]);
   }
 
-  _list(context, List<StockModel> stocks,
-      String type) {
+  _list(context, List<StockModel> stocks, String type) {
     List<Widget> list = List<Widget>();
     List<StockModel> listOfType = List<StockModel>();
 

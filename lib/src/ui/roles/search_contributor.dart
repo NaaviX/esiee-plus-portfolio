@@ -7,11 +7,13 @@ import 'package:search_widget/search_widget.dart';
 
 import 'contributor_verificator.dart';
 
-// ignore: must_be_immutable
+
 class SearchContributor extends StatefulWidget {
   ContributorVerificatorState parent;
 
-  SearchContributor(this.parent);
+  final List<StudentModel> students;
+
+  SearchContributor(this.parent, {@required this.students});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,26 +25,9 @@ class SearchContributorState extends State<SearchContributor> {
 
   final _formKey = GlobalKey<FormState>();
 
-  StudentsBlocOld students = StudentsBlocOld();
-
-  @override
-  void initState() {
-    students.fetchAllStudents();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    students.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: students.allStudents,
-        builder: (context, AsyncSnapshot<List<StudentModel>> snapshot) {
-          if (snapshot.hasData) {
+          if (widget.students != null && widget.students.length != 0) {
             return Form(
               key: _formKey,
               child: Column(
@@ -52,7 +37,7 @@ class SearchContributorState extends State<SearchContributor> {
                       padding: EdgeInsets.all(10.0),
                       child: SearchWidget<StudentModel>(
 
-                        dataList: snapshot.data,
+                        dataList: widget.students,
                         hideSearchBoxWhenItemSelected: false,
                         listContainerHeight:
                         MediaQuery
@@ -101,8 +86,6 @@ class SearchContributorState extends State<SearchContributor> {
           }
           else
             return LinearProgressIndicator();
-        }
-    );
   }
 
   Widget _popupListItemBuilder(StudentModel item) {

@@ -1,8 +1,6 @@
-import 'package:bde_esiee_mobile/src/ui/AppStateNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_statusbar_text_color/flutter_statusbar_text_color.dart';
 import 'package:provider/provider.dart';
 
 class MyTheme {
@@ -160,5 +158,15 @@ class MyTheme {
 
         dialogBackgroundColor: WidgetDarkBackground,*/
     );
+  }
+}
+
+class AppStateNotifier extends ChangeNotifier {
+  //
+  bool isDarkMode = false;
+
+  void updateTheme(bool isDarkMode) {
+    this.isDarkMode = isDarkMode;
+    notifyListeners();
   }
 }

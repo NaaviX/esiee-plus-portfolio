@@ -2,7 +2,6 @@ import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
-import 'package:bde_esiee_mobile/src/ui/AppStateNotifier.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger_history.dart';

@@ -19,6 +19,7 @@ import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,34 +63,34 @@ class HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
-      children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(bottom: 80),
-          child: SingleChildScrollView(
-            //padding: EdgeInsets.only(left: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 5,
-                ),
-                Base.allClubs != null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(bottom: 80),
+              child: SingleChildScrollView(
+                //padding: EdgeInsets.only(left: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Base.allClubs != null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
 
-                Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
-                _Component('Top Events', 2),
-              ],
+                    Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
+                    _Component('Top Events', 2),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          width: MediaQuery.of(context).size.width,
-          child: _links(),
-        ),
-      ],
-    ));
+            Positioned(
+              bottom: 0,
+              width: MediaQuery.of(context).size.width,
+              child: _links(),
+            ),
+          ],
+        ));
   }
 
   _Component(String title, int type, [List<ClubModel> clubs]) {
@@ -111,8 +112,8 @@ class HomeState extends State<Home> {
             type == 0
                 ? _StudentClub(clubs)
                 : type == 1
-                    ? _StudentNextCurses()
-                    : type == 2 ? _TopEvents() : Container()
+                ? _StudentNextCurses()
+                : type == 2 ? _TopEvents() : Container()
           ],
         ));
   }
@@ -120,57 +121,59 @@ class HomeState extends State<Home> {
   _TopEvents() {
     List<EventModel> tops = List();
     return Container(
-      margin: EdgeInsets.only(top: 10),
-      //padding: EdgeInsets.symmetric(vertical: 10,),
-      child: BlocBuilder<EventsBloc, EventState>(
-          builder: (context, state) {
-            if (state is EventsInitial) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (state is EventsLoadInProgress) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (state is EventsLoadSuccess) {
-              final events = state.events;
+        margin: EdgeInsets.only(top: 10),
+        //padding: EdgeInsets.symmetric(vertical: 10,),
+        child: BlocBuilder<EventsBloc, EventState>(
+            builder: (context, state) {
+              if (state is EventsInitial) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is EventsLoadInProgress) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is EventsLoadSuccess) {
+                final events = state.events;
 
-              Base.allEvents = events.toList();
+                Base.allEvents = events.toList();
 
-              events.removeWhere((event) =>
-              !event.enable || event.startDate.isBefore(DateTime.now()));
-              if (events.isEmpty)
-                return Container(
-                    margin: EdgeInsets.only(left: 15),
-                    child: Text(
-                      "Aucun évenement à venir... 😭",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600),
-                    ));
-              tops.addAll(events.where((event) => event.enabledStratif));
-              tops.isEmpty ? tops.add(events.last) : tops = tops;
-              return _TopEventsList(events);
-            }
-            if (state is EventsLoadFailure) {
-              return Text(
-                'Something went wrong!',
-                style: TextStyle(color: Colors.red),
-              );
-            }
-            return Container();
-          })
+                events.removeWhere((event) =>
+                !event.enable || event.endDate.isBefore(DateTime.now()));
+                if (events.isEmpty)
+                  return Container(
+                      margin: EdgeInsets.only(left: 15),
+                      child: Text(
+                        "Aucun évenement à venir... 😔",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600),
+                      ));
+                tops.addAll(events.where((event) => event.enabledStratif));
+                tops.isEmpty ? tops.add(events.last) : tops = tops;
+                return _TopEventsList(events);
+              }
+              if (state is EventsLoadFailure) {
+                return Text(
+                  'Something went wrong!',
+                  style: TextStyle(color: Colors.red),
+                );
+              }
+              return Container();
+            })
     );
   }
 
   _TopEventsList(List<EventModel> tops) {
     return Container(
-      height: 250,
+      height: 200,
       child: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
           return false;
         },
-        child: PageView.builder(
+        child: ListView.builder(
+          physics: CustomScrollPhysics(itemDimension: MediaQuery.of(context).size.width/1.25 + 28),
+          scrollDirection: Axis.horizontal,
           itemCount: tops.length,
           controller: PageController(viewportFraction: 0.8),
           itemBuilder: (context, i) {
@@ -180,127 +183,123 @@ class HomeState extends State<Home> {
               ),
             );
             EventsBloc bloc = EventsBloc(eventRepository: eventRepository);
-            return Transform.scale(
-              scale: 1,
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                          create: (BuildContext context) => bloc,
-                          child: EventInfoPage(
-                          tops[i],
-                          Base.allClubs.firstWhere((club) =>
-                              club.idClubRef ==
-                              tops[i].idClubRef), eventsBloc: bloc,))), //FairPayClubManager(club)),
-                ),
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5),
-                  child: Column(
-                    children: <Widget>[
-                      Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
-                          child: Container(
-                            height: 130,
-                            width: MediaQuery.of(context).size.width / 1.25,
-                            decoration: new BoxDecoration(
-                              image: new DecorationImage(
-                                fit: BoxFit.fill,
-                                image: new NetworkImage(
-                                  tops[i].backgroundUrl,
-                                ),
-                              ),
-                            ),
-                          )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            color: MyTheme.SelectedColor,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    DateFormat("MMM", "fr_FR")
-                                        .format(tops[i].startDate)
-                                        .toUpperCase()
-                                        .replaceAll(".", ''),
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Text(
-                                    tops[i].startDate.day.toString(),
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
+            return GestureDetector(
+              onTap: () =>
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BlocProvider(
+                                create: (BuildContext context) => bloc,
+                                child: EventInfoPage(
+                                  tops[i],
+                                  Base.allClubs.firstWhere((club) =>
+                                  club.idClubRef ==
+                                      tops[i].idClubRef),
+                                  eventsBloc: bloc,))), //FairPayClubManager(club)),
+                  ),
+              child: Container(
+                margin: i == 0
+                    ? const EdgeInsets.only(left: 15, right: 15)
+                    : const EdgeInsets.only(right: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(
+                                10.0))
+                        ),
+                        child: Container(
+                          height: 130,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.25,
+                          decoration: new BoxDecoration(
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new NetworkImage(
+                                tops[i].backgroundUrl,
                               ),
                             ),
                           ),
-                          Container(
+                        )
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0))
+                          ),
+                          color: MyTheme.SelectedColor,
+                          child: Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 1),
-                            width:
-                                MediaQuery.of(context).size.width / 1.25 - 70,
+                                horizontal: 5, vertical: 2),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                AutoSizeText(
-                                  tops[i].name,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                                AutoSizeText(
-                                  "Organisé par " +
-                                      Base.allClubs
-                                          .firstWhere((club) =>
-                                              club.idClubRef ==
-                                              tops[i].idClubRef)
-                                          .name,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                                Text(
-                                  DateFormat("HH:mm", "fr_FR")
-                                          .format(tops[i].startDate) +
-                                      _hours(tops[i]),
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700),
-                                ),
+                                Text(DateFormat("MMM", "fr_FR").format(
+                                    tops[i].startDate).toUpperCase().replaceAll(
+                                    ".", ''), style: TextStyle(fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),),
+                                Text(tops[i].startDate.day.toString(),
+                                  style: TextStyle(fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 2),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.25 - 70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              AutoSizeText(tops[i].name, maxLines: 2,
+                                style: TextStyle(color: Theme
+                                    .of(context)
+                                    .primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800),),
+                              AutoSizeText("Organisé par " + Base.allClubs
+                                  .firstWhere((club) =>
+                              club.idClubRef == tops[i].idClubRef)
+                                  .name, maxLines: 2,
+                                style: TextStyle(color: Theme
+                                    .of(context)
+                                    .primaryColor,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800),),
+                              Text(DateFormat("HH:mm", "fr_FR").format(
+                                  tops[i].startDate) + _hours(tops[i]),
+                                style: TextStyle(color: Theme
+                                    .of(context)
+                                    .primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700),),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             );
-          },
+          }
         ),
       ),
     );
@@ -326,7 +325,7 @@ class HomeState extends State<Home> {
             if (eventsJson.hasData) {
               dynamic jsonData = jsonDecode(eventsJson.data);
               List<CourseModel> snapshot =
-                  CourseModel.allCoursesFromJson(jsonData).toList();
+              CourseModel.allCoursesFromJson(jsonData).toList();
               DateTime now = DateTime(
                   DateTime.now().year,
                   DateTime.now().month,
@@ -334,7 +333,7 @@ class HomeState extends State<Home> {
                   DateTime.now().hour,
                   DateTime.now().minute - 30);
               CourseModel course = snapshot.firstWhere((course) =>
-                  now.isBefore(course.start) && now.isBefore(course.end));
+              now.isBefore(course.start) && now.isBefore(course.end));
               return _StudentNextCursesCard(course);
             }
             return Container();
@@ -354,24 +353,24 @@ class HomeState extends State<Home> {
     course.start.isBefore(DateTime.now()) || course.start == DateTime.now()
         ? diff = "En cours"
         : diffDay < -7
-            ? diff = "Dans " +
-                (diffDay.abs() / 7).toString().split('.').first +
-                " semaines"
-            : diffDay == 1
-                ? diff = "Demain à " +
-                    DateFormat("HH:mm", "fr_FR").format(course.start)
-                : diffDay > 1
-                    ? diff =
-                        DateFormat("EEE à HH:mm", "fr_FR").format(course.start)
-                    : diffTime.inHours >= 1
-                        ? diff = "Dans " +
-                            diffTime.inHours.toString() +
-                            "h" +
-                            (diffTime.inMinutes % 60).toString() +
-                            "min"
-                        : diff = "Dans " +
-                            (diffTime.inMinutes % 60).toString() +
-                            "min";
+        ? diff = "Dans " +
+        (diffDay.abs() / 7).toString().split('.').first +
+        " semaines"
+        : diffDay == 1
+        ? diff = "Demain à " +
+        DateFormat("HH:mm", "fr_FR").format(course.start)
+        : diffDay > 1
+        ? diff =
+        DateFormat("EEE à HH:mm", "fr_FR").format(course.start)
+        : diffTime.inHours >= 1
+        ? diff = "Dans " +
+        diffTime.inHours.toString() +
+        "h" +
+        (diffTime.inMinutes % 60).toString() +
+        "min"
+        : diff = "Dans " +
+        (diffTime.inMinutes % 60).toString() +
+        "min";
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -454,16 +453,14 @@ class HomeState extends State<Home> {
               top: 0,
               right: 10,
               child: Chip(
-                backgroundColor: Colors.white30,
-                label: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 2),
-                    child: Center(
-                      child: Text(diff,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor)),
-                    )),
+                backgroundColor: MyTheme.LightBackground,
+                label: Container(padding: EdgeInsets.symmetric(horizontal: 2),
+                    child : Center(
+                      child: Text(
+                          diff, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: MyTheme.PrimaryColorLight)
+                      ),
+                    )
+                ),
                 padding: EdgeInsets.all(0),
               ),
             ),
@@ -472,26 +469,26 @@ class HomeState extends State<Home> {
               right: 10,
               child: place == 'Classe virtuelle'
                   ? Icon(
-                      Icons.home,
-                      color: Colors.white,
-                      size: 25,
-                    )
+                Icons.home,
+                color: Colors.white,
+                size: 25,
+              )
                   : Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                          size: 15,
-                        ),
-                        Text(
-                          place,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
+                children: <Widget>[
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.white,
+                    size: 15,
+                  ),
+                  Text(
+                    place,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -501,6 +498,7 @@ class HomeState extends State<Home> {
 
   _StudentClub(List<ClubModel> clubs) {
     return Container(
+        padding: EdgeInsets.only(left: 10),
         margin: EdgeInsets.symmetric(vertical: 10.0),
         height: 80,
         //child:
@@ -514,8 +512,8 @@ class HomeState extends State<Home> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ClubInfoPage(
-                                club: clubs[index],
-                              )),
+                            club: clubs[index],
+                          )),
                     );
                   },
                   child: Container(
@@ -558,10 +556,10 @@ class HomeState extends State<Home> {
   }
 
   _homeStudentUsefulLinks(
-    String nom,
-    String site,
-    String image,
-  ) {
+      String nom,
+      String site,
+      String image,
+      ) {
     return InkWell(
       child: Container(
         padding: EdgeInsets.all(2),
@@ -574,9 +572,10 @@ class HomeState extends State<Home> {
                 height: 40.0,
                 alignment: Alignment.center,
                 decoration: new BoxDecoration(
+                  color: MyTheme.LightBackground,
                   shape: BoxShape.circle,
                   image: new DecorationImage(
-                    fit: BoxFit.scaleDown,
+                    fit: BoxFit.contain,
                     image: new NetworkImage(image),
                   ),
                 )),

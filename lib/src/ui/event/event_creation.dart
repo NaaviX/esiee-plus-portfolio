@@ -41,10 +41,7 @@ class EventCreationState extends State<EventCreation> {
       appBar: AppBar(title: Text("Nouvel Evenement")),
       body: widget.form,
       floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.arrow_forward,
-            color: Colors.white,
-          ),
+          child: Icon(Icons.arrow_forward,),
           onPressed: () {
             if (widget.form.formKey.currentState.validate()) {
               EventModel event = EventModel(

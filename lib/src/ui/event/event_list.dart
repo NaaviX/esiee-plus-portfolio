@@ -145,8 +145,7 @@ class EventListState extends State<EventList> {
             MaterialPageRoute(builder: (context) => EventCreation(this, eventsBloc: widget.eventsBloc)),
           );
         },
-        child: Icon(Icons.add, color: Colors.white,),
-        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add,),
       );
   }
 

@@ -41,6 +41,7 @@ import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
+import 'package:bde_esiee_mobile/src/ui/student/esiee_card.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
@@ -55,6 +56,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
@@ -94,16 +96,8 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: MyTheme.LightBackground,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    MyTheme.SetStatusBarColor(context);
     try {
       versionCheck(context);
     } catch (e) {
@@ -135,22 +129,29 @@ class AppState extends State<App> {
                 child: JwtAuth());
           } else {
 //user not logged in
-            return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              //theme : MyTheme.darkTheme,
-              home: LoginPage(),
-              localizationsDelegates: [
-                const TranslationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
+            return Consumer<AppStateNotifier>(
+                builder: (context, appState, child) {
+                  return MaterialApp(
+                    theme: MyTheme.defaultTheme,
+                    darkTheme: MyTheme.darkTheme,
+                    themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode
+                        .light,
+                    home: LoginPage(),
+                    localizationsDelegates: [
+                      const TranslationsDelegate(),
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en', ''),
+                      const Locale('fr', ''),
+                    ],
+                  );
+                }
             );
           }
-        });
+        }
+    );
   }
 }
 
@@ -201,52 +202,64 @@ class JwtAuthState extends State<JwtAuth> {
           ),
         );
 
-        return MaterialApp(
-          theme: MyTheme.defaultTheme,
-          //theme : MyTheme.darkTheme,
-          home: MultiBlocProvider(providers: [
-            BlocProvider<RolesBloc>(
-              create: (BuildContext context) =>
-                  RolesBloc(roleRepository: roleRepository),
-            ),
-            BlocProvider<StudentsBloc>(
-              create: (BuildContext context) =>
-                  StudentsBloc(studentRepository: studentRepository),
-            ),
-            BlocProvider<ClubsBloc>(
-              create: (BuildContext context) =>
-                  ClubsBloc(clubRepository: clubRepository),
-            ),
-            BlocProvider<ProfsBloc>(
-              create: (BuildContext context) =>
-                  ProfsBloc(profRepository: profRepository),
-            ),
-          ], child: UserAuth()),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ],
+        return Consumer<AppStateNotifier>(
+            builder: (context, appState, child) {
+              return
+                MaterialApp(
+                  theme: MyTheme.defaultTheme,
+                  darkTheme: MyTheme.darkTheme,
+                  themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  home: MultiBlocProvider(providers: [
+                    BlocProvider<RolesBloc>(
+                      create: (BuildContext context) =>
+                          RolesBloc(roleRepository: roleRepository),
+                    ),
+                    BlocProvider<StudentsBloc>(
+                      create: (BuildContext context) =>
+                          StudentsBloc(studentRepository: studentRepository),
+                    ),
+                    BlocProvider<ClubsBloc>(
+                      create: (BuildContext context) =>
+                          ClubsBloc(clubRepository: clubRepository),
+                    ),
+                    BlocProvider<ProfsBloc>(
+                      create: (BuildContext context) =>
+                          ProfsBloc(profRepository: profRepository),
+                    ),
+                  ], child: UserAuth()),
+                  localizationsDelegates: [
+                    const TranslationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('en', ''),
+                    const Locale('fr', ''),
+                  ],
+                );
+            }
         );
       }
       if (state is JwtAuthenticateFailure) {
-        return MaterialApp(
-          theme: MyTheme.defaultTheme,
-          //theme : MyTheme.darkTheme,
-          home: LoginPage(),
-          localizationsDelegates: [
-            const TranslationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', ''),
-            const Locale('fr', ''),
-          ],
+        return Consumer<AppStateNotifier>(
+            builder: (context, appState, child) {
+              return
+                MaterialApp(
+                  theme: MyTheme.defaultTheme,
+                  darkTheme: MyTheme.darkTheme,
+                  themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  home: LoginPage(),
+                  localizationsDelegates: [
+                    const TranslationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('en', ''),
+                    const Locale('fr', ''),
+                  ],
+                );
+            }
         );
       }
       return Container();
@@ -317,21 +330,21 @@ class UserAuthState extends State<UserAuth> {
                       //C'est un prof
                       return BlocBuilder<ProfsBloc, ProfState>(
                           builder: (context, state) {
-                        if (state is ProfInitial) {
-                          return SplashScreen();
-                        }
-                        if (state is ProfLoadInProgress) {
-                          return SplashScreen();
-                        }
-                        if (state is ProfLoadSuccess) {
-                          //isStudent
-                          log.fine("prof");
-                          Base.thisProf = state.prof;
-                          return Base();
-                        }
-                        if (state is ProfLoadFailure) {}
-                        return Container();
-                      });
+                            if (state is ProfInitial) {
+                              return SplashScreen();
+                            }
+                            if (state is ProfLoadInProgress) {
+                              return SplashScreen();
+                            }
+                            if (state is ProfLoadSuccess) {
+                              //isStudent
+                              log.fine("prof");
+                              Base.thisProf = state.prof;
+                              return Base();
+                            }
+                            if (state is ProfLoadFailure) {}
+                            return Container();
+                          });
                     }
                     return Container();
                   },
@@ -372,7 +385,7 @@ class _Base extends State<Base> {
   final log = Logger('BASE');
 
   PageController pageController =
-      PageController(initialPage: Base.selectedIndex);
+  PageController(initialPage: Base.selectedIndex);
 
   List<Widget> _widgetOptions;
 
@@ -384,17 +397,24 @@ class _Base extends State<Base> {
   );
   EventsBloc eventsBloc;
 
-  static List<Widget> _selectedAppbarTitleWidget = [
-    Center(
-      child: Image(
-          image: AssetImage('assets/esieeplus/color_LetterLogo.webp'),
-          height: 25,
-          width: 100,
-          fit: BoxFit.fill),
-    ),
-    Text('Emploi du temps'),
-    Text('Evenements'),
-  ];
+  static List<Widget> _selectedAppbarTitleWidget(context) {
+    ImageProvider<Object> image = AssetImage('assets/esieeplus/color_LetterLogo.webp');
+    if(Provider.of<AppStateNotifier>(context, listen: false).isDarkMode) {
+      image = AssetImage('assets/esieeplus/white_LetterLogo.webp');
+    }
+    return [
+      Center(
+        child: Image(
+            image: image,
+            height: 25,
+            width: 100,
+            fit: BoxFit.fill
+        ),
+      ),
+      Text('Emploi du temps', style: TextStyle(fontSize: 25),),
+      Text('Evenements', style: TextStyle(fontSize: 25),),
+    ];
+  }
 
   List<Widget> actionButton() {
     ColorDetect c = ColorDetect(user.photoUrl, context);
@@ -420,10 +440,8 @@ class _Base extends State<Base> {
                           backgroundImage: NetworkImage(user.photoUrl),
                           backgroundColor: Theme.of(context).backgroundColor,
                           radius: 20,
-                        )),
-                    /*Image.asset(
-            'assets/esieeplus/Logo.webp',
-          ),*/
+                        )
+                    ),
                   ),
                 );
               }
@@ -436,7 +454,8 @@ class _Base extends State<Base> {
           width: 20,
         )
       ];
-    } else if (Base.selectedIndex == 1) {
+    }
+    else if (Base.selectedIndex == 1) {
       return [
         IconButton(
           icon: const Icon(Icons.info_outline),
@@ -451,19 +470,12 @@ class _Base extends State<Base> {
             ));
           },
         ),
-        /*IconButton(
-          icon: const Icon(Icons.today),
-          padding: EdgeInsets.all(2),
-          onPressed: () {
-            pageController.jumpToPage(1);
-          },
-        ),*/
         SizedBox(
           width: 10,
         )
       ];
-    } else
-      return null;
+    }
+    else return null;
   }
 
   Future<bool> isInternetConnected() async {
@@ -537,14 +549,10 @@ class _Base extends State<Base> {
         key: _scaffoldKey,
         appBar: AppBar(
             leading: IconButton(
-              icon: Icon(
-                Icons.dehaze,
-                size: 30,
-              ),
+              icon: Icon(Icons.dehaze, size: 30),
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
-            brightness: Brightness.light,
-            title: _selectedAppbarTitleWidget.elementAt(Base.selectedIndex),
+            title: _selectedAppbarTitleWidget(context).elementAt(Base.selectedIndex),//Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
             actions: actionButton()),
         body: PageView(
           controller: pageController,
@@ -565,37 +573,78 @@ class _Base extends State<Base> {
         width: 270,
         color: Theme.of(context).backgroundColor,
         child: Drawer(
-          elevation: 20,
-          child: ListView(children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
-              height: 40,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+            elevation: 20,
+            child: Container (
+              color: Theme.of(context).backgroundColor,
+              child: Column(
                 children: <Widget>[
-                  Image(
-                      image: AssetImage('assets/esieeplus/Logo.webp'),
-                      width: 35),
-                  SizedBox(
-                    width: 15,
+                  Expanded(
+                    // ListView contains a group of widgets that scroll inside the drawer
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                          height: 40,
+                          child : Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Image(image: AssetImage('assets/esieeplus/Logo.webp'), width: 35),
+                              SizedBox(width: 15,),
+                              Image(image: AssetImage('assets/esieeplus/primary_LetterLogo.webp'), height: 25, width: 100, fit: BoxFit.fill),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        _adminMenu(),
+                        _modoMenu(),
+                        _trezMenu(),
+                        _logMenu(),
+                        _clubMenu(),
+                        _studentMenu(),
+                        _profMenu(),
+                      ],
+                    ),
                   ),
-                  Image(
-                      image: AssetImage(
-                          'assets/esieeplus/primary_LetterLogo.webp'),
-                      height: 25,
-                      width: 100,
-                      fit: BoxFit.fill),
+                  // This container holds the align
+                  Container(
+                      child: Align(
+                        //alignment: FractionalOffset.bottomCenter,
+                          child: Container(
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.all(5),
+                              child: Column(
+                                children: <Widget>[
+                                  Divider(),
+                                  Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(
+                                            Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? FontAwesomeIcons.lightbulb : FontAwesomeIcons.solidLightbulb,
+                                            size: 25,
+                                            color: Theme.of(context).primaryColor.withOpacity(0.8)
+                                        ),
+                                        onPressed: () => {
+                                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(!Provider.of<AppStateNotifier>(context, listen: false).isDarkMode),
+                                          MyTheme.SetStatusBarColor(context)
+                                        },
+                                        splashColor: null,
+                                      ),
+                                    ],
+                                  ),
+                                  /*ListTile(
+                                  leading: Icon(Icons.settings),
+                                  title: Text('Settings')),
+                              ListTile(
+                                  leading: Icon(Icons.help),
+                                  title: Text('Help and Feedback'))*/
+                                ],
+                              )
+                          )
+                      )
+                  )
                 ],
               ),
-            ),
-            _adminMenu(),
-            _modoMenu(),
-            _trezMenu(),
-            _logMenu(),
-            _clubMenu(),
-            _studentMenu(),
-            _profMenu(),
-          ]),
+            )
         ),
       ),
     );
@@ -605,7 +654,7 @@ class _Base extends State<Base> {
     return Divider(
       height: 1,
       thickness: 1.5,
-      color: Colors.black12,
+      color: MyTheme.ColorTheme(context, colorLight: Colors.black12, colorDark: Colors.white10),
     );
   }
 
@@ -615,35 +664,35 @@ class _Base extends State<Base> {
         builder: (BuildContext context, AsyncSnapshot<bool> connected) {
           return connected.hasData && connected.data
               ? ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                  leading: Icon(icon,
-                      color: Theme.of(context).primaryColor.withOpacity(0.8)),
-                  title: Text(
-                    title,
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
-                  ),
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return route;
-                    }));
-                  },
-                )
+            contentPadding: EdgeInsets.symmetric(horizontal: 15),
+            leading: Icon(icon,
+                color: Theme.of(context).primaryColor.withOpacity(0.8)),
+            title: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 15, color: Theme.of(context).primaryColor),
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) {
+                return route;
+              }));
+            },
+          )
               : ListTile(
-                  leading: Icon(icon, color: Colors.grey),
-                  title: Text(
-                    title,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  onTap: () {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text("Non disponible hors connexion"),
-                      backgroundColor: Colors.grey,
-                    ));
-                    Navigator.pop(context);
-                  });
+              leading: Icon(icon, color: Colors.grey),
+              title: Text(
+                title,
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text("Non disponible hors connexion"),
+                  backgroundColor: Colors.grey,
+                ));
+                Navigator.pop(context);
+              });
         });
   }
 
@@ -658,7 +707,7 @@ class _Base extends State<Base> {
           title: Text(
             "Cours",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -673,7 +722,7 @@ class _Base extends State<Base> {
           title: Text(
             "Notification Classe",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -688,7 +737,7 @@ class _Base extends State<Base> {
           title: Text(
             "Messenger",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -712,12 +761,12 @@ class _Base extends State<Base> {
           title: Text(
             "Mon Fairpay",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
@@ -736,7 +785,7 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion des Membres",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -751,7 +800,7 @@ class _Base extends State<Base> {
                 ),
               );
               StudentsBloc studentsBloc =
-                  StudentsBloc(studentRepository: studentsRepository);
+              StudentsBloc(studentRepository: studentsRepository);
               ClubsBloc clubsBloc = ClubsBloc(clubRepository: clubRepository);
               return BlocProvider(
                   create: (BuildContext context) => studentsBloc,
@@ -769,7 +818,7 @@ class _Base extends State<Base> {
           title: Text(
             "Messenger",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -785,7 +834,7 @@ class _Base extends State<Base> {
               );
               ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
               StudentsBloc studentsBloc =
-                  StudentsBloc(studentRepository: studentRepository);
+              StudentsBloc(studentRepository: studentRepository);
               return BlocProvider(
                   create: (BuildContext context) => profsBloc,
                   child: BlocProvider<StudentsBloc>(
@@ -816,7 +865,7 @@ class _Base extends State<Base> {
           title: Text(
             "Clubs",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -839,7 +888,7 @@ class _Base extends State<Base> {
           title: Text(
             "Liste des Professeurs",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -871,8 +920,8 @@ class _Base extends State<Base> {
 
   Widget _adminMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.admin)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.admin))) {
@@ -891,7 +940,7 @@ class _Base extends State<Base> {
           title: Text(
             "Ajout Cotisants",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -916,8 +965,8 @@ class _Base extends State<Base> {
 
   Widget _modoMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.mod)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.mod)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.mod))) {
@@ -949,8 +998,8 @@ class _Base extends State<Base> {
 
   Widget _trezMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.trez)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.trez)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.trez))) {
@@ -963,12 +1012,12 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion Trésorerie",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
@@ -987,18 +1036,18 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion Fairpay",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
               FairpayLogsBloc fairpayLogsBloc =
-                  FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+              FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return FairPayManager(bloc: fairpayLogsBloc);
             }));
           },
@@ -1010,8 +1059,8 @@ class _Base extends State<Base> {
 
   Widget _logMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.log)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.log)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.log))) {
@@ -1024,7 +1073,7 @@ class _Base extends State<Base> {
           title: Text(
             "Réserve",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -1048,36 +1097,19 @@ class _Base extends State<Base> {
   Widget getBottomNavigationBar() {
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-        icon: Icon(
-          FontAwesomeIcons.home,
-        ),
-        activeIcon: Icon(
-          FontAwesomeIcons.home,
-          color: Theme.of(context).primaryColor,
-        ),
+        icon: Icon(FontAwesomeIcons.home,),
+        //activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
         title: Text('Home'),
       ),
       BottomNavigationBarItem(
-        icon: Icon(
-          FontAwesomeIcons.clock,
-        ),
-        activeIcon: Icon(
-          FontAwesomeIcons.clock,
-          color: Theme.of(context).primaryColor,
-        ),
+        icon: Icon(FontAwesomeIcons.clock,),
+        //activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
         title: Text('EDT'),
       ),
       BottomNavigationBarItem(
-        icon: Icon(
-          FontAwesomeIcons.calendarAlt,
-        ),
-        activeIcon: Icon(
-          FontAwesomeIcons.calendarAlt,
-          color: Theme.of(context).primaryColor,
-        ),
-        title: Text(
-          'Event',
-        ),
+        icon: Icon(FontAwesomeIcons.calendarAlt,),
+        //activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
+        title: Text('Event',),
       ),
     ];
     if (Base.thisUser == null) items.removeAt(1);
@@ -1086,7 +1118,7 @@ class _Base extends State<Base> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      selectedItemColor: Theme.of(context).primaryColor,
+      //selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }

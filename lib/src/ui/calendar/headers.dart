@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'day_view.dart';
@@ -249,7 +250,7 @@ class DayBar extends StatelessWidget {
             dateFormatter(date.year, date.month, date.day),
             style: textStyle ??
                 TextStyle(
-                  color: Utils.sameDay(date) ? Theme.of(context).primaryColor : Colors.black54,
+                  color: Utils.sameDay(date) ? MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor,) : MyTheme.ColorTheme(context, colorLight: Colors.black54),
                   fontWeight: Utils.sameDay(date) ? FontWeight.w900 : FontWeight.w600,
                 ),
             textAlign: TextAlign.center,
@@ -263,14 +264,14 @@ class DayBar extends StatelessWidget {
                 date.day.toString(),
                 style: textStyle ??
                     TextStyle(
-                      color: Utils.sameDay(date) ? Colors.white : Colors.black54,
+                      color: Utils.sameDay(date) ? Colors.white : MyTheme.ColorTheme(context, colorLight: Colors.black54),
                       fontWeight: FontWeight.bold,
                     ),
                 textAlign: TextAlign.center,
               ),
             ),
             decoration: new BoxDecoration(
-              color: Utils.sameDay(date) ? Theme.of(context).primaryColor.withOpacity(0.7) : Colors.transparent,
+              color: Utils.sameDay(date) ? MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor,).withOpacity(0.7) : Colors.transparent,
               shape: BoxShape.circle,
             ),
           ),
@@ -336,7 +337,7 @@ class HoursColumn extends StatelessWidget {
           right: 0,
           child: Text(
             hourFormatter(hour + 1, 0),
-            style: textStyle,
+            style: TextStyle(color:  MyTheme.ColorTheme(context, colorLight: Colors.black54)),
             textAlign: TextAlign.center,
           ),
         ),

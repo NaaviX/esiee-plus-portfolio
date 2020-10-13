@@ -72,7 +72,7 @@ class CalendarState extends State<Calendar> {
              }
        ),*/
        /*floatingActionButton: FloatingActionButton(
-           child: Icon(Icons.adjust, color: Colors.yellowAccent,),
+           child: Icon(Icons.adjust),
            splashColor: Colors.white,
            onPressed: () {
            }

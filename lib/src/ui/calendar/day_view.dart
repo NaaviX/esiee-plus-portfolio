@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:bde_esiee_mobile/src/theme.dart';
+import 'package:timer_builder/timer_builder.dart';
 
 import 'controller.dart';
 import 'agenda_event_view.dart';
@@ -200,15 +201,21 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
 
   /// Creates a positioned horizontal rule in the hours column.
   Widget createCurrentTimeRule() {
-    DateTime now = DateTime.now();
-    return Positioned(
-      top: calculateTopOffset(now.hour, now.minute),
-      left: widget.hoursColumnWidth,
-      right: 0,
-      child: Container(
-        height: 1.5,
-        color: widget.currentTimeRuleColor,
-      ),
+    return TimerBuilder.periodic(
+        Duration(minutes: 1),
+        builder: (context)
+        {
+          DateTime now = DateTime.now();
+          return Positioned(
+            top: calculateTopOffset(now.hour, now.minute),
+            left: widget.hoursColumnWidth,
+            right: 0,
+            child: Container(
+              height: 1.5,
+              color: widget.currentTimeRuleColor,
+            ),
+          );
+        }
     );
   }
 

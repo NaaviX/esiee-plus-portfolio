@@ -7,6 +7,7 @@ import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../App.dart';
@@ -107,7 +109,7 @@ class EventInfoState extends State<EventInfoPage> {
               Container(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
                 child: Divider(
-                  color: Colors.black,
+                  color: Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               Container(
@@ -152,7 +154,7 @@ class EventInfoState extends State<EventInfoPage> {
                 _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
                 return FloatingActionButton(
                   child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
-                      color: (_isFav ? Colors.red : Colors.blueGrey.withOpacity(0.5))),
+                      color: (_isFav ? Colors.redAccent : Colors.blueGrey.withOpacity(0.5))),
                   splashColor: Colors.white,
                   backgroundColor: Theme.of(context).backgroundColor,
                   elevation: 0,
@@ -254,7 +256,7 @@ class EventInfoState extends State<EventInfoPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.red,)),
+                Text(formatMonth(widget.event.startDate), style: TextStyle(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.w500)),
                 Text(formatDay(widget.event.startDate), style: TextStyle(fontSize: 35,)),
               ],
             ),
@@ -267,7 +269,7 @@ class EventInfoState extends State<EventInfoPage> {
                     children : <Widget>[
                       AutoSizeText(
                         widget.event.name.toUpperCase(),
-                        style: TextStyle(color: Colors.black, fontSize: 25.0,),
+                        style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w800),
                         maxLines: 1,
                         textAlign: TextAlign.left,
                       ),
@@ -320,8 +322,7 @@ class EventInfoState extends State<EventInfoPage> {
   _manage(int clubRef) {
     if(widget.isValidator) {
       return FloatingActionButton(
-          child: Icon(Icons.check, color: Colors.white,),
-          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(Icons.check,),
           splashColor: Colors.white,
           onPressed: () {
             BlocProvider.of<EventsBloc>(context)
@@ -335,16 +336,13 @@ class EventInfoState extends State<EventInfoPage> {
     }
     else if(Base.thisClub != null && Base.thisClub.idClubRef == clubRef) {
       return SpeedDial(
-        backgroundColor: Theme.of(context).primaryColor,
         animatedIcon: AnimatedIcons.menu_arrow,
-        foregroundColor: Colors.white,
         children: [
           SpeedDialChild(
-              backgroundColor: Theme.of(context).primaryColor,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event, eventsBloc: widget.eventsBloc,)),);
               },
-              child: Icon(Icons.edit, color: Colors.white,),
+              child: Icon(Icons.edit,),
               label: "Modifier",
               labelStyle: TextStyle(color: Colors.black)
           ),

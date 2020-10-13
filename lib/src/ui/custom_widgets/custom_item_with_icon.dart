@@ -30,7 +30,7 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
             direction: Axis.horizontal,
             alignment: WrapAlignment.start,
             children: <Widget>[
-              Icon(widget.icon, size: 20.0, color: MyTheme.PrimaryColorLight),
+              Icon(widget.icon, size: 20.0, color: MyTheme.ColorTheme(context)),
               _type(),
             ]),
       );
@@ -41,7 +41,7 @@ class CustomItemWithIconState extends State<CustomItemWithIcon> {
   _type() {
     if(widget.hyperlink != null)
       return Hyperlink(widget.hyperlink, widget.text);
-    else return Text(widget.text, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,);
+    else return Text(widget.text, style: TextStyle(fontSize: 18, color: MyTheme.ColorTheme(context, colorLight: Colors.black)),textAlign: TextAlign.justify,);
   }
 
 }

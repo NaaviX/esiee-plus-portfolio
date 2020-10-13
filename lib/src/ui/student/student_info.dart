@@ -48,12 +48,12 @@ class StudentDetailState extends State<StudentDetail> {
                         text: TextSpan(
                             text: "Non Cotisant",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold),),
                       ),
                       backgroundColor: Colors.red,
                     ),
                     Divider(
-                      color: Colors.black,
+                      color: Colors.grey,
                     ),
                     CustomItemWithIcon(
                         Icons.contacts, widget.student.idStudent.toString()),

@@ -30,7 +30,7 @@ class RolesDisplayState extends State<RolesDisplay> {
       //runSpacing: 6.0,
       children: List<Widget>.generate(widget.roles.length, (int index) {
         return Chip(
-          label: Text(listRoles[index].role),//widget.roles.elementAt(index).toString().toUpperCase()),
+          label: Text(listRoles[index].role, style: TextStyle(color: Colors.black),),//widget.roles.elementAt(index).toString().toUpperCase()),
           backgroundColor: listRoles[index].color,
         );
       }),

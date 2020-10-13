@@ -133,7 +133,7 @@ class AppState extends State<App> {
                 child: JwtAuth());
           } else {
 //user not logged in
-            return Consumer<AppStateNotifier>(
+            return Consumer<ThemeNotifier>(
                 builder: (context, appState, child) {
               return MaterialApp(
                 theme: MyTheme.defaultTheme,
@@ -204,59 +204,65 @@ class JwtAuthState extends State<JwtAuth> {
           ),
         );
 
-        return Consumer<AppStateNotifier>(builder: (context, appState, child) {
-          return MaterialApp(
-            theme: MyTheme.defaultTheme,
-            darkTheme: MyTheme.darkTheme,
-            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: MultiBlocProvider(providers: [
-              BlocProvider<RolesBloc>(
-                create: (BuildContext context) =>
-                    RolesBloc(roleRepository: roleRepository),
-              ),
-              BlocProvider<StudentsBloc>(
-                create: (BuildContext context) =>
-                    StudentsBloc(studentRepository: studentRepository),
-              ),
-              BlocProvider<ClubsBloc>(
-                create: (BuildContext context) =>
-                    ClubsBloc(clubRepository: clubRepository),
-              ),
-              BlocProvider<ProfsBloc>(
-                create: (BuildContext context) =>
-                    ProfsBloc(profRepository: profRepository),
-              ),
-            ], child: UserAuth()),
-            localizationsDelegates: [
-              const TranslationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''),
-              const Locale('fr', ''),
-            ],
-          );
-        });
+        return Consumer<ThemeNotifier>(
+            builder: (context, appState, child) {
+              return
+                MaterialApp(
+                  theme: MyTheme.defaultTheme,
+                  darkTheme: MyTheme.darkTheme,
+                  themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  home: MultiBlocProvider(providers: [
+                    BlocProvider<RolesBloc>(
+                      create: (BuildContext context) =>
+                          RolesBloc(roleRepository: roleRepository),
+                    ),
+                    BlocProvider<StudentsBloc>(
+                      create: (BuildContext context) =>
+                          StudentsBloc(studentRepository: studentRepository),
+                    ),
+                    BlocProvider<ClubsBloc>(
+                      create: (BuildContext context) =>
+                          ClubsBloc(clubRepository: clubRepository),
+                    ),
+                    BlocProvider<ProfsBloc>(
+                      create: (BuildContext context) =>
+                          ProfsBloc(profRepository: profRepository),
+                    ),
+                  ], child: UserAuth()),
+                  localizationsDelegates: [
+                    const TranslationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('en', ''),
+                    const Locale('fr', ''),
+                  ],
+                );
+            }
+        );
       }
       if (state is JwtAuthenticateFailure) {
-        return Consumer<AppStateNotifier>(builder: (context, appState, child) {
-          return MaterialApp(
-            theme: MyTheme.defaultTheme,
-            darkTheme: MyTheme.darkTheme,
-            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: LoginPage(),
-            localizationsDelegates: [
-              const TranslationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''),
-              const Locale('fr', ''),
-            ],
-          );
-        });
+        return Consumer<ThemeNotifier>(
+            builder: (context, appState, child) {
+              return
+                MaterialApp(
+                  theme: MyTheme.defaultTheme,
+                  darkTheme: MyTheme.darkTheme,
+                  themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  home: LoginPage(),
+                  localizationsDelegates: [
+                    const TranslationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('en', ''),
+                    const Locale('fr', ''),
+                  ],
+                );
+            }
+        );
       }
       return Container();
     });
@@ -394,9 +400,8 @@ class _Base extends State<Base> {
   EventsBloc eventsBloc;
 
   static List<Widget> _selectedAppbarTitleWidget(context) {
-    ImageProvider<Object> image =
-        AssetImage('assets/esieeplus/color_LetterLogo.webp');
-    if (Provider.of<AppStateNotifier>(context, listen: false).isDarkMode) {
+    ImageProvider<Object> image = AssetImage('assets/esieeplus/color_LetterLogo.webp');
+    if(Provider.of<ThemeNotifier>(context, listen: false).isDarkMode) {
       image = AssetImage('assets/esieeplus/white_LetterLogo.webp');
     }
     return [
@@ -638,25 +643,13 @@ class _Base extends State<Base> {
                                     children: <Widget>[
                                       IconButton(
                                         icon: Icon(
-                                            Provider.of<AppStateNotifier>(
-                                                        context,
-                                                        listen: false)
-                                                    .isDarkMode
-                                                ? FontAwesomeIcons.lightbulb
-                                                : FontAwesomeIcons
-                                                    .solidLightbulb,
+                                            Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ? FontAwesomeIcons.lightbulb : FontAwesomeIcons.solidLightbulb,
                                             size: 25,
                                             color: Theme.of(context)
                                                 .primaryColor
                                                 .withOpacity(0.8)),
                                         onPressed: () => {
-                                          Provider.of<AppStateNotifier>(context,
-                                                  listen: false)
-                                              .updateTheme(!Provider.of<
-                                                          AppStateNotifier>(
-                                                      context,
-                                                      listen: false)
-                                                  .isDarkMode),
+                                          Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
                                           MyTheme.SetStatusBarColor(context)
                                         },
                                         splashColor: null,

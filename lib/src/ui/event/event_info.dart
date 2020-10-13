@@ -109,7 +109,7 @@ class EventInfoState extends State<EventInfoPage> {
               Container(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
                 child: Divider(
-                  color: Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? Colors.white : Colors.black,
+                  color: Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               Container(

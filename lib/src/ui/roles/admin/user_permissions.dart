@@ -7,6 +7,7 @@ import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
@@ -163,6 +164,8 @@ class StudentPermissions extends StatefulWidget {
 class StudentPermissionsState extends State<StudentPermissions> {
   final searchController = TextEditingController();
 
+  int i = 0;
+
   String filter = "";
 
   List<String> dropDownRoles;
@@ -212,10 +215,11 @@ class StudentPermissionsState extends State<StudentPermissions> {
                     padding:
                         EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1.0, color: Colors.black38),
+                      border: Border.all(width: 1.0, color: MyTheme.ColorTheme(context, colorLight: Colors.black38, colorDark: Colors.white38)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: DropdownButton<String>(
+                      dropdownColor: Theme.of(context).backgroundColor,
                       underline: Column(),
                       value: selectedRole,
                       onChanged: (String newValue) {
@@ -230,12 +234,12 @@ class StudentPermissionsState extends State<StudentPermissions> {
                           child: Text(role,
                               style: TextStyle(
                                   color: role == selectedRole
-                                      ? Colors.black
-                                      : Colors.black54)),
+                                      ? MyTheme.ColorTheme(context, colorLight: Colors.black, colorDark: Colors.white)
+                                      :  MyTheme.ColorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54))),
                         );
                       }).toList(),
                       style: TextStyle(
-                          color: Colors.black54,
+                          color: MyTheme.ColorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54),
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold),
                     )),
@@ -249,7 +253,7 @@ class StudentPermissionsState extends State<StudentPermissions> {
         }
         if (state is StudentListLoadSuccess) {
           final students = state.students;
-
+          i = 1;
           return Expanded(
               child: ListView.builder(
                   itemCount: students.length,
@@ -258,7 +262,7 @@ class StudentPermissionsState extends State<StudentPermissions> {
                     StudentModel student = students[index];
                     return (filter == null || filter == "") &&
                             selectedRole == "Tous"
-                        ? _studentTile(student, index)
+                        ? _studentTile(student, i)
                         : (student.firstname
                                         .toLowerCase()
                                         .startsWith(filter.toLowerCase()) ||
@@ -274,7 +278,7 @@ class StudentPermissionsState extends State<StudentPermissions> {
                                                 element.toString() ==
                                                 selectedRole)) ||
                                     selectedRole == "Tous")
-                            ? _studentTile(student, index)
+                            ? _studentTile(student, i)
                             : new Container();
                   }));
         }
@@ -288,7 +292,8 @@ class StudentPermissionsState extends State<StudentPermissions> {
 
   _studentTile(StudentModel student, int index) {
     List<RoleModel> currentRoles = List.from(student.roles);
-    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    Color color = (index % 2 == 0) ? Theme.of(context).backgroundColor : Theme.of(context).primaryColor.withOpacity(0.1);
+    i++;
     return new Container(
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(color: color),

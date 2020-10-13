@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/unit_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/unit_state.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -10,6 +12,7 @@ import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProfForm extends StatefulWidget {
   ProfModel prof;
@@ -53,18 +56,10 @@ class AddProfForm extends StatefulWidget {
 
 class AddProfFormState extends State<AddProfForm> {
 
-  UnitBloc units = UnitBloc();
-
   @override
   void initState() {
-    units.fetchAllUnits();
+    BlocProvider.of<UnitsBloc>(context).add(UnitsRequested());
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    units.dispose();
-    super.dispose();
   }
 
   @override
@@ -135,17 +130,30 @@ class AddProfFormState extends State<AddProfForm> {
                         ),
                         SizedBox(height: 15.0),
                         Center(
-                          child: StreamBuilder(
-                              stream: units.allUnits,
-                              builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
-                                if(snapshot.hasData) return Wrap(
-                                  alignment: WrapAlignment.spaceBetween,
-                                  spacing: 10,
-                                  children: _buildChoiceList(snapshot.data),
-                                );
-                                else return Container();
-                              }
-                          ),
+                          child: BlocBuilder<UnitsBloc, UnitState>(
+                              builder: (context, state) {
+                                if (state is UnitsInitial) {
+                                  return Center(child: CircularProgressIndicator());
+                                }
+                                if (state is UnitsLoadInProgress) {
+                                  return Center(child: CircularProgressIndicator());
+                                }
+                                if (state is UnitsLoadSuccess) {
+                                  final units = state.units;
+                                  return Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    spacing: 10,
+                                    children: _buildChoiceList(units),
+                                  );
+                                }
+                                if (state is UnitsLoadFailure) {
+                                  return Text(
+                                    'Something went wrong!',
+                                    style: TextStyle(color: Colors.red),
+                                  );
+                                }
+                                return Container();
+                              }),
                         ),
                       ]
                   )
@@ -155,72 +163,8 @@ class AddProfFormState extends State<AddProfForm> {
     );
   }
 
-  listUnits(){
-    StreamBuilder(
-        stream: units.allUnits,
-        builder: (context, AsyncSnapshot<List<UnitModel>> snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    //scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          child: Text(snapshot.data[index].unitName),
-                        );
-                      }
-                  ),
-                ),
-              ],
-            );
-          }
-          else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        }
-    );
-  }
-
-  /*_downloadImage() =>
-      ButtonTheme(
-          minWidth: MediaQuery
-              .of(context)
-              .size
-              .width,
-          height: 50.0,
-          padding: EdgeInsets.all(15.0),
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            elevation: 3.0,
-            onPressed: chooseFile,
-            child:
-            Container(
-              child: Row(
-                  children: <Widget>[
-                    Icon(Icons.add_photo_alternate, size: 25,
-                      color: Colors.black38,),
-                    Text("   Importer la couverture de l'événement",
-                        style: TextStyle(color: Colors.black38, fontSize: 15,)),
-                  ]
-              ),
-            ),
-            color: _verifImage(),
-          )
-      );*/
 
   File image;
-
-  /*Color _verifImage() {
-    if (image == null)
-      return Colors.grey.withOpacity(0.7);
-    else
-      return Colors.green.withOpacity(0.7);
-  }*/
 
   Future chooseFile() async {
     image = null;

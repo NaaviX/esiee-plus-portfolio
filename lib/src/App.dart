@@ -8,6 +8,8 @@ import 'package:bde_esiee_mobile/src/resources/club_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/free_rooms_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/free_rooms_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/jwt_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/jwt_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/prof_api_provider.dart';
@@ -18,6 +20,8 @@ import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
 import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/student_repository.dart';
+import 'package:bde_esiee_mobile/src/resources/unit_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/unit_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/calendar.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
@@ -56,6 +60,7 @@ import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/events_bloc.dart';
 import 'blocs/fairpay_log_bloc.dart';
+import 'blocs/free_rooms_bloc.dart';
 import 'blocs/jwt_bloc.dart';
 import 'blocs/jwt_state.dart';
 import 'blocs/prof_event.dart';
@@ -66,6 +71,7 @@ import 'blocs/roles_state.dart';
 import 'blocs/stock_bloc.dart';
 import 'blocs/student_event.dart';
 import 'blocs/student_state.dart';
+import 'blocs/unit_bloc.dart';
 import 'forceUpdate.dart';
 import 'models/club_model.dart';
 import 'models/event_model.dart';
@@ -795,6 +801,11 @@ class _Base extends State<Base> {
 
   Widget _studentMenu() {
     if (Base.thisUser != null) {
+      final FreeRoomsRepository freeRoomsRepository = FreeRoomsRepository(
+        freeRoomsApiProvider: FreeRoomsApiProvider(
+          client: Client(),
+        ),
+      );
       return Column(children: [
         _MenuTitle(),
         //_MenuElmt(Icons.credit_card, "Ma carte", EsieeCard()),
@@ -813,7 +824,14 @@ class _Base extends State<Base> {
             }));
           },
         ),
-        _requireConnectionTile(Icons.location_on, "Salles Libres", FreeRooms()),
+
+        _requireConnectionTile(
+            Icons.location_on,
+            "Salles Libres",
+            BlocProvider<FreeRoomsBloc>(
+                create: (BuildContext context) =>
+                    FreeRoomsBloc(freeRoomRepository: freeRoomsRepository),
+                child: FreeRooms())),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.contacts,
@@ -830,8 +848,16 @@ class _Base extends State<Base> {
                   client: Client(),
                 ),
               );
+              final UnitRepository unitRepository = UnitRepository(
+                unitApiProvider: UnitApiProvider(
+                  client: Client(),
+                ),
+              );
               ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
-              return UnitsList(profsBloc: profsBloc);
+              return BlocProvider<UnitsBloc>(
+                  create: (BuildContext context) =>
+                      UnitsBloc(unitRepository: unitRepository),
+                  child: UnitsList(profsBloc: profsBloc));
             }));
           },
         ),
@@ -1065,5 +1091,3 @@ class _Base extends State<Base> {
     );
   }
 }
-
-

@@ -1,17 +1,17 @@
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'club_fairpay.dart';
 
-FairpayForm(FairpayState parent, String type, ClubModel club) {
-  final clubsBloc = ClubsBloc();
-  final fairpayBloc = FairpayLogBloc();
-
+fairpayForm(FairpayState parent, String type, ClubModel club) {
   final _formKey = GlobalKey<FormState>();
   final amountController = TextEditingController();
   final descController = TextEditingController();
@@ -27,6 +27,7 @@ FairpayForm(FairpayState parent, String type, ClubModel club) {
       case "Subvention":
         return Colors.orange;
     }
+    return Colors.grey;
   }
 
   _amountInput() =>
@@ -98,15 +99,20 @@ FairpayForm(FairpayState parent, String type, ClubModel club) {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         parent.setState(() { });
-                        if(type != "Subvention" && Base.thisUser != null) clubsBloc.editSolde(club, _getAmount());
-                        fairpayBloc.addLog(
-                            FairpayLogModel(
-                                type: type,
-                                amount: _getAmount(),
-                                idClubRef: club.idClubRef,
-                                info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
-                            )
-                        );
+                        if(type != "Subvention" && Base.thisUser != null) {
+                          club.solde += _getAmount();
+                          BlocProvider.of<ClubsBloc>(context)
+                              .add(ClubToBeSaved(club: club));
+                          BlocProvider.of<ClubsBloc>(context)
+                              .add(ClubsRequested());
+                        }
+                        BlocProvider.of<FairpayLogsBloc>(context)
+                            .add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
+                            type: type,
+                            amount: _getAmount(),
+                            idClubRef: club.idClubRef,
+                            info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
+                        )));
                         if (Navigator.canPop(context)) {
                           parent.setState(() { });
                           Navigator.pop(context);

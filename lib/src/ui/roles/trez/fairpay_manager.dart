@@ -4,10 +4,17 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
+import '../../../App.dart';
+
 class FairPayManager extends StatefulWidget {
+
+  final FairpayLogsBloc bloc;
+
+  FairPayManager({@required this.bloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,20 +23,6 @@ class FairPayManager extends StatefulWidget {
 }
 
 class FairPayManagerState extends State<FairPayManager> {
-  final clubsBloc = ClubsBloc();
-  final fairPayBloc = FairpayLogBloc();
-
-  @override
-  void initState() {
-    super.initState();
-    clubsBloc.fetchAllClubs();
-  }
-
-  @override
-  void dispose() {
-    clubsBloc.dispose();
-    super.dispose();
-  }
 
   final log = Logger('clubList');
 
@@ -39,17 +32,7 @@ class FairPayManagerState extends State<FairPayManager> {
         appBar: AppBar(
           title: Text("Gestion Fairpay"),
         ),
-        body: StreamBuilder(
-          stream: clubsBloc.allClubs,
-          builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-            if (snapshot.hasData) {
-              return buildList(snapshot);
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        )
+        body: buildList(Base.allClubs)
     );
   }
 
@@ -57,11 +40,11 @@ class FairPayManagerState extends State<FairPayManager> {
     return new DateFormat('yyyy MMMM dd').format(date);
   }
 
-  GridView buildList( AsyncSnapshot<List<ClubModel>> snapshot ){
+  GridView buildList(List<ClubModel> clubs ){
     return new GridView.count(
       crossAxisCount: 3,
-      children: new List<Widget>.generate(snapshot.data.length, (index) {
-        return _clubTile(snapshot.data[index]);
+      children: new List<Widget>.generate(clubs.length, (index) {
+        return _clubTile(clubs[index]);
       }),
     );
   }
@@ -84,7 +67,9 @@ class FairPayManagerState extends State<FairPayManager> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Fairpay(club: club, isTrez: true)),//FairPayClubManager(club)),
+          MaterialPageRoute(builder: (context) => BlocProvider<FairpayLogsBloc>(
+              create: (BuildContext context) => widget.bloc,
+              child: Fairpay(club: club, isTrez: true, bloc: widget.bloc,))),//FairPayClubManager(club)),
         );
       }
   );

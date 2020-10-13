@@ -1,16 +1,16 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
+import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
-
-  StockState stock;
-  AddStock(this.stock);
 
   @override
   AddStockState createState() {
@@ -18,8 +18,6 @@ class AddStock extends StatefulWidget {
   }
 }
 class AddStockState extends State<AddStock> {
-
-  final bloc = StockBloc();
 
   final _formKey = GlobalKey<FormState>();
   final name = TextEditingController();
@@ -193,8 +191,10 @@ class AddStockState extends State<AddStock> {
                       stockQuant: double.parse(quant.text),
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
-                    bloc.addSaveStock(stock);
-                    //widget.stock.getData();
+                    BlocProvider.of<StockBloc>(context)
+                        .add(StockToBeSaved(stock: stock));
+                    BlocProvider.of<StockBloc>(context)
+                        .add(StockRequested());
                     Navigator.of(context).pop();
                   }
                 }

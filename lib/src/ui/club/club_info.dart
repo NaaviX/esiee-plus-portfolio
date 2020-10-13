@@ -3,13 +3,18 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
+import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../App.dart';
 
 class ClubInfoPage extends StatefulWidget{
 
@@ -22,24 +27,9 @@ class ClubInfoPage extends StatefulWidget{
   }
 }
 
-class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveClientMixin*/ {
-
-  @override
-  final events = EventsBloc();
+class ClubInfoPageState extends State<ClubInfoPage> {
 
   int nbrEvent = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    events.fetchAllEvents();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    events.dispose();
-  }
 
   @override Widget build(BuildContext context){
     return Scaffold(
@@ -250,14 +240,10 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                   child: Text("Nos derniers événements", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
                 ),
                 Container(height: 12,),
-                StreamBuilder(
-                    stream: events.allEvents,
-                    builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-                      if(nbrEvent == 0) return Container(margin: EdgeInsets.fromLTRB(30, 0, 30, 30), child: AutoSizeText("Aucun événement cette année", style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),);
-                      else if(snapshot.hasData) return Container(height: 300,child: buildList(snapshot));
-                      else return Container();
-                    }
-                ),
+                nbrEvent == 0 ? Container(margin: EdgeInsets.fromLTRB(30, 0, 30, 30), child: AutoSizeText("Aucun événement cette année", style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),)
+                : Base.allEvents != null && Base.allEvents.length != 0 ? Container(height: 300,child: buildList())
+                : Container()
+
               ]
           ),
         ),
@@ -266,18 +252,23 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
     //else return Container();
   }
 
-  Widget buildList(AsyncSnapshot<List<EventModel>> snapshot) {
+  Widget buildList() {
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: snapshot.data.length,
+        itemCount: Base.allEvents.length,
         itemBuilder: (BuildContext context, int index) {
-          return getCover(snapshot.data[index], context);
+          return getCover(Base.allEvents[index], context);
         }
     );
   }
 
   getCover(EventModel event, BuildContext context) {
-    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(event, context);
+    EventRepository eventRepository = EventRepository(
+      eventApiProvider: EventApiProvider(
+        client: Client(),
+      ),
+    );
+    if (event.idClubRef == widget.club.idClubRef && event.enable == true && event.publicationDate.isBefore(DateTime.now())) return EventCard(event, context, eventsBloc: EventsBloc(eventRepository: eventRepository),);
     else return Container();
   }
 
@@ -318,12 +309,7 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     AutoSizeText("Événements", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
-                                    StreamBuilder(
-                                        stream: events.allEvents,
-                                        builder: (context, AsyncSnapshot<List<EventModel>> snapshot) {
-                                          return _nbrEvent(snapshot);
-                                        }
-                                    ),
+                                    _nbrEvent(),
                                   ]
                               ),
                               Container(height: 50, child: VerticalDivider(color: Colors.black, width: 2,)),
@@ -365,20 +351,17 @@ class ClubInfoPageState extends State<ClubInfoPage>  /*with AutomaticKeepAliveCl
     );
   }
 
-  _nbrEvent(AsyncSnapshot<List<EventModel>> snapshot) {
-    if (snapshot.hasData) {
-      if(snapshot.data.length != null)
-        for(int i = 0; i<snapshot.data.length; i++) {
-          EventModel event = snapshot.data[i];
-          bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
+  _nbrEvent() {
+    if (Base.allEvents != null) {
+      if(Base.allEvents.length != 0)
+        for(int i = 0; i<Base.allEvents.length; i++) {
+          EventModel event = Base.allEvents[i];
+          //bool date = event.startDate.isBefore(DateTime(DateTime.now().year, 8, 15));
           bool dateInf = event.startDate.isAfter(DateTime(DateTime.now().year-1, 8, 15));
           if(event.enable && dateInf && event.idClubRef == widget.club.idClubRef) nbrEvent++;
         }
 
       return AutoSizeText(nbrEvent.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),);
-    }
-    else if (snapshot.hasError) {
-      return Text(snapshot.error.toString());
     }
     return AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),);
   }

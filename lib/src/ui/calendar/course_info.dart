@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class CourseInfoPage extends StatefulWidget {
 
-  CourseModel course;
+  final CourseModel course;
   CourseInfoPage({this.course});
 
   @override

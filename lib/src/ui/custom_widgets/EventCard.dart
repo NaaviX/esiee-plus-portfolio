@@ -2,23 +2,30 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meta/meta.dart';
+
+import '../../App.dart';
 
 class EventCard extends StatefulWidget {
 
-  @required BuildContext context;
-  @required EventModel event;
+  @required final BuildContext context;
+  @required final EventModel event;
   bool moderation;
+  final EventsBloc eventsBloc;
 
-  EventCard(this.event, this.context, {this.moderation}) {
+  EventCard(this.event, this.context, {this.moderation, @required this.eventsBloc}) {
     this.moderation = this.moderation == null ? false : this.moderation;
+    assert(eventsBloc != null);
   }
 
   @override
@@ -29,8 +36,6 @@ class EventCard extends StatefulWidget {
 
 class EventCardState extends State<EventCard> {
 
-  final club = ClubsBloc();
-
   bool _isFav = false;
 
   Future<String> getSavedEvents() async {
@@ -40,26 +45,20 @@ class EventCardState extends State<EventCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    club.fetchClubById(widget.event.idClubRef);
-  }
-
-  @override
-  void dispose() {
-    club.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final EventModel event = widget.event;
-    return StreamBuilder(
-        stream: club.thisClub,
-        builder: (context, AsyncSnapshot<ClubModel> snapshot) {
-          return GestureDetector(
+    ClubModel thisClub;
+    try {
+      thisClub = Base.allClubs.firstWhere((element) =>
+      element.idClubRef == event.idClubRef);
+    } catch(_) {
+
+    }
+    return GestureDetector(
               onTap: () {
-                snapshot.hasData ? pushEventInfo(event, snapshot.data) : null;
+                if(thisClub != null) {
+                  pushEventInfo(event, thisClub);
+                }
               },
               child: Container(
                 child: Card(
@@ -146,7 +145,7 @@ class EventCardState extends State<EventCard> {
                                                 child: _favCard(),
                                               ),*/
                                               TextSpan(
-                                                text: snapshot.hasData ? "\n" + snapshot.data.name : "\n",
+                                                text: thisClub!=null ? "\n" + thisClub.name : "\n",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   color: Theme.of(context).primaryColor,
@@ -161,7 +160,7 @@ class EventCardState extends State<EventCard> {
 
                                   ],
                                 ),
-                                snapshot.hasData ? clubLogo(snapshot) : Container(height: 29, width: 29,),
+                                thisClub!=null ? clubLogo(thisClub) : Container(height: 29, width: 29,),
                               ]
                           ),
                         ),
@@ -179,8 +178,6 @@ class EventCardState extends State<EventCard> {
                     .width,
               )
           );
-        }
-    );
   }
 
   Widget _favCard() {
@@ -204,9 +201,13 @@ class EventCardState extends State<EventCard> {
   }
 
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, parentCard: this));
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => BlocProvider(
+        create: (BuildContext context) => widget.eventsBloc,
+        child: EventInfoPage(event, club, parentCard: this, eventsBloc: widget.eventsBloc)));
     if(widget.moderation)
-      route = MaterialPageRoute(builder: (context) => EventInfoPage(event, club, isModeration: true));
+      route = MaterialPageRoute(builder: (context) => BlocProvider(
+          create: (BuildContext context) => widget.eventsBloc,
+          child: EventInfoPage(event, club, isModeration: true, eventsBloc: widget.eventsBloc)));
     Navigator.push(
       context,
       route,
@@ -217,12 +218,12 @@ class EventCardState extends State<EventCard> {
     return Text("\n" + snapshot.data.name);
   }
 
-  clubLogo(AsyncSnapshot<ClubModel> snapshot) {
+  clubLogo(ClubModel club) {
     return Positioned(
       top: 0,
       right: 0,
       child: CircleAvatar(
-        backgroundImage: NetworkImage(snapshot.data.urlPhoto),
+        backgroundImage: NetworkImage(club.urlPhoto),
         backgroundColor: Theme.of(context).backgroundColor.withOpacity(1),
         radius: 29,
       ),

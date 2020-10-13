@@ -31,6 +31,12 @@ class RoleModel {
         jsonData.map((x) => RoleModel.fromJson(x)));
   }
 
+
+  @override
+  int get hashCode {
+    return idRole.hashCode ^ role.hashCode;
+  }
+
   @override
   bool operator ==(other) {
     return idRole == other.idRole;

@@ -73,7 +73,6 @@ class MessengerState extends State<Messenger> {
   }
 
   readLocal() async {
-    String email = user.email;
     if (from.hashCode <= to.hashCode) {
       groupChatId = '$from::$to';
     } else {
@@ -90,7 +89,8 @@ class MessengerState extends State<Messenger> {
   }
 
   Future getImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    imageFile = File(pickedFile.path);
 
     if (imageFile != null) {
       setState(() {
@@ -194,19 +194,19 @@ class MessengerState extends State<Messenger> {
 
   bool needTime(int index) {
     String t;
-    String t_pres;
+    String tPres;
 
     if(index>0) {
       t = DateFormat('dd MMM kk:mm').format(
           DateTime.fromMillisecondsSinceEpoch(
               int.parse(listMessage[index]['timestamp'])));
-      t_pres = DateFormat('dd MMM kk:mm').format(
+      tPres = DateFormat('dd MMM kk:mm').format(
           DateTime.fromMillisecondsSinceEpoch(
               int.parse(listMessage[index - 1]['timestamp'])));
     }
 
     if ((index > 0 &&
-        listMessage != null && t != t_pres) ||
+        listMessage != null && t != tPres) ||
         index == 0) {
       return true;
     } else {

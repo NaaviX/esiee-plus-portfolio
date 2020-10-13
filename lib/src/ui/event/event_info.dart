@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -13,6 +14,7 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dar
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../App.dart';
 import 'event_creation.dart';
+import 'package:meta/meta.dart';
 
 class EventInfoPage extends StatefulWidget {
 
@@ -29,13 +32,16 @@ class EventInfoPage extends StatefulWidget {
   EventCardState parentCard;
   bool isValidator;
   bool isModeration;
+  final EventsBloc eventsBloc;
 
-  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration}) {
+
+  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration, @required this.eventsBloc}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
     if(this.isModeration != null) this.isModeration = this.isModeration;
     else this.isModeration = false;
+    assert(eventsBloc != null);
   }
 
   @override
@@ -45,9 +51,6 @@ class EventInfoPage extends StatefulWidget {
 }
 
 class EventInfoState extends State<EventInfoPage> {
-
-  final bloc = ClubsBloc();
-  final eventBloc = EventsBloc();
 
   bool _isEnabled = false;
   bool _isForStratif = false;
@@ -76,18 +79,6 @@ class EventInfoState extends State<EventInfoPage> {
     List<dynamic> savedEvents = localEvents != null ? json.decode(localEvents) : [];
     savedEvents.removeWhere((event) => event["idEvent"] == widget.event.idEvent);
     prefs.setString("savedEventsJson", json.encode(savedEvents));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    bloc.fetchClubById(widget.event.idClubRef);
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
   }
 
   @override Widget build(BuildContext context) {
@@ -334,8 +325,11 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.check,),
           splashColor: Colors.white,
           onPressed: () {
-            eventBloc.addSaveEvent(widget.event);
+            BlocProvider.of<EventsBloc>(context)
+                .add(EventToBeSaved(event: widget.event));
             Base.selectedIndex = 1;
+            if(Base.thisUser != null)
+              Base.selectedIndex = 2;
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
           }
       );
@@ -346,7 +340,7 @@ class EventInfoState extends State<EventInfoPage> {
         children: [
           SpeedDialChild(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event)),);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event, eventsBloc: widget.eventsBloc,)),);
               },
               child: Icon(Icons.edit,),
               label: "Modifier",
@@ -364,6 +358,7 @@ class EventInfoState extends State<EventInfoPage> {
         ],
       );
     }
+    return Container();
   }
 
   _validationMod() {
@@ -383,7 +378,8 @@ class EventInfoState extends State<EventInfoPage> {
               {
                 _isEnabled = value;
                 widget.event.enable = _isEnabled;
-                eventBloc.addSaveEvent(widget.event);
+                BlocProvider.of<EventsBloc>(context)
+                    .add(EventToBeSaved(event: widget.event));
               });
             },
             activeColor : Colors.green,
@@ -399,7 +395,9 @@ class EventInfoState extends State<EventInfoPage> {
                 _isTopEvent = value;
               });
               widget.event.topEvent = _isTopEvent;
-              eventBloc.addSaveEvent(widget.event);
+              BlocProvider.of<EventsBloc>(context)
+                  .add(EventToBeSaved(event: widget.event));
+
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -414,7 +412,8 @@ class EventInfoState extends State<EventInfoPage> {
                 _isForStratif = value;
               });
               widget.event.enabledStratif = _isForStratif;
-              eventBloc.addSaveEvent(widget.event);
+              BlocProvider.of<EventsBloc>(context)
+                  .add(EventToBeSaved(event: widget.event));
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -505,14 +504,15 @@ class EventInfoState extends State<EventInfoPage> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                eventBloc.deleteEvent(widget.event);
+                BlocProvider.of<EventsBloc>(context)
+                    .add(EventDeleteRequested(event: widget.event));
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 1;
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
                 }
                 else {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager()), (Route<dynamic> route) => false);
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
                 }
                 setState(() {});
               },

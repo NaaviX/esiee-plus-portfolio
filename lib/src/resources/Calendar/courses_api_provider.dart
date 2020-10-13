@@ -3,12 +3,17 @@ import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:http/http.dart' show Client;
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 
 import '../../App.dart';
 
 class CoursesApiProvider {
   final log = Logger('TimeCalendar_API_grades');
-  Client client = Client();
+  final Client client;
+
+  CoursesApiProvider({
+    @required this.client,
+  }) : assert(client != null);
 
   Future<List<CourseModel>> fetchCoursesList() async {
     String userMail = Uri.encodeComponent(Base.thisUser.mailEsiee);

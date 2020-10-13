@@ -1,11 +1,15 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContributorManager extends StatefulWidget {
   @override
@@ -15,7 +19,6 @@ class ContributorManager extends StatefulWidget {
 }
 
 class ContributorManagerState extends State<ContributorManager> {
-  StudentsBloc studentsBloc = StudentsBloc();
 
   final searchController = TextEditingController();
 
@@ -27,11 +30,13 @@ class ContributorManagerState extends State<ContributorManager> {
 
   FocusNode currentFocus;
 
+  int i = 0;
   String filter = "";
 
   @override
   void initState() {
-    studentsBloc.fetchAllStudents();
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentListRequested());
     searchController.addListener(() {
       setState(() {
         filter = searchController.text;
@@ -43,7 +48,6 @@ class ContributorManagerState extends State<ContributorManager> {
   @override
   void dispose() {
     super.dispose();
-    studentsBloc.dispose();
     searchController.dispose();
   }
 
@@ -54,77 +58,87 @@ class ContributorManagerState extends State<ContributorManager> {
         appBar: AppBar(
           title: Text("Gestion cotisants BDE"),
         ),
-        body: StreamBuilder(
-                stream: studentsBloc.allStudents,
-                builder: (context,
-                    AsyncSnapshot<List<StudentModel>> studentSnapshot) {
-                  if (studentSnapshot.hasData) {
-                    allStudents = studentSnapshot.data;
-                    contributors = allStudents.where((element) => element.isContributor).toList();
-                    allStudentsExceptContributors = allStudents.where((element) => !contributors.contains(element)).toList();
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                            child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Flexible(
-                                      child: Container(
-                                          margin: EdgeInsets.all(2),
-                                          child: ContributorAdd(this, allStudentsExceptContributors))),
-                                  Container(
-                                      margin: EdgeInsets.only(
-                                          top: 10, bottom: 10, right: 10),
+        body: BlocBuilder<StudentsBloc, StudentState>(
+            builder: (context, state) {
+              if (state is StudentListInitial) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is StudentListLoadInProgress) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is StudentListLoadSuccess) {
+                final students = state.students;
+                i=1;
+                allStudents = students;
+                contributors = allStudents.where((element) => element.isContributor).toList();
+                allStudentsExceptContributors = allStudents.where((element) => !contributors.contains(element)).toList();
+                return Column(
+                  children: <Widget>[
+                    Container(
+                        child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                  child: Container(
+                                      margin: EdgeInsets.all(2),
+                                      child: ContributorAdd(this, allStudentsExceptContributors))),
+                              Container(
+                                  margin: EdgeInsets.only(
+                                      top: 10, bottom: 10, right: 10),
 
-                                      child: _scanButton()),
-                                ])),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(color: Colors.black12))),
-                          padding: EdgeInsets.all(10),
+                                  child: _scanButton()),
+                            ])),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.black12))),
+                      padding: EdgeInsets.all(10),
 
-                          child:
-                          CustomTextFormField(
-                            "Rechercher...",
-                            "Prenom et/ou nom de l'élève",
-                            Icons.search,
-                            searchController,
-                            focusNode: currentFocus,),),
-                        Expanded(
-                            child: ListView.builder(
-                              itemCount: contributors.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                StudentModel student = contributors.elementAt(index);
-                                filter = searchController.text;
-                                return (filter == null || filter == "")
-                                    ? _studentTile(student, index)
-                                    : (student.firstname
+                      child:
+                      CustomTextFormField(
+                        "Rechercher...",
+                        "Prenom et/ou nom de l'élève",
+                        Icons.search,
+                        searchController,
+                        focusNode: currentFocus,),),
+                    Expanded(
+                        child: ListView.builder(
+                          itemCount: contributors.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            StudentModel student = contributors.elementAt(index);
+                            filter = searchController.text;
+                            return (filter == null || filter == "")
+                                ? _studentTile(student, i)
+                                : (student.firstname
+                                .toLowerCase()
+                                .startsWith(filter.toLowerCase()) ||
+                                student.lastname
                                     .toLowerCase()
                                     .startsWith(filter.toLowerCase()) ||
-                                    student.lastname
-                                        .toLowerCase()
-                                        .startsWith(filter.toLowerCase()) ||
-                                    (student.firstname + " " + student.lastname)
-                                        .toLowerCase()
-                                        .startsWith(filter.toLowerCase()))
-                                    ? _studentTile(student, index)
-                                    : new Container();
+                                (student.firstname + " " + student.lastname)
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()))
+                                ? _studentTile(student, i)
+                                : new Container();
 
-                              },
-                            )),
-                      ],
-                    );
-                  }
-                  return Center(child: CircularProgressIndicator(),);
-                }));
+                          },
+                        )),
+                  ],
+                );
+              }
+              if (state is StudentListLoadFailure) {
+                return Center(child: CircularProgressIndicator(),);
+              }
+              return Container();
+            }));
 
 
   }
 
   Widget _studentTile(StudentModel student, int index) {
-    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    Color color = (index % 2 == 0) ? Theme.of(context).backgroundColor : Theme.of(context).primaryColor.withOpacity(0.1);
+    i++;
     return new Container(
       padding: EdgeInsets.all(5.0),
       decoration: BoxDecoration(color: color),
@@ -187,7 +201,8 @@ class ContributorManagerState extends State<ContributorManager> {
   void deleteStudentFromContributor(StudentModel student) {
     if(student != null) {
       student.isContributor = false;
-      studentsBloc.updateStudent(student);
+      BlocProvider.of<StudentsBloc>(context)
+          .add(StudentToBeSaved(student: student));
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         duration: Duration(seconds: 1),
         content: Text("Cotisant supprimé"),
@@ -207,7 +222,8 @@ class ContributorManagerState extends State<ContributorManager> {
     if(student != null) {
       if(!student.isContributor){
         student.isContributor = true;
-        studentsBloc.updateStudent(student);
+        BlocProvider.of<StudentsBloc>(context)
+            .add(StudentToBeSaved(student: student));
       }
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(

@@ -1,10 +1,15 @@
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../App.dart';
 
 class TreasuryManager extends StatefulWidget {
 
@@ -15,23 +20,14 @@ class TreasuryManager extends StatefulWidget {
 }
 
 class TreasuryManagerState extends State<TreasuryManager>{
-  final clubsBloc = ClubsBloc();
-  final Logbloc = FairpayLogBloc();
 
   List<ClubModel> clubList = List();
 
   @override
   void initState() {
     super.initState();
-    clubsBloc.fetchAllClubs();
-    Logbloc.fetchAllLogs();
-  }
-
-  @override
-  void dispose() {
-    clubsBloc.dispose();
-    Logbloc.dispose();
-    super.dispose();
+    BlocProvider.of<FairpayLogsBloc>(context)
+        .add(FairpayLogsRequested());
   }
 
   @override
@@ -40,39 +36,44 @@ class TreasuryManagerState extends State<TreasuryManager>{
         appBar: AppBar(
           title: Text("Gestion Trésorerie"),
         ),
-        body: StreamBuilder(
-          stream: Logbloc.allFairpayLog,
-          builder: (context, AsyncSnapshot<List<FairpayLogModel>> snapshot) {
-            if (snapshot.hasData){
-              return Column(
-                  children: <Widget>[
-                    _topArea(),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child:  _log(snapshot),
-                      ),
-                    )
-                  ]
-              );
-            }
-            else if (snapshot.hasError) {
-              return
-                Text(snapshot.error.toString());
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _topArea(),
-                  SizedBox(height: 3,),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Text("Aucune log pour le moment", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                  )
-                ]
-            ) ;
-          },
-        )
+        body: BlocBuilder<FairpayLogsBloc, FairpayLogState>(
+            builder: (context, state) {
+              if (state is FairpayLogsInitial) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is FairpayLogsLoadInProgress) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is FairpayLogsLoadSuccess) {
+                final fairpayLogs = state.fairpayLogs;
+
+                return Column(
+                    children: <Widget>[
+                      _topArea(),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child:  _log(fairpayLogs),
+                        ),
+                      )
+                    ]
+                );
+              }
+              if (state is FairpayLogsLoadFailure) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _topArea(),
+                      SizedBox(height: 3,),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Text("Aucune log pour le moment", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                      )
+                    ]
+                ) ;
+              }
+              return Container();
+            })
     );
   }
 
@@ -111,17 +112,14 @@ class TreasuryManagerState extends State<TreasuryManager>{
   }
 
   Widget _fairpayTotal(){
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-          if(clubList.hasData) {
+    List<ClubModel> clubs = Base.allClubs;
             double total = 0;
-            clubList.data.forEach((club) {
+    clubs.forEach((club) {
               total += club.solde;
             });
             return Column(
               children: <Widget>[
-                Text("${total} €",
+                Text("$total €",
                   style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 30.0,
@@ -130,69 +128,50 @@ class TreasuryManagerState extends State<TreasuryManager>{
                 ),
               ],
             );
-          }
-          return Text("Loading...",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold
-              )
-          );
-        }
-    );
   }
 
   Widget _fairpayTotalWithoutBDE(){
-    return StreamBuilder(
-        stream: clubsBloc.allClubs,
-        builder: (context, AsyncSnapshot<List<ClubModel>> clubList) {
-          if(clubList.hasData) {
+    List<ClubModel> clubs = Base.allClubs;
             double total = 0;
-            clubList.data.forEach((club) {
+    clubs.forEach((club) {
               if( club.idClubRef != 100 )
                 total += club.solde;
             });
-            return Text("Hors BDE : ${total} €",
+            return Text("Hors BDE : $total €",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
             );
-          }
-          return Text("Hors BDE : loading...",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17, color: Colors.blue[100])
-          );
-        }
-    );
   }
 
-  _log(AsyncSnapshot<List<FairpayLogModel>> snapshot) {
+  _log(List<FairpayLogModel> fairpayLogs) {
     List<FairpayLogModel> ajd = new List<FairpayLogModel>();
-    List<FairpayLogModel> same_month = new List<FairpayLogModel>();
+    List<FairpayLogModel> sameMonth = new List<FairpayLogModel>();
     List<FairpayLogModel> mandat = new List<FairpayLogModel>();
-    List<FairpayLogModel> avant_mandat = new List<FairpayLogModel>();
+    List<FairpayLogModel> avantMandat = new List<FairpayLogModel>();
 
     //mai de l'année dernière
-    DateTime mandat_pressedants = DateTime(DateTime.now().year-1, 05);
+    DateTime mandatPrecedents = DateTime(DateTime.now().year-1, 05);
     //mai de cette année
-    DateTime mandat_actuel = DateTime(DateTime.now().year, 05);
+    DateTime mandatActuel = DateTime(DateTime.now().year, 05);
 
     DateTime jour = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime mois = DateTime(DateTime.now().year, DateTime.now().month);
 
-    snapshot.data.forEach((element) {
-      DateTime date_log = element.date;
-      DateTime mois_log = DateTime(date_log.year, date_log.month);
-      DateTime jour_log = DateTime(date_log.year, date_log.month, date_log.day);
-      if(jour_log == jour) ajd.add(element);
-      else if(mois_log == mois) same_month.add(element);
+    fairpayLogs.forEach((element) {
+      DateTime dateLog = element.date;
+      DateTime moisLog = DateTime(dateLog.year, dateLog.month);
+      DateTime jourLog = DateTime(dateLog.year, dateLog.month, dateLog.day);
+      if(jourLog == jour) ajd.add(element);
+      else if(moisLog == mois) sameMonth.add(element);
       else if(DateTime.now().month < 05) {
-        if(mois_log.isAfter(mandat_pressedants)) mandat.add(element);
-        else avant_mandat.add(element);
+        if(moisLog.isAfter(mandatPrecedents)) mandat.add(element);
+        else avantMandat.add(element);
       }
       else if(DateTime.now().month >= 05)
       {
-        if(mois_log.isAfter(mandat_actuel)) mandat.add(element);
-        else avant_mandat.add(element);
+        if(moisLog.isAfter(mandatActuel)) mandat.add(element);
+        else avantMandat.add(element);
       }
-      else avant_mandat.add(element);
+      else avantMandat.add(element);
     });
 
     return ListView(
@@ -204,14 +183,14 @@ class TreasuryManagerState extends State<TreasuryManager>{
               ajd.isNotEmpty ? Text("Aujourd'hui", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
               ajd.isNotEmpty ? getTextWidgets(ajd) : Container(),
               ajd.isNotEmpty ? SizedBox(height: 20,) : Container(),
-              same_month.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
-              same_month.isNotEmpty ? getTextWidgets(same_month) : Container(),
-              same_month.isNotEmpty ? SizedBox(height: 20,) : Container(),
+              sameMonth.isNotEmpty ? Text("Plus tôt ce mois-ci", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              sameMonth.isNotEmpty ? getTextWidgets(sameMonth) : Container(),
+              sameMonth.isNotEmpty ? SizedBox(height: 20,) : Container(),
               mandat.isNotEmpty ?  Text("Plus tôt dans le mandat", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
               mandat.isNotEmpty ? getTextWidgets(mandat) : Container(),
               mandat.isNotEmpty ? SizedBox(height: 20,) : Container(),
-              avant_mandat.isNotEmpty ?  Text("Pendant les mandats précédents", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
-              avant_mandat.isNotEmpty ? getTextWidgets(avant_mandat) : Container(),
+              avantMandat.isNotEmpty ?  Text("Pendant les mandats précédents", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20, fontWeight: FontWeight.bold),) : Container(),
+              avantMandat.isNotEmpty ? getTextWidgets(avantMandat) : Container(),
             ],
           )
         ]

@@ -1,9 +1,14 @@
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:search_widget/search_widget.dart';
 
@@ -22,9 +27,6 @@ class ClubAddMember extends StatefulWidget {
 }
 
 class ClubAddMemberState extends State<ClubAddMember> {
-  StudentsBloc studentsBloc = StudentsBloc();
-
-  ClubsBloc clubsBloc = ClubsBloc();
 
   final log = Logger('clubaddmember');
 
@@ -37,40 +39,46 @@ class ClubAddMemberState extends State<ClubAddMember> {
 
   @override
   void initState() {
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentListRequested());
     super.initState();
-    studentsBloc.fetchAllStudents();
   }
 
   @override
   void dispose() {
-    studentsBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: studentsBloc.allStudents,
-      builder: (context, AsyncSnapshot<List<StudentModel>> snapshot) {
-        if (snapshot.hasData) {
-          for(StudentModel student in Base.thisClub.students) {
-            snapshot.data.removeWhere((element) => element.idStudent == student.idStudent);
-          }
-          return Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: SearchWidget<StudentModel>(
+    return BlocBuilder<StudentsBloc, StudentState>(
+      builder: (context, state) {
+        if (state is StudentListInitial) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is StudentListLoadInProgress) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is StudentListLoadSuccess) {
+          List studentList = state.students;
+              for(StudentModel student in Base.thisClub.students) {
+                studentList.removeWhere((element) => element.idStudent == student.idStudent);
+              }
+              return Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SearchWidget<StudentModel>(
 
-                      dataList: snapshot.data,
-                      hideSearchBoxWhenItemSelected: false,
-                      listContainerHeight:
-                      MediaQuery.of(context).size.height / 4,
-                      queryBuilder:
-                          (String query, List<StudentModel> list) {
+                          dataList: studentList,
+                          hideSearchBoxWhenItemSelected: false,
+                          listContainerHeight:
+                              MediaQuery.of(context).size.height / 4,
+                          queryBuilder:
+                              (String query, List<StudentModel> list) {
 
                         return list
                             .where((StudentModel student) => (
@@ -102,16 +110,17 @@ class ClubAddMemberState extends State<ClubAddMember> {
 
                       },
                     )
-                ),
-              ],
-            ),
+                ),]
+              ));
+            } if (state is StudentListLoadFailure) {
+          return Text(
+            'Something went wrong!',
+            style: TextStyle(color: Colors.red),
           );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
         }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+        return Container();
+          },
+        );
   }
 
   Widget _popupListItemBuilder(StudentModel item) {
@@ -129,7 +138,9 @@ class ClubAddMemberState extends State<ClubAddMember> {
                 backgroundColor: Colors.red,
               ));
             } else {
-              clubsBloc.addStudentToClub(item, Base.thisClub);
+              Base.thisClub.students.add(item);
+              BlocProvider.of<ClubsBloc>(context)
+                  .add(ClubToBeSaved(club: Base.thisClub));
               Scaffold.of(context).showSnackBar(SnackBar(
                 duration: Duration(seconds: 1),
                 content: Text("Membre ajouté !"),
@@ -139,9 +150,7 @@ class ClubAddMemberState extends State<ClubAddMember> {
             }
             focus.unfocus();
           },
-          trailing: IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green,),
-          )
+          trailing: Icon(Icons.add_circle_outline, color: Colors.green,)
       );
     }
     return Column();

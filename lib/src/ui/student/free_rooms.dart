@@ -1,5 +1,8 @@
 import 'package:bde_esiee_mobile/src/blocs/free_rooms_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/free_rooms_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/free_rooms_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 class FreeRooms extends StatefulWidget {
@@ -10,20 +13,13 @@ class FreeRooms extends StatefulWidget {
 }
 
 class FreeRoomsState extends State<FreeRooms> {
-  final bloc = FreeRoomsBloc();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    bloc.fetchAllRooms();
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
+    BlocProvider.of<FreeRoomsBloc>(context).add(FreeRoomsRequested());
   }
 
   final log = Logger('freeRoomsList');
@@ -50,25 +46,31 @@ class FreeRoomsState extends State<FreeRooms> {
               ),
             ]
         ),
-        body: StreamBuilder(
-          stream: bloc.allRoomsLog,
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (snapshot.hasData) {
-              return Container(
+        body: BlocBuilder<FreeRoomsBloc, FreeRoomState>(builder: (context, state) {
+          if (state is FreeRoomsInitial) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is FreeRoomsLoadInProgress) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is FreeRoomsLoadSuccess) {
+            final freeRooms = state.freeRooms;
+
+            return Container(
                 margin: EdgeInsets.all(5),
                 height: MediaQuery.of(context).size.height,
-                child: buildList(context, snapshot)
-              );
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
+                child: buildList(context, freeRooms)
+            );
+          }
+          if (state is FreeRoomsLoadFailure) {
             return Center(child: CircularProgressIndicator());
-          },
-        )
+          }
+          return Container();
+        })
     );
   }
 
-  buildList(context, AsyncSnapshot<List<dynamic>> snapshot) {
+  buildList(context, List<dynamic> freeRooms) {
 
     List<String> epi0 = List<String>();
     List<String> epi1 = List<String>();
@@ -77,7 +79,7 @@ class FreeRoomsState extends State<FreeRooms> {
     List<String> epi4 = List<String>();
     List<String> epi5 = List<String>();
 
-    snapshot.data.forEach((element) {
+    freeRooms.forEach((element) {
       element.substring(0,1)=="0" ? epi0.add(element) :
       element.substring(0,1)=="1" ? epi1.add(element) :
       element.substring(0,1)=="2" ? epi2.add(element) :

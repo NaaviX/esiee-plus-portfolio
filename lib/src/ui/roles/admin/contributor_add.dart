@@ -93,9 +93,7 @@ class ContributorAddState extends State<ContributorAdd> {
                 item.mailEsiee.toString(),
           ),
           trailing: Builder(
-              builder: (context) => IconButton(
-                  icon: Icon(Icons.add_circle_outline, color: Colors.green,)
-              )
+              builder: (context) => Icon(Icons.add_circle_outline, color: Colors.green,)
           )
       );
     }

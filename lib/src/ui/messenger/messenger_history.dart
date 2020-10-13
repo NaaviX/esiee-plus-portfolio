@@ -1,18 +1,25 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../App.dart';
 import 'messenger.dart';
 import 'messenger_list.dart';
 
 class MessengerHistory extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return MessengerHistoryState();
@@ -23,48 +30,67 @@ class MessengerHistoryState extends State<MessengerHistory> {
   List<String> groupChatIds = new List();
   List<String> discussions = new List();
 
-  StudentsBloc studentsBloc = StudentsBloc();
-  ClubsBloc clubsBloc = ClubsBloc();
-  ProfsBloc profsBloc = ProfsBloc();
-
   List<StudentModel> allStudents = new List();
   List<ClubModel> allClubs = new List();
   List<ProfModel> allProfs = new List();
 
   @override
-  void dispose() {
-    super.dispose();
-    studentsBloc.dispose();
-    clubsBloc.dispose();
-    profsBloc.dispose();
+  void initState() {
+    BlocProvider.of<StudentsBloc>(context)
+        .add(StudentListRequested());
+    BlocProvider.of<ProfsBloc>(context)
+        .add(ProfsRequested());
+    if (Base.allClubs != null && Base.allClubs.length != 0) {
+      allClubs.addAll(Base.allClubs);
+    }
+    super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: studentsBloc.allStudents,
-      builder: (context, AsyncSnapshot<List<StudentModel>> snapshot) {
-        if (snapshot.hasData) {
-          allStudents.addAll(snapshot.data);
-        }
-        return StreamBuilder(
-            stream: clubsBloc.allClubs,
-            builder: (context, AsyncSnapshot<List<ClubModel>> snapshot) {
-              if (snapshot.hasData) {
-                allClubs.addAll(snapshot.data);
-              }
-              return StreamBuilder(
-                stream: profsBloc.allProfs,
-                builder: (context, AsyncSnapshot<List<ProfModel>> snapshot) {
-                  if (snapshot.hasData) {
-                    allProfs.addAll(snapshot.data);
+
+    return BlocBuilder<StudentsBloc, StudentState>(
+        builder: (context, state) {
+          if (state is StudentListInitial) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is StudentListLoadInProgress) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is StudentListLoadSuccess) {
+            final students = state.students;
+
+            allStudents.addAll(students);
+
+            return BlocBuilder<ProfsBloc, ProfState>(
+                builder: (context, state) {
+                  if (state is ProfsInitial) {
+                    return Center(child: CircularProgressIndicator());
                   }
-                  return getConvs();
-                },
-              );
-            });
-      },
-    );
+                  if (state is ProfsLoadInProgress) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is ProfsLoadSuccess) {
+                    final profs = state.profs;
+
+                    allProfs.addAll(profs);
+                    return getConvs();
+                  }
+                  if (state is ProfsLoadFailure) {
+                    return Text(
+                      'Something went wrong!',
+                      style: TextStyle(color: Colors.red),
+                    );
+                  }
+                  return Container();
+                });
+          }
+          if (state is StudentListLoadFailure) {
+            return Text("Erreur");
+          }
+          return Container();
+        });
   }
 
 
@@ -185,7 +211,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return MessengerList();
+            return MessengerList(profs: allProfs, students: allStudents,);
           }));
         },
         child: const Icon(FontAwesomeIcons.solidCommentDots),
@@ -203,10 +229,5 @@ class MessengerHistoryState extends State<MessengerHistory> {
         : Text(imageFrom + 'envoyé une photo', style: style,);
   }
 
-  @override
-  void initState() {
-    studentsBloc.fetchAllStudents();
-    clubsBloc.fetchAllClubs();
-    profsBloc.fetchAllProfs();
-  }
+
 }

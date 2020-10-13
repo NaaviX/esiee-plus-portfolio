@@ -1,9 +1,12 @@
+import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_info.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/units_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:search_widget/search_widget.dart';
 
 // ignore: must_be_immutable
@@ -22,26 +25,26 @@ class SearchProfState extends State<SearchProf> {
 
   final _formKey = GlobalKey<FormState>();
 
-  ProfsBloc profs = ProfsBloc();
-
   @override
   void initState() {
-    profs.fetchAllProfs();
+    BlocProvider.of<ProfsBloc>(context)
+        .add(ProfsRequested());
     super.initState();
   }
 
   @override
-  void dispose() {
-    profs.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: profs.allProfs,
-        builder: (context, AsyncSnapshot<List<ProfModel>> snapshot) {
-          if (snapshot.hasData) {
+    return BlocBuilder<ProfsBloc, ProfState>(
+        builder: (context, state) {
+          if (state is ProfsInitial) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is ProfsLoadInProgress) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is ProfsLoadSuccess) {
+            final profs = state.profs;
+
             return Form(
               key: _formKey,
               child: Column(
@@ -51,7 +54,7 @@ class SearchProfState extends State<SearchProf> {
                       padding: EdgeInsets.all(8.0),
                       child: SearchWidget<ProfModel>(
 
-                        dataList: snapshot.data,
+                        dataList: profs,
                         hideSearchBoxWhenItemSelected: false,
                         listContainerHeight:
                         MediaQuery
@@ -98,10 +101,15 @@ class SearchProfState extends State<SearchProf> {
               ),
             );
           }
-          else
-            return Container();
-        }
-    );
+          if (state is ProfsLoadFailure) {
+            return Text(
+              'Something went wrong!',
+              style: TextStyle(color: Colors.red),
+            );
+          }
+          return Container();
+        });
+
   }
 
   Widget _popupListItemBuilder(ProfModel item) {

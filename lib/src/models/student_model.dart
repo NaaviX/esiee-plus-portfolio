@@ -1,9 +1,10 @@
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
+import 'package:bde_esiee_mobile/src/models/user_model.dart';
 import 'package:logging/logging.dart';
 
 import 'club_model.dart';
 
-class StudentModel {
+class StudentModel extends UserModel {
   final log = Logger('StudentModel');
 
 
@@ -55,6 +56,19 @@ class StudentModel {
     return new List<StudentModel>.from(
         jsonData.map((x) => StudentModel.fromJson(x)));
   }
+
+  @override
+  int get hashCode =>
+      idStudent.hashCode ^
+      mailEsiee.hashCode ^
+      firstname.hashCode ^
+      lastname.hashCode ^
+      promo.hashCode ^
+      phone.hashCode ^
+      isContributor.hashCode ^
+      urlPhoto.hashCode ^
+      roles.hashCode ^
+      clubs.hashCode;
 
   @override
   bool operator ==(other) {

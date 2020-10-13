@@ -69,7 +69,7 @@ class MyTheme {
         elevation: 0.0,
         color: LightBackground,
         textTheme: TextTheme(
-          title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
         ),
       ),
 
@@ -84,6 +84,11 @@ class MyTheme {
 
       dialogBackgroundColor: WidgetBackgroundLight,
 
+      tabBarTheme: TabBarTheme(
+        labelColor: PrimaryColorLight,
+        indicator: BoxDecoration(border: Border(bottom: BorderSide(color: PrimaryColorLight, width: 2))),
+      ),
+
       /*iconTheme: IconThemeData(
         color: PrimaryColorLight,
       ),*/
@@ -95,9 +100,7 @@ class MyTheme {
 
 
 
-      tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColorLight,
-      ),
+
 
       cardTheme: CardTheme(
         color: WidgetBackgroundLight,
@@ -125,7 +128,7 @@ class MyTheme {
         elevation: 0.0,
         color: DarkBackground,
         textTheme: TextTheme(
-          title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
+          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
         ),
       ),
 
@@ -145,6 +148,11 @@ class MyTheme {
       ),
 
       dialogBackgroundColor: DarkBackground,
+
+      tabBarTheme: TabBarTheme(
+        labelColor: PrimaryColorDark,
+        indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
+      ),
 /*
         primaryIconTheme: IconThemeData(
             color: PrimaryColorDark
@@ -161,9 +169,7 @@ class MyTheme {
           foregroundColor: DarkBackground,
         ),
 
-        tabBarTheme: TabBarTheme(
-          labelColor: PrimaryColorDark,
-        ),
+
 
         cardTheme: CardTheme(
           color: WidgetDarkBackground,

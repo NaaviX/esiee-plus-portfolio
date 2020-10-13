@@ -3,6 +3,7 @@ import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -29,6 +30,7 @@ class ContributorManagerState extends State<ContributorManager> {
 
   FocusNode currentFocus;
 
+  int i = 0;
   String filter = "";
 
   @override
@@ -66,7 +68,7 @@ class ContributorManagerState extends State<ContributorManager> {
               }
               if (state is StudentListLoadSuccess) {
                 final students = state.students;
-
+                i=1;
                 allStudents = students;
                 contributors = allStudents.where((element) => element.isContributor).toList();
                 allStudentsExceptContributors = allStudents.where((element) => !contributors.contains(element)).toList();
@@ -107,7 +109,7 @@ class ContributorManagerState extends State<ContributorManager> {
                             StudentModel student = contributors.elementAt(index);
                             filter = searchController.text;
                             return (filter == null || filter == "")
-                                ? _studentTile(student, index)
+                                ? _studentTile(student, i)
                                 : (student.firstname
                                 .toLowerCase()
                                 .startsWith(filter.toLowerCase()) ||
@@ -117,7 +119,7 @@ class ContributorManagerState extends State<ContributorManager> {
                                 (student.firstname + " " + student.lastname)
                                     .toLowerCase()
                                     .startsWith(filter.toLowerCase()))
-                                ? _studentTile(student, index)
+                                ? _studentTile(student, i)
                                 : new Container();
 
                           },
@@ -135,7 +137,8 @@ class ContributorManagerState extends State<ContributorManager> {
   }
 
   Widget _studentTile(StudentModel student, int index) {
-    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    Color color = (index % 2 == 0) ? Theme.of(context).backgroundColor : Theme.of(context).primaryColor.withOpacity(0.1);
+    i++;
     return new Container(
       padding: EdgeInsets.all(5.0),
       decoration: BoxDecoration(color: color),

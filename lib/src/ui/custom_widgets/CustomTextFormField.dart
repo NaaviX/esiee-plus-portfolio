@@ -17,17 +17,16 @@ class CustomTextFormField extends StatefulWidget {
 
   InputDecoration decoration;
 
-  _hinttextStyle() => TextStyle(color: Colors.black12, fontSize: 15.0,);
+  _hinttextStyle() => TextStyle(fontSize: 15.0,);
 
   _inputDecoration(label, hint, icon) => InputDecoration(
     labelText: label,
-    fillColor: Colors.white,
     border: new OutlineInputBorder(
         borderRadius: new BorderRadius.circular(10.0),
         borderSide: new BorderSide()),
     prefixIcon: Padding(
       padding: EdgeInsets.all(0.0),
-      child: Icon(icon, color: Colors.black54,),
+      child: Icon(icon,),
     ),
     hintText:hint,
     hintStyle: _hinttextStyle(),
@@ -35,7 +34,6 @@ class CustomTextFormField extends StatefulWidget {
 
   _inputDescDecoration(label, hint) => InputDecoration(
     labelText: label,
-    fillColor: Colors.white,
     border: new OutlineInputBorder(
         borderRadius: new BorderRadius.circular(18.0),
         borderSide: new BorderSide()),
@@ -47,7 +45,7 @@ class CustomTextFormField extends StatefulWidget {
   CustomTextFormField(this.label, this.hint, this.icon, this.controller, {this.type, this.textstyle, this.maxlines, this.keyboard, this.requiredField, this.isPositive, this.maxLength, this.focusNode})
   {
     if(this.textstyle != null) this.textstyle = this.textstyle;
-    else this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
+    else this.textstyle = TextStyle(fontSize: 15.0,);
 
     if(this.maxlines != null) this.maxlines = this.maxlines;
     else this.maxlines = 1;
@@ -64,7 +62,7 @@ class CustomTextFormField extends StatefulWidget {
     this.decoration = _inputDecoration(label, hint, icon);
 
     if(this.type == "titre") {
-      this.textstyle = TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold);
+      this.textstyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
       this.maxlines = 1;
       this.keyboard = TextInputType.text;
 
@@ -72,7 +70,7 @@ class CustomTextFormField extends StatefulWidget {
     }
     else if(this.type == "desc")
     {
-      this.textstyle = TextStyle(color: Colors.black, fontSize: 15.0,);
+      this.textstyle = TextStyle(fontSize: 15.0,);
       this.maxlines = 5;
       this.keyboard = TextInputType.multiline;
 

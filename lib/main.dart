@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 void main() {
   Bloc.observer = SimpleBlocObserver();
   runApp(
-    ChangeNotifierProvider<AppStateNotifier>(
-      create: (context) => AppStateNotifier(),
+    ChangeNotifierProvider<ThemeNotifier>(
+      create: (context) => ThemeNotifier(),
       child: App(),
     ),
   );

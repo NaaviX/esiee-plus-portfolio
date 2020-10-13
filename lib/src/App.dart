@@ -132,7 +132,7 @@ class AppState extends State<App> {
                 child: JwtAuth());
           } else {
 //user not logged in
-            return Consumer<AppStateNotifier>(
+            return Consumer<ThemeNotifier>(
                 builder: (context, appState, child) {
                   return MaterialApp(
                     theme: MyTheme.defaultTheme,
@@ -205,7 +205,7 @@ class JwtAuthState extends State<JwtAuth> {
           ),
         );
 
-        return Consumer<AppStateNotifier>(
+        return Consumer<ThemeNotifier>(
             builder: (context, appState, child) {
               return
                 MaterialApp(
@@ -244,7 +244,7 @@ class JwtAuthState extends State<JwtAuth> {
         );
       }
       if (state is JwtAuthenticateFailure) {
-        return Consumer<AppStateNotifier>(
+        return Consumer<ThemeNotifier>(
             builder: (context, appState, child) {
               return
                 MaterialApp(
@@ -402,7 +402,7 @@ class _Base extends State<Base> {
 
   static List<Widget> _selectedAppbarTitleWidget(context) {
     ImageProvider<Object> image = AssetImage('assets/esieeplus/color_LetterLogo.webp');
-    if(Provider.of<AppStateNotifier>(context, listen: false).isDarkMode) {
+    if(Provider.of<ThemeNotifier>(context, listen: false).isDarkMode) {
       image = AssetImage('assets/esieeplus/white_LetterLogo.webp');
     }
     return [
@@ -628,12 +628,12 @@ class _Base extends State<Base> {
                                     children: <Widget>[
                                       IconButton(
                                         icon: Icon(
-                                            Provider.of<AppStateNotifier>(context, listen: false).isDarkMode ? FontAwesomeIcons.lightbulb : FontAwesomeIcons.solidLightbulb,
+                                            Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ? FontAwesomeIcons.lightbulb : FontAwesomeIcons.solidLightbulb,
                                             size: 25,
                                             color: Theme.of(context).primaryColor.withOpacity(0.8)
                                         ),
                                         onPressed: () => {
-                                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(!Provider.of<AppStateNotifier>(context, listen: false).isDarkMode),
+                                          Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
                                           MyTheme.SetStatusBarColor(context)
                                         },
                                         splashColor: null,

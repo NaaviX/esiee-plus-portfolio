@@ -72,7 +72,6 @@ class HomeState extends State<Home> {
                       height: 5,
                     ),
                     Base.allClubs != null && Base.thisUser!=null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
-
                     Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
                     _Component('Top Events', 2),
                   ],
@@ -89,7 +88,8 @@ class HomeState extends State<Home> {
   }
 
   _Component(String title, int type, [List<ClubModel> clubs]) {
-    return Container(
+    return (type == 0 && clubs.isNotEmpty) || type != 0 ?
+    Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,8 @@ class HomeState extends State<Home> {
                 ? _StudentNextCurses()
                 : type == 2 ? _TopEvents() : Container()
           ],
-        ));
+        )
+    ) : Container() ;
   }
 
   _TopEvents() {

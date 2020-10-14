@@ -470,7 +470,7 @@ class _Base extends State<Base> {
     } else if (Base.selectedIndex == 1) {
       return [
         IconButton(
-          icon: const Icon(Icons.calendar_today),
+          icon: const Icon(Icons.event, size: 25,),
           onPressed: () {
             setState(() {
               globalKey.currentState.scrollToCurrentTime();
@@ -478,7 +478,7 @@ class _Base extends State<Base> {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.info_outline),
+          icon: const Icon(Icons.info_outline, size: 25,),
           //padding: EdgeInsets.all(5),
           onPressed: () {
             _scaffoldKey.currentState.showSnackBar(SnackBar(

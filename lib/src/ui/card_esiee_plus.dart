@@ -1,3 +1,4 @@
+import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
@@ -131,14 +132,21 @@ class CardEsieePlusState extends State<CardEsieePlus> {
                 children: <Widget>[
                   Positioned(
                     bottom: 5,
-                    right: 0,
+                    right: 10,
                     child:Container(
-                      height: codeBarreH,
-                      width: codeBarreW,
-                      child: SfBarcodeGenerator(
-                        symbology: Code39(),
-                        barColor: Colors.white,
-                        value: Base.thisUser.idStudent.toString(),
+                      //height: codeBarreH,
+                      //width: codeBarreW,
+                      child: BarCodeImage(
+                        backgroundColor: Colors.white,
+                        params: Code39BarCodeParams(
+                          Base.thisUser.idStudent.toString(),
+                          lineWidth: codeBarreW/150,
+                          barHeight: codeBarreH,
+                          withText: false,
+                        ),
+                        onError: (error) {               // Error handler
+                          print('error = $error');
+                        },
                       ),
                     ),
                   ),

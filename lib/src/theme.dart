@@ -115,44 +115,45 @@ class MyTheme {
     final ThemeData base = ThemeData.dark();
 
     return base.copyWith(
-      primaryColor: PrimaryColorDark,
-      backgroundColor: DarkBackground,
-      accentColor: AccentColorDark,
-      scaffoldBackgroundColor: DarkBackground,
+        primaryColor: PrimaryColorDark,
+        backgroundColor: DarkBackground,
+        accentColor: AccentColorDark,
+        scaffoldBackgroundColor: DarkBackground,
 
-      textSelectionColor: AccentColorDark,
-      selectedRowColor: AccentColorDark,
+        textSelectionColor: AccentColorDark,
+        selectedRowColor: AccentColorDark,
 
-      appBarTheme: AppBarTheme(
-        brightness: Brightness.dark,
-        elevation: 0.0,
-        color: DarkBackground,
-        textTheme: TextTheme(
-          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.dark,
+          elevation: 0.0,
+          color: DarkBackground,
+          textTheme: TextTheme(
+            headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorDark,),
+          ),
         ),
-      ),
 
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          elevation: 5,
-          backgroundColor: DarkBackground,
-          selectedItemColor: SelectedColor
-      ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            elevation: 5,
+            backgroundColor: DarkBackground,
+            selectedItemColor: SelectedColor
+        ),
 
-      cardTheme: CardTheme(
-        color: WidgetDarkBackground.withOpacity(0.7),
-      ),
+        cardTheme: CardTheme(
+          color: WidgetDarkBackground.withOpacity(0.7),
+        ),
 
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: PrimaryColorDark,
-        foregroundColor: SelectedColor,
-      ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: PrimaryColorDark,
+          foregroundColor: SelectedColor,
+        ),
 
-      dialogBackgroundColor: DarkBackground,
+        dialogBackgroundColor: DarkBackground,
 
-      tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColorDark,
-        indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
-      ),
+        tabBarTheme: TabBarTheme(
+          labelColor: PrimaryColorDark,
+          indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
+        ),
+
 /*
         primaryIconTheme: IconThemeData(
             color: PrimaryColorDark
@@ -162,24 +163,13 @@ class MyTheme {
           color: PrimaryColorDark,
         ),
 
-
-
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: PrimaryColorDark,
-          foregroundColor: DarkBackground,
-        ),
-
-
-
         cardTheme: CardTheme(
           color: WidgetDarkBackground,
         ),
 
         textTheme: TextTheme(
           caption: TextStyle(color: Colors.white),
-        ),
-
-        dialogBackgroundColor: WidgetDarkBackground,*/
+        ),*/
     );
   }
 }

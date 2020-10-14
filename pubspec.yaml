@@ -51,7 +51,7 @@ dependencies:
   connectivity: 0.4.8+6
   flare_flutter: ^2.0.5
   google_fonts: ^1.1.0
-  syncfusion_flutter_barcodes: ^18.1.42-beta
+  barcode_flutter: ^1.1.2
   package_info: 0.4.3
   firebase_remote_config: 0.3.1+1
   flutter_bloc: 6.0.5

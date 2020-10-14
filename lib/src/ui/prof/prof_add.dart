@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/resources/unit_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/unit_repository.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +76,7 @@ class AddProfState extends State<AddProf> {
                   }
                 },
                 child: Text("Enregistrer", style: TextStyle(color: Colors.white, fontSize: 15),),
-                color: Theme.of(context).primaryColor,
+                color: MyTheme.PrimaryColorLight,
               ),
             ),
             SizedBox(height: 10,)

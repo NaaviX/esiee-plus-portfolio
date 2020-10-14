@@ -7,6 +7,7 @@ import 'package:bde_esiee_mobile/src/blocs/unit_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_state.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:bde_esiee_mobile/src/models/unit_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/prof/prof_add.dart';
 import 'package:file_picker/file_picker.dart';
@@ -205,6 +206,8 @@ class AddProfFormState extends State<AddProfForm> {
             child: ChoiceChip(
               label: Text(item.unitName),
               selected: widget.selectedChoices.contains(item),
+              backgroundColor: MyTheme.ColorTheme(context, colorLight: Colors.grey.shade300,),//Theme.of(context).accentColor,
+              selectedColor: Theme.of(context).primaryColor.withOpacity(0.3),
               onSelected: (selected) {
                 setState(() {
                   widget.selectedChoices.contains(item)

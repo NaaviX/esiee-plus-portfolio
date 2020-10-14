@@ -38,7 +38,7 @@ class EventCreationState extends State<EventCreation> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(title: Text("Nouvel Evenement")),
+      appBar: AppBar(title: Text("Nouvel Événement")),
       body: widget.form,
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_forward,),

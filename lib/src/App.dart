@@ -394,6 +394,9 @@ class Base extends StatefulWidget {
 class _Base extends State<Base> {
   final log = Logger('BASE');
 
+
+  GlobalKey<CalendarState> globalKey = GlobalKey();
+
   PageController pageController =
       PageController(initialPage: Base.selectedIndex);
 
@@ -422,7 +425,7 @@ class _Base extends State<Base> {
         ),
       ),
       Text('Emploi du temps', style: TextStyle(fontSize: 25),),
-      Text('Evenements', style: TextStyle(fontSize: 25),),
+      Text('Événements', style: TextStyle(fontSize: 25),),
     ];
   }
 
@@ -467,8 +470,16 @@ class _Base extends State<Base> {
     } else if (Base.selectedIndex == 1) {
       return [
         IconButton(
+          icon: const Icon(Icons.calendar_today),
+          onPressed: () {
+            setState(() {
+              globalKey.currentState.scrollToCurrentTime();
+            });
+          },
+        ),
+        IconButton(
           icon: const Icon(Icons.info_outline),
-          padding: EdgeInsets.all(5),
+          //padding: EdgeInsets.all(5),
           onPressed: () {
             _scaffoldKey.currentState.showSnackBar(SnackBar(
               duration: Duration(seconds: 3),
@@ -514,7 +525,7 @@ class _Base extends State<Base> {
                   create: (BuildContext context) =>
                       CoursesBloc(coursesRepository: coursesRepository),
                   child: Home()))),
-      KeepAlivePage(child: Calendar()),
+      KeepAlivePage(child: Calendar(key: globalKey)),
       KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);

@@ -10,8 +10,10 @@ import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller.dart';
+import 'dart:math';
 
 class Calendar extends StatefulWidget {
+  Calendar({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,61 +31,48 @@ class CalendarState extends State<Calendar> {
     return localEvents;
   }
 
-  WeekViewController scrollController;
+  WeekViewController scrollController = WeekViewController(dayViewsCount: 7*7);
 
-   @override
-   Widget build(BuildContext context){
-     return Scaffold(
-         body: buildLocal()
-     );
-     /*StreamBuilder(
-             stream: bloc.allCourses,
-             builder: (context, AsyncSnapshot<List<CourseModel>> snapshot) {
-               if (!snapshot.hasData) {
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+        body: buildLocal()
+    );
+  }
 
-                 return buildLocal();
-               } else if (snapshot.hasError) {
-                 return Text(snapshot.error.toString());
-               }
-
-               if(snapshot.data.length == 0){
-
-               }
-               return buildAgenda(snapshot.data);
-             }
-       ),*/
-       /*floatingActionButton: FloatingActionButton(
-           child: Icon(Icons.adjust),
-           splashColor: Colors.white,
-           onPressed: () {
-           }
-       ),*/
-   }
-
-   Widget buildLocal(){
-     return FutureBuilder(
-         future: getLocalCourses(),
-         builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-           if (eventsJson.hasData) {
-             dynamic jsonData = jsonDecode(eventsJson.data);
-             List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
-             return buildAgenda(snapshot);
-           }
-           return Container();
-         }
-     );
-   }
+  Widget buildLocal(){
+    return FutureBuilder(
+        future: getLocalCourses(),
+        builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
+          if (eventsJson.hasData) {
+            dynamic jsonData = jsonDecode(eventsJson.data);
+            List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
+            return buildAgenda(snapshot);
+          }
+          return Container();
+        }
+    );
+  }
 
   void scrollToCurrentTime() {
+    int dateCount = 7*7;
 
-    /// Calculates the top offset of a given hour and a given minute.
-    //double calculateTopOffset(int hour, [int minute = 0, double hourRowHeight]) => (hour + (minute / 60)) * 40;
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
 
-    /// Calculates the widget height.
-    //double calculateHeight([double hourRowHeight]) => calculateTopOffset(24, 0, hourRowHeight);
+    int index = 2 * 7;
+    index -= index % 7;
 
-    //scrollController.verticalScrollController.jumpTo(math.min(calculateTopOffset(6, 50), scrollController.verticalScrollController.position.maxScrollExtent));
-    //scrollController.horizontalScrollController.jumpTo(math.min(leftOffset, scrollController.horizontalScrollController.position.maxScrollExtent));
+    double dayViewWidth = (MediaQuery.of(context).size.width-40)/7;
+    double leftOffset = dayViewWidth * index;
+
+    double calculateTopOffset(int hour, [int minute = 0, double hourRowHeight]) => (hour + (minute / 60)) * 60;
+
+    double calculateHeight([double hourRowHeight]) => calculateTopOffset(24, 0, hourRowHeight);
+    double test = min(calculateTopOffset(15, 50), scrollController.verticalScrollController.position.maxScrollExtent);
+
+    scrollController.verticalScrollController.animateTo( min(calculateTopOffset(7, 50), scrollController.verticalScrollController.position.maxScrollExtent), duration: Duration(seconds: 1), curve: Curves.easeOut );
+    scrollController.horizontalScrollController.animateTo( min(leftOffset, scrollController.horizontalScrollController.position.maxScrollExtent), duration: Duration(seconds: 1), curve: Cubic(0.175, 0.885, 0.32, 1.125) );
   }
 
   Widget buildAgenda(List<CourseModel> snapshot) {
@@ -128,9 +117,9 @@ class CalendarState extends State<Calendar> {
   }
 
   String f(int a, int b, int c){
-     String dayLetter = DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase();
-     //String DayNum = DateFormat('\nd').format(DateTime(a, b, c));
-     return dayLetter;// + DayNum;
+    String dayLetter = DateFormat('E', "fr FR").format(DateTime(a, b, c)).substring(0,1).toUpperCase();
+    //String DayNum = DateFormat('\nd').format(DateTime(a, b, c));
+    return dayLetter;// + DayNum;
   }
 
   List<DateTime> getWeekDates(int weekUntilToday, int weekAfterToday){

@@ -221,18 +221,24 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView, DayViewControlle
 
   /// Creates a positioned horizontal rule in the hours column.
   Widget createCurrentTimeCircle([double radius = 7]) {
-    DateTime now = DateTime.now();
-    return Positioned(
-      top: calculateTopOffset(now.hour, now.minute) - (radius / 2) + 1,
-      left: 0,
-      child: Container(
-        height: radius,
-        width: radius,
-        decoration: BoxDecoration(
-          color: widget.currentTimeCircleColor,
-          shape: BoxShape.circle,
-        ),
-      ),
+    return TimerBuilder.periodic(
+        Duration(minutes: 1),
+        builder: (context)
+        {
+          DateTime now = DateTime.now();
+          return Positioned(
+            top: calculateTopOffset(now.hour, now.minute) - (radius / 2) + 1,
+            left: 0,
+            child: Container(
+              height: radius,
+              width: radius,
+              decoration: BoxDecoration(
+                color: widget.currentTimeCircleColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          );
+        }
     );
   }
 

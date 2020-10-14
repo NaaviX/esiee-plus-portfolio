@@ -39,8 +39,7 @@ class FairpayState extends State<Fairpay>{
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<FairpayLogsBloc>(context)
-        .add(FairpayLogsByClubRequested(id: widget.club.idClubRef.toString()));
+    widget.bloc.add(FairpayLogsByClubRequested(id: widget.club.idClubRef.toString()));
   }
 
   final log = Logger('Fairpay Club');

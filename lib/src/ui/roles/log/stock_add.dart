@@ -9,6 +9,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class AddStock extends StatefulWidget {
+  final StockBloc stocksBloc;
+
+  AddStock({Key key, @required this.stocksBloc})
+      : assert(stocksBloc != null),
+        super(key: key);
 
   @override
   AddStockState createState() {
@@ -189,10 +194,7 @@ class AddStockState extends State<AddStock> {
                       stockQuant: double.parse(quant.text),
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
-                    BlocProvider.of<StockBloc>(context)
-                        .add(StockToBeSaved(stock: stock));
-                    BlocProvider.of<StockBloc>(context)
-                        .add(StockRequested());
+                    widget.stocksBloc.add(StockToBeSaved(stock: stock));
                     Navigator.of(context).pop();
                   }
                 }

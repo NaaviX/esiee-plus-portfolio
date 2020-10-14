@@ -96,9 +96,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return BlocProvider(
-                  create: (BuildContext context) => widget.bloc,
-                  child: AddStock());
+              return AddStock(stocksBloc: widget.bloc);
             }),
         child: Icon(
           Icons.add_shopping_cart,

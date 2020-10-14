@@ -223,6 +223,11 @@ class ContributorManagerState extends State<ContributorManager> {
         student.isContributor = true;
         BlocProvider.of<StudentsBloc>(context)
             .add(StudentToBeSaved(student: student));
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          duration: Duration(seconds: 1),
+          content: Text("L'élève a été ajouté aux cotisants"),
+          backgroundColor: Colors.green,
+        ));
       }
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(

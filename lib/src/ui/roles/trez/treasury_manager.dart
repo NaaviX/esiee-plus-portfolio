@@ -203,7 +203,7 @@ class TreasuryManagerState extends State<TreasuryManager>{
     log.forEach((element) => list.add(new FairpayLogCard(element, context)));
     return new Card(
       elevation: 5,
-      color: MyTheme.ColorTheme(context, colorLight: MyTheme.LightBackground, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.4)),
+      color: MyTheme.colorTheme(context, colorLight: MyTheme.LightBackground, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.4)),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),

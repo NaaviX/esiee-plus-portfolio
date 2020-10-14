@@ -401,12 +401,83 @@ class _Base extends State<Base> {
   List<Widget> _widgetOptions;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   EventRepository eventRepository = EventRepository(
     eventApiProvider: EventApiProvider(
       client: Client(),
     ),
   );
   EventsBloc eventsBloc;
+
+  final StudentRepository studentRepository = StudentRepository(
+    studentApiProvider: StudentApiProvider(
+      client: Client(),
+    ),
+  );
+  StudentsBloc studentsBloc;
+  final ClubRepository clubRepository = ClubRepository(
+    clubApiProvider: ClubApiProvider(
+      client: Client(),
+    ),
+  );
+  ClubsBloc clubsBloc;
+  final CoursesRepository coursesRepository = CoursesRepository(
+    courseApiProvider: CoursesApiProvider(
+      client: Client(),
+    ),
+  );
+  CoursesBloc coursesBloc;
+  final ProfRepository profRepository = ProfRepository(
+    profApiProvider: ProfApiProvider(
+      client: Client(),
+    ),
+  );
+  ProfsBloc profsBloc;
+  final FairpayLogRepository fairpayLogRepository =
+  FairpayLogRepository(
+    fairpayLogApiProvider: FairpayLogApiProvider(
+      client: Client(),
+    ),
+  );
+  FairpayLogsBloc fairpayLogsBloc;
+  final UnitRepository unitRepository = UnitRepository(
+    unitApiProvider: UnitApiProvider(
+      client: Client(),
+    ),
+  );
+  UnitsBloc unitsBloc;
+  final StockRepository stockRepository = StockRepository(
+    stockApiProvider: StockApiProvider(
+      client: Client(),
+    ),
+  );
+  StockBloc stocksBloc;
+
+
+  @override
+  void initState() {
+
+    eventsBloc = EventsBloc(eventRepository: eventRepository);
+    studentsBloc = StudentsBloc(studentRepository: studentRepository);
+    clubsBloc = ClubsBloc(clubRepository: clubRepository);
+    coursesBloc = CoursesBloc(coursesRepository: coursesRepository);
+    profsBloc = ProfsBloc(profRepository: profRepository);
+    fairpayLogsBloc = FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+    unitsBloc = UnitsBloc(unitRepository: unitRepository);
+    stocksBloc = StockBloc(stockRepository: stockRepository);
+    _widgetOptions = <Widget>[
+      KeepAlivePage(
+          child: BlocProvider<EventsBloc>(
+              create: (BuildContext context) => eventsBloc,
+              child: BlocProvider<CoursesBloc>(
+                  create: (BuildContext context) => coursesBloc,
+                  child: Home()))),
+      KeepAlivePage(child: Calendar(key: globalKey)),
+      KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
+    ];
+    if (Base.thisUser == null) _widgetOptions.removeAt(1);
+    super.initState();
+  }
 
   static List<Widget> _selectedAppbarTitleWidget(context) {
     ImageProvider<Object> image = AssetImage('assets/esieeplus/color_LetterLogo.webp');
@@ -525,39 +596,6 @@ class _Base extends State<Base> {
     final connectivityResult = await (Connectivity().checkConnectivity());
     return connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi;
-  }
-
-  @override
-  void initState() {
-    final EventRepository eventRepository = EventRepository(
-      eventApiProvider: EventApiProvider(
-        client: Client(),
-      ),
-    );
-    final CoursesRepository coursesRepository = CoursesRepository(
-      courseApiProvider: CoursesApiProvider(
-        client: Client(),
-      ),
-    );
-    eventsBloc = EventsBloc(eventRepository: eventRepository);
-    _widgetOptions = <Widget>[
-      KeepAlivePage(
-          child: BlocProvider<EventsBloc>(
-              create: (BuildContext context) => eventsBloc,
-              child: BlocProvider<CoursesBloc>(
-                  create: (BuildContext context) =>
-                      CoursesBloc(coursesRepository: coursesRepository),
-                  child: Home()))),
-      KeepAlivePage(child: Calendar(key: globalKey)),
-      KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
-    ];
-    if (Base.thisUser == null) _widgetOptions.removeAt(1);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void _onItemTapped(int index) {
@@ -829,14 +867,6 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository =
-              FairpayLogRepository(
-                fairpayLogApiProvider: FairpayLogApiProvider(
-                  client: Client(),
-                ),
-              );
-              FairpayLogsBloc fairpayLogsBloc =
-              FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return BlocProvider<FairpayLogsBloc>(
                   create: (BuildContext context) => fairpayLogsBloc,
                   child: Fairpay(bloc: fairpayLogsBloc));
@@ -854,19 +884,6 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final StudentRepository studentsRepository = StudentRepository(
-                studentApiProvider: StudentApiProvider(
-                  client: Client(),
-                ),
-              );
-              final ClubRepository clubRepository = ClubRepository(
-                clubApiProvider: ClubApiProvider(
-                  client: Client(),
-                ),
-              );
-              StudentsBloc studentsBloc =
-              StudentsBloc(studentRepository: studentsRepository);
-              ClubsBloc clubsBloc = ClubsBloc(clubRepository: clubRepository);
               return BlocProvider(
                   create: (BuildContext context) => studentsBloc,
                   child: BlocProvider(
@@ -887,19 +904,7 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final ProfRepository profRepository = ProfRepository(
-                profApiProvider: ProfApiProvider(
-                  client: Client(),
-                ),
-              );
-              final StudentRepository studentRepository = StudentRepository(
-                studentApiProvider: StudentApiProvider(
-                  client: Client(),
-                ),
-              );
-              ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
-              StudentsBloc studentsBloc =
-              StudentsBloc(studentRepository: studentRepository);
+
               return BlocProvider(
                   create: (BuildContext context) => profsBloc,
                   child: BlocProvider<StudentsBloc>(
@@ -957,20 +962,10 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final ProfRepository profRepository = ProfRepository(
-                profApiProvider: ProfApiProvider(
-                  client: Client(),
-                ),
-              );
-              final UnitRepository unitRepository = UnitRepository(
-                unitApiProvider: UnitApiProvider(
-                  client: Client(),
-                ),
-              );
-              ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
+
               return BlocProvider<UnitsBloc>(
                   create: (BuildContext context) =>
-                      UnitsBloc(unitRepository: unitRepository),
+                      unitsBloc,
                   child: UnitsList(profsBloc: profsBloc));
             }));
           },
@@ -990,11 +985,7 @@ class _Base extends State<Base> {
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.admin))) {
-      final StudentRepository studentRepository = StudentRepository(
-        studentApiProvider: StudentApiProvider(
-          client: Client(),
-        ),
-      );
+
 
       return Column(children: [
         _menuTitle(),
@@ -1010,8 +1001,7 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return BlocProvider<StudentsBloc>(
-                  create: (BuildContext context) =>
-                      StudentsBloc(studentRepository: studentRepository),
+                  create: (BuildContext context) => studentsBloc,
                   child: ContributorManager());
             }));
           },
@@ -1020,9 +1010,8 @@ class _Base extends State<Base> {
             Icons.group_add,
             "Droits Utilisateurs",
             BlocProvider<StudentsBloc>(
-                create: (BuildContext context) =>
-                    StudentsBloc(studentRepository: studentRepository),
-                child: UserPermissions()))
+                create: (BuildContext context) => studentsBloc,
+                child: UserPermissions(studentsBloc: studentsBloc, clubsBloc: clubsBloc,)))
       ]);
     }
     return Column();
@@ -1035,23 +1024,6 @@ class _Base extends State<Base> {
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.mod))) {
-      final StudentRepository studentRepository = StudentRepository(
-        studentApiProvider: StudentApiProvider(
-          client: Client(),
-        ),
-      );
-      final ProfRepository profRepository = ProfRepository(
-        profApiProvider: ProfApiProvider(
-          client: Client(),
-        ),
-      );
-      final UnitRepository unitRepository = UnitRepository(
-        unitApiProvider: UnitApiProvider(
-          client: Client(),
-        ),
-      );
-      ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
-      UnitsBloc unitsBloc = UnitsBloc(unitRepository: unitRepository);
       return Column(children: [
         _menuTitle(),
         _requireConnectionTile(
@@ -1064,8 +1036,7 @@ class _Base extends State<Base> {
             Icons.verified_user,
             "Cotisants",
             BlocProvider<StudentsBloc>(
-                create: (BuildContext context) =>
-                    StudentsBloc(studentRepository: studentRepository),
+                create: (BuildContext context) => studentsBloc,
                 child: ContributorVerificator())),
         _requireConnectionTile(
             Icons.person_add,
@@ -1098,15 +1069,8 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository =
-              FairpayLogRepository(
-                fairpayLogApiProvider: FairpayLogApiProvider(
-                  client: Client(),
-                ),
-              );
               return BlocProvider<FairpayLogsBloc>(
-                  create: (BuildContext context) => FairpayLogsBloc(
-                      fairpayLogRepository: fairpayLogRepository),
+                  create: (BuildContext context) => fairpayLogsBloc,
                   child: TreasuryManager());
             }));
           },
@@ -1122,14 +1086,6 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final FairpayLogRepository fairpayLogRepository =
-              FairpayLogRepository(
-                fairpayLogApiProvider: FairpayLogApiProvider(
-                  client: Client(),
-                ),
-              );
-              FairpayLogsBloc fairpayLogsBloc =
-              FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return FairPayManager(bloc: fairpayLogsBloc);
             }));
           },
@@ -1159,15 +1115,10 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              final StockRepository stockRepository = StockRepository(
-                stockApiProvider: StockApiProvider(
-                  client: Client(),
-                ),
-              );
-              StockBloc bloc = StockBloc(stockRepository: stockRepository);
+
               return BlocProvider(
-                  create: (BuildContext context) => bloc,
-                  child: Stocks(bloc: bloc));
+                  create: (BuildContext context) => stocksBloc,
+                  child: Stocks(bloc: stocksBloc));
             }));
           },
         ),

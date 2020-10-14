@@ -13,8 +13,15 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 
 class UserPermissions extends StatefulWidget {
+  final StudentsBloc studentsBloc;
+  final ClubsBloc clubsBloc;
+
+  UserPermissions({Key key, @required this.studentsBloc, @required this.clubsBloc})
+      : assert(studentsBloc != null && clubsBloc != null),
+        super(key: key);
   @override
   State<StatefulWidget> createState() {
     return UserPermissionsState();
@@ -43,14 +50,21 @@ class UserPermissionsState extends State<UserPermissions> {
             ),
             body: TabBarView(
               children: [
-                KeepAlivePage(child: StudentPermissions()),
-                KeepAlivePage(child: ClubPermissions()),
+                KeepAlivePage(child: BlocProvider(
+            create: (BuildContext context) => widget.studentsBloc,
+            child: StudentPermissions(studentsBloc: widget.studentsBloc,))),
+                KeepAlivePage(child: ClubPermissions(clubsBloc: widget.clubsBloc)),
               ],
             )));
   }
 }
 
 class ClubPermissions extends StatefulWidget {
+  final ClubsBloc clubsBloc;
+
+  ClubPermissions({Key key, @required this.clubsBloc})
+      : assert(clubsBloc != null),
+        super(key: key);
   @override
   State<StatefulWidget> createState() {
     return ClubPermissionsState();
@@ -131,9 +145,7 @@ class ClubPermissionsState extends State<ClubPermissions> {
                     textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       club.roles = List.from(currentRoles);
-                      BlocProvider.of<ClubsBloc>(context)
-                          .add(ClubToBeSaved(club: club));
-                      BlocProvider.of<ClubsBloc>(context).add(ClubsRequested());
+                      widget.clubsBloc.add(ClubToBeSaved(club: club));
                       setState(() {});
                       Navigator.of(context).pop();
                     },
@@ -155,6 +167,11 @@ class ClubPermissionsState extends State<ClubPermissions> {
 }
 
 class StudentPermissions extends StatefulWidget {
+  final StudentsBloc studentsBloc;
+
+  StudentPermissions({Key key, @required this.studentsBloc})
+      : assert(studentsBloc != null),
+        super(key: key);
   @override
   State<StatefulWidget> createState() {
     return StudentPermissionsState();
@@ -359,8 +376,7 @@ class StudentPermissionsState extends State<StudentPermissions> {
                         textColor: Theme.of(context).primaryColor,
                         onPressed: () {
                           student.roles = List.from(currentRoles);
-                          BlocProvider.of<StudentsBloc>(context)
-                              .add(StudentToBeSaved(student: student));
+                          widget.studentsBloc.add(StudentToBeSaved(student: student));
                           setState(() {});
                           Navigator.of(context).pop();
                         },

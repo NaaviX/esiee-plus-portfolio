@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/free_rooms_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/free_rooms_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/free_rooms_state.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -38,7 +39,8 @@ class FreeRoomsState extends State<FreeRooms> {
                   _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
                         duration: Duration(seconds: 6),
-                        content: Text("Les salles indiquées ne sont pas occupées par un cours en ce moment, elles peuvent cependant ne pas être disponibles.", textAlign: TextAlign.justify),
+                        content: Text("Les salles indiquées ne sont pas occupées par un cours en ce moment, elles peuvent cependant ne pas être disponibles.", textAlign: TextAlign.justify,
+                            style: TextStyle(color: MyTheme.ColorTheme(context, colorLight: Colors.black, colorDark: Colors.white))),
                         backgroundColor: Colors.blueAccent,
                       )
                   );

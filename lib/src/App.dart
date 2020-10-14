@@ -118,6 +118,10 @@ class AppState extends State<App> {
         builder: (context, appState, child)
         {
           return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              darkTheme: MyTheme.darkTheme,
+              themeMode:
+              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
               debugShowCheckedModeBanner: false,
               home: StreamBuilder<FirebaseUser>(
                   stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -729,8 +733,7 @@ class _Base extends State<Base> {
                                                 .primaryColor
                                                 .withOpacity(0.8)),
                                         onPressed: () => {
-                                          Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
-                                          MyTheme.setStatusBarColor()
+
                                         },
                                         splashColor: null,
                                       ),
@@ -1133,21 +1136,18 @@ class _Base extends State<Base> {
         icon: Icon(
           FontAwesomeIcons.home,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
         title: Text('Home'),
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.clock,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
         title: Text('EDT'),
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.calendarAlt,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
         title: Text(
           'Event',
         ),
@@ -1159,7 +1159,6 @@ class _Base extends State<Base> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      //selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }

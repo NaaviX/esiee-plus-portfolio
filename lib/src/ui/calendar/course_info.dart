@@ -6,6 +6,7 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CourseInfoPage extends StatefulWidget {
 
@@ -32,13 +33,23 @@ class EventInfoState extends State<CourseInfoPage> {
   }
 
   @override Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 10.0,
-      backgroundColor: MyTheme.colorDial(context),
-      child: dialogContent(context),
+    return Consumer<ThemeNotifier>(
+        builder: (context, appState, child) {
+          return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              darkTheme: MyTheme.darkTheme,
+              themeMode:
+              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              home: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 10.0,
+                child: dialogContent(context),
+              )
+          );
+        }
     );
   }
 

@@ -66,8 +66,8 @@ class EventsBloc extends Bloc<EventEvent, EventState> {
     disableEvent.sort((item1, item2) => item1.startDate.compareTo(item2.startDate));
     unpublishedEvent.sort((item1, item2) => item1.publicationDate.compareTo(item2.publicationDate));
     currentEvents.sort((item1, item2) => item1.endDate.compareTo(item2.endDate));
-    newEvents.sort((item1, item2) => item1.startDate.compareTo(item2.startDate));
-    oldEvents.sort((item1, item2) => item2.startDate.compareTo(item1.startDate));
+    newEvents.sort((item1, item2) => item1.endDate.compareTo(item2.endDate));
+    oldEvents.sort((item1, item2) => item2.endDate.compareTo(item1.endDate));
     return disableEvent+unpublishedEvent+currentEvents+newEvents+oldEvents;
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -16,6 +15,7 @@ import 'package:meta/meta.dart';
 
 import '../../App.dart';
 
+// ignore: must_be_immutable
 class EventCard extends StatefulWidget {
 
   @required final BuildContext context;

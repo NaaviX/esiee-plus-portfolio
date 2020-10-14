@@ -1,4 +1,3 @@
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';

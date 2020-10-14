@@ -215,7 +215,7 @@ class StudentPermissionsState extends State<StudentPermissions> {
                     padding:
                         EdgeInsets.only(top: 4, bottom: 4, left: 7, right: 5),
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1.0, color: MyTheme.ColorTheme(context, colorLight: Colors.black38, colorDark: Colors.white38)),
+                      border: Border.all(width: 1.0, color: MyTheme.colorTheme(context, colorLight: Colors.black38, colorDark: Colors.white38)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: DropdownButton<String>(
@@ -234,12 +234,12 @@ class StudentPermissionsState extends State<StudentPermissions> {
                           child: Text(role,
                               style: TextStyle(
                                   color: role == selectedRole
-                                      ? MyTheme.ColorTheme(context, colorLight: Colors.black, colorDark: Colors.white)
-                                      :  MyTheme.ColorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54))),
+                                      ? MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.white)
+                                      :  MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54))),
                         );
                       }).toList(),
                       style: TextStyle(
-                          color: MyTheme.ColorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54),
+                          color: MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54),
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold),
                     )),

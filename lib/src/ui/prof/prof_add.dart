@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 
+// ignore: must_be_immutable
 class AddProf extends StatefulWidget {
   ProfModel thisProf;
   final UnitsBloc unitsBloc;

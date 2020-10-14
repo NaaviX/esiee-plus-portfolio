@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import '../../App.dart';
-import '../../blocs/clubs_bloc.dart';
 
 class ClubList extends StatefulWidget {
   @override

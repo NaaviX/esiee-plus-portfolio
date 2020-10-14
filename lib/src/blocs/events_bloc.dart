@@ -2,9 +2,6 @@ import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
-
 import 'package:meta/meta.dart';
 
 import 'event_event.dart';

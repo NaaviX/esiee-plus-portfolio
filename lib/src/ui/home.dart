@@ -1,30 +1,22 @@
 import 'dart:convert';
 
 import 'package:bde_esiee_mobile/src/App.dart';
-import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
-import 'package:bde_esiee_mobile/src/blocs/club_state.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/course_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
-import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
-import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -71,9 +63,9 @@ class HomeState extends State<Home> {
                     SizedBox(
                       height: 5,
                     ),
-                    Base.allClubs != null && Base.thisUser!=null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
-                    Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
-                    _Component('Top Events', 2),
+                    Base.allClubs != null && Base.thisUser!=null ? _component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
+                    Base.thisUser!=null ? _component('Mon Prochain Cours', 1) : Container(),
+                    _component('Top Events', 2),
                   ],
                 ),
               ),
@@ -87,7 +79,7 @@ class HomeState extends State<Home> {
         ));
   }
 
-  _Component(String title, int type, [List<ClubModel> clubs]) {
+  _component(String title, int type, [List<ClubModel> clubs]) {
     return (type == 0 && clubs.isNotEmpty) || type != 0 ?
     Container(
         margin: EdgeInsets.symmetric(vertical: 5),
@@ -105,16 +97,16 @@ class HomeState extends State<Home> {
               ),
             ),
             type == 0
-                ? _StudentClub(clubs)
+                ? _studentClub(clubs)
                 : type == 1
-                ? _StudentNextCurses()
-                : type == 2 ? _TopEvents() : Container()
+                ? _studentNextCurses()
+                : type == 2 ? _topEvents() : Container()
           ],
         )
     ) : Container() ;
   }
 
-  _TopEvents() {
+  _topEvents() {
     List<EventModel> tops = List();
     return Container(
         margin: EdgeInsets.only(top: 10),
@@ -146,7 +138,7 @@ class HomeState extends State<Home> {
                       ));
                 tops.addAll(events.where((event) => event.enabledStratif));
                 tops.isEmpty ? tops.add(events.last) : tops = tops;
-                return _TopEventsList(events);
+                return _topEventsList(events);
               }
               if (state is EventsLoadFailure) {
                 return Text(
@@ -159,7 +151,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  _TopEventsList(List<EventModel> tops) {
+  _topEventsList(List<EventModel> tops) {
     return Container(
       height: 200,
       child: NotificationListener<OverscrollIndicatorNotification>(
@@ -313,7 +305,7 @@ class HomeState extends State<Home> {
     return localEvents;
   }
 
-  _StudentNextCurses() {
+  _studentNextCurses() {
     return TimerBuilder.periodic(Duration(minutes: 1), builder: (context) {
       return FutureBuilder(
           future: getLocalCourses(),
@@ -330,14 +322,14 @@ class HomeState extends State<Home> {
                   DateTime.now().minute - 30);
               CourseModel course = snapshot.firstWhere((course) =>
               now.isBefore(course.start) && now.isBefore(course.end));
-              return _StudentNextCursesCard(course);
+              return _studentNextCursesCard(course);
             }
             return Container();
           });
     });
   }
 
-  _StudentNextCursesCard(CourseModel course) {
+  _studentNextCursesCard(CourseModel course) {
     String place = course.location.replaceAll("[", '').replaceAll("]", '');
 
     int diffDay = 0;
@@ -367,8 +359,6 @@ class HomeState extends State<Home> {
         : diff = "Dans " +
         (diffTime.inMinutes % 60).toString() +
         "min";
-
-    Color color = Colors.blueAccent;
 
     return Padding(
       padding: EdgeInsets.all(10),
@@ -494,7 +484,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  _StudentClub(List<ClubModel> clubs) {
+  _studentClub(List<ClubModel> clubs) {
     return Container(
         padding: EdgeInsets.only(left: 10),
         margin: EdgeInsets.symmetric(vertical: 10.0),

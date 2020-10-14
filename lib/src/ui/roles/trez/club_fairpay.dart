@@ -4,12 +4,9 @@ import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
-import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_api_provider.dart';
-import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +15,7 @@ import 'fairpay_form.dart';
 import 'package:meta/meta.dart';
 
 
+// ignore: must_be_immutable
 class Fairpay extends StatefulWidget {
 
   ClubModel club;
@@ -152,11 +150,6 @@ class FairpayState extends State<Fairpay>{
           ],
         ),
         onPressed: () {
-          final FairpayLogRepository fairpayLogRepository = FairpayLogRepository(
-            fairpayLogApiProvider: FairpayLogApiProvider(
-              client: Client(),
-            ),
-          );
           return BlocProvider<FairpayLogsBloc>(
               create: (BuildContext context) => widget.bloc,
               child: fairpayForm(this, text, widget.club));

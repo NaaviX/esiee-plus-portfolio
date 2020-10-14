@@ -10,6 +10,7 @@ import 'event_info.dart';
 import 'event_list.dart';
 import 'package:meta/meta.dart';
 
+// ignore: must_be_immutable
 class EventCreation extends StatefulWidget {
   final EventsBloc eventsBloc;
   CreateEventForm form;

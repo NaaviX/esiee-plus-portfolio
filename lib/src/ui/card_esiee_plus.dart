@@ -1,15 +1,13 @@
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:bde_esiee_mobile/src/App.dart';
-import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CardEsieePlus extends StatefulWidget {
 
-  bool asPage;
+  final bool asPage;
   CardEsieePlus({this.asPage});
 
   @override
@@ -56,7 +54,7 @@ class CardEsieePlusState extends State<CardEsieePlus> {
                   ),
                 ),
                 child: Center(
-                  child: _CardEsieePlus(),
+                  child: _cardEsieePlus(),
                 )
             ),
             Align(
@@ -78,10 +76,10 @@ class CardEsieePlusState extends State<CardEsieePlus> {
           ],
         )
     ) :
-    _CardEsieePlus();
+    _cardEsieePlus();
   }
 
-  _CardEsieePlus() {
+  _cardEsieePlus() {
     double cardHeight = 650;
     double cardWidth = 1004;
     double angle = 12;

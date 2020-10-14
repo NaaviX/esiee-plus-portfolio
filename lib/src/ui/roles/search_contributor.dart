@@ -1,4 +1,3 @@
-import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
@@ -9,7 +8,7 @@ import 'contributor_verificator.dart';
 
 
 class SearchContributor extends StatefulWidget {
-  ContributorVerificatorState parent;
+  final ContributorVerificatorState parent;
 
   final List<StudentModel> students;
 

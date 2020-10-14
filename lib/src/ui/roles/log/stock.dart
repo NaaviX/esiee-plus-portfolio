@@ -2,14 +2,11 @@ import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_state.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
-import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
-import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
@@ -99,11 +96,6 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              final StockRepository stockRepository = StockRepository(
-                stockApiProvider: StockApiProvider(
-                  client: Client(),
-                ),
-              );
               return BlocProvider(
                   create: (BuildContext context) => widget.bloc,
                   child: AddStock());
@@ -115,6 +107,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
   }
 }
 
+// ignore: must_be_immutable
 class Tac extends StatefulWidget {
   List<StockModel> stocks;
 
@@ -308,7 +301,7 @@ class TacState extends State<Tac> {
 }
 
 class Reserve extends StatefulWidget {
-  List<StockModel> stocks;
+  final List<StockModel> stocks;
 
   Reserve(context, this.stocks);
 

@@ -1,5 +1,4 @@
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';

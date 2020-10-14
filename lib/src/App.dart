@@ -43,7 +43,6 @@ import 'package:bde_esiee_mobile/src/ui/student/club_list.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_member_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
-import 'package:bde_esiee_mobile/src/ui/student/esiee_card.dart';
 import 'package:bde_esiee_mobile/src/ui/student/free_rooms.dart';
 import 'package:bde_esiee_mobile/src/ui/login_page.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
@@ -61,7 +60,6 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
-import 'package:provider/provider.dart';
 import 'blocs/clubs_bloc.dart';
 import 'blocs/courses_bloc.dart';
 import 'blocs/events_bloc.dart';
@@ -101,7 +99,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
-    MyTheme.SetStatusBarColor();
+    MyTheme.setStatusBarColor();
     try {
       versionCheck(context);
     } catch (e) {
@@ -669,7 +667,7 @@ class _Base extends State<Base> {
                                                 .withOpacity(0.8)),
                                         onPressed: () => {
                                           Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
-                                          MyTheme.SetStatusBarColor()
+                                          MyTheme.setStatusBarColor()
                                         },
                                         splashColor: null,
                                       ),
@@ -690,11 +688,11 @@ class _Base extends State<Base> {
     );
   }
 
-  Widget _MenuTitle() {
+  Widget _menuTitle() {
     return Divider(
       height: 1,
       thickness: 1.5,
-      color: MyTheme.ColorTheme(context,
+      color: MyTheme.colorTheme(context,
           colorLight: Colors.black12, colorDark: Colors.white10),
     );
   }
@@ -740,7 +738,7 @@ class _Base extends State<Base> {
   Widget _profMenu() {
     if (Base.thisProf != null) {
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.import_contacts,
@@ -794,7 +792,7 @@ class _Base extends State<Base> {
   Widget _clubMenu() {
     if (Base.thisClub != null) {
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.account_balance_wallet,
@@ -898,7 +896,7 @@ class _Base extends State<Base> {
         ),
       );
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         //_MenuElmt(Icons.credit_card, "Ma carte", EsieeCard()),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
@@ -974,7 +972,7 @@ class _Base extends State<Base> {
       );
 
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.beenhere,
@@ -1030,7 +1028,7 @@ class _Base extends State<Base> {
       ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
       UnitsBloc unitsBloc = UnitsBloc(unitRepository: unitRepository);
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         _requireConnectionTile(
             Icons.date_range,
             "Gestion Evènements",
@@ -1063,7 +1061,7 @@ class _Base extends State<Base> {
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.trez))) {
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.euro_symbol,
@@ -1124,7 +1122,7 @@ class _Base extends State<Base> {
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.log))) {
       return Column(children: [
-        _MenuTitle(),
+        _menuTitle(),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: Icon(Icons.local_grocery_store,

@@ -1,20 +1,16 @@
 import 'dart:ui';
-
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
-import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
-import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import '../../App.dart';
 import 'event_creation.dart';
 
+// ignore: must_be_immutable
 class EventList extends StatefulWidget {
   bool moderation;
   final EventsBloc eventsBloc;

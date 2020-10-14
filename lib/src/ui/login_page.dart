@@ -2,7 +2,6 @@ import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    MyTheme.SetStatusBarColor();
+    MyTheme.setStatusBarColor();
     super.initState();
   }
 
@@ -90,9 +89,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(FontAwesomeIcons.google, color: MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor, colorLight: Colors.white),),
+                Icon(FontAwesomeIcons.google, color: MyTheme.colorTheme(context, colorDark: MyTheme.SelectedColor, colorLight: Colors.white),),
                 SizedBox(width: 10,),
-                Text("Se connecter".toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor, colorLight: Colors.white),)),
+                Text("Se connecter".toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyTheme.colorTheme(context, colorDark: MyTheme.SelectedColor, colorLight: Colors.white),)),
               ],
             )
         ),

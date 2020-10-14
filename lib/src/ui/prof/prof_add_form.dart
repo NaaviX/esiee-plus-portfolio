@@ -15,6 +15,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// ignore: must_be_immutable
 class AddProfForm extends StatefulWidget {
   ProfModel prof;
 
@@ -206,7 +207,7 @@ class AddProfFormState extends State<AddProfForm> {
             child: ChoiceChip(
               label: Text(item.unitName),
               selected: widget.selectedChoices.contains(item),
-              backgroundColor: MyTheme.ColorTheme(context, colorLight: Colors.grey.shade300,),//Theme.of(context).accentColor,
+              backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300,),//Theme.of(context).accentColor,
               selectedColor: Theme.of(context).primaryColor.withOpacity(0.3),
               onSelected: (selected) {
                 setState(() {

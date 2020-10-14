@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:bde_esiee_mobile/src/models/role_model.dart';
-import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/resources/role_api_provider.dart';
-import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:meta/meta.dart';
 
 

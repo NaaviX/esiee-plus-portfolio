@@ -2,14 +2,11 @@ import 'package:bde_esiee_mobile/src/App.dart';
 import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/translations.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/card_esiee_plus.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'custom_widgets/Color.dart';
 
 class Profile extends StatefulWidget {
 
@@ -90,7 +87,7 @@ class ProfileState extends State<Profile> {
                             )
                           ],
                         ),
-                        Base.thisUser != null ? _CardEsieePlus() : Container(),
+                        Base.thisUser != null ? _cardEsieePlus() : Container(),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 70),
                           child: RaisedButton(
@@ -167,9 +164,7 @@ class ProfileState extends State<Profile> {
     ],
   );
 
-  _CardEsieePlus() {
-    double cardHeight = (MediaQuery.of(context).size.width-70)*0.6;
-    double cardWidth = MediaQuery.of(context).size.width-70;
+  _cardEsieePlus() {
     return GestureDetector(
         onTap: () => Navigator.push(
           context,

@@ -22,7 +22,7 @@ class MyTheme {
   static final ThemeData defaultTheme = _buildTheme();
   static final ThemeData darkTheme = _buildDarkTheme();
 
-  static SetStatusBarColor() async {
+  static setStatusBarColor() async {
     final String key = "theme";
     SharedPreferences _preferences;
     if(_preferences == null)
@@ -47,12 +47,12 @@ class MyTheme {
     }
   }
 
-  static ColorTheme(context, {Color colorLight, Color colorDark}) {
+  static colorTheme(context, {Color colorLight, Color colorDark}) {
     return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
     colorDark ?? PrimaryColorDark : colorLight ?? PrimaryColorLight;
   }
 
-  static ColorDial(context,) {
+  static colorDial(context,) {
     return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
     DarkBackground : WidgetBackgroundLight;
   }
@@ -192,7 +192,7 @@ class ThemeNotifier extends ChangeNotifier {
   ThemeNotifier() {
     _darkMode = false;
     _loadFromPreferences();
-    MyTheme.SetStatusBarColor();
+    MyTheme.setStatusBarColor();
   }
 
   _initialPreferences() async {

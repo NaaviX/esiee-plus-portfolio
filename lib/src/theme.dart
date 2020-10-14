@@ -9,7 +9,6 @@ class MyTheme {
   static const PrimaryColorDark = const Color(0xFFFDFDFD);
 
   static const AccentColorLight = const Color(0xFF52C9ED);
-  static const AccentColorDark = const Color(0xFF296faa);
 
   static const LightBackground = const Color(0xFFFDFDFD);
   static const DarkBackground = const Color(0xFF0e283d);
@@ -123,11 +122,11 @@ class MyTheme {
     return base.copyWith(
         primaryColor: PrimaryColorDark,
         backgroundColor: DarkBackground,
-        accentColor: AccentColorDark,
+        accentColor: SelectedColor,
         scaffoldBackgroundColor: DarkBackground,
 
-        textSelectionColor: AccentColorDark,
-        selectedRowColor: AccentColorDark,
+        textSelectionColor: SelectedColor,
+        selectedRowColor: SelectedColor,
 
         appBarTheme: AppBarTheme(
           brightness: Brightness.dark,

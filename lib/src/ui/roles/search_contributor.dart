@@ -27,84 +27,86 @@ class SearchContributorState extends State<SearchContributor> {
 
   @override
   Widget build(BuildContext context) {
-          if (widget.students != null && widget.students.length != 0) {
-            return Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: SearchWidget<StudentModel>(
-
-                        dataList: widget.students,
-                        hideSearchBoxWhenItemSelected: false,
-                        listContainerHeight:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height / 4,
-                        queryBuilder:
-                            (String query, List<StudentModel> list) {
-                          return list
-                              .where((StudentModel students) =>
-                          (
-                              students
-                                  .firstname
-                                  .toLowerCase()
-                                  .startsWith(query.toLowerCase()) ||
-                                  students.lastname
-                                      .toLowerCase()
-                                      .startsWith(query.toLowerCase()) ||
-                                  (students.firstname + " " + students.lastname)
-                                      .toLowerCase()
-                                      .startsWith(query.toLowerCase())))
-                              .toList();
-                        },
-                        popupListItemBuilder: (StudentModel item) {
-                          return _popupListItemBuilder(item);
-                        },
-                        selectedItemBuilder: (StudentModel selectedItem,
-                            VoidCallback addSelectedItem) {
-                          return;
-                        },
-                        // widget customization
-                        noItemsFoundWidget: _noItemsFoundWidget(),
-                        textFieldBuilder: (TextEditingController controller,
-                            FocusNode focusNode) {
-                          widget.parent.currentFocus = focusNode;
-                          return CustomTextFormField(
-                              "Chercher", "Prenom ou nom du professeur",
-                              Icons.search, controller,
-                              focusNode: focusNode);
-                        },
-                      )
-                  ),
-                ],
-              ),
-            );
-          }
-          else
-            return LinearProgressIndicator();
+    if (widget.students != null && widget.students.length != 0) {
+      return Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.all(10.0),
+                child: SearchWidget<StudentModel>(
+                  dataList: widget.students,
+                  hideSearchBoxWhenItemSelected: false,
+                  listContainerHeight:
+                  MediaQuery
+                      .of(context)
+                      .size
+                      .height / 4,
+                  queryBuilder:
+                      (String query, List<StudentModel> list) {
+                    return list
+                        .where((StudentModel students) =>
+                    (
+                        students
+                            .firstname
+                            .toLowerCase()
+                            .startsWith(query.toLowerCase()) ||
+                            students.lastname
+                                .toLowerCase()
+                                .startsWith(query.toLowerCase()) ||
+                            (students.firstname + " " + students.lastname)
+                                .toLowerCase()
+                                .startsWith(query.toLowerCase())))
+                        .toList();
+                  },
+                  popupListItemBuilder: (StudentModel item) {
+                    return _popupListItemBuilder(item);
+                  },
+                  selectedItemBuilder: (StudentModel selectedItem,
+                      VoidCallback addSelectedItem) {
+                    return;
+                  },
+                  // widget customization
+                  noItemsFoundWidget: _noItemsFoundWidget(),
+                  textFieldBuilder: (TextEditingController controller,
+                      FocusNode focusNode) {
+                    widget.parent.currentFocus = focusNode;
+                    return CustomTextFormField(
+                        "Chercher", "Prenom ou nom du professeur",
+                        Icons.search, controller,
+                        focusNode: focusNode);
+                  },
+                )
+            ),
+          ],
+        ),
+      );
+    }
+    else
+      return LinearProgressIndicator();
   }
 
   Widget _popupListItemBuilder(StudentModel item) {
-    return ListTile(
-      subtitle:Text(
-        item.firstname + " " + item.lastname + "\n" + item.mailEsiee.toString(),
-      ),
-      trailing: item.isContributor ? Icon(Icons.check_circle, size:20, color: Colors.green,) : null,
-      onTap: () {
-        showDialog<void>(
-            context: context,
-            barrierDismissible: true,
-            // user must tap button!
-            builder: (BuildContext context) {
-              return StudentDetail(item);
-            }
-        );
-        widget.parent.currentFocus.unfocus();
-      },
+    return Container(
+        color: Theme.of(context).backgroundColor,
+        child: ListTile(
+          subtitle:Text(
+            item.firstname + " " + item.lastname + "\n" + item.mailEsiee.toString(),
+          ),
+          trailing: item.isContributor ? Icon(Icons.check_circle, size:20, color: Colors.green,) : null,
+          onTap: () {
+            showDialog<void>(
+                context: context,
+                barrierDismissible: true,
+                // user must tap button!
+                builder: (BuildContext context) {
+                  return StudentDetail(item);
+                }
+            );
+            widget.parent.currentFocus.unfocus();
+          },
+        )
     );
   }
 

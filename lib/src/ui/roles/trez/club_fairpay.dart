@@ -65,7 +65,7 @@ class FairpayState extends State<Fairpay>{
               return Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                color: Theme.of(context).primaryColor,
+                //color: Theme.of(context).primaryColor,
                 child: Stack(
                   children: <Widget>[
                     _header(),
@@ -94,7 +94,7 @@ class FairpayState extends State<Fairpay>{
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("${widget.club.solde.toString()}  €", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700),),
+                    Text("${widget.club.solde.toString()}  €", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 36, fontWeight: FontWeight.w700),),
                     Text("Solde Actuel", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.blue[100]),),
                   ]
               ),
@@ -168,7 +168,7 @@ class FairpayState extends State<Fairpay>{
       builder: (context, scrollController){
         return Container(
           decoration: BoxDecoration(
-              color: Colors.white10.withOpacity(1),
+              color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(35), topRight: Radius.circular(35))
           ),
           child: ClipRRect(

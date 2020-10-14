@@ -325,8 +325,7 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.check,),
           splashColor: Colors.white,
           onPressed: () {
-            BlocProvider.of<EventsBloc>(context)
-                .add(EventToBeSaved(event: widget.event));
+            widget.eventsBloc.add(EventToBeSaved(event: widget.event));
             Base.selectedIndex = 1;
             if(Base.thisUser != null)
               Base.selectedIndex = 2;
@@ -378,8 +377,7 @@ class EventInfoState extends State<EventInfoPage> {
               {
                 _isEnabled = value;
                 widget.event.enable = _isEnabled;
-                BlocProvider.of<EventsBloc>(context)
-                    .add(EventToBeSaved(event: widget.event));
+                widget.eventsBloc.add(EventToBeSaved(event: widget.event));
               });
             },
             activeColor : Colors.green,
@@ -395,8 +393,7 @@ class EventInfoState extends State<EventInfoPage> {
                 _isTopEvent = value;
               });
               widget.event.topEvent = _isTopEvent;
-              BlocProvider.of<EventsBloc>(context)
-                  .add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
 
             },
             activeColor : Colors.green,
@@ -412,8 +409,7 @@ class EventInfoState extends State<EventInfoPage> {
                 _isForStratif = value;
               });
               widget.event.enabledStratif = _isForStratif;
-              BlocProvider.of<EventsBloc>(context)
-                  .add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -504,8 +500,7 @@ class EventInfoState extends State<EventInfoPage> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                BlocProvider.of<EventsBloc>(context)
-                    .add(EventDeleteRequested(event: widget.event));
+                widget.eventsBloc.add(EventDeleteRequested(event: widget.event));
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 1;
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);

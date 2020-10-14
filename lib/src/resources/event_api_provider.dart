@@ -36,6 +36,11 @@ class EventApiProvider {
   }
 
   Future<EventModel> addEvent(EventModel event) async {
+    print("EVEEEEEEEEEEEENT");
+    print(event.publicationDate);
+    print(DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate));
+    print(event.startDate);
+    print(DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate));
     final response = await client.post(
         "$baseUrl/event/add",
         body: {

@@ -120,46 +120,46 @@ class AppState extends State<App> {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               home: StreamBuilder<FirebaseUser>(
-        stream: FirebaseAuth.instance.onAuthStateChanged,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            user = snapshot.data;
-            //google user is logged in
-            final JwtRepository jwtRepository = JwtRepository(
-              jwtApiProvider: JwtApiProvider(
-                client: Client(),
-              ),
-            );
-            return BlocProvider<JwtBloc>(
-                create: (BuildContext context) =>
-                    JwtBloc(jwtRepository: jwtRepository),
-                child: JwtAuth());
-          } else {
-    
+                  stream: FirebaseAuth.instance.onAuthStateChanged,
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      user = snapshot.data;
+                      //google user is logged in
+                      final JwtRepository jwtRepository = JwtRepository(
+                        jwtApiProvider: JwtApiProvider(
+                          client: Client(),
+                        ),
+                      );
+                      return BlocProvider<JwtBloc>(
+                          create: (BuildContext context) =>
+                              JwtBloc(jwtRepository: jwtRepository),
+                          child: JwtAuth());
+                    } else {
+
 //user not logged in
-            return Consumer<ThemeNotifier>(
-                builder: (context, appState, child) {
-              return MaterialApp(
-                theme: MyTheme.defaultTheme,
-                darkTheme: MyTheme.darkTheme,
-                themeMode:
-                    appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                home: LoginPage(),
-                localizationsDelegates: [
-                  const TranslationsDelegate(),
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                ],
-                supportedLocales: [
-                  const Locale('en', ''),
-                  const Locale('fr', ''),
-                ],
-              );
-            });
-          }
-        }));
-  });
-}
+                      return Consumer<ThemeNotifier>(
+                          builder: (context, appState, child) {
+                            return MaterialApp(
+                              theme: MyTheme.defaultTheme,
+                              darkTheme: MyTheme.darkTheme,
+                              themeMode:
+                              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                              home: LoginPage(),
+                              localizationsDelegates: [
+                                const TranslationsDelegate(),
+                                GlobalMaterialLocalizations.delegate,
+                                GlobalWidgetsLocalizations.delegate,
+                              ],
+                              supportedLocales: [
+                                const Locale('en', ''),
+                                const Locale('fr', ''),
+                              ],
+                            );
+                          });
+                    }
+                  }));
+        });
+  }
 }
 
 class JwtAuth extends StatefulWidget {
@@ -338,21 +338,21 @@ class UserAuthState extends State<UserAuth> {
                       //C'est un prof
                       return BlocBuilder<ProfsBloc, ProfState>(
                           builder: (context, state) {
-                        if (state is ProfInitial) {
-                          return SplashScreen();
-                        }
-                        if (state is ProfLoadInProgress) {
-                          return SplashScreen();
-                        }
-                        if (state is ProfLoadSuccess) {
-                          //isStudent
-                          log.fine("prof");
-                          Base.thisProf = state.prof;
-                          return Base();
-                        }
-                        if (state is ProfLoadFailure) {}
-                        return Container();
-                      });
+                            if (state is ProfInitial) {
+                              return SplashScreen();
+                            }
+                            if (state is ProfLoadInProgress) {
+                              return SplashScreen();
+                            }
+                            if (state is ProfLoadSuccess) {
+                              //isStudent
+                              log.fine("prof");
+                              Base.thisProf = state.prof;
+                              return Base();
+                            }
+                            if (state is ProfLoadFailure) {}
+                            return Container();
+                          });
                     }
                     return Container();
                   },
@@ -396,7 +396,7 @@ class _Base extends State<Base> {
   GlobalKey<CalendarState> globalKey = GlobalKey();
 
   PageController pageController =
-      PageController(initialPage: Base.selectedIndex);
+  PageController(initialPage: Base.selectedIndex);
 
   List<Widget> _widgetOptions;
 
@@ -467,30 +467,55 @@ class _Base extends State<Base> {
       ];
     } else if (Base.selectedIndex == 1) {
       return [
-        IconButton(
-          icon: const Icon(Icons.event, size: 25,),
-          onPressed: () {
-            setState(() {
-              globalKey.currentState.scrollToCurrentTime();
-            });
-          },
+        Container(
+          margin: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.all(0.0),
+          width: 25.0, // you can adjust the width as you need
+          child: IconButton(
+            icon: const Icon(Icons.info_outline, size: 25,),
+            padding: EdgeInsets.all(0),
+            onPressed: () {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                duration: Duration(seconds: 3),
+                content: Text(
+                    "ESIEE+ ne peut être tenu responsable des erreurs eventuelles de l'agenda.",
+                    textAlign: TextAlign.justify, style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.white))),
+                backgroundColor: Colors.blueAccent,
+              ));
+            },
+          ),
         ),
-        IconButton(
-          icon: const Icon(Icons.info_outline, size: 25,),
-          //padding: EdgeInsets.all(5),
-          onPressed: () {
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              duration: Duration(seconds: 3),
-              content: Text(
-                  "ESIEE+ ne peut être tenu responsable des erreurs eventuelles de l'agenda.",
-                  textAlign: TextAlign.justify),
-              backgroundColor: Colors.blueAccent,
-            ));
-          },
+        Container(
+          margin: const EdgeInsets.only(right: 7),
+          padding: const EdgeInsets.all(0.0),
+          width: 25.0, // you can adjust the width as you need
+          child: IconButton(
+            icon: const Icon(Icons.event, size: 25,),
+            padding: EdgeInsets.all(0),
+            onPressed: () {
+              setState(() {
+                globalKey.currentState.scrollToCurrentTime();
+              });
+            },
+          ),
         ),
-        SizedBox(
+        Container(
+          margin: const EdgeInsets.only(right: 7),
+          padding: const EdgeInsets.all(0.0),
+          width: 25.0, // you can adjust the width as you need
+          child: IconButton(
+            icon: const Icon(Icons.more_vert, size: 25,),
+            padding: EdgeInsets.all(0),
+            onPressed: () {
+              setState(() {
+                globalKey.currentState.scrollToCurrentTime();
+              });
+            },
+          ),
+        ),
+        /*SizedBox(
           width: 10,
-        )
+        )*/
       ];
     } else
       return null;
@@ -619,7 +644,7 @@ class _Base extends State<Base> {
                             children: <Widget>[
                               Image(
                                   image:
-                                      AssetImage('assets/esieeplus/Logo.webp'),
+                                  AssetImage('assets/esieeplus/Logo.webp'),
                                   width: 35),
                               SizedBox(
                                 width: 15,
@@ -649,7 +674,7 @@ class _Base extends State<Base> {
                   // This container holds the align
                   Container(
                       child: Align(
-                          //alignment: FractionalOffset.bottomCenter,
+                        //alignment: FractionalOffset.bottomCenter,
                           child: Container(
                               margin: EdgeInsets.all(5),
                               padding: EdgeInsets.all(5),
@@ -703,35 +728,35 @@ class _Base extends State<Base> {
         builder: (BuildContext context, AsyncSnapshot<bool> connected) {
           return connected.hasData && connected.data
               ? ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                  leading: Icon(icon,
-                      color: Theme.of(context).primaryColor.withOpacity(0.8)),
-                  title: Text(
-                    title,
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
-                  ),
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return route;
-                    }));
-                  },
-                )
+            contentPadding: EdgeInsets.symmetric(horizontal: 15),
+            leading: Icon(icon,
+                color: Theme.of(context).primaryColor.withOpacity(0.8)),
+            title: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 15, color: Theme.of(context).primaryColor),
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) {
+                return route;
+              }));
+            },
+          )
               : ListTile(
-                  leading: Icon(icon, color: Colors.grey),
-                  title: Text(
-                    title,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  onTap: () {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text("Non disponible hors connexion"),
-                      backgroundColor: Colors.grey,
-                    ));
-                    Navigator.pop(context);
-                  });
+              leading: Icon(icon, color: Colors.grey),
+              title: Text(
+                title,
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text("Non disponible hors connexion"),
+                  backgroundColor: Colors.grey,
+                ));
+                Navigator.pop(context);
+              });
         });
   }
 
@@ -746,7 +771,7 @@ class _Base extends State<Base> {
           title: Text(
             "Cours",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -761,7 +786,7 @@ class _Base extends State<Base> {
           title: Text(
             "Notification Classe",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -776,7 +801,7 @@ class _Base extends State<Base> {
           title: Text(
             "Messenger",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -800,18 +825,18 @@ class _Base extends State<Base> {
           title: Text(
             "Mon Fairpay",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
               FairpayLogsBloc fairpayLogsBloc =
-                  FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+              FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return BlocProvider<FairpayLogsBloc>(
                   create: (BuildContext context) => fairpayLogsBloc,
                   child: Fairpay(bloc: fairpayLogsBloc));
@@ -825,7 +850,7 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion des Membres",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -840,7 +865,7 @@ class _Base extends State<Base> {
                 ),
               );
               StudentsBloc studentsBloc =
-                  StudentsBloc(studentRepository: studentsRepository);
+              StudentsBloc(studentRepository: studentsRepository);
               ClubsBloc clubsBloc = ClubsBloc(clubRepository: clubRepository);
               return BlocProvider(
                   create: (BuildContext context) => studentsBloc,
@@ -858,7 +883,7 @@ class _Base extends State<Base> {
           title: Text(
             "Messenger",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -874,7 +899,7 @@ class _Base extends State<Base> {
               );
               ProfsBloc profsBloc = ProfsBloc(profRepository: profRepository);
               StudentsBloc studentsBloc =
-                  StudentsBloc(studentRepository: studentRepository);
+              StudentsBloc(studentRepository: studentRepository);
               return BlocProvider(
                   create: (BuildContext context) => profsBloc,
                   child: BlocProvider<StudentsBloc>(
@@ -905,7 +930,7 @@ class _Base extends State<Base> {
           title: Text(
             "Clubs",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -928,7 +953,7 @@ class _Base extends State<Base> {
           title: Text(
             "Liste des Professeurs",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -960,8 +985,8 @@ class _Base extends State<Base> {
 
   Widget _adminMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.admin)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.admin)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.admin))) {
@@ -980,7 +1005,7 @@ class _Base extends State<Base> {
           title: Text(
             "Ajout Cotisants",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -1005,8 +1030,8 @@ class _Base extends State<Base> {
 
   Widget _modoMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.mod)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.mod)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.mod))) {
@@ -1055,8 +1080,8 @@ class _Base extends State<Base> {
 
   Widget _trezMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.trez)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.trez)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.trez))) {
@@ -1069,12 +1094,12 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion Trésorerie",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
@@ -1093,18 +1118,18 @@ class _Base extends State<Base> {
           title: Text(
             "Gestion Fairpay",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               final FairpayLogRepository fairpayLogRepository =
-                  FairpayLogRepository(
+              FairpayLogRepository(
                 fairpayLogApiProvider: FairpayLogApiProvider(
                   client: Client(),
                 ),
               );
               FairpayLogsBloc fairpayLogsBloc =
-                  FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
+              FairpayLogsBloc(fairpayLogRepository: fairpayLogRepository);
               return FairPayManager(bloc: fairpayLogsBloc);
             }));
           },
@@ -1116,8 +1141,8 @@ class _Base extends State<Base> {
 
   Widget _logMenu() {
     if (Base.thisUser != null &&
-            Base.thisUser.roles.contains(Base.allRoles
-                .firstWhere((element) => element.role == Role.log)) ||
+        Base.thisUser.roles.contains(Base.allRoles
+            .firstWhere((element) => element.role == Role.log)) ||
         Base.thisClub != null &&
             Base.thisClub.roles.contains(Base.allRoles
                 .firstWhere((element) => element.role == Role.log))) {
@@ -1130,7 +1155,7 @@ class _Base extends State<Base> {
           title: Text(
             "Réserve",
             style:
-                TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
+            TextStyle(fontSize: 15, color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {

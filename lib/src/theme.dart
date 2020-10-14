@@ -178,13 +178,13 @@ class ThemeNotifier extends ChangeNotifier {
 
   final String key = "theme";
   SharedPreferences _preferences;
-  bool _darkMode;
+  bool _darkMode = false;
   bool isDarkMode = false;
 
   bool get darkMode => _darkMode;
 
   ThemeNotifier() {
-    _darkMode = true;
+    _darkMode = false;
     _loadFromPreferences();
   }
 
@@ -200,8 +200,8 @@ class ThemeNotifier extends ChangeNotifier {
 
   _loadFromPreferences() async {
     await _initialPreferences();
-    _darkMode = _preferences.getBool(key) ?? true;
-    isDarkMode = _preferences.getBool(key) ?? true;
+    _darkMode = _preferences.getBool(key) ?? false;
+    isDarkMode = _preferences.getBool(key) ?? false;
     notifyListeners();
   }
 

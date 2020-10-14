@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    MyTheme.SetStatusBarColor(context);
+    MyTheme.SetStatusBarColor();
     super.initState();
   }
 

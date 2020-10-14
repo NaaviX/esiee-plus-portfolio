@@ -22,8 +22,14 @@ class MyTheme {
   static final ThemeData defaultTheme = _buildTheme();
   static final ThemeData darkTheme = _buildDarkTheme();
 
-  static SetStatusBarColor(context) {
-    if (Provider.of<ThemeNotifier>(context, listen: false).isDarkMode) {
+  static SetStatusBarColor() async {
+    final String key = "theme";
+    SharedPreferences _preferences;
+    if(_preferences == null)
+      _preferences = await SharedPreferences.getInstance();
+    bool _dark = _preferences.getBool(key) ?? false;
+
+    if (_dark) {
       SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle.dark.copyWith(
             statusBarColor: DarkBackground,
@@ -186,6 +192,7 @@ class ThemeNotifier extends ChangeNotifier {
   ThemeNotifier() {
     _darkMode = false;
     _loadFromPreferences();
+    MyTheme.SetStatusBarColor();
   }
 
   _initialPreferences() async {

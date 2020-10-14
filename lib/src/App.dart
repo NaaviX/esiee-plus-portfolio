@@ -101,7 +101,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
-    MyTheme.SetStatusBarColor(context);
+    MyTheme.SetStatusBarColor();
     try {
       versionCheck(context);
     } catch (e) {
@@ -669,7 +669,7 @@ class _Base extends State<Base> {
                                                 .withOpacity(0.8)),
                                         onPressed: () => {
                                           Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
-                                          MyTheme.SetStatusBarColor(context)
+                                          MyTheme.SetStatusBarColor()
                                         },
                                         splashColor: null,
                                       ),

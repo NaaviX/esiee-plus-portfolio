@@ -118,6 +118,10 @@ class AppState extends State<App> {
         builder: (context, appState, child)
         {
           return MaterialApp(
+              initialRoute: '/',
+              routes: <String, WidgetBuilder>{
+                '/manageEvent': (context) => EventManager(),
+              },
               theme: MyTheme.defaultTheme,
               darkTheme: MyTheme.darkTheme,
               themeMode:
@@ -500,7 +504,7 @@ class _Base extends State<Base> {
             fit: BoxFit.fill
         ),
       ),
-      Text('Emploi du temps', style: TextStyle(fontSize: 25),),
+      Base.thisUser != null ? Text('Emploi du temps', style: TextStyle(fontSize: 25),) : Text('Événements', style: TextStyle(fontSize: 25),),
       Text('Événements', style: TextStyle(fontSize: 25),),
     ];
   }
@@ -543,7 +547,7 @@ class _Base extends State<Base> {
           width: 20,
         )
       ];
-    } else if (Base.selectedIndex == 1) {
+    } else if (Base.selectedIndex == 1 && Base.thisUser != null) {
       return [
         Container(
           margin: const EdgeInsets.only(right: 12),

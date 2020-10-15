@@ -327,10 +327,9 @@ class EventInfoState extends State<EventInfoPage> {
           onPressed: () {
             widget.eventsBloc.add(EventToBeSaved(event: widget.event));
             widget.eventsBloc.add(EventsRequested());
-            Base.selectedIndex = 1;
             if(Base.thisUser != null)
-              Base.selectedIndex = 2;
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+              Base.selectedIndex = 1;
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           }
       );
     }
@@ -340,7 +339,7 @@ class EventInfoState extends State<EventInfoPage> {
         children: [
           SpeedDialChild(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event, eventsBloc: widget.eventsBloc,)),);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event : widget.event, eventsBloc: widget.eventsBloc,)),);
               },
               child: Icon(Icons.edit,),
               label: "Modifier",
@@ -349,6 +348,9 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
               onTap: () {
                 _neverSatisfied();
+                widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+                widget.eventsBloc.add(EventsRequested());
+                Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               backgroundColor: Colors.red,
               child: Icon(Icons.delete, color: Colors.white,),
@@ -440,6 +442,7 @@ class EventInfoState extends State<EventInfoPage> {
             color: Colors.white,
             onPressed: () {
               _neverSatisfied();
+              Navigator.popUntil(context, ModalRoute.withName('/'));
             },
           ),
         ),
@@ -508,11 +511,13 @@ class EventInfoState extends State<EventInfoPage> {
                 widget.eventsBloc.add(EventsRequested());
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 1;
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+                  Navigator.of(context).pop();
+                  //Navigator.popUntil(context, ModalRoute.withName('/'));
+                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
                 }
                 else {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
+                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
                 }
               },
             ),

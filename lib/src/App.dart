@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/blocs/course_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
@@ -61,6 +62,7 @@ import 'package:provider/provider.dart';
 import 'blocs/club_event.dart';
 import 'blocs/club_state.dart';
 import 'blocs/clubs_bloc.dart';
+import 'blocs/course_event.dart';
 import 'blocs/courses_bloc.dart';
 import 'blocs/events_bloc.dart';
 import 'blocs/fairpay_log_bloc.dart';
@@ -216,6 +218,11 @@ class JwtAuthState extends State<JwtAuth> {
             client: Client(),
           ),
         );
+        final CoursesRepository coursesRepository = CoursesRepository(
+          courseApiProvider: CoursesApiProvider(
+            client: Client(),
+          ),
+        );
 
         return Consumer<ThemeNotifier>(
             builder: (context, appState, child) {
@@ -240,6 +247,9 @@ class JwtAuthState extends State<JwtAuth> {
                     BlocProvider<ProfsBloc>(
                       create: (BuildContext context) =>
                           ProfsBloc(profRepository: profRepository),
+                    ),
+                    BlocProvider<CoursesBloc>(
+                      create: (BuildContext context) => CoursesBloc(coursesRepository: coursesRepository),
                     ),
                   ], child: UserAuth()),
                   localizationsDelegates: [
@@ -298,16 +308,14 @@ class UserAuthState extends State<UserAuth> {
         .add(StudentRequested(email: user.email));
     BlocProvider.of<ClubsBloc>(context).add(ClubsRequested());
     BlocProvider.of<ProfsBloc>(context).add(ProfRequested(mail: user.email));
+    BlocProvider.of<CoursesBloc>(context).add(CoursesRequested(mail: user.email));
   }
 
   @override
   Widget build(BuildContext context) {
 
     return BlocBuilder<RolesBloc, RolesState>(builder: (context, state) {
-      if (state is RolesInitial) {
-        return SplashScreen();
-      }
-      if (state is RolesLoadInProgress) {
+      if (state is RolesInitial || state is RolesLoadInProgress) {
         return SplashScreen();
       }
       if (state is RolesLoadSuccess) {
@@ -340,7 +348,23 @@ class UserAuthState extends State<UserAuth> {
                       //isStudent
                       log.fine("student");
                       Base.thisUser = state.student;
-                      return Base();
+                      return BlocBuilder<CoursesBloc, CourseState>(
+                        builder: (context, state) {
+                          if(state is CoursesInitial || state is CoursesLoadInProgress) {
+                            return SplashScreen();
+                          }
+                          if(state is CoursesLoadSuccess) {
+                            return Base();
+                          }
+                          if(state is CoursesLoadFailure) {
+                            return Text(
+                              'Something went wrong!',
+                              style: TextStyle(color: Colors.red),
+                            );
+                          }
+                          return Container();
+                        }
+                      );
                     }
                     if (state is StudentLoadFailure) {
                       //C'est un prof
@@ -510,7 +534,7 @@ class _Base extends State<Base> {
   }
 
   List<Widget> actionButton() {
-    ColorDetect c = ColorDetect(user.photoUrl, context);
+    ColorAverager c = ColorAverager(user.photoUrl, context);
     if (Base.selectedIndex == 0) {
       return [
         FutureBuilder(

@@ -5,12 +5,12 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-class ColorDetect {
+class ColorAverager {
   final coverData;
   img.Image photo;
   BuildContext context;
 
-  ColorDetect(this.coverData, this.context);
+  ColorAverager(this.coverData, this.context);
 
   void setImageBytes(imageBytes) {
     print("setImageBytes");
@@ -54,7 +54,6 @@ class ColorDetect {
     print("setImageBytes....");
     setImageBytes(data);
 
-//FractionalOffset(1.0, 0.0); //represents the top right of the [Size].
     double px = 1.0;
     double py = 0.0;
 
@@ -68,31 +67,24 @@ class ColorDetect {
   }
 }
 
-/*class ColorDetectState extends State<ColorDetect> {
+class ColorModifier {
 
-  @override
-  Widget build(BuildContext context) {
-    print("build");
+  Color darken(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
 
-    return Column(
-        children: <Widget>[
-          Flexible(
-            flex: 1,
-            child:
+    final hsl = HSLColor.fromColor(color);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
 
-            FutureBuilder(
-                future: widget._getColor(),
-                builder: (_, AsyncSnapshot<Color> data){
-                  if (data.connectionState==ConnectionState.done){
-                    return Container(
-                      color: data.data,
-                    );
-                  }
-                  return CircularProgressIndicator();
-                }
-            ),
-          ),
-        ],
-    );
+    return hslDark.toColor();
   }
-}*/
+
+  Color lighten(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(color);
+    final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
+  }
+
+}

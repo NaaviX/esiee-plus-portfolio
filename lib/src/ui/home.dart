@@ -1,22 +1,30 @@
 import 'dart:convert';
 
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/club_state.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/course_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
+import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -36,10 +44,11 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-    if(Base.thisUser != null) {
+
+    /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());
-    }
+    }*/
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());
     super.initState();

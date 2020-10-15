@@ -70,10 +70,18 @@ class CourseModel {
   }
 
   Color get color {
-    return this.type.toUpperCase().contains("CTRL") | this.type.toUpperCase().contains("NOT") | this.type.toUpperCase().contains("SOUTENANCE") ? Color(0xD80230).withOpacity(0.5) :
-    this.type.toUpperCase().contains("TD") ? Color(0x6D8CCE).withOpacity(0.7) :
-    this.type.toUpperCase().contains("TP") ? Color(0x8A7AD2).withOpacity(0.7) :
-    this.type.toUpperCase().contains("COURS") ? Color(0x569B56).withOpacity(0.6) :
-    Color(0xFFC840).withOpacity(0.7);
+    return this.type.toUpperCase().contains("CTRL") | this.type.toUpperCase().contains("NOT") | this.type.toUpperCase().contains("SOUTENANCE") ? Color(0xD80230).withOpacity(0.7) :
+    this.type.toUpperCase().contains("TD") ? Color(0x6D8CCE).withOpacity(0.8) :
+    this.type.toUpperCase().contains("TP") ? Color(0x8A7AD2).withOpacity(0.8) :
+    this.type.toUpperCase().contains("COURS") ? Color(0x569B56).withOpacity(0.8) :
+    Color(0xFFC840).withOpacity(0.8);
   }
+
+  /*Color get color {
+    return this.type.toUpperCase().contains("CTRL") | this.type.toUpperCase().contains("NOT") | this.type.toUpperCase().contains("SOUTENANCE") ? Color(0xD80230).withOpacity(0.7) :
+    this.type.toUpperCase().contains("TD") ? Color(0x6D8CCE).withOpacity(0.8) :
+    this.type.toUpperCase().contains("TP") ? Color(0x8A7AD2).withOpacity(0.8) :
+    this.type.toUpperCase().contains("COURS") ? Color(0x569B56).withOpacity(0.8) :
+    Color(0xFFC840).withOpacity(0.8);
+  }*/
 }

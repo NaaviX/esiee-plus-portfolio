@@ -15,10 +15,9 @@ class CoursesApiProvider {
     @required this.client,
   }) : assert(client != null);
 
-  Future<List<CourseModel>> fetchCoursesList() async {
-    String userMail = Uri.encodeComponent(Base.thisUser.mailEsiee);
+  Future<List<CourseModel>> fetchCoursesList(String mail) async {
     final response = await client.get(
-        "https://ade.wallforfry.fr/v2/agenda/"+userMail
+        "https://ade.wallforfry.fr/v2/agenda/"+mail
     );
 
     if (response.statusCode == 200) {

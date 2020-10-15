@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
+import 'package:bde_esiee_mobile/src/ui/custom_widgets/Color.dart';
 import 'package:flutter/material.dart';
 
 import 'course_info.dart';
@@ -38,7 +39,7 @@ class AgendaEventView extends Comparable<AgendaEventView> {
     this.course,
     this.backgroundColor = const Color(0xCC2196F3),
     this.decoration,
-    this.textStyle = const TextStyle(color: Colors.white),
+    this.textStyle = const TextStyle(color: Colors.white, fontSize: 13),
     this.padding = const EdgeInsets.all(5),
     this.margin,
     this.onLongPress,
@@ -52,6 +53,8 @@ class AgendaEventView extends Comparable<AgendaEventView> {
   Widget build(BuildContext context, DayView dayView, double height, double width) {
     height = height - (padding?.top ?? 0.0) - (padding?.bottom ?? 0.0);
     width = width - (padding?.left ?? 0.0) - (padding?.right ?? 0.0);
+
+    ColorModifier _color = ColorModifier();
 
     return GestureDetector(
       onTap: () {
@@ -78,7 +81,19 @@ class AgendaEventView extends Comparable<AgendaEventView> {
       onLongPress: onLongPress,
       child: Container(
         decoration: decoration ?? (backgroundColor != null ? BoxDecoration(
-            color: backgroundColor, borderRadius: BorderRadius.circular(10), border: Border.all(
+            gradient: LinearGradient(
+              colors: [
+                _color.darken(backgroundColor, 0.05).withOpacity(0.6),
+                _color.lighten(backgroundColor, 0.05).withOpacity(0.6)
+                //backgroundColor,
+                //backgroundColor
+              ],
+              stops: [0.6, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomRight,
+            ),
+            //color: backgroundColor,
+            borderRadius: BorderRadius.circular(10), border: Border.all(
             color: Theme.of(context).backgroundColor, width: 0.3, style: BorderStyle.solid
         )) : null
         ),

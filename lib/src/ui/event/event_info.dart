@@ -146,31 +146,31 @@ class EventInfoState extends State<EventInfoPage> {
       return FutureBuilder(
           future: getSavedEvents(),
           builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-              if (Base.thisClub != null)
-                return _manage(widget.event.idClubRef);
-              if (Base.thisUser != null && !widget.isModeration){
-                dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
-                List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
-                _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
-                return FloatingActionButton(
-                  child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
-                      color: (_isFav ? Colors.redAccent : Colors.blueGrey.withOpacity(0.5))),
-                  splashColor: Colors.white,
-                  backgroundColor: Theme.of(context).backgroundColor,
-                  elevation: 0,
-                  highlightElevation: 0,
-                  onPressed: () {
-                    _isFav ? unfavEvent() : favEvent();
-                    setState(() {
-                      _isFav = !_isFav;
-                      widget.parentCard.setState(() {
+            if (Base.thisClub != null)
+              return _manage(widget.event.idClubRef);
+            if (Base.thisUser != null && !widget.isModeration){
+              dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
+              List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
+              _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
+              return FloatingActionButton(
+                child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
+                    color: (_isFav ? Colors.redAccent : Colors.blueGrey.withOpacity(0.5))),
+                splashColor: Colors.white,
+                backgroundColor: Theme.of(context).backgroundColor,
+                elevation: 0,
+                highlightElevation: 0,
+                onPressed: () {
+                  _isFav ? unfavEvent() : favEvent();
+                  setState(() {
+                    _isFav = !_isFav;
+                    widget.parentCard.setState(() {
 
-                      });
                     });
-                  },
-                );
-              }
-          /*if (Base.thisClub != null)
+                  });
+                },
+              );
+            }
+            /*if (Base.thisClub != null)
             return _manage(widget.event.idClubRef);
           if (Base.thisUser != null && !widget.isModeration)
             return FloatingActionButton(
@@ -186,9 +186,9 @@ class EventInfoState extends State<EventInfoPage> {
               },
             );*/
 
-          return Container();
-        }
-    );
+            return Container();
+          }
+      );
   }
 
   getDate()
@@ -376,13 +376,12 @@ class EventInfoState extends State<EventInfoPage> {
             value: _isEnabled,
             onChanged: (bool value)
             {
-              setState( ()
-              {
+              setState( () {
                 _isEnabled = value;
-                widget.event.enable = _isEnabled;
-                widget.eventsBloc.add(EventToBeSaved(event: widget.event));
-                widget.eventsBloc.add(EventsRequested());
               });
+              widget.event.enable = _isEnabled;
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -478,14 +477,14 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
 
   _text(EventModel event) {
     if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
     else if(event.enable == false) return "en attente d'approbation";
-    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
+    else if(event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return "pas encore publié";
     else return "";
   }
 

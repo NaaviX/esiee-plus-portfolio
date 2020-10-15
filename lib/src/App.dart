@@ -574,7 +574,7 @@ class _Base extends State<Base> {
             },
           ),
         ),
-        Container(
+        /*Container(
           margin: const EdgeInsets.only(right: 7),
           padding: const EdgeInsets.all(0.0),
           width: 25.0, // you can adjust the width as you need
@@ -587,10 +587,7 @@ class _Base extends State<Base> {
               });
             },
           ),
-        ),
-        /*SizedBox(
-          width: 10,
-        )*/
+        ),*/
       ];
     } else
       return null;
@@ -733,20 +730,18 @@ class _Base extends State<Base> {
                                                 .primaryColor
                                                 .withOpacity(0.8)),
                                         onPressed: () => {
-
+                                          Provider.of<ThemeNotifier>(context, listen: false).toggleChangeTheme(),
+                                          MyTheme.setStatusBarColor()
                                         },
                                         splashColor: null,
                                       ),
                                     ],
                                   ),
-                                  /*ListTile(
-                                  leading: Icon(Icons.settings),
-                                  title: Text('Settings')),
-                              ListTile(
-                                  leading: Icon(Icons.help),
-                                  title: Text('Help and Feedback'))*/
                                 ],
-                              ))))
+                              )
+                          )
+                      )
+                  )
                 ],
               ),
             )),

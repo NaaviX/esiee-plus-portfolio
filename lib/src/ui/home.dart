@@ -36,7 +36,6 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-
     if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());

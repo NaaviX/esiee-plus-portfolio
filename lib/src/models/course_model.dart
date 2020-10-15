@@ -47,22 +47,6 @@ class CourseModel {
       e.group = parsedJson["trainees"].toString().replaceAll("[", "").replaceAll("]", "");
       e.updated = DateTime.parse("$lastUpdateDate ${parsedJson["updated_at"].split(' ')[1]}");
       e.type = parsedJson["name"].split(":")[1].replaceAll(" ", "");
-      //e.color = Color.fromRGBO( int.parse(colors[0]), int.parse(colors[1]), int.parse(colors[2]), 1.0);
-      /*"classrooms"
-    "color"
-    "created_at"
-    "date"
-    "duration"
-    "end_hour"
-    "info"
-    "instructors"
-    "majors"
-    "name"
-    "start_hour"
-    "trainees"
-    "unite"
-    "unite_name"
-    "updated_at"*/
     }
     return e;
   }

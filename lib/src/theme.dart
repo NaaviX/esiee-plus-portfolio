@@ -51,68 +51,43 @@ class MyTheme {
     colorDark ?? PrimaryColorDark : colorLight ?? PrimaryColorLight;
   }
 
-  static colorDial(context,) {
-    return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
-    DarkBackground : WidgetBackgroundLight;
-  }
-
   static ThemeData _buildTheme() {
     final ThemeData base = ThemeData.light();
 
     return base.copyWith(
-      primaryColor: PrimaryColorLight,
-      accentColor: AccentColorLight,
-      backgroundColor: LightBackground,
-      scaffoldBackgroundColor: LightBackground,
-      canvasColor: LightBackground,
+        primaryColor: PrimaryColorLight,
+        accentColor: AccentColorLight,
+        backgroundColor: LightBackground,
+        scaffoldBackgroundColor: LightBackground,
+        canvasColor: LightBackground,
 
-      textSelectionColor: AccentColorLight,
-      selectedRowColor: AccentColorLight,
+        textSelectionColor: AccentColorLight,
+        selectedRowColor: AccentColorLight,
 
-      appBarTheme: AppBarTheme(
-        brightness: Brightness.light,
-        elevation: 0.0,
-        color: LightBackground,
-        textTheme: TextTheme(
-          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.light,
+          elevation: 0.0,
+          color: LightBackground,
+          textTheme: TextTheme(
+            headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+          ),
         ),
-      ),
 
-      primaryIconTheme: IconThemeData(
-          color: PrimaryColorLight
-      ),
+        primaryIconTheme: IconThemeData(
+            color: PrimaryColorLight
+        ),
 
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: PrimaryColorLight,
-        foregroundColor: LightBackground,
-      ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: PrimaryColorLight,
+          foregroundColor: LightBackground,
+        ),
 
-      dialogBackgroundColor: WidgetBackgroundLight,
+        dialogBackgroundColor: WidgetBackgroundLight,
 
-      tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColorLight,
-        indicator: BoxDecoration(border: Border(bottom: BorderSide(color: PrimaryColorLight, width: 2))),
-      ),
-
-      /*iconTheme: IconThemeData(
-        color: PrimaryColorLight,
-      ),*/
-
-      /*
-
-
-
-
-
-
-
-
-      cardTheme: CardTheme(
-        color: WidgetBackgroundLight,
-      ),
-
-
-       */
+        tabBarTheme: TabBarTheme(
+          labelColor: PrimaryColorLight,
+          indicator: BoxDecoration(border: Border(bottom: BorderSide(color: PrimaryColorLight, width: 2))),
+        ),
     );
   }
 
@@ -158,23 +133,6 @@ class MyTheme {
           labelColor: PrimaryColorDark,
           indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
         ),
-
-/*
-        primaryIconTheme: IconThemeData(
-            color: PrimaryColorDark
-        ),
-
-        iconTheme: IconThemeData(
-          color: PrimaryColorDark,
-        ),
-
-        cardTheme: CardTheme(
-          color: WidgetDarkBackground,
-        ),
-
-        textTheme: TextTheme(
-          caption: TextStyle(color: Colors.white),
-        ),*/
     );
   }
 }

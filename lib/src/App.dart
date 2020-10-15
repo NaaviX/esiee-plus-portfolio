@@ -118,6 +118,10 @@ class AppState extends State<App> {
         builder: (context, appState, child)
         {
           return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              darkTheme: MyTheme.darkTheme,
+              themeMode:
+              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
               debugShowCheckedModeBanner: false,
               home: StreamBuilder<FirebaseUser>(
                   stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -572,7 +576,7 @@ class _Base extends State<Base> {
             },
           ),
         ),
-        Container(
+        /*Container(
           margin: const EdgeInsets.only(right: 7),
           padding: const EdgeInsets.all(0.0),
           width: 25.0, // you can adjust the width as you need
@@ -585,10 +589,7 @@ class _Base extends State<Base> {
               });
             },
           ),
-        ),
-        /*SizedBox(
-          width: 10,
-        )*/
+        ),*/
       ];
     } else
       return null;
@@ -738,14 +739,11 @@ class _Base extends State<Base> {
                                       ),
                                     ],
                                   ),
-                                  /*ListTile(
-                                  leading: Icon(Icons.settings),
-                                  title: Text('Settings')),
-                              ListTile(
-                                  leading: Icon(Icons.help),
-                                  title: Text('Help and Feedback'))*/
                                 ],
-                              ))))
+                              )
+                          )
+                      )
+                  )
                 ],
               ),
             )),
@@ -1136,21 +1134,18 @@ class _Base extends State<Base> {
         icon: Icon(
           FontAwesomeIcons.home,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.home, color: Theme.of(context).primaryColor,),
         title: Text('Home'),
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.clock,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.clock, color: Theme.of(context).primaryColor,),
         title: Text('EDT'),
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.calendarAlt,
         ),
-        //activeIcon: Icon(FontAwesomeIcons.calendarAlt, color: Theme.of(context).primaryColor,),
         title: Text(
           'Event',
         ),
@@ -1162,7 +1157,6 @@ class _Base extends State<Base> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: Base.selectedIndex,
-      //selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }

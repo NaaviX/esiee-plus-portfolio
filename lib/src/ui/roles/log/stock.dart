@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_state.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/KeeAlivePage.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/log/stock_add.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
               title: Text("Stock"),
             ),
             body: Container(child:
-                BlocBuilder<StockBloc, StockState>(builder: (context, state) {
+            BlocBuilder<StockBloc, StockState>(builder: (context, state) {
               if (state is StockInitial) {
                 return Center(child: CircularProgressIndicator());
               }
@@ -91,7 +92,7 @@ class StocksState extends State<Stocks> with SingleTickerProviderStateMixin {
 
   Widget _bottomButtons() {
     return FloatingActionButton(
-        //shape: StadiumBorder(),
+      //shape: StadiumBorder(),
         onPressed: () => showDialog<void>(
             context: context,
             barrierDismissible: true,
@@ -192,101 +193,112 @@ class TacState extends State<Tac> {
 
     listOfType.isNotEmpty
         ? listOfType.forEach((type) {
-            int quantity = type.stockQuant.toInt();
+      int quantity = type.stockQuant.toInt();
 
-            String info = type.stockType == "Cannette"
-                ? "nombre de pallette(s)"
-                : type.stockType == "Snack"
-                    ? "nombre de boite(s)"
-                    : type.stockType == "Autre"
-                        ? "DLC : " +
-                            DateFormat('dd-MM-yyyy', "fr FR").format(type.date)
-                        : type.stockType == "Hard"
-                            ? "bouteille(s) de " + type.bottleQuant.toString()
-                            : type.stockType == "Hard Pack"
-                                ? "nombre de pack(s)"
-                                : type.stockType == "Soft"
-                                    ? "nombre de bouteille(s)"
-                                    : type.stockType == "Soft Pack"
-                                        ? "nombre de pack(s)"
-                                        : "";
+      String info = type.stockType == "Cannette"
+          ? "nombre de pallette(s)"
+          : type.stockType == "Snack"
+          ? "nombre de boite(s)"
+          : type.stockType == "Autre"
+          ? "DLC : " +
+          DateFormat('dd-MM-yyyy', "fr FR").format(type.date)
+          : type.stockType == "Hard"
+          ? "bouteille(s) de " + type.bottleQuant.toString()
+          : type.stockType == "Hard Pack"
+          ? "nombre de pack(s)"
+          : type.stockType == "Soft"
+          ? "nombre de bouteille(s)"
+          : type.stockType == "Soft Pack"
+          ? "nombre de pack(s)"
+          : "";
 
-            list.add(
-              Card(
-                  margin: EdgeInsets.all(5),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              type.stockName,
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              info,
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.8),
-                                  fontSize: 15),
-                            ),
-                          ],
+      list.add(
+        Card(
+            margin: EdgeInsets.all(5),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        type.stockName,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        info,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withOpacity(0.8),
+                            fontSize: 15),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 50),
+                        child: MaterialButton(
+                          onPressed: () {
+                            if (quantity != 0) {
+                              quantity -= 1;
+                              type.stockQuant -= 1;
+                              BlocProvider.of<StockBloc>(context)
+                                  .add(StockToBeSaved(stock: type));
+                              setState(() {});
+                            }
+                          },
+                          color: Colors.white,
+                          elevation: 2.0,
+                          child: Text(
+                            "-", style: TextStyle(fontSize: 30, color: MyTheme.colorTheme(context, colorDark: MyTheme.PrimaryColorLight)),
+                          ),
+                          shape: CircleBorder(),
                         ),
-                        Row(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              onPressed: () {
-                                if (quantity != 0) {
-                                  quantity -= 1;
-                                  type.stockQuant -= 1;
-                                  BlocProvider.of<StockBloc>(context)
-                                      .add(StockToBeSaved(stock: type));
-                                  setState(() {});
-                                }
-                              },
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.remove,
-                              ),
-                              shape: CircleBorder(),
-                            ),
-                            Text(
-                              quantity.toString(),
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            RawMaterialButton(
-                              onPressed: () {
-                                quantity += 1;
-                                type.stockQuant += 1;
-                                BlocProvider.of<StockBloc>(context)
-                                    .add(StockToBeSaved(stock: type));
-                                setState(() {});
-                              },
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.add,
-                              ),
-                              shape: CircleBorder(),
-                            ),
-                          ],
+                      ),
+                      Container(
+                        width: 25,
+                        alignment: Alignment.center,
+                        child: Text(
+                          quantity.toString(),
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    ),
-                  )),
-            );
-          })
+                      ),
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 50),
+                        child: MaterialButton(
+                          onPressed: () {
+                            quantity += 1;
+                            type.stockQuant += 1;
+                            BlocProvider.of<StockBloc>(context)
+                                .add(StockToBeSaved(stock: type));
+                            setState(() {});
+                          },
+                          color: Colors.white,
+                          elevation: 2.0,
+                          child: Text(
+                            "+", style: TextStyle(fontSize: 30, color: MyTheme.colorTheme(context, colorDark: MyTheme.PrimaryColorLight)),
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+        ),
+      );
+    })
         : Container();
 
     if (listOfType.isNotEmpty)
@@ -315,17 +327,13 @@ class ReserveState extends State<Reserve> {
 
   @override
   Widget build(BuildContext context) {
-    /*return Container(
-        child: StreamBuilder(
-            stream: widget.stocks.allStocks,
-            builder: (context, AsyncSnapshot<List<StockModel>> snapshot) {
-              if (snapshot.hasData) {*/
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           DropdownButton<String>(
+            dropdownColor: Theme.of(context).backgroundColor,
             isExpanded: true,
             underline: Column(),
             value: selected,
@@ -339,7 +347,8 @@ class ReserveState extends State<Reserve> {
                 value: role,
                 child: Text(role,
                     style: TextStyle(
-                        color: role == selected ? Colors.black : Colors.black54,
+                        color: role == selected ? MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.white)
+                            :  MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54),
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold)),
               );
@@ -425,101 +434,112 @@ class ReserveState extends State<Reserve> {
 
     listOfType.isNotEmpty
         ? listOfType.forEach((type) {
-            int quantity = type.stockQuant.toInt();
+      int quantity = type.stockQuant.toInt();
 
-            String info = type.stockType == "Cannette"
-                ? "nombre de pallette(s)"
-                : type.stockType == "Snack"
-                    ? "nombre de boite(s)"
-                    : type.stockType == "Autre"
-                        ? "DLC : " +
-                            DateFormat('dd-MM-yyyy', "fr FR").format(type.date)
-                        : type.stockType == "Hard"
-                            ? "bouteille(s) de " + type.bottleQuant.toString()
-                            : type.stockType == "Hard Pack"
-                                ? "nombre de pack(s)"
-                                : type.stockType == "Soft"
-                                    ? "nombre de bouteille(s)"
-                                    : type.stockType == "Soft Pack"
-                                        ? "nombre de pack(s)"
-                                        : "";
+      String info = type.stockType == "Cannette"
+          ? "nombre de pallette(s)"
+          : type.stockType == "Snack"
+          ? "nombre de boite(s)"
+          : type.stockType == "Autre"
+          ? "DLC : " +
+          DateFormat('dd-MM-yyyy', "fr FR").format(type.date)
+          : type.stockType == "Hard"
+          ? "bouteille(s) de " + type.bottleQuant.toString()
+          : type.stockType == "Hard Pack"
+          ? "nombre de pack(s)"
+          : type.stockType == "Soft"
+          ? "nombre de bouteille(s)"
+          : type.stockType == "Soft Pack"
+          ? "nombre de pack(s)"
+          : "";
 
-            list.add(
-              Card(
-                  margin: EdgeInsets.all(5),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              type.stockName,
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              info,
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.8),
-                                  fontSize: 15),
-                            ),
-                          ],
+      list.add(
+        Card(
+            margin: EdgeInsets.all(5),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        type.stockName,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        info,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withOpacity(0.8),
+                            fontSize: 15),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 50),
+                        child: MaterialButton(
+                          onPressed: () {
+                            if (quantity != 0) {
+                              quantity -= 1;
+                              type.stockQuant -= 1;
+                              BlocProvider.of<StockBloc>(context)
+                                  .add(StockToBeSaved(stock: type));
+                              setState(() {});
+                            }
+                          },
+                          color: Colors.white,
+                          elevation: 2.0,
+                          child: Text(
+                            "-", style: TextStyle(fontSize: 30, color: MyTheme.colorTheme(context, colorDark: MyTheme.PrimaryColorLight)),
+                          ),
+                          shape: CircleBorder(),
                         ),
-                        Row(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              onPressed: () {
-                                if (quantity != 0) {
-                                  quantity -= 1;
-                                  type.stockQuant -= 1;
-                                  BlocProvider.of<StockBloc>(context)
-                                      .add(StockToBeSaved(stock: type));
-                                  setState(() {});
-                                }
-                              },
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.remove,
-                              ),
-                              shape: CircleBorder(),
-                            ),
-                            Text(
-                              quantity.toString(),
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            RawMaterialButton(
-                              onPressed: () {
-                                quantity += 1;
-                                type.stockQuant += 1;
-                                BlocProvider.of<StockBloc>(context)
-                                    .add(StockToBeSaved(stock: type));
-                                setState(() {});
-                              },
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.add,
-                              ),
-                              shape: CircleBorder(),
-                            ),
-                          ],
+                      ),
+                      Container(
+                        width: 25,
+                        alignment: Alignment.center,
+                        child: Text(
+                          quantity.toString(),
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    ),
-                  )),
-            );
-          })
+                      ),
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 50),
+                        child: MaterialButton(
+                          onPressed: () {
+                            quantity += 1;
+                            type.stockQuant += 1;
+                            BlocProvider.of<StockBloc>(context)
+                                .add(StockToBeSaved(stock: type));
+                            setState(() {});
+                          },
+                          color: Colors.white,
+                          elevation: 2.0,
+                          child: Text(
+                            "+", style: TextStyle(fontSize: 30, color: MyTheme.colorTheme(context, colorDark: MyTheme.PrimaryColorLight)),
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+        ),
+      );
+    })
         : Container();
 
     if (listOfType.isNotEmpty)

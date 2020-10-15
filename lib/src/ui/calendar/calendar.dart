@@ -125,7 +125,8 @@ class CalendarState extends State<Calendar> {
   List<DateTime> getWeekDates(int weekUntilToday, int weekAfterToday){
     DateTime start = DateTime.now().subtract(Duration(days: weekUntilToday*7 + DateTime.now().weekday-1 ));
     int days = ( weekUntilToday + weekAfterToday + 1) * 7 ;
-    List yearDays = new List<DateTime>.generate(days, (index) => start.add(Duration(days: index)));
+    List<DateTime> yearDays = new List<DateTime>.generate(days, (index) => start.add(Duration(days: index)));
+    //yearDays.removeWhere((element) => element.weekday == 7);
     return yearDays;
   }
 }

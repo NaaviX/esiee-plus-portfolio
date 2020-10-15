@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 abstract class CourseEvent {
   const CourseEvent();
 }
@@ -5,6 +7,7 @@ abstract class CourseEvent {
 
 class CoursesRequested extends CourseEvent {
 
-  const CoursesRequested();
+  final String mail;
+  const CoursesRequested({@required this.mail}) : assert(mail != null);
 
 }

@@ -45,10 +45,10 @@ class HomeState extends State<Home> {
   @override
   void initState() {
 
-    if(Base.thisUser != null) {
+    /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());
-    }
+    }*/
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());
     super.initState();

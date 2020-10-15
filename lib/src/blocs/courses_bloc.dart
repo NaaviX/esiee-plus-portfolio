@@ -18,11 +18,10 @@ class CoursesBloc extends Bloc<CourseEvent, CourseState> {
 
   @override
   Stream<CourseState> mapEventToState(CourseEvent event) async* {
-
     if (event is CoursesRequested) {
       yield CoursesLoadInProgress();
       try {
-        final List<CourseModel> courses = await coursesRepository.fetchCourses();
+        final List<CourseModel> courses = await coursesRepository.fetchCourses(event.mail);
         yield CoursesLoadSuccess(courses: courses);
       } catch (_) {
         yield CoursesLoadFailure();

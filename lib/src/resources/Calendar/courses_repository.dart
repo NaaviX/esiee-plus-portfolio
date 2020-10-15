@@ -12,7 +12,7 @@ class CoursesRepository {
   CoursesRepository({@required this.courseApiProvider})
       : assert(courseApiProvider != null);
 
-  Future<List<CourseModel>> fetchCourses() async {
-    return courseApiProvider.fetchCoursesList();
+  Future<List<CourseModel>> fetchCourses(String mail) async {
+    return courseApiProvider.fetchCoursesList(mail);
   }
 }

@@ -1047,9 +1047,9 @@ class _Base extends State<Base> {
         _requireConnectionTile(
             Icons.person_add,
             "Ajout Professeur",
-            BlocProvider<ProfsBloc>(
-                create: (BuildContext context) => profsBloc,
-                child: AddProf(unitsBloc: unitsBloc,)))
+            BlocProvider<ProfsBloc>.value(
+                value: profsBloc,
+                child: AddProf(unitsBloc: unitsBloc,profsBloc:profsBloc)))
       ]);
     }
     return Column();

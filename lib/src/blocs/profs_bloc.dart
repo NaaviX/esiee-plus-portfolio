@@ -47,32 +47,3 @@ class ProfsBloc extends Bloc<ProfEvent, ProfState> {
     }
   }
 }
-/*
-class ProfsBloc {
-  final _repository = Repository();
-  final _profsFetcher = PublishSubject<List<ProfModel>>();
-  final _profFetcher = PublishSubject<ProfModel>();
-
-  Observable<List<ProfModel>> get allProfs => _profsFetcher.stream;
-  Observable<ProfModel> get thisProf => _profFetcher.stream;
-
-  fetchAllProfs() async {
-    List<ProfModel> profslist = await _repository.fetchAllProfs();
-    profslist.sort((item1, item2) => item1.firstname.compareTo(item2.firstname));
-    _profsFetcher.sink.add(profslist);
-  }
-
-  fetchProf(String email) async {
-    ProfModel profModel = await _repository.fetchProfByMail(email);
-    _profFetcher.sink.add(profModel);
-  }
-
-  dispose() {
-    _profsFetcher.close();
-    _profFetcher.close();
-  }
-
-  addSaveProf(ProfModel prof) async {
-    await _repository.addSaveProf(prof);
-  }
-}*/

@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
+import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
@@ -14,7 +15,8 @@ import 'package:http/http.dart';
 class AddProf extends StatefulWidget {
   ProfModel thisProf;
   final UnitsBloc unitsBloc;
-  AddProf({Key key, ProfModel thisProf, @required this.unitsBloc});
+  final ProfsBloc profsBloc;
+  AddProf({Key key, ProfModel thisProf, @required this.unitsBloc, @required this.profsBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,8 +30,10 @@ class AddProfState extends State<AddProf> {
   void initState() {
     (widget.thisProf != null) ? form = AddProfForm(prof: widget.thisProf, parent: this)
         : form = AddProfForm(parent: this);
+
     super.initState();
   }
+
 
   @override Widget build(BuildContext context) {
     final UnitRepository unitRepository = UnitRepository(
@@ -71,10 +75,12 @@ class AddProfState extends State<AddProf> {
                           units: form.selectedChoices.toList(),
                           urlPhoto: verifURL(),
                         );
-                        BlocProvider.of<ProfsBloc>(context)
-                            .add(ProfToBeSaved(prof: prof));
-                        BlocProvider.of<ProfsBloc>(context)
-                            .add(ProfsRequested());
+                        print("savee");
+
+                          print(BlocProvider.of<ProfsBloc>(context).state.toString());
+                        
+                            widget.profsBloc.add(ProfToBeSaved(prof: prof));
+                            widget.profsBloc.add(ProfsRequested());
                         Navigator.of(context).pop();
                   }
                 },

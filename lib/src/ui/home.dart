@@ -48,7 +48,7 @@ class HomeState extends State<Home> {
     /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());
-    }
+    }*/
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());
     super.initState();

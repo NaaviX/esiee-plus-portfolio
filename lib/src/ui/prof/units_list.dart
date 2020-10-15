@@ -56,8 +56,8 @@ class UnitsListState extends State<UnitsList> {
                     },
                     child: Container(
                         margin: EdgeInsets.all(5),
-                        child: BlocProvider(
-                            create: (BuildContext context) => widget.profsBloc,
+                        child: BlocProvider<ProfsBloc>.value(
+                            value: widget.profsBloc,
                             child: SearchProf(this))
                     )
                 ),
@@ -91,11 +91,9 @@ class UnitsListState extends State<UnitsList> {
                                       {Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) {
-                                          return BlocProvider(create: (
-                                              BuildContext context) =>
-                                          widget.profsBloc,
-                                              child: ProfList(
-                                                selectedUnit: units[index],));
+                                          return BlocProvider<ProfsBloc>.value(
+                                              value: widget.profsBloc,
+                                              child: ProfList(selectedUnit: units[index],));
                                         }),
                                       )},
                                       borderRadius: BorderRadius.circular(10.0),

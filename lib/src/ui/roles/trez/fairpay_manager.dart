@@ -66,8 +66,8 @@ class FairPayManagerState extends State<FairPayManager> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BlocProvider<FairpayLogsBloc>(
-              create: (BuildContext context) => widget.bloc,
+          MaterialPageRoute(builder: (context) => BlocProvider<FairpayLogsBloc>.value(
+              value: widget.bloc,
               child: Fairpay(club: club, isTrez: true, bloc: widget.bloc,))),//FairPayClubManager(club)),
         );
       }

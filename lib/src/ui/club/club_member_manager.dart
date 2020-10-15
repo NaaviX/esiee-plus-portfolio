@@ -47,8 +47,8 @@ class ClubMemberManagerState extends State<ClubMemberManager> {
             child: Column(
               children: <Widget>[
 
-    BlocProvider(create: (BuildContext context) => widget.studentsBloc,
-        child: BlocProvider(create: (BuildContext context) => widget.clubsBloc,
+    BlocProvider<StudentsBloc>.value(value: widget.studentsBloc,
+        child: BlocProvider<ClubsBloc>.value(value: widget.clubsBloc,
             child: ClubAddMember(this))),
                 Expanded(
                     child: ListView.builder(

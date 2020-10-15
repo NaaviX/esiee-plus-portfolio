@@ -63,8 +63,8 @@ class EventCreationState extends State<EventCreation> {
                   topEvent: false,
               );
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                      create: (BuildContext context) => widget.eventsBloc,
+                  builder: (context) => BlocProvider<EventsBloc>.value(
+                      value: widget.eventsBloc,
                       child: EventInfoPage(
                         event,
                         Base.thisClub,

@@ -201,12 +201,12 @@ class EventCardState extends State<EventCard> {
   }
 
   pushEventInfo(EventModel event, ClubModel club) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => BlocProvider(
-        create: (BuildContext context) => widget.eventsBloc,
+    MaterialPageRoute route = MaterialPageRoute(builder: (context) => BlocProvider<EventsBloc>.value(
+        value: widget.eventsBloc,
         child: EventInfoPage(event, club, parentCard: this, eventsBloc: widget.eventsBloc)));
     if(widget.moderation)
-      route = MaterialPageRoute(builder: (context) => BlocProvider(
-          create: (BuildContext context) => widget.eventsBloc,
+      route = MaterialPageRoute(builder: (context) => BlocProvider<EventsBloc>.value(
+          value: widget.eventsBloc,
           child: EventInfoPage(event, club, isModeration: true, eventsBloc: widget.eventsBloc)));
     Navigator.push(
       context,

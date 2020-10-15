@@ -149,8 +149,8 @@ class FairpayState extends State<Fairpay>{
           ],
         ),
         onPressed: () {
-          return BlocProvider<FairpayLogsBloc>(
-              create: (BuildContext context) => widget.bloc,
+          return BlocProvider<FairpayLogsBloc>.value(
+              value: widget.bloc,
               child: fairpayForm(this, text, widget.club));
         }/*showDialog<void>(
             context: context,

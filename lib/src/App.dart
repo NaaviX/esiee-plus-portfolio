@@ -897,8 +897,8 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return BlocProvider<FairpayLogsBloc>(
-                  create: (BuildContext context) => fairpayLogsBloc,
+              return BlocProvider<FairpayLogsBloc>.value(
+                  value: fairpayLogsBloc,
                   child: Fairpay(bloc: fairpayLogsBloc));
             }));
           },
@@ -914,10 +914,10 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return BlocProvider(
-                  create: (BuildContext context) => studentsBloc,
-                  child: BlocProvider(
-                      create: (BuildContext context) => clubsBloc,
+              return BlocProvider<StudentsBloc>.value(
+                  value: studentsBloc,
+                  child: BlocProvider<ClubsBloc>.value(
+                      value: clubsBloc,
                       child: ClubMemberManager(
                           studentsBloc: studentsBloc, clubsBloc: clubsBloc)));
             }));
@@ -935,10 +935,10 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
 
-              return BlocProvider(
-                  create: (BuildContext context) => profsBloc,
-                  child: BlocProvider<StudentsBloc>(
-                      create: (BuildContext context) => studentsBloc,
+              return BlocProvider<ProfsBloc>.value(
+                  value: profsBloc,
+                  child: BlocProvider<StudentsBloc>.value(
+                      value: studentsBloc,
                       child: MessengerHistory()));
             }));
           },
@@ -993,9 +993,8 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
 
-              return BlocProvider<UnitsBloc>(
-                  create: (BuildContext context) =>
-                      unitsBloc,
+              return BlocProvider<UnitsBloc>.value(
+                  value: unitsBloc,
                   child: UnitsList(profsBloc: profsBloc));
             }));
           },
@@ -1030,8 +1029,8 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return BlocProvider<StudentsBloc>(
-                  create: (BuildContext context) => studentsBloc,
+              return BlocProvider<StudentsBloc>.value (
+                  value: studentsBloc,
                   child: ContributorManager());
             }));
           },
@@ -1039,8 +1038,8 @@ class _Base extends State<Base> {
         _requireConnectionTile(
             Icons.group_add,
             "Droits Utilisateurs",
-            BlocProvider<StudentsBloc>(
-                create: (BuildContext context) => studentsBloc,
+            BlocProvider<StudentsBloc>.value(
+                value: studentsBloc,
                 child: UserPermissions(studentsBloc: studentsBloc, clubsBloc: clubsBloc,)))
       ]);
     }
@@ -1065,8 +1064,8 @@ class _Base extends State<Base> {
         _requireConnectionTile(
             Icons.verified_user,
             "Cotisants",
-            BlocProvider<StudentsBloc>(
-                create: (BuildContext context) => studentsBloc,
+            BlocProvider<StudentsBloc>.value(
+                value: studentsBloc,
                 child: ContributorVerificator())),
         _requireConnectionTile(
             Icons.person_add,
@@ -1099,8 +1098,8 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return BlocProvider<FairpayLogsBloc>(
-                  create: (BuildContext context) => fairpayLogsBloc,
+              return BlocProvider<FairpayLogsBloc>.value(
+                  value: fairpayLogsBloc,
                   child: TreasuryManager());
             }));
           },
@@ -1146,8 +1145,8 @@ class _Base extends State<Base> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
 
-              return BlocProvider(
-                  create: (BuildContext context) => stocksBloc,
+              return BlocProvider<StockBloc>.value(
+                  value: stocksBloc,
                   child: Stocks(bloc: stocksBloc));
             }));
           },

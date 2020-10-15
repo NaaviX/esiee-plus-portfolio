@@ -51,9 +51,8 @@ class AddProfState extends State<AddProf> {
             SizedBox(height: 5,),
             Image(image: AssetImage('assets/illustration/addTeacher.webp'),height: MediaQuery.of(context).size.height/6,),
             SizedBox(height: 5,),
-            BlocProvider<UnitsBloc>(
-                create: (BuildContext context) =>
-                    UnitsBloc(unitRepository: unitRepository),
+            BlocProvider<UnitsBloc>.value(
+                value: UnitsBloc(unitRepository: unitRepository),
                 child: form),
             SizedBox(
               height: 50,

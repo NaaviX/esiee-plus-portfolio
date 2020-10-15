@@ -50,8 +50,8 @@ class UserPermissionsState extends State<UserPermissions> {
             ),
             body: TabBarView(
               children: [
-                KeepAlivePage(child: BlocProvider(
-            create: (BuildContext context) => widget.studentsBloc,
+                KeepAlivePage(child: BlocProvider<StudentsBloc>.value(
+            value: widget.studentsBloc,
             child: StudentPermissions(studentsBloc: widget.studentsBloc,))),
                 KeepAlivePage(child: ClubPermissions(clubsBloc: widget.clubsBloc)),
               ],

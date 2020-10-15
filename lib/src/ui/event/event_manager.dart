@@ -14,11 +14,11 @@ class EventManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Gestion des évènements"),
-    ),
-      body:BlocProvider<EventsBloc>(
-          create: (BuildContext context) => eventsBloc,
-          child: EventList(moderation: true,eventsBloc: eventsBloc,))
+          title: Text("Gestion des évènements"),
+        ),
+        body: BlocProvider<EventsBloc>.value(
+            value: eventsBloc,
+            child: EventList(moderation: true,eventsBloc: eventsBloc,))
     );
   }
 

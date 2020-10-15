@@ -33,13 +33,23 @@ class EventInfoState extends State<CourseInfoPage> {
   }
 
   @override Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 10.0,
-      backgroundColor: MyTheme.ColorDial(context),
-      child: dialogContent(context),
+    return Consumer<ThemeNotifier>(
+        builder: (context, appState, child) {
+          return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              darkTheme: MyTheme.darkTheme,
+              themeMode:
+              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              home: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 10.0,
+                child: dialogContent(context),
+              )
+          );
+        }
     );
   }
 
@@ -65,7 +75,7 @@ class EventInfoState extends State<CourseInfoPage> {
               alignment: Alignment.topCenter,
               child: Text(day(widget.course.start),
                 style: TextStyle(
-                  color: MyTheme.ColorTheme(context, colorLight: Colors.black),
+                  color: MyTheme.colorTheme(context, colorLight: Colors.black),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic
@@ -80,9 +90,9 @@ class EventInfoState extends State<CourseInfoPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(hour(widget.course.start), style: TextStyle(
-                              color: MyTheme.ColorTheme(context, colorLight: Colors.black), fontSize: 20, fontWeight: FontWeight.bold),),
+                              color: MyTheme.colorTheme(context, colorLight: Colors.black), fontSize: 20, fontWeight: FontWeight.bold),),
                           Text(hour(widget.course.end), style: TextStyle(
-                              color: MyTheme.ColorTheme(context, colorLight: Colors.black), fontSize: 20, fontWeight: FontWeight.bold),)
+                              color: MyTheme.colorTheme(context, colorLight: Colors.black), fontSize: 20, fontWeight: FontWeight.bold),)
                         ]),
                     Expanded(
                       child: Container(
@@ -92,7 +102,7 @@ class EventInfoState extends State<CourseInfoPage> {
                             children: <Widget>[
                               AutoSizeText(
                                 getTitle(),
-                                style: TextStyle(color: MyTheme.ColorTheme(context, colorLight: Colors.black), fontSize: 25, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black), fontSize: 25, fontWeight: FontWeight.bold),
                                 maxLines: 2,
                                 minFontSize: 15,
                                 textAlign: TextAlign.left,
@@ -109,7 +119,7 @@ class EventInfoState extends State<CourseInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: Divider(
-              color: MyTheme.ColorTheme(context, colorLight: Colors.black, colorDark: Colors.grey),
+              color: MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.grey),
             ),
           ),
           Container(
@@ -118,7 +128,7 @@ class EventInfoState extends State<CourseInfoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Chip(
-                    label: Text(widget.course.type.toUpperCase(), style: TextStyle(color: MyTheme.ColorTheme(context, colorLight: Colors.black), fontWeight: FontWeight.w500)),
+                    label: Text(widget.course.type.toUpperCase(), style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black), fontWeight: FontWeight.w500)),
                     backgroundColor: widget.course.color.withOpacity(0.5),
                   ),
                   //CustomItemWithIcon(Icons.place, getPlace()),
@@ -132,7 +142,7 @@ class EventInfoState extends State<CourseInfoPage> {
           Container(
             alignment: Alignment.bottomRight,
             padding: EdgeInsets.all(10),
-            child: Text(update(), style: TextStyle(fontSize: 10, color: MyTheme.ColorTheme(context, colorLight: Colors.grey), fontStyle: FontStyle.italic)),
+            child: Text(update(), style: TextStyle(fontSize: 10, color: MyTheme.colorTheme(context, colorLight: Colors.grey), fontStyle: FontStyle.italic)),
           ),
         ]
     );
@@ -163,11 +173,11 @@ class EventInfoState extends State<CourseInfoPage> {
     if(widget.course.teachers != "[]")
       return Row(
           children: <Widget>[
-            Text("Enseigné par ", style: TextStyle(color: MyTheme.ColorTheme(context, colorLight: Colors.black))),
+            Text("Enseigné par ", style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black))),
             Expanded(
               child: AutoSizeText(
                 widget.course.teachers.toString().substring(1, widget.course.teachers.toString().length-1),
-                style: TextStyle(color: MyTheme.ColorTheme(context, colorLight: Colors.black), fontWeight: FontWeight.bold),
+                style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black), fontWeight: FontWeight.bold),
                 maxLines: 1,
                 minFontSize: 8,
                 textAlign: TextAlign.left,

@@ -10,13 +10,13 @@ import 'event_info.dart';
 import 'event_list.dart';
 import 'package:meta/meta.dart';
 
+// ignore: must_be_immutable
 class EventCreation extends StatefulWidget {
   final EventsBloc eventsBloc;
   CreateEventForm form;
-  EventListState parentList;
   EventModel event;
 
-  EventCreation(parentList, {this.event, @required this.eventsBloc}) {
+  EventCreation({this.event, @required this.eventsBloc}) {
     if (event != null)
       this.form = CreateEventForm(
         event: event,
@@ -70,7 +70,9 @@ class EventCreationState extends State<EventCreation> {
                         Base.thisClub,
                         isValidator: true,
                         eventsBloc: widget.eventsBloc,
-                      ))));
+                      )
+                  )
+              ));
             }
           }),
     );

@@ -3,7 +3,6 @@ import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/students_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/student/student_info.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/admin/contributor_add.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
@@ -224,6 +223,11 @@ class ContributorManagerState extends State<ContributorManager> {
         student.isContributor = true;
         BlocProvider.of<StudentsBloc>(context)
             .add(StudentToBeSaved(student: student));
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          duration: Duration(seconds: 1),
+          content: Text("L'élève a été ajouté aux cotisants"),
+          backgroundColor: Colors.green,
+        ));
       }
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(

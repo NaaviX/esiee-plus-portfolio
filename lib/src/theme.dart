@@ -9,7 +9,6 @@ class MyTheme {
   static const PrimaryColorDark = const Color(0xFFFDFDFD);
 
   static const AccentColorLight = const Color(0xFF52C9ED);
-  static const AccentColorDark = const Color(0xFF296faa);
 
   static const LightBackground = const Color(0xFFFDFDFD);
   static const DarkBackground = const Color(0xFF0e283d);
@@ -22,8 +21,14 @@ class MyTheme {
   static final ThemeData defaultTheme = _buildTheme();
   static final ThemeData darkTheme = _buildDarkTheme();
 
-  static SetStatusBarColor(context) {
-    if (Provider.of<ThemeNotifier>(context, listen: false).isDarkMode) {
+  static setStatusBarColor() async {
+    final String key = "theme";
+    SharedPreferences _preferences;
+    if(_preferences == null)
+      _preferences = await SharedPreferences.getInstance();
+    bool _dark = _preferences.getBool(key) ?? false;
+
+    if (_dark) {
       SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle.dark.copyWith(
             statusBarColor: DarkBackground,
@@ -41,73 +46,48 @@ class MyTheme {
     }
   }
 
-  static ColorTheme(context, {Color colorLight, Color colorDark}) {
+  static colorTheme(context, {Color colorLight, Color colorDark}) {
     return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
     colorDark ?? PrimaryColorDark : colorLight ?? PrimaryColorLight;
-  }
-
-  static ColorDial(context,) {
-    return Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
-    DarkBackground : WidgetBackgroundLight;
   }
 
   static ThemeData _buildTheme() {
     final ThemeData base = ThemeData.light();
 
     return base.copyWith(
-      primaryColor: PrimaryColorLight,
-      accentColor: AccentColorLight,
-      backgroundColor: LightBackground,
-      scaffoldBackgroundColor: LightBackground,
-      canvasColor: LightBackground,
+        primaryColor: PrimaryColorLight,
+        accentColor: AccentColorLight,
+        backgroundColor: LightBackground,
+        scaffoldBackgroundColor: LightBackground,
+        canvasColor: LightBackground,
 
-      textSelectionColor: AccentColorLight,
-      selectedRowColor: AccentColorLight,
+        textSelectionColor: AccentColorLight,
+        selectedRowColor: AccentColorLight,
 
-      appBarTheme: AppBarTheme(
-        brightness: Brightness.light,
-        elevation: 0.0,
-        color: LightBackground,
-        textTheme: TextTheme(
-          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.light,
+          elevation: 0.0,
+          color: LightBackground,
+          textTheme: TextTheme(
+            headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: PrimaryColorLight,),
+          ),
         ),
-      ),
 
-      primaryIconTheme: IconThemeData(
-          color: PrimaryColorLight
-      ),
+        primaryIconTheme: IconThemeData(
+            color: PrimaryColorLight
+        ),
 
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: PrimaryColorLight,
-        foregroundColor: LightBackground,
-      ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: PrimaryColorLight,
+          foregroundColor: LightBackground,
+        ),
 
-      dialogBackgroundColor: WidgetBackgroundLight,
+        dialogBackgroundColor: WidgetBackgroundLight,
 
-      tabBarTheme: TabBarTheme(
-        labelColor: PrimaryColorLight,
-        indicator: BoxDecoration(border: Border(bottom: BorderSide(color: PrimaryColorLight, width: 2))),
-      ),
-
-      /*iconTheme: IconThemeData(
-        color: PrimaryColorLight,
-      ),*/
-
-      /*
-
-
-
-
-
-
-
-
-      cardTheme: CardTheme(
-        color: WidgetBackgroundLight,
-      ),
-
-
-       */
+        tabBarTheme: TabBarTheme(
+          labelColor: PrimaryColorLight,
+          indicator: BoxDecoration(border: Border(bottom: BorderSide(color: PrimaryColorLight, width: 2))),
+        ),
     );
   }
 
@@ -117,11 +97,11 @@ class MyTheme {
     return base.copyWith(
         primaryColor: PrimaryColorDark,
         backgroundColor: DarkBackground,
-        accentColor: AccentColorDark,
+        accentColor: SelectedColor,
         scaffoldBackgroundColor: DarkBackground,
 
-        textSelectionColor: AccentColorDark,
-        selectedRowColor: AccentColorDark,
+        textSelectionColor: SelectedColor,
+        selectedRowColor: SelectedColor,
 
         appBarTheme: AppBarTheme(
           brightness: Brightness.dark,
@@ -153,23 +133,6 @@ class MyTheme {
           labelColor: PrimaryColorDark,
           indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
         ),
-
-/*
-        primaryIconTheme: IconThemeData(
-            color: PrimaryColorDark
-        ),
-
-        iconTheme: IconThemeData(
-          color: PrimaryColorDark,
-        ),
-
-        cardTheme: CardTheme(
-          color: WidgetDarkBackground,
-        ),
-
-        textTheme: TextTheme(
-          caption: TextStyle(color: Colors.white),
-        ),*/
     );
   }
 }
@@ -186,6 +149,7 @@ class ThemeNotifier extends ChangeNotifier {
   ThemeNotifier() {
     _darkMode = false;
     _loadFromPreferences();
+    MyTheme.setStatusBarColor();
   }
 
   _initialPreferences() async {

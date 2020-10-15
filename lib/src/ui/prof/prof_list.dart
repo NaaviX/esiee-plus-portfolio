@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 
+// ignore: must_be_immutable
 class ProfList extends StatefulWidget {
 
   UnitModel selectedUnit;
@@ -83,11 +83,8 @@ class ProfListState extends State<ProfList> {
                       backgroundImage: NetworkImage(profs[index].urlPhoto),
                       backgroundColor: Colors.white,
                       radius:50,
-                    ) : Icon(Icons.person, color: Colors.white,),
+                    ) : Icon(Icons.person,),
                   ),
-                  /*CircleAvatar(
-                backgroundImage: NetworkImage(snapshot.data[index].urlPhoto),
-              ),*/
                   title: Text(profs[index].firstname+" "+profs[index].lastname, style: TextStyle(fontSize: 20, ),),
                   onTap: () {
                     Navigator.push(

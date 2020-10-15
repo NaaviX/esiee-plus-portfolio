@@ -1,11 +1,9 @@
 import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_state.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/resources/repository.dart';
 import 'package:bde_esiee_mobile/src/resources/student_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 
 class StudentsBloc extends Bloc<StudentEvent, StudentState> {
   final StudentRepository studentRepository;

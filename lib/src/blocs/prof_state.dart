@@ -1,7 +1,5 @@
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
 import 'package:meta/meta.dart';
-import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 
 abstract class ProfState  {
   const ProfState();
@@ -37,7 +35,7 @@ class ProfLoadSuccess extends ProfState {
 
 
 
-
+class ProfSaveLoadInProgress extends ProfState {}
 class ProfSaveLoadSuccess extends ProfState {
   final ProfModel prof;
 

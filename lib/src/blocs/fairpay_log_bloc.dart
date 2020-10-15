@@ -2,9 +2,6 @@ import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
 import 'package:bde_esiee_mobile/src/resources/Fairpay/fairpay_log_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
-
 import 'fairpay_log_event.dart';
 import 'fairpay_log_state.dart';
 

@@ -250,7 +250,7 @@ class DayBar extends StatelessWidget {
             dateFormatter(date.year, date.month, date.day),
             style: textStyle ??
                 TextStyle(
-                  color: Utils.sameDay(date) ? MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor,) : MyTheme.ColorTheme(context, colorLight: Colors.black54),
+                  color: Utils.sameDay(date) ? MyTheme.colorTheme(context, colorDark: MyTheme.SelectedColor,) : MyTheme.colorTheme(context, colorLight: Colors.black54),
                   fontWeight: Utils.sameDay(date) ? FontWeight.w900 : FontWeight.w600,
                 ),
             textAlign: TextAlign.center,
@@ -264,14 +264,14 @@ class DayBar extends StatelessWidget {
                 date.day.toString(),
                 style: textStyle ??
                     TextStyle(
-                      color: Utils.sameDay(date) ? Colors.white : MyTheme.ColorTheme(context, colorLight: Colors.black54),
+                      color: Utils.sameDay(date) ? Colors.white : MyTheme.colorTheme(context, colorLight: Colors.black54),
                       fontWeight: FontWeight.bold,
                     ),
                 textAlign: TextAlign.center,
               ),
             ),
             decoration: new BoxDecoration(
-              color: Utils.sameDay(date) ? MyTheme.ColorTheme(context, colorDark: MyTheme.SelectedColor,).withOpacity(0.7) : Colors.transparent,
+              color: Utils.sameDay(date) ? MyTheme.colorTheme(context, colorDark: MyTheme.SelectedColor,).withOpacity(0.7) : Colors.transparent,
               shape: BoxShape.circle,
             ),
           ),
@@ -337,7 +337,7 @@ class HoursColumn extends StatelessWidget {
           right: 0,
           child: Text(
             hourFormatter(hour + 1, 0),
-            style: TextStyle(color:  MyTheme.ColorTheme(context, colorLight: Colors.black54)),
+            style: TextStyle(color:  MyTheme.colorTheme(context, colorLight: Colors.black54)),
             textAlign: TextAlign.center,
           ),
         ),

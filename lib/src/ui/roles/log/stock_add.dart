@@ -1,16 +1,21 @@
 import 'package:bde_esiee_mobile/src/blocs/stock_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/stock_event.dart';
 import 'package:bde_esiee_mobile/src/models/stock_model.dart';
-import 'package:bde_esiee_mobile/src/resources/stock_repository.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
-import 'package:bde_esiee_mobile/src/ui/roles/log/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddStock extends StatefulWidget {
+  final StockBloc stocksBloc;
+
+  AddStock({Key key, @required this.stocksBloc})
+      : assert(stocksBloc != null),
+        super(key: key);
 
   @override
   AddStockState createState() {
@@ -30,16 +35,27 @@ class AddStockState extends State<AddStock> {
   String selectedChoices = "Cannette";
 
   @override Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 20.0,
-      backgroundColor: Colors.white,
-      child: Form(
-          key: _formKey,
-          child: _form(context)
-      ),
+    return Consumer<ThemeNotifier>(
+        builder: (context, appState, child)
+        {
+          return MaterialApp(
+              theme: MyTheme.defaultTheme,
+              darkTheme: MyTheme.darkTheme,
+              themeMode:
+              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              home: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 20.0,
+                child: Form(
+                    key: _formKey,
+                    child: _form(context)
+                ),
+              )
+          );
+        }
     );
   }
 
@@ -191,10 +207,7 @@ class AddStockState extends State<AddStock> {
                       stockQuant: double.parse(quant.text),
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
-                    BlocProvider.of<StockBloc>(context)
-                        .add(StockToBeSaved(stock: stock));
-                    BlocProvider.of<StockBloc>(context)
-                        .add(StockRequested());
+                    widget.stocksBloc.add(StockToBeSaved(stock: stock));
                     Navigator.of(context).pop();
                   }
                 }

@@ -1,11 +1,10 @@
 import 'dart:ui';
-
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +14,7 @@ import 'package:meta/meta.dart';
 import '../../App.dart';
 import 'event_creation.dart';
 
+// ignore: must_be_immutable
 class EventList extends StatefulWidget {
   bool moderation;
   final EventsBloc eventsBloc;
@@ -37,6 +37,7 @@ class EventListState extends State<EventList> {
 
   @override
   void initState() {
+    widget.eventsBloc.add(EventsRequested());
     super.initState();
     selected = "Mes évents";
   }
@@ -46,61 +47,74 @@ class EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: builEventList(),/*FutureBuilder(
-          future: isInternetConnected(),
-          builder: (BuildContext context, AsyncSnapshot<bool> connected) {
-            return connected.hasData && connected.data
-                ? builEventList()
-                : builEventListLocal();
-          }),*/
+      body: builEventList(),
       floatingActionButton: creationButton(),
     );
   }
 
   Widget builEventList() {
-
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                if(Base.thisClub != null) dropDown(),
-                Expanded(
-                  child: buildList(),
-                ),
-              ],
-            );
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        if(Base.thisClub != null) dropDown(),
+        Expanded(
+          child: buildList(),
+        ),
+      ],
+    );
   }
 
   Widget buildList() {
+    return BlocBuilder<EventsBloc, EventState>(builder: (context, state) {
+      if (state is EventsInitial) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is EventsLoadInProgress) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (state is EventsLoadSuccess) {
+        final events = state.events;
+        Base.allEvents = events.toList();
 
-    return !widget.moderation
-        ? ListView.builder(
-      //scrollDirection: Axis.horizontal,
-        itemCount: Base.allEvents.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Center(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  getCover(Base.allEvents[index], context),
-                ]
-            ),
-          );
-        }
-    )
-        : ListView.builder(
-            //scrollDirection: Axis.horizontal,
-              itemCount: Base.allEvents.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        getCoverModerator(Base.allEvents[index], Base.allClubs, context),
-                      ]
-                  ),
-                );
-              }
-          );
+        return !widget.moderation
+            ? ListView.builder(
+          //scrollDirection: Axis.horizontal,
+            itemCount: events.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Center(
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      getCover(events[index], context),
+                    ]
+                ),
+              );
+            }
+        )
+            : ListView.builder(
+          //scrollDirection: Axis.horizontal,
+            itemCount: events.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Center(
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      getCoverModerator(events[index], Base.allClubs, context),
+                    ]
+                ),
+              );
+            }
+        );
+      }
+      if (state is EventsLoadFailure) {
+        return Text(
+          'Impossible de récupérer les evenements!',
+          style: TextStyle(color: Colors.red),
+        );
+      }
+      return Container();
+    });
+
   }
 
   getCover(EventModel event, BuildContext context) {
@@ -142,7 +156,7 @@ class EventListState extends State<EventList> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventCreation(this, eventsBloc: widget.eventsBloc)),
+            MaterialPageRoute(builder: (context) => EventCreation(eventsBloc: widget.eventsBloc)),
           );
         },
         child: Icon(Icons.add,),

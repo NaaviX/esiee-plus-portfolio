@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
-import 'package:bde_esiee_mobile/src/resources/stock_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/student_api_provider.dart';
 import 'package:meta/meta.dart';
 

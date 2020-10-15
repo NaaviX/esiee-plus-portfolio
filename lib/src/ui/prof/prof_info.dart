@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 
 class ProfInfoPage extends StatelessWidget{
@@ -51,24 +52,21 @@ class ProfInfoPage extends StatelessWidget{
   }
   _header(BuildContext context) {
     return Container(
-      color: Theme.of(context).primaryColor.withOpacity(0.8),
+      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height/50),
+      color: Theme.of(context).primaryColor.withOpacity(0.5),
       width: MediaQuery
           .of(context)
           .size
           .width,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height/3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           prof.urlPhoto == null || prof.urlPhoto == "null" ?
           CircleAvatar(
-            radius: 50,
+            radius: MediaQuery.of(context).size.height/15,
             backgroundColor: Theme.of(context).primaryColor,
-            child: Icon(Icons.person, color: Colors.white, size: 50,),
+            child: Icon(Icons.person, size: MediaQuery.of(context).size.height/15,),
           ) :
           CircleAvatar(
             backgroundImage: NetworkImage(prof.urlPhoto),
@@ -95,7 +93,7 @@ class ProfInfoPage extends StatelessWidget{
     prof.units.forEach((element) {list.add(
       Chip(
         label: Text(element.unitCode, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color : Colors.white)),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: MyTheme.colorTheme(context, colorDark: MyTheme.DarkBackground),
       )
     );});
     return list;

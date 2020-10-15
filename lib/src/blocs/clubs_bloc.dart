@@ -1,10 +1,6 @@
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
-import 'package:bde_esiee_mobile/src/models/student_model.dart';
 import 'package:bde_esiee_mobile/src/resources/club_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../resources/repository.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'club_event.dart';
 import 'club_state.dart';

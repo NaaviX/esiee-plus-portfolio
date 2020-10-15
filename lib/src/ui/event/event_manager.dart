@@ -1,6 +1,7 @@
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
 class EventManager extends StatelessWidget {
@@ -15,7 +16,9 @@ class EventManager extends StatelessWidget {
         appBar: AppBar(
         title: Text("Gestion des évènements"),
     ),
-      body:EventList(moderation: true,eventsBloc: eventsBloc,)
+      body:BlocProvider<EventsBloc>(
+          create: (BuildContext context) => eventsBloc,
+          child: EventList(moderation: true,eventsBloc: eventsBloc,))
     );
   }
 

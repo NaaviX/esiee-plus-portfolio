@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
@@ -16,6 +15,7 @@ import 'package:meta/meta.dart';
 
 import '../../App.dart';
 
+// ignore: must_be_immutable
 class EventCard extends StatefulWidget {
 
   @required final BuildContext context;
@@ -272,14 +272,14 @@ class EventCardState extends State<EventCard> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
 
   _text(EventModel event) {
     if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
     else if(event.enable == false) return "en attente d'approbation";
-    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
+    else if(event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return "pas encore publié";
     else return "";
   }
 

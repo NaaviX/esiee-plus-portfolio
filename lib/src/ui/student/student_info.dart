@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/models/student_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/roles_display.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,8 @@ class StudentDetailState extends State<StudentDetail> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.student.firstname + " " + widget.student.lastname),
+      backgroundColor: MyTheme.colorTheme(context, colorDark: MyTheme.DarkBackground, colorLight: MyTheme.LightBackground),
+      title: Text(widget.student.firstname + " " + widget.student.lastname, style: TextStyle(color: MyTheme.colorTheme(context), fontWeight: FontWeight.w800),),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))
       ),

@@ -1,6 +1,5 @@
-import 'package:bde_esiee_mobile/src/models/club_model.dart';
+
 import 'package:bde_esiee_mobile/src/models/prof_model.dart';
-import 'package:bde_esiee_mobile/src/models/stock_model.dart';
 import 'package:meta/meta.dart';
 abstract class ProfEvent {
   const ProfEvent();

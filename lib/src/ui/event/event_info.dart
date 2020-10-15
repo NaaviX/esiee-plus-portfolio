@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
@@ -25,6 +24,7 @@ import '../../App.dart';
 import 'event_creation.dart';
 import 'package:meta/meta.dart';
 
+// ignore: must_be_immutable
 class EventInfoPage extends StatefulWidget {
 
   @required EventModel event;
@@ -146,31 +146,31 @@ class EventInfoState extends State<EventInfoPage> {
       return FutureBuilder(
           future: getSavedEvents(),
           builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-              if (Base.thisClub != null)
-                return _manage(widget.event.idClubRef);
-              if (Base.thisUser != null && !widget.isModeration){
-                dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
-                List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
-                _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
-                return FloatingActionButton(
-                  child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
-                      color: (_isFav ? Colors.redAccent : Colors.blueGrey.withOpacity(0.5))),
-                  splashColor: Colors.white,
-                  backgroundColor: Theme.of(context).backgroundColor,
-                  elevation: 0,
-                  highlightElevation: 0,
-                  onPressed: () {
-                    _isFav ? unfavEvent() : favEvent();
-                    setState(() {
-                      _isFav = !_isFav;
-                      widget.parentCard.setState(() {
+            if (Base.thisClub != null)
+              return _manage(widget.event.idClubRef);
+            if (Base.thisUser != null && !widget.isModeration){
+              dynamic jsonData = eventsJson.hasData ? jsonDecode(eventsJson.data) : [];
+              List<EventModel> snapshot = jsonData != null ? EventModel.allEventsFromJson(jsonData) : [];
+              _isFav = snapshot.where((event) => event.idEvent == widget.event.idEvent).toList().length > 0;
+              return FloatingActionButton(
+                child: Icon( _isFav ?  FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, size: 25,
+                    color: (_isFav ? Colors.redAccent : Colors.blueGrey.withOpacity(0.5))),
+                splashColor: Colors.white,
+                backgroundColor: Theme.of(context).backgroundColor,
+                elevation: 0,
+                highlightElevation: 0,
+                onPressed: () {
+                  _isFav ? unfavEvent() : favEvent();
+                  setState(() {
+                    _isFav = !_isFav;
+                    widget.parentCard.setState(() {
 
-                      });
                     });
-                  },
-                );
-              }
-          /*if (Base.thisClub != null)
+                  });
+                },
+              );
+            }
+            /*if (Base.thisClub != null)
             return _manage(widget.event.idClubRef);
           if (Base.thisUser != null && !widget.isModeration)
             return FloatingActionButton(
@@ -186,9 +186,9 @@ class EventInfoState extends State<EventInfoPage> {
               },
             );*/
 
-          return Container();
-        }
-    );
+            return Container();
+          }
+      );
   }
 
   getDate()
@@ -325,12 +325,11 @@ class EventInfoState extends State<EventInfoPage> {
           child: Icon(Icons.check,),
           splashColor: Colors.white,
           onPressed: () {
-            BlocProvider.of<EventsBloc>(context)
-                .add(EventToBeSaved(event: widget.event));
-            Base.selectedIndex = 1;
+            widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+            widget.eventsBloc.add(EventsRequested());
             if(Base.thisUser != null)
-              Base.selectedIndex = 2;
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+              Base.selectedIndex = 1;
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           }
       );
     }
@@ -340,7 +339,7 @@ class EventInfoState extends State<EventInfoPage> {
         children: [
           SpeedDialChild(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(this, event : widget.event, eventsBloc: widget.eventsBloc,)),);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventCreation(event : widget.event, eventsBloc: widget.eventsBloc,)),);
               },
               child: Icon(Icons.edit,),
               label: "Modifier",
@@ -349,6 +348,9 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
               onTap: () {
                 _neverSatisfied();
+                widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+                widget.eventsBloc.add(EventsRequested());
+                Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               backgroundColor: Colors.red,
               child: Icon(Icons.delete, color: Colors.white,),
@@ -374,13 +376,12 @@ class EventInfoState extends State<EventInfoPage> {
             value: _isEnabled,
             onChanged: (bool value)
             {
-              setState( ()
-              {
+              setState( () {
                 _isEnabled = value;
-                widget.event.enable = _isEnabled;
-                BlocProvider.of<EventsBloc>(context)
-                    .add(EventToBeSaved(event: widget.event));
               });
+              widget.event.enable = _isEnabled;
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -395,8 +396,8 @@ class EventInfoState extends State<EventInfoPage> {
                 _isTopEvent = value;
               });
               widget.event.topEvent = _isTopEvent;
-              BlocProvider.of<EventsBloc>(context)
-                  .add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
 
             },
             activeColor : Colors.green,
@@ -412,8 +413,8 @@ class EventInfoState extends State<EventInfoPage> {
                 _isForStratif = value;
               });
               widget.event.enabledStratif = _isForStratif;
-              BlocProvider.of<EventsBloc>(context)
-                  .add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,
@@ -440,6 +441,7 @@ class EventInfoState extends State<EventInfoPage> {
             color: Colors.white,
             onPressed: () {
               _neverSatisfied();
+              Navigator.popUntil(context, ModalRoute.withName('/'));
             },
           ),
         ),
@@ -475,14 +477,14 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
 
   _text(EventModel event) {
     if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
     else if(event.enable == false) return "en attente d'approbation";
-    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
+    else if(event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return "pas encore publié";
     else return "";
   }
 
@@ -504,17 +506,18 @@ class EventInfoState extends State<EventInfoPage> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                BlocProvider.of<EventsBloc>(context)
-                    .add(EventDeleteRequested(event: widget.event));
+                widget.eventsBloc.add(EventDeleteRequested(event: widget.event));
+                widget.eventsBloc.add(EventsRequested());
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 1;
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
+                  Navigator.of(context).pop();
+                  //Navigator.popUntil(context, ModalRoute.withName('/'));
+                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
                 }
                 else {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
+                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
                 }
-                setState(() {});
               },
             ),
             FlatButton(

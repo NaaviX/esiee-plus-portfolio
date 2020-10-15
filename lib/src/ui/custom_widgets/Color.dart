@@ -1,7 +1,4 @@
-import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
-import '../custom_widgets/Hyperlink.dart';
 import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
@@ -65,7 +62,6 @@ class ColorAverager {
     print("Value of int: $hex ");
 
     Color meanColor = Color(hex);
-    int l = getLuminance(meanColor);
 
     return !isNearFromWhite(meanColor, 50) ? meanColor : Theme.of(context).primaryColor;
   }

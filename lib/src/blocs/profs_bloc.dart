@@ -36,9 +36,12 @@ class ProfsBloc extends Bloc<ProfEvent, ProfState> {
     }
 
     else if (event is ProfToBeSaved) {
+      yield ProfSaveLoadInProgress();
       try {
         await profRepository.saveProf(event.prof);
+        yield ProfSaveLoadSuccess(prof: event.prof);
       } catch (_) {
+        print(_);
         yield ProfSaveLoadFailure();
       }
     }

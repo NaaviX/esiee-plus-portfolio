@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:bde_esiee_mobile/src/blocs/courses_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/course_model.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/agenda_event_view.dart';
 import 'package:bde_esiee_mobile/src/ui/calendar/week_view.dart';
@@ -55,10 +53,6 @@ class CalendarState extends State<Calendar> {
   }
 
   void scrollToCurrentTime() {
-    int dateCount = 7*7;
-
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
 
     int index = 2 * 7;
     index -= index % 7;
@@ -67,9 +61,6 @@ class CalendarState extends State<Calendar> {
     double leftOffset = dayViewWidth * index;
 
     double calculateTopOffset(int hour, [int minute = 0, double hourRowHeight]) => (hour + (minute / 60)) * 60;
-
-    double calculateHeight([double hourRowHeight]) => calculateTopOffset(24, 0, hourRowHeight);
-    double test = min(calculateTopOffset(15, 50), scrollController.verticalScrollController.position.maxScrollExtent);
 
     scrollController.verticalScrollController.animateTo( min(calculateTopOffset(7, 50), scrollController.verticalScrollController.position.maxScrollExtent), duration: Duration(seconds: 1), curve: Curves.easeOut );
     scrollController.horizontalScrollController.animateTo( min(leftOffset, scrollController.horizontalScrollController.position.maxScrollExtent), duration: Duration(seconds: 1), curve: Cubic(0.175, 0.885, 0.32, 1.125) );

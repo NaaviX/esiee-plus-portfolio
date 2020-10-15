@@ -48,7 +48,7 @@ class HomeState extends State<Home> {
     /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());
-    }*/
+    }
     BlocProvider.of<EventsBloc>(context)
         .add(EventsRequested());
     super.initState();
@@ -71,9 +71,9 @@ class HomeState extends State<Home> {
                     SizedBox(
                       height: 5,
                     ),
-                    Base.allClubs != null && Base.thisUser!=null ? _Component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
-                    Base.thisUser!=null ? _Component('Mon Prochain Cours', 1) : Container(),
-                    _Component('Top Events', 2),
+                    Base.allClubs != null && Base.thisUser!=null ? _component('Mes Clubs', 0, Base.allClubs.where((element) => element.students.contains(Base.thisUser)).toList()) : Container(),
+                    Base.thisUser!=null ? _component('Mon Prochain Cours', 1) : Container(),
+                    _component('Top Events', 2),
                   ],
                 ),
               ),
@@ -87,7 +87,7 @@ class HomeState extends State<Home> {
         ));
   }
 
-  _Component(String title, int type, [List<ClubModel> clubs]) {
+  _component(String title, int type, [List<ClubModel> clubs]) {
     return (type == 0 && clubs.isNotEmpty) || type != 0 ?
     Container(
         margin: EdgeInsets.symmetric(vertical: 5),
@@ -105,16 +105,16 @@ class HomeState extends State<Home> {
               ),
             ),
             type == 0
-                ? _StudentClub(clubs)
+                ? _studentClub(clubs)
                 : type == 1
-                ? _StudentNextCurses()
-                : type == 2 ? _TopEvents() : Container()
+                ? _studentNextCurses()
+                : type == 2 ? _topEvents() : Container()
           ],
         )
     ) : Container() ;
   }
 
-  _TopEvents() {
+  _topEvents() {
     List<EventModel> tops = List();
     return Container(
         margin: EdgeInsets.only(top: 10),
@@ -128,9 +128,10 @@ class HomeState extends State<Home> {
                 return Center(child: CircularProgressIndicator());
               }
               if (state is EventsLoadSuccess) {
-                final events = state.events;
+                final allEvents = state.events;
 
-                Base.allEvents = events.toList();
+                Base.allEvents = allEvents.toList();
+                List<EventModel> events = allEvents.toList();
 
                 events.removeWhere((event) =>
                 !event.enable || event.endDate.isBefore(DateTime.now()));
@@ -146,7 +147,7 @@ class HomeState extends State<Home> {
                       ));
                 tops.addAll(events.where((event) => event.enabledStratif));
                 tops.isEmpty ? tops.add(events.last) : tops = tops;
-                return _TopEventsList(events);
+                return _topEventsList(events);
               }
               if (state is EventsLoadFailure) {
                 return Text(
@@ -159,7 +160,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  _TopEventsList(List<EventModel> tops) {
+  _topEventsList(List<EventModel> tops) {
     return Container(
       height: 200,
       child: NotificationListener<OverscrollIndicatorNotification>(
@@ -313,7 +314,7 @@ class HomeState extends State<Home> {
     return localEvents;
   }
 
-  _StudentNextCurses() {
+  _studentNextCurses() {
     return TimerBuilder.periodic(Duration(minutes: 1), builder: (context) {
       return FutureBuilder(
           future: getLocalCourses(),
@@ -330,14 +331,14 @@ class HomeState extends State<Home> {
                   DateTime.now().minute - 30);
               CourseModel course = snapshot.firstWhere((course) =>
               now.isBefore(course.start) && now.isBefore(course.end));
-              return _StudentNextCursesCard(course);
+              return _studentNextCursesCard(course);
             }
             return Container();
           });
     });
   }
 
-  _StudentNextCursesCard(CourseModel course) {
+  _studentNextCursesCard(CourseModel course) {
     String place = course.location.replaceAll("[", '').replaceAll("]", '');
 
     int diffDay = 0;
@@ -367,8 +368,6 @@ class HomeState extends State<Home> {
         : diff = "Dans " +
         (diffTime.inMinutes % 60).toString() +
         "min";
-
-    Color color = Colors.blueAccent;
 
     return Padding(
       padding: EdgeInsets.all(10),
@@ -494,7 +493,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  _StudentClub(List<ClubModel> clubs) {
+  _studentClub(List<ClubModel> clubs) {
     return Container(
         padding: EdgeInsets.only(left: 10),
         margin: EdgeInsets.symmetric(vertical: 10.0),

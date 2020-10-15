@@ -317,7 +317,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     AutoSizeText("Classement", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
-                                    AutoSizeText("à venir", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black26),),
+                                    AutoSizeText("à venir", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue[100]),),
                                     //AutoSizeText("0", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
                                   ]
                               ),

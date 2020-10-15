@@ -35,7 +35,7 @@ class ProfLoadSuccess extends ProfState {
 
 
 
-
+class ProfSaveLoadInProgress extends ProfState {}
 class ProfSaveLoadSuccess extends ProfState {
   final ProfModel prof;
 

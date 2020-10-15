@@ -326,6 +326,7 @@ class EventInfoState extends State<EventInfoPage> {
           splashColor: Colors.white,
           onPressed: () {
             widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+            widget.eventsBloc.add(EventsRequested());
             Base.selectedIndex = 1;
             if(Base.thisUser != null)
               Base.selectedIndex = 2;
@@ -378,6 +379,7 @@ class EventInfoState extends State<EventInfoPage> {
                 _isEnabled = value;
                 widget.event.enable = _isEnabled;
                 widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+                widget.eventsBloc.add(EventsRequested());
               });
             },
             activeColor : Colors.green,
@@ -394,6 +396,7 @@ class EventInfoState extends State<EventInfoPage> {
               });
               widget.event.topEvent = _isTopEvent;
               widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
 
             },
             activeColor : Colors.green,
@@ -410,6 +413,7 @@ class EventInfoState extends State<EventInfoPage> {
               });
               widget.event.enabledStratif = _isForStratif;
               widget.eventsBloc.add(EventToBeSaved(event: widget.event));
+              widget.eventsBloc.add(EventsRequested());
             },
             activeColor : Colors.green,
             inactiveThumbColor : Colors.red,

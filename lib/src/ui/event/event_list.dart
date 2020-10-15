@@ -36,7 +36,7 @@ class EventListState extends State<EventList> {
 
   @override
   void initState() {
-    //widget.eventsBloc.add(EventsRequested());
+    widget.eventsBloc.add(EventsRequested());
     super.initState();
     selected = "Mes évents";
   }

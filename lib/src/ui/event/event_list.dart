@@ -4,6 +4,7 @@ import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,28 +47,21 @@ class EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: builEventList(),/*FutureBuilder(
-          future: isInternetConnected(),
-          builder: (BuildContext context, AsyncSnapshot<bool> connected) {
-            return connected.hasData && connected.data
-                ? builEventList()
-                : builEventListLocal();
-          }),*/
+      body: builEventList(),
       floatingActionButton: creationButton(),
     );
   }
 
   Widget builEventList() {
-
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                if(Base.thisClub != null) dropDown(),
-                Expanded(
-                  child: buildList(),
-                ),
-              ],
-            );
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        if(Base.thisClub != null) dropDown(),
+        Expanded(
+          child: buildList(),
+        ),
+      ],
+    );
   }
 
   Widget buildList() {
@@ -162,7 +156,7 @@ class EventListState extends State<EventList> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventCreation(this, eventsBloc: widget.eventsBloc)),
+            MaterialPageRoute(builder: (context) => EventCreation(eventsBloc: widget.eventsBloc)),
           );
         },
         child: Icon(Icons.add,),

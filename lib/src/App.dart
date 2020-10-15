@@ -355,7 +355,8 @@ class UserAuthState extends State<UserAuth> {
                               return Base();
                             }
                             if (state is ProfLoadFailure) {}
-                            return Container();
+                            signOutGoogle();
+                            return LoginPage();
                           });
                     }
                     return Container();

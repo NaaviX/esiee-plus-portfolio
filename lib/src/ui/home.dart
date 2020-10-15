@@ -120,9 +120,10 @@ class HomeState extends State<Home> {
                 return Center(child: CircularProgressIndicator());
               }
               if (state is EventsLoadSuccess) {
-                final events = state.events;
+                final allEvents = state.events;
 
-                Base.allEvents = events.toList();
+                Base.allEvents = allEvents.toList();
+                List<EventModel> events = allEvents.toList();
 
                 events.removeWhere((event) =>
                 !event.enable || event.endDate.isBefore(DateTime.now()));

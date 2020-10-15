@@ -37,18 +37,18 @@ class EventApiProvider {
 
   Future<EventModel> addEvent(EventModel event) async {
     print("EVEEEEEEEEEEEENT");
-    print(event.publicationDate);
-    print(DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate));
     print(event.startDate);
     print(DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate));
+    print(event.endDate);
+    print(DateFormat("yyyy-MM-dd HH:mm:ss","fr_FR").format(event.endDate));
     final response = await client.post(
         "$baseUrl/event/add",
         body: {
           'id_event': event.idEvent.toString(),
           'enabled': event.enable.toString(),
-          'publication_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.publicationDate),
-          'start_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.startDate),
-          'end_date': DateFormat("yyyy-MM-dd HH:mm:ss","en_US").format(event.endDate),
+          'publication_date': DateFormat("yyyy-MM-dd HH:mm:ss","fr_FR").format(event.publicationDate),
+          'start_date': DateFormat("yyyy-MM-dd HH:mm:ss","fr_FR").format(event.startDate),
+          'end_date': DateFormat("yyyy-MM-dd HH:mm:ss","fr_FR").format(event.endDate),
           'name': event.name,
           'description': event.description,
           'place': event.place,

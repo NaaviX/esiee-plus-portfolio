@@ -473,7 +473,9 @@ class _Base extends State<Base> {
                   create: (BuildContext context) => coursesBloc,
                   child: Home()))),
       KeepAlivePage(child: Calendar(key: globalKey)),
-      KeepAlivePage(child: EventList(eventsBloc: eventsBloc)),
+      KeepAlivePage(child: BlocProvider<EventsBloc>(
+    create: (BuildContext context) => eventsBloc,
+    child: EventList(eventsBloc: eventsBloc))),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
@@ -776,7 +778,8 @@ class _Base extends State<Base> {
             ),
             onTap: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) {
+                  .push(MaterialPageRoute(settings: RouteSettings(name: title),
+                  builder: (context) {
                 return route;
               }));
             },

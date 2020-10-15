@@ -501,6 +501,7 @@ class EventInfoState extends State<EventInfoPage> {
               child: Text('Oui'),
               onPressed: () {
                 widget.eventsBloc.add(EventDeleteRequested(event: widget.event));
+                widget.eventsBloc.add(EventsRequested());
                 if(Base.thisClub != null && !widget.isModeration) {
                   Base.selectedIndex = 1;
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
@@ -509,7 +510,6 @@ class EventInfoState extends State<EventInfoPage> {
                   Navigator.of(context).pop();
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
                 }
-                setState(() {});
               },
             ),
             FlatButton(

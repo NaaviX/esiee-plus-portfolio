@@ -73,6 +73,8 @@ class AddProfState extends State<AddProf> {
                         );
                         BlocProvider.of<ProfsBloc>(context)
                             .add(ProfToBeSaved(prof: prof));
+                        BlocProvider.of<ProfsBloc>(context)
+                            .add(ProfsRequested());
                         Navigator.of(context).pop();
                   }
                 },

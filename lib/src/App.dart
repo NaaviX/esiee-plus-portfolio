@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bde_esiee_mobile/src/blocs/course_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
@@ -121,9 +123,7 @@ class AppState extends State<App> {
         {
           return MaterialApp(
               initialRoute: '/',
-              routes: <String, WidgetBuilder>{
-                '/manageEvent': (context) => EventManager(),
-              },
+              routes: <String, WidgetBuilder>{},
               theme: MyTheme.defaultTheme,
               darkTheme: MyTheme.darkTheme,
               themeMode:
@@ -349,21 +349,21 @@ class UserAuthState extends State<UserAuth> {
                       log.fine("student");
                       Base.thisUser = state.student;
                       return BlocBuilder<CoursesBloc, CourseState>(
-                        builder: (context, state) {
-                          if(state is CoursesInitial || state is CoursesLoadInProgress) {
-                            return SplashScreen();
+                          builder: (context, state) {
+                            if(state is CoursesInitial || state is CoursesLoadInProgress) {
+                              return SplashScreen();
+                            }
+                            if(state is CoursesLoadSuccess) {
+                              return Base();
+                            }
+                            if(state is CoursesLoadFailure) {
+                              return Text(
+                                'Something went wrong!',
+                                style: TextStyle(color: Colors.red),
+                              );
+                            }
+                            return Container();
                           }
-                          if(state is CoursesLoadSuccess) {
-                            return Base();
-                          }
-                          if(state is CoursesLoadFailure) {
-                            return Text(
-                              'Something went wrong!',
-                              style: TextStyle(color: Colors.red),
-                            );
-                          }
-                          return Container();
-                        }
                       );
                     }
                     if (state is StudentLoadFailure) {
@@ -507,8 +507,8 @@ class _Base extends State<Base> {
                   child: Home()))),
       KeepAlivePage(child: Calendar(key: globalKey)),
       KeepAlivePage(child: BlocProvider<EventsBloc>(
-    create: (BuildContext context) => eventsBloc,
-    child: EventList(eventsBloc: eventsBloc))),
+          create: (BuildContext context) => eventsBloc,
+          child: EventList(eventsBloc: eventsBloc))),
     ];
     if (Base.thisUser == null) _widgetOptions.removeAt(1);
     super.initState();
@@ -678,10 +678,16 @@ class _Base extends State<Base> {
                 .elementAt(Base.selectedIndex),
             //Text(_selectedAppbarTitle.elementAt(Base.selectedIndex)),
             actions: actionButton()),
-        body: PageView(
-          controller: pageController,
-          children: _widgetOptions,
-          onPageChanged: _onPageChanged,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+            return false;
+          },
+          child:PageView(
+            controller: pageController,
+            children: _widgetOptions,
+            onPageChanged: _onPageChanged,
+          ),
         ),
         bottomNavigationBar: getBottomNavigationBar(),
         drawer: _getDrawer());
@@ -807,8 +813,8 @@ class _Base extends State<Base> {
               Navigator.of(context)
                   .push(MaterialPageRoute(settings: RouteSettings(name: title),
                   builder: (context) {
-                return route;
-              }));
+                    return route;
+                  }));
             },
           )
               : ListTile(
@@ -1162,21 +1168,19 @@ class _Base extends State<Base> {
         icon: Icon(
           FontAwesomeIcons.home,
         ),
-        title: Text('Home'),
+        label: 'Home',
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.clock,
         ),
-        title: Text('EDT'),
+        label: 'EDT',
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.calendarAlt,
         ),
-        title: Text(
-          'Event',
-        ),
+        label: 'Event',
       ),
     ];
     if (Base.thisUser == null) items.removeAt(1);

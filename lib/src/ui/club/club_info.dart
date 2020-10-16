@@ -54,54 +54,59 @@ class ClubInfoPageState extends State<ClubInfoPage> {
               ),
               Positioned(
                   child: Container(
-                    color: Colors.transparent,
-                    margin: EdgeInsets.only(top: 220),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          Container(height: 200,),
-                          _description(context),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
-                            width:  MediaQuery.of(context).size.width,
-                            //height: 100,
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                    flex: 2,
-                                    child: Container(
-                                      height: 100,
-                                      child: Card(
-                                        margin: EdgeInsets.only(right: 5,),
-                                        elevation: 5.0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                        ),
-                                        child: _contact(context),
-                                      ),
+                      color: Colors.transparent,
+                      margin: EdgeInsets.only(top: 220),
+                      child: NotificationListener<OverscrollIndicatorNotification>(
+                        onNotification: (overscroll) {
+                          overscroll.disallowGlow();
+                          return false;
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              Container(height: 200,),
+                              _description(context),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
+                                width:  MediaQuery.of(context).size.width,
+                                //height: 100,
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          height: 100,
+                                          child: Card(
+                                            margin: EdgeInsets.only(right: 5,),
+                                            elevation: 5.0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                            ),
+                                            child: _contact(context),
+                                          ),
+                                        )
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height: 100,
+                                          child: Card(
+                                            margin: EdgeInsets.only(left: 5,),
+                                            elevation: 5.0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                            ),
+                                            child: _cotisation(),
+                                          ),
+                                        )
                                     )
+                                  ],
                                 ),
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      height: 100,
-                                      child: Card(
-                                        margin: EdgeInsets.only(left: 5,),
-                                        elevation: 5.0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                        ),
-                                        child: _cotisation(),
-                                      ),
-                                    )
-                                )
-                              ],
-                            ),
+                              ),
+                              _lastEvent(context)
+                            ],
                           ),
-                          _lastEvent(context)
-                        ],
-                      ),
-                    ),
+                        ),)
                   )
               ),
               _header(),
@@ -242,8 +247,8 @@ class ClubInfoPageState extends State<ClubInfoPage> {
                 ),
                 Container(height: 12,),
                 nbrEvent == 0 ? Container(margin: EdgeInsets.fromLTRB(30, 0, 30, 30), child: AutoSizeText("Aucun événement cette année", style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),)
-                : Base.allEvents != null && Base.allEvents.length != 0 ? Container(height: 300,child: buildList())
-                : Container()
+                    : Base.allEvents != null && Base.allEvents.length != 0 ? Container(height: 300,child: buildList())
+                    : Container()
 
               ]
           ),
@@ -339,10 +344,10 @@ class ClubInfoPageState extends State<ClubInfoPage> {
                     backgroundColor: Colors.blueGrey.withOpacity(0.2),
                     radius: 87,
                     child:CircleAvatar(
-                    backgroundImage: NetworkImage(widget.club.urlPhoto),
-                    backgroundColor: Theme.of(context).backgroundColor,
-                    radius:85,
-                  ),
+                      backgroundImage: NetworkImage(widget.club.urlPhoto),
+                      backgroundColor: Theme.of(context).backgroundColor,
+                      radius:85,
+                    ),
                   ),
                 ),
               ),

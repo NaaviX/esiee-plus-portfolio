@@ -10,10 +10,8 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/club/club_info.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/custom_item_with_icon.dart';
-import 'package:bde_esiee_mobile/src/ui/event/event_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -86,56 +84,62 @@ class EventInfoState extends State<EventInfoPage> {
         appBar: AppBar(
           title: _title(),
         ),
-        body: ListView(
-            children: <Widget>[
-              Stack(
-                  children: <Widget>[
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 150.0,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                colorFilter: _filter(widget.event),
-                                image : NetworkImage(widget.event.backgroundUrl)
-                            )
-                        )
-                    ),
-                    _isEnded(context, widget.event),
-                  ]
-              ),
-              _header(),
-              Container(
-                padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
-                child: Divider(
-                  color: Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ? Colors.white : Colors.black,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(15,0,15,0),
-                padding:  EdgeInsets.fromLTRB(0,0,0,15),
-                child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
-              ),
-              getDate(),
-              Padding(
-                padding:  EdgeInsets.only(left: 5),
-                child: Column(
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+            return false;
+          },
+          child: ListView(
+              children: <Widget>[
+                Stack(
                     children: <Widget>[
-
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 150.0,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  colorFilter: _filter(widget.event),
+                                  image : NetworkImage(widget.event.backgroundUrl)
+                              )
+                          )
+                      ),
+                      _isEnded(context, widget.event),
                     ]
                 ),
-              ),
+                _header(),
+                Container(
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                  child: Divider(
+                    color: Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(15,0,15,0),
+                  padding:  EdgeInsets.fromLTRB(0,0,0,15),
+                  child: Text(widget.event.description, style: TextStyle(fontSize: 18,),textAlign: TextAlign.justify,),
+                ),
+                getDate(),
+                Padding(
+                  padding:  EdgeInsets.only(left: 5),
+                  child: Column(
+                      children: <Widget>[
 
-              list(Icons.place,widget.event.place),
-              list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
-              list(Icons.payment, widget.event.link),
-              list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
-              _validationMod(),
-              SizedBox(height: 10,),
-              _suppressionMod(),
-              SizedBox(height: 50,),
-            ]
+                      ]
+                  ),
+                ),
+
+                list(Icons.place,widget.event.place),
+                list(Icons.euro_symbol,widget.event.price.toString() + ' €'),
+                list(Icons.payment, widget.event.link),
+                list(FontAwesomeIcons.facebookSquare, widget.event.facebookLink),
+                _validationMod(),
+                SizedBox(height: 10,),
+                _suppressionMod(),
+                SizedBox(height: 50,),
+              ]
+          ),
         ),
         floatingActionButton: _floatingActionButton()
     );

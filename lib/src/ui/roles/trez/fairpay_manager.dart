@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/ui/roles/trez/club_fairpay.dart';
@@ -11,9 +12,10 @@ import '../../../App.dart';
 
 class FairPayManager extends StatefulWidget {
 
-  final FairpayLogsBloc bloc;
+  final FairpayLogsBloc fairpayLogsBloc;
+  final ClubsBloc clubsBloc;
 
-  FairPayManager({@required this.bloc});
+  FairPayManager({@required this.fairpayLogsBloc, @required this.clubsBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -67,8 +69,10 @@ class FairPayManagerState extends State<FairPayManager> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => BlocProvider<FairpayLogsBloc>.value(
-              value: widget.bloc,
-              child: Fairpay(club: club, isTrez: true, bloc: widget.bloc,))),//FairPayClubManager(club)),
+              value: widget.fairpayLogsBloc,
+              child: BlocProvider<ClubsBloc>.value(
+                  value: widget.clubsBloc,
+                  child: Fairpay(club: club, isTrez: true, fairpayLogsBloc: widget.fairpayLogsBloc,clubsBloc:widget.clubsBloc)))),//FairPayClubManager(club)),
         );
       }
   );

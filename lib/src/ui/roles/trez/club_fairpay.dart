@@ -1,4 +1,5 @@
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
@@ -20,9 +21,10 @@ class Fairpay extends StatefulWidget {
 
   ClubModel club;
   bool isTrez;
-  final FairpayLogsBloc bloc;
+  final FairpayLogsBloc fairpayLogsBloc;
+  final ClubsBloc clubsBloc;
 
-  Fairpay({this.club, this.isTrez, @required this.bloc}) {
+  Fairpay({this.club, this.isTrez, @required this.fairpayLogsBloc, @required this.clubsBloc}) {
     this.club != null ? this.club = this.club : this.club = Base.thisClub;
     this.isTrez != null ? this.isTrez = this.isTrez : this.isTrez = false;
   }
@@ -39,7 +41,7 @@ class FairpayState extends State<Fairpay>{
   @override
   void initState() {
     super.initState();
-    widget.bloc.add(FairpayLogsByClubRequested(id: widget.club.idClubRef.toString()));
+    widget.fairpayLogsBloc.add(FairpayLogsByClubRequested(id: widget.club.idClubRef.toString()));
   }
 
   final log = Logger('Fairpay Club');
@@ -150,8 +152,10 @@ class FairpayState extends State<Fairpay>{
         ),
         onPressed: () {
           return BlocProvider<FairpayLogsBloc>.value(
-              value: widget.bloc,
-              child: fairpayForm(this, text, widget.club));
+              value: widget.fairpayLogsBloc,
+              child: BlocProvider<ClubsBloc>.value(
+          value: widget.clubsBloc,
+          child: fairpayForm(this, text, widget.club, bloc: widget.clubsBloc, fairpayBloc: widget.fairpayLogsBloc)));
         }/*showDialog<void>(
             context: context,
             barrierDismissible: true,

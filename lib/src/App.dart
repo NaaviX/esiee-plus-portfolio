@@ -899,7 +899,9 @@ class _Base extends State<Base> {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return BlocProvider<FairpayLogsBloc>.value(
                   value: fairpayLogsBloc,
-                  child: Fairpay(bloc: fairpayLogsBloc));
+                  child: BlocProvider<ClubsBloc>.value(
+              value: clubsBloc,
+              child: Fairpay(fairpayLogsBloc: fairpayLogsBloc, clubsBloc: clubsBloc)));
             }));
           },
         ),
@@ -1115,7 +1117,7 @@ class _Base extends State<Base> {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return FairPayManager(bloc: fairpayLogsBloc);
+              return FairPayManager(fairpayLogsBloc: fairpayLogsBloc, clubsBloc: clubsBloc);
             }));
           },
         ),

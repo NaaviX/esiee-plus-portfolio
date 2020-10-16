@@ -10,12 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'club_fairpay.dart';
+import 'package:meta/meta.dart';
 
-fairpayForm(FairpayState parent, String type, ClubModel club) {
+fairpayForm(FairpayState parent, String type, ClubModel club, {@required ClubsBloc bloc, @required FairpayLogsBloc fairpayBloc}) {
   final _formKey = GlobalKey<FormState>();
   final amountController = TextEditingController();
   final descController = TextEditingController();
   final folderLinkController = TextEditingController();
+  final ClubsBloc clubsBloc = bloc;
+  final FairpayLogsBloc fairpayLogsBloc = fairpayBloc;
 
   getColor() {
     if(Base.thisUser == null) return Colors.grey;
@@ -101,18 +104,16 @@ fairpayForm(FairpayState parent, String type, ClubModel club) {
                         parent.setState(() { });
                         if(type != "Subvention" && Base.thisUser != null) {
                           club.solde += _getAmount();
-                          BlocProvider.of<ClubsBloc>(context)
-                              .add(ClubToBeSaved(club: club));
-                          BlocProvider.of<ClubsBloc>(context)
-                              .add(ClubsRequested());
+                          clubsBloc.add(ClubToBeSaved(club: club));
+                          clubsBloc.add(ClubsRequested());
                         }
-                        BlocProvider.of<FairpayLogsBloc>(context)
-                            .add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
+                        fairpayBloc.add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
                             type: type,
                             amount: _getAmount(),
                             idClubRef: club.idClubRef,
                             info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
                         )));
+                        fairpayBloc.add(FairpayLogsRequested());
                         if (Navigator.canPop(context)) {
                           parent.setState(() { });
                           Navigator.pop(context);

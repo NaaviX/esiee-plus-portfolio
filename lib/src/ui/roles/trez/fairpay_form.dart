@@ -12,17 +12,46 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'club_fairpay.dart';
 import 'package:meta/meta.dart';
 
-fairpayForm(FairpayState parent, String type, ClubModel club, {@required ClubsBloc bloc, @required FairpayLogsBloc fairpayBloc}) {
+class FairpayForm extends StatefulWidget {
+  final String type;
+  final ClubModel club;
+  @required ClubsBloc bloc;
+  @required FairpayLogsBloc fairpayBloc;
+
+  FairpayForm(this.type, this.club, {@required this.bloc, @required this.fairpayBloc});
+
+  @override
+  fairpayFormState createState() {
+    return fairpayFormState();
+  }
+}
+
+class fairpayFormState extends State<FairpayForm> {
+
   final _formKey = GlobalKey<FormState>();
   final amountController = TextEditingController();
   final descController = TextEditingController();
   final folderLinkController = TextEditingController();
-  final ClubsBloc clubsBloc = bloc;
-  final FairpayLogsBloc fairpayLogsBloc = fairpayBloc;
+  //final ClubsBloc clubsBloc = widget.bloc;
+  //final FairpayLogsBloc fairpayLogsBloc = widget.fairpayBloc;
+
+  @override Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 20.0,
+      //backgroundColor: Theme.of(context).backgroundColor,
+      child: Form(
+          key: _formKey,
+          child: _form()
+      ),
+    );
+  }
 
   getColor() {
     if(Base.thisUser == null) return Colors.grey;
-    switch (type) {
+    switch (widget.type) {
       case "Depot":
         return Colors.green;
       case "Retrait":
@@ -50,7 +79,7 @@ fairpayForm(FairpayState parent, String type, ClubModel club, {@required ClubsBl
 
   _getAmount() {
     double amount = double.parse(amountController.text);
-    if(type == "Retrait") return -amount;
+    if(widget.type == "Retrait") return -amount;
     else return amount;
   }
 
@@ -83,11 +112,11 @@ fairpayForm(FairpayState parent, String type, ClubModel club, {@required ClubsBl
           )
       );
 
-  _form(BuildContext context) =>
+  _form() =>
       Wrap(
           children: <Widget>[
             _amountInput(),
-            type == "Subvention" ? _linkInput() : Container(),
+            widget.type == "Subvention" ? _linkInput() : Container(),
             _descriptionInput(),
             Container(
                 padding: EdgeInsets.all(10.0),
@@ -98,50 +127,29 @@ fairpayForm(FairpayState parent, String type, ClubModel club, {@required ClubsBl
                     color: getColor(),
                     padding: EdgeInsets.all(10.0),
                     child: Text(
-                      type, style: TextStyle(color: Colors.white),),
+                      widget.type, style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        parent.setState(() { });
-                        if(type != "Subvention" && Base.thisUser != null) {
-                          club.solde += _getAmount();
-                          clubsBloc.add(ClubToBeSaved(club: club));
-                          clubsBloc.add(ClubsRequested());
+                        if(widget.type != "Subvention" && Base.thisUser != null) {
+                          widget.club.solde += _getAmount();
+                          widget.bloc.add(ClubToBeSaved(club: widget.club));
+                          widget.bloc.add(ClubsRequested());
                         }
-                        fairpayBloc.add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
-                            type: type,
+                        widget.fairpayBloc.add(FairpayLogToBeSaved(fairpayLog: FairpayLogModel(
+                            type: widget.type,
                             amount: _getAmount(),
-                            idClubRef: club.idClubRef,
+                            idClubRef: widget.club.idClubRef,
                             info: "${ Base.thisUser.firstname } ${ Base.thisUser.lastname } :: ${ descController.text } :: ${ folderLinkController.text ?? "" }"
                         )));
-                        fairpayBloc.add(FairpayLogsRequested());
-                        if (Navigator.canPop(context)) {
-                          parent.setState(() { });
-                          Navigator.pop(context);
-                        }
+                        widget.fairpayBloc.add(FairpayLogsRequested());
+                        widget.bloc.add(ClubsRequested());
+                        Navigator.pop(context);
                       }
                     }
                 )
             )
           ]
       );
-
-  return showDialog<void>(
-      context: parent.context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 20.0,
-          //backgroundColor: Theme.of(context).backgroundColor,
-          child: Form(
-              key: _formKey,
-              child: _form(context)
-          ),
-        );
-      }
-  );
 }
 
 

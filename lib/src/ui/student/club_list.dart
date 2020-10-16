@@ -30,8 +30,8 @@ class ClubListState extends State<ClubList> {
   }
 
   Widget buildList(List<ClubModel> clubs) {
-    List<ClubModel> listClubs = clubs;
-    listClubs.removeWhere((element) => element.idClubRef > 100);
+    List<ClubModel> listClubs = List();
+    listClubs.addAll(clubs.where((element) => element.idClubRef <= 100));
     return ListView.builder(
         itemCount: listClubs.length,
         itemBuilder: (BuildContext context, int index) {

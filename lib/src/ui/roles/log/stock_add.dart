@@ -116,7 +116,7 @@ class AddStockState extends State<AddStock> {
                           Text("Date de péremption"),
                           DateFormat('dd/MM/yyyy').format(date) != DateFormat('dd/MM/yyyy').format(DateTime.now()) ? Text(" : " + DateFormat('dd/MM/yyyy').format(date)) : Container(),
                         ],),
-                        color: Colors.white,
+                        color: Theme.of(context).backgroundColor,
                       ) : Container(),
                       selectedChoices != "Cannette" ?
                       SizedBox(height: 15.0) : Container(),
@@ -192,7 +192,7 @@ class AddStockState extends State<AddStock> {
           children: <Widget>[
             RaisedButton(
                 padding: EdgeInsets.all(8),
-                color: Theme.of(context).primaryColor,
+                color: MyTheme.PrimaryColorLight,
                 child: Icon(Icons.add_shopping_cart, color: Colors.white,),
                 splashColor: Colors.white,
                 shape: RoundedRectangleBorder(

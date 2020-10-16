@@ -348,8 +348,6 @@ class EventInfoState extends State<EventInfoPage> {
           SpeedDialChild(
               onTap: () {
                 _neverSatisfied();
-                widget.eventsBloc.add(EventToBeSaved(event: widget.event));
-                widget.eventsBloc.add(EventsRequested());
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               backgroundColor: Colors.red,
@@ -441,7 +439,7 @@ class EventInfoState extends State<EventInfoPage> {
             color: Colors.white,
             onPressed: () {
               _neverSatisfied();
-              Navigator.popUntil(context, ModalRoute.withName('/'));
+              Navigator.of(context).pop();
             },
           ),
         ),
@@ -508,16 +506,8 @@ class EventInfoState extends State<EventInfoPage> {
               onPressed: () {
                 widget.eventsBloc.add(EventDeleteRequested(event: widget.event));
                 widget.eventsBloc.add(EventsRequested());
-                if(Base.thisClub != null && !widget.isModeration) {
-                  Base.selectedIndex = 1;
-                  Navigator.of(context).pop();
-                  //Navigator.popUntil(context, ModalRoute.withName('/'));
-                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => App()), (Route<dynamic> route) => false);
-                }
-                else {
-                  Navigator.of(context).pop();
-                  //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => EventManager(eventsBloc: widget.eventsBloc,)), (Route<dynamic> route) => false);
-                }
+                if(Base.thisClub != null && !widget.isModeration) Base.selectedIndex = 1;
+                Navigator.of(context).pop();
               },
             ),
             FlatButton(

@@ -166,7 +166,7 @@ class MessengerHistoryState extends State<MessengerHistory> {
                   leading: CircleAvatar(
                     radius: 20,
                     backgroundColor: Theme.of(context).primaryColor,
-                    child: Icon(Icons.person, color: Colors.white,),
+                    child: Icon(Icons.person, color: Theme.of(context).backgroundColor,),
                   ),
                   trailing: nbMsgNotRead != 0 ?
                   CircleAvatar(

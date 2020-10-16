@@ -62,7 +62,7 @@ class MyTheme {
         canvasColor: LightBackground,
 
         textSelectionColor: AccentColorLight,
-        selectedRowColor: AccentColorLight,
+        selectedRowColor: PrimaryColorLight,
 
         appBarTheme: AppBarTheme(
           brightness: Brightness.light,

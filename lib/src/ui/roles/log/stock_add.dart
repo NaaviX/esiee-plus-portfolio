@@ -208,6 +208,7 @@ class AddStockState extends State<AddStock> {
                       bottleQuant: bottleQuant.text == "" ? 0 : double.parse(bottleQuant.text),
                     );
                     widget.stocksBloc.add(StockToBeSaved(stock: stock));
+                    widget.stocksBloc.add(StockRequested());
                     Navigator.of(context).pop();
                   }
                 }

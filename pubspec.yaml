@@ -98,6 +98,7 @@ flutter:
     - assets/esieeplus/white_LetterLogo.webp
     - assets/illustration/addTeacher.webp
     - assets/illustration/freeRooms.webp
+    - assets/illustration/freeRoomsDark.webp
     - assets/illustration/cours.webp
     - assets/illustration/info.webp
     - assets/flr/medal.flr

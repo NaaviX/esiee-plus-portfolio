@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 
 class FreeRooms extends StatefulWidget {
   @override
@@ -93,7 +94,18 @@ class FreeRoomsState extends State<FreeRooms> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Image(image: AssetImage('assets/illustration/freeRooms.webp'), height: MediaQuery.of(context).size.height/6,),
+          SizedBox(height: 5,),
+          ClipOval(
+              child: Image(
+                image: AssetImage(
+                    Provider.of<ThemeNotifier>(context, listen: false).isDarkMode ?
+                    'assets/illustration/freeRoomsDark.webp' :
+                    'assets/illustration/freeRooms.webp'
+                ),
+                height: MediaQuery.of(context).size.height/6,),
+          ),
+          SizedBox(height: 5,),
+          //Image(image: AssetImage('assets/illustration/freeRooms.webp'), height: MediaQuery.of(context).size.height/6,),
           epi(0, epi0.toString()),
           Divider(height: 1, thickness: 1,),
           epi(1, epi1.toString()),

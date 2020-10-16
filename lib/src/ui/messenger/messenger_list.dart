@@ -133,7 +133,7 @@ class MessengerStudentListState extends State<MessengerStudentList> {
   final searchController = TextEditingController();
 
   String filter = "";
-
+  int i = 0;
   List<String> history = new List();
 
   @override
@@ -155,6 +155,7 @@ class MessengerStudentListState extends State<MessengerStudentList> {
   @override
   Widget build(BuildContext context) {
     if (widget.students != null && widget.students.length != 0) {
+      i=1;
       return Column(children: <Widget>[
         Container(
             decoration: BoxDecoration(
@@ -178,7 +179,7 @@ class MessengerStudentListState extends State<MessengerStudentList> {
                   filter = searchController.text;
                   StudentModel student = widget.students[index];
                   return (filter == null || filter == "")
-                      ? _studentTile(student, index)
+                      ? _studentTile(student, i)
                       : (student.firstname
                                   .toLowerCase()
                                   .startsWith(filter.toLowerCase()) ||
@@ -188,7 +189,7 @@ class MessengerStudentListState extends State<MessengerStudentList> {
                               (student.firstname + " " + student.lastname)
                                   .toLowerCase()
                                   .startsWith(filter.toLowerCase()))
-                          ? _studentTile(student, index)
+                          ? _studentTile(student, i)
                           : new Container();
                 }))
       ]);
@@ -198,7 +199,8 @@ class MessengerStudentListState extends State<MessengerStudentList> {
   }
 
   _studentTile(StudentModel student, int index) {
-    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    Color color = (index % 2 == 0) ? Theme.of(context).backgroundColor : Theme.of(context).primaryColor.withOpacity(0.1);
+    i++;
     return new Container(
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(color: color),
@@ -241,6 +243,7 @@ class MessengerProfListState extends State<MessengerProfList> {
   final searchController = TextEditingController();
 
   String filter = "";
+  int i = 0;
 
   @override
   void initState() {
@@ -261,6 +264,7 @@ class MessengerProfListState extends State<MessengerProfList> {
   @override
   Widget build(BuildContext context) {
     if (widget.profs != null && widget.profs.length != 0) {
+      i=1;
       return Column(children: <Widget>[
         Container(
             decoration: BoxDecoration(
@@ -284,7 +288,7 @@ class MessengerProfListState extends State<MessengerProfList> {
                   filter = searchController.text;
                   ProfModel prof = widget.profs[index];
                   return (filter == null || filter == "")
-                      ? _profTile(prof, index)
+                      ? _profTile(prof, i)
                       : (prof.firstname
                                   .toLowerCase()
                                   .startsWith(filter.toLowerCase()) ||
@@ -294,7 +298,7 @@ class MessengerProfListState extends State<MessengerProfList> {
                               (prof.firstname + " " + prof.lastname)
                                   .toLowerCase()
                                   .startsWith(filter.toLowerCase()))
-                          ? _profTile(prof, index)
+                          ? _profTile(prof, i)
                           : new Container();
                 }))
       ]);
@@ -304,7 +308,8 @@ class MessengerProfListState extends State<MessengerProfList> {
   }
 
   _profTile(ProfModel prof, int index) {
-    Color color = (index % 2 == 0) ? Colors.white : Color(0xFFF7F7F9);
+    Color color = (index % 2 == 0) ? Theme.of(context).backgroundColor : Theme.of(context).primaryColor.withOpacity(0.1);
+    i++;
     return new Container(
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(color: color),

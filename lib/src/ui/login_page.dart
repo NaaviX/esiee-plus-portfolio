@@ -81,9 +81,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton(BuildContext context) {
     return RaisedButton(
-        color: Theme.of(context).primaryColor,
+        color: MyTheme.colorTheme(context, colorDark: MyTheme.DarkBackground),
         elevation: 3,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            side: BorderSide(
+              width: 3,
+                color: MyTheme.colorTheme(context, colorDark: MyTheme.SelectedColor, colorLight: Colors.transparent)),
+        ),
         child: Container(
             constraints: BoxConstraints(maxWidth: 190.0, minHeight: 50.0),
             child: Row(

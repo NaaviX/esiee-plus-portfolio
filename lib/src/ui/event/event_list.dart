@@ -122,9 +122,8 @@ class EventListState extends State<EventList> {
       if(event.endDate.isAfter(DateTime.now()))
         return EventCard(event, context, moderation: true, eventsBloc: widget.eventsBloc,);
     }
-    if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
+    if (event.publicationDate.isBefore(DateTime.now().add(new Duration(hours: 2))) && event.enable == true) {
       if (Base.thisClub != null && selected != "Tous") {
-
         if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
           return EventCard(event, context, eventsBloc: widget.eventsBloc);
         else return Container();
@@ -172,12 +171,13 @@ class EventListState extends State<EventList> {
           margin: EdgeInsets.only(left: 10, top: 10, right: 10),
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
-            border: Border.all(width: 1.0, color: Colors.black38),
+            border: Border.all(width: 1.0, color: MyTheme.colorTheme(context, colorLight: Colors.black38, colorDark: Colors.white38)),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: DropdownButton<String>(
+                dropdownColor: Theme.of(context).backgroundColor,
                 isExpanded: true,
                 underline: Column(),
                 value: selected,
@@ -192,8 +192,9 @@ class EventListState extends State<EventList> {
                     child: Text(
                         role,
                         style: TextStyle(
-                            color: role == selected ? Colors.black : Colors
-                                .black54,
+                            color: role == selected
+                                ? MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.white)
+                                :  MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54),
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold)
                     ),

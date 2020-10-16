@@ -3,7 +3,6 @@ import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
-import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/FairpayLogCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -203,7 +202,6 @@ class TreasuryManagerState extends State<TreasuryManager>{
     log.forEach((element) => list.add(new FairpayLogCard(element, context)));
     return new Card(
       elevation: 5,
-      color: MyTheme.colorTheme(context, colorLight: MyTheme.LightBackground, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.4)),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),

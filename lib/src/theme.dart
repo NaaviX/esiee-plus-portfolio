@@ -119,7 +119,7 @@ class MyTheme {
         ),
 
         cardTheme: CardTheme(
-          color: WidgetDarkBackground.withOpacity(0.7),
+          color: PrimaryColorLight,
         ),
 
         floatingActionButtonTheme: FloatingActionButtonThemeData(

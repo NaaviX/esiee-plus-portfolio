@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/event_model.dart';
 import 'package:bde_esiee_mobile/src/resources/event_api_provider.dart';
 import 'package:bde_esiee_mobile/src/resources/event_repository.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/EventCard.dart';
 import 'package:bde_esiee_mobile/src/ui/messenger/messenger.dart';
 import 'package:flutter/cupertino.dart';
@@ -126,7 +127,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Qui sommes nous ?", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
+                  Text("Qui sommes nous ?", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54)),),
                   Container(height: 12,),
                   AutoSizeText(widget.club.description, style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),
                 ]
@@ -144,7 +145,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          AutoSizeText("Cotisation", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
+          AutoSizeText("Cotisation", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54) ),),
           Expanded(
             child: Center(
               child: widget.club.price == 0 ? Text("GRATUIT", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
@@ -164,7 +165,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          AutoSizeText("Nous contacter", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
+          AutoSizeText("Nous contacter", maxLines: 1, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54) ),),
           Expanded(
             child: _logocontact(),
           )
@@ -237,7 +238,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: Text("Nos derniers événements", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black54 ),),
+                  child: Text("Nos derniers événements", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: MyTheme.colorTheme(context, colorLight: Colors.black54, colorDark: Colors.white54) ),),
                 ),
                 Container(height: 12,),
                 nbrEvent == 0 ? Container(margin: EdgeInsets.fromLTRB(30, 0, 30, 30), child: AutoSizeText("Aucun événement cette année", style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),)

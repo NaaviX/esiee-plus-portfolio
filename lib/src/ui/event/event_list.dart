@@ -77,7 +77,8 @@ class EventListState extends State<EventList> {
         Base.allEvents = events.toList();
 
         return !widget.moderation
-            ? ListView.builder(
+            ? Base.allEvents.where((element) => element.enable).isEmpty ? Text("Aucun événement", style: TextStyle(fontSize: 17),) :
+        ListView.builder(
           //scrollDirection: Axis.horizontal,
             itemCount: events.length,
             itemBuilder: (BuildContext context, int index) {
@@ -91,6 +92,7 @@ class EventListState extends State<EventList> {
               );
             }
         )
+            : Base.allEvents.where((element) => !element.enable).isEmpty ? Text("Aucun événement à autoriser", style: TextStyle(fontSize: 17),)
             : ListView.builder(
           //scrollDirection: Axis.horizontal,
             itemCount: events.length,

@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:bde_esiee_mobile/src/blocs/course_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/jwt_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';

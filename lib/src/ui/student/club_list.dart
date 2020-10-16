@@ -30,31 +30,32 @@ class ClubListState extends State<ClubList> {
   }
 
   Widget buildList(List<ClubModel> clubs) {
-    clubs.removeWhere((element) => element.idClubRef > 100);
+    List<ClubModel> listClubs = clubs;
+    listClubs.removeWhere((element) => element.idClubRef > 100);
     return ListView.builder(
-        itemCount: clubs.length,
+        itemCount: listClubs.length,
         itemBuilder: (BuildContext context, int index) {
             return ListTile(
               leading:
               GestureDetector(
                 child: Hero(
-                  tag: 'logoClub'+clubs[index].idClubRef.toString(),
+                  tag: 'logoClub'+listClubs[index].idClubRef.toString(),
                   child: CircleAvatar(
                     backgroundColor: Colors.blueGrey.withOpacity(0.2),
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(clubs[index].urlPhoto),
+                      backgroundImage: NetworkImage(listClubs[index].urlPhoto),
                       backgroundColor: Colors.white,
                       radius:19,
                     ),
                   ),
                 ),
               ),
-              title: Text(clubs[index].name),
-              trailing: clubs[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),
+              title: Text(listClubs[index].name),
+              trailing: listClubs[index].students.contains(Base.thisUser) ? Icon(Icons.verified_user, color: Colors.green) : Column(),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : clubs[index]),),
+                  MaterialPageRoute(builder: (context) => ClubInfoPage(club : listClubs[index]),),
                 );
               },
             );

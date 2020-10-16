@@ -5,6 +5,7 @@ import 'package:bde_esiee_mobile/src/blocs/fairpay_log_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/fairpay_log_state.dart';
 import 'package:bde_esiee_mobile/src/models/club_model.dart';
 import 'package:bde_esiee_mobile/src/models/fairpay_log_model.dart';
+import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -104,7 +105,7 @@ class FairpayState extends State<Fairpay>{
                     tag: "fairpay"+widget.club.idClubRef.toString(),
                     child: CircleAvatar(
                       radius: 40,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).backgroundColor,
                       child: ClipOval(
                         child: Image.network(widget.club.urlPhoto, fit: BoxFit.contain,),
                       ),
@@ -236,7 +237,6 @@ class FairpayState extends State<Fairpay>{
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
         ),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),
@@ -244,6 +244,7 @@ class FairpayState extends State<Fairpay>{
   }
 
   Widget buildList(List<FairpayLogModel> fairpayLogs,) {
+    int i = 1;
     return ListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.all(0),
@@ -252,15 +253,17 @@ class FairpayState extends State<Fairpay>{
         itemBuilder: (context, index) {
           switch (filtre) {
             case 0:
-              return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+              return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor.withOpacity(0.1));
             case 1:
               if(fairpayLogs[index].type == "Depot") {
-                return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+                i++;
+                return transactionRow(fairpayLogs[index], oddColour: (i % 2 == 0) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor.withOpacity(0.1));
               }
               return Container();
             case 2:
               if(fairpayLogs[index].type == "Retrait") {
-                return transactionRow(fairpayLogs[index], oddColour: (index % 2 == 0) ? Color(0xFFF7F7F9) : Colors.white);
+                i++;
+                return transactionRow(fairpayLogs[index], oddColour: (i % 2 == 0) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor.withOpacity(0.1));
               }
               return Container();
           }
@@ -290,7 +293,7 @@ class FairpayState extends State<Fairpay>{
             SizedBox(width: 15.0),
             flowIcon(log),
             SizedBox(width: 25.0),
-            Text(log.description, style: TextStyle(fontSize: 16.0)),
+            Text(log.description, style: TextStyle(fontSize: 16.0, color: MyTheme.colorTheme(context, colorLight: Colors.white, colorDark: Colors.black))),
             subIcon(log)
           ],
         ),

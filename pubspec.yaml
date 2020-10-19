@@ -69,8 +69,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path_ios: "assets/esieeplus/LogoFond.webp"
-  image_path_android: "assets/esieeplus/LogoFond.webp"
+  image_path_ios: "assets/esieeplus/LogoFond.png"
+  image_path_android: "assets/esieeplus/LogoFond.png"
 
 
 
@@ -90,7 +90,7 @@ flutter:
 
     - assets/esieeplus/defaultbanner.png
     - assets/esieeplus/Logo.webp
-    - assets/esieeplus/LogoFond.webp
+    - assets/esieeplus/LogoFond.png
     - assets/esieeplus/logoDjango.webp
     - assets/esieeplus/coverEsieePlus.webp
     - assets/esieeplus/color_LetterLogo.webp

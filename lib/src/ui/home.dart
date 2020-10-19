@@ -15,6 +15,7 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +35,7 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
     /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());

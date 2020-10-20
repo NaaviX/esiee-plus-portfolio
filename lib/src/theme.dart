@@ -133,6 +133,8 @@ class MyTheme {
           labelColor: PrimaryColorDark,
           indicator: BoxDecoration(border: Border(bottom: BorderSide(color: SelectedColor, width: 2))),
         ),
+
+      toggleableActiveColor: SelectedColor,
     );
   }
 }

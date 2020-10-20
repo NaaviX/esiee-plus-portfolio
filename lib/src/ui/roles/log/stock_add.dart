@@ -5,7 +5,6 @@ import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:bde_esiee_mobile/src/ui/custom_widgets/CustomTextFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -174,6 +173,9 @@ class AddStockState extends State<AddStock> {
               child: ChoiceChip(
                 pressElevation: 5.0,
                 label: Text(item, style: TextStyle(fontSize: 13),),
+                backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.3)),//Theme.of(context).accentColor,
+                selectedColor: Theme.of(context).accentColor.withOpacity(0.5),
+                labelStyle: TextStyle(color: MyTheme.colorTheme(context)),
                 selected: selectedChoices == item,
                 onSelected: (bool selected) {
                   setState(() {

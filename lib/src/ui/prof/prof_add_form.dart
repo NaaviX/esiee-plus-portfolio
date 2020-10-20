@@ -207,8 +207,9 @@ class AddProfFormState extends State<AddProfForm> {
             child: ChoiceChip(
               label: Text(item.unitName),
               selected: widget.selectedChoices.contains(item),
-              backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300,),//Theme.of(context).accentColor,
-              selectedColor: Theme.of(context).primaryColor.withOpacity(0.3),
+              backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.3)),//Theme.of(context).accentColor,
+              selectedColor: Theme.of(context).accentColor.withOpacity(0.5),
+              labelStyle: TextStyle(color: MyTheme.colorTheme(context)),
               onSelected: (selected) {
                 setState(() {
                   widget.selectedChoices.contains(item)

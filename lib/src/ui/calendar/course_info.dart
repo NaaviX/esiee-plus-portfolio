@@ -35,19 +35,12 @@ class EventInfoState extends State<CourseInfoPage> {
   @override Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
         builder: (context, appState, child) {
-          return MaterialApp(
-              theme: MyTheme.defaultTheme,
-              darkTheme: MyTheme.darkTheme,
-              themeMode:
-              appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              debugShowCheckedModeBanner: false,
-              home: Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 10.0,
-                child: dialogContent(context),
-              )
+          return  Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 10.0,
+            child: dialogContent(context),
           );
         }
     );
@@ -75,7 +68,7 @@ class EventInfoState extends State<CourseInfoPage> {
               alignment: Alignment.topCenter,
               child: Text(day(widget.course.start),
                 style: TextStyle(
-                  color: MyTheme.colorTheme(context, colorLight: Colors.black),
+                    color: MyTheme.colorTheme(context, colorLight: Colors.black),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic

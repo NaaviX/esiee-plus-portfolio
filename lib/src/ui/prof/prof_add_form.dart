@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_event.dart';
@@ -149,10 +151,15 @@ class AddProfFormState extends State<AddProfForm> {
                                   );
                                 }
                                 if (state is UnitsLoadFailure) {
-                                  return Text(
+                                  signOutGoogle();
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                                    return App();
+                                  }));
+                                  /*return Text(
                                     'Something went wrong!',
                                     style: TextStyle(color: Colors.red),
-                                  );
+                                  );*/
                                 }
                                 return Container();
                               }),

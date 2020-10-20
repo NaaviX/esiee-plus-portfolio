@@ -1,3 +1,5 @@
+import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/prof_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/prof_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
@@ -55,10 +57,15 @@ class ProfListState extends State<ProfList> {
                 return buildList(profs);
               }
               if (state is ProfsLoadFailure) {
-                return Text(
+                signOutGoogle();
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
+                  return App();
+                }));
+                /*return Text(
                   'Something went wrong!',
                   style: TextStyle(color: Colors.red),
-                );
+                );*/
               }
               return Container();
             })

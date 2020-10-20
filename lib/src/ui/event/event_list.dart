@@ -92,7 +92,7 @@ class EventListState extends State<EventList> {
               );
             }
         )
-            : Base.allEvents.where((element) => !element.enable).isEmpty ? Text("Aucun événement à autoriser", style: TextStyle(fontSize: 17),)
+            : Base.allEvents.where((element) => element.endDate.isAfter(DateTime.now())).isEmpty ? Text("Aucun événement à autoriser", style: TextStyle(fontSize: 17),)
             : ListView.builder(
           //scrollDirection: Axis.horizontal,
             itemCount: events.length,
@@ -124,7 +124,7 @@ class EventListState extends State<EventList> {
       if(event.endDate.isAfter(DateTime.now()))
         return EventCard(event, context, moderation: true, eventsBloc: widget.eventsBloc,);
     }
-    if (event.publicationDate.isBefore(DateTime.now().add(new Duration(hours: 2))) && event.enable == true) {
+    if (event.publicationDate.isBefore(DateTime.now()) && event.enable == true) {
       if (Base.thisClub != null && selected != "Tous") {
         if (event.idClubRef == Base.thisClub.idClubRef && selected == "Mes évents")
           return EventCard(event, context, eventsBloc: widget.eventsBloc);

@@ -30,15 +30,20 @@ class EventInfoPage extends StatefulWidget {
   EventCardState parentCard;
   bool isValidator;
   bool isModeration;
+  bool isFromTop;
   final EventsBloc eventsBloc;
 
 
-  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration, @required this.eventsBloc}) {
+  EventInfoPage(this.event, this.club, {this.parentCard, this.isValidator, this.isModeration, this.isFromTop, @required this.eventsBloc}) {
     if(this.isValidator != null) this.isValidator = this.isValidator;
     else this.isValidator = false;
 
     if(this.isModeration != null) this.isModeration = this.isModeration;
     else this.isModeration = false;
+
+    if(this.isFromTop != null) this.isFromTop = this.isFromTop;
+    else this.isFromTop = false;
+
     assert(eventsBloc != null);
   }
 
@@ -146,7 +151,7 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _floatingActionButton() {
-    if (!widget.isModeration)
+    if (!widget.isModeration && !widget.isFromTop)
       return FutureBuilder(
           future: getSavedEvents(),
           builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
@@ -168,7 +173,6 @@ class EventInfoState extends State<EventInfoPage> {
                   setState(() {
                     _isFav = !_isFav;
                     widget.parentCard.setState(() {
-
                     });
                   });
                 },
@@ -479,14 +483,14 @@ class EventInfoState extends State<EventInfoPage> {
   }
 
   _filter(EventModel event) {
-    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
+    if (!(event.endDate != null && event.endDate.isAfter(DateTime.now())) || event.enable == false || event.publicationDate.isAfter(DateTime.now())) return new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstOut);
     else return null;
   }
 
   _text(EventModel event) {
     if (!(event.endDate != null && event.endDate.isAfter(DateTime.now()))) return "terminé";
     else if(event.enable == false) return "en attente d'approbation";
-    else if(event.publicationDate.isAfter(DateTime.now().add(new Duration(hours: 2)))) return "pas encore publié";
+    else if(event.publicationDate.isAfter(DateTime.now())) return "pas encore publié";
     else return "";
   }
 

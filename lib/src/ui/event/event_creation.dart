@@ -52,7 +52,7 @@ class EventCreationState extends State<EventCreation> {
                 place: widget.form.place.text,
                 backgroundUrl: verifURL(),
                 description: widget.form.description.text,
-                publicationDate: widget.form.pub,
+                publicationDate: widget.form.pub.add(Duration(hours: 2)),
                 link: widget.form.link.text,
                 facebookLink: widget.form.fblink.text,
                 idClubRef: Base.thisClub.idClubRef,

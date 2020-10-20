@@ -1,3 +1,4 @@
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/club_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/clubs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/student_event.dart';
@@ -112,10 +113,15 @@ class ClubAddMemberState extends State<ClubAddMember> {
                 ),]
               ));
             } if (state is StudentListLoadFailure) {
-          return Text(
+          signOutGoogle();
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            return App();
+          }));
+          /*return Text(
             'Something went wrong!',
             style: TextStyle(color: Colors.red),
-          );
+          );*/
         }
         return Container();
           },

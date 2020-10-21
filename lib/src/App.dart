@@ -351,14 +351,8 @@ class UserAuthState extends State<UserAuth> {
                             if(state is CoursesInitial || state is CoursesLoadInProgress) {
                               return SplashScreen();
                             }
-                            if(state is CoursesLoadSuccess) {
+                            if(state is CoursesLoadSuccess || state is CoursesLoadFailure) {
                               return Base();
-                            }
-                            if(state is CoursesLoadFailure) {
-                              return Text(
-                                'Something went wrong!',
-                                style: TextStyle(color: Colors.red),
-                              );
                             }
                             return Container();
                           }
@@ -572,6 +566,20 @@ class _Base extends State<Base> {
     } else if (Base.selectedIndex == 1 && Base.thisUser != null) {
       return [
         Container(
+          margin: const EdgeInsets.only(right: 7),
+          padding: const EdgeInsets.all(0.0),
+          width: 25.0, // you can adjust the width as you need
+          child: IconButton(
+            icon: const Icon(Icons.event, size: 25,),
+            padding: EdgeInsets.all(0),
+            onPressed: () {
+              setState(() {
+                globalKey.currentState.scrollToCurrentTime();
+              });
+            },
+          ),
+        ),
+        Container(
           margin: const EdgeInsets.only(right: 12),
           padding: const EdgeInsets.all(0.0),
           width: 25.0, // you can adjust the width as you need
@@ -586,20 +594,6 @@ class _Base extends State<Base> {
                     textAlign: TextAlign.justify, style: TextStyle(color: MyTheme.colorTheme(context, colorLight: Colors.black, colorDark: Colors.white))),
                 backgroundColor: Colors.blueAccent,
               ));
-            },
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 7),
-          padding: const EdgeInsets.all(0.0),
-          width: 25.0, // you can adjust the width as you need
-          child: IconButton(
-            icon: const Icon(Icons.event, size: 25,),
-            padding: EdgeInsets.all(0),
-            onPressed: () {
-              setState(() {
-                globalKey.currentState.scrollToCurrentTime();
-              });
             },
           ),
         ),

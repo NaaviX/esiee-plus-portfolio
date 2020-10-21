@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/profs_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_bloc.dart';
 import 'package:bde_esiee_mobile/src/blocs/unit_event.dart';
@@ -149,10 +151,15 @@ class AddProfFormState extends State<AddProfForm> {
                                   );
                                 }
                                 if (state is UnitsLoadFailure) {
-                                  return Text(
+                                  signOutGoogle();
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                                    return App();
+                                  }));
+                                  /*return Text(
                                     'Something went wrong!',
                                     style: TextStyle(color: Colors.red),
-                                  );
+                                  );*/
                                 }
                                 return Container();
                               }),
@@ -207,8 +214,9 @@ class AddProfFormState extends State<AddProfForm> {
             child: ChoiceChip(
               label: Text(item.unitName),
               selected: widget.selectedChoices.contains(item),
-              backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300,),//Theme.of(context).accentColor,
-              selectedColor: Theme.of(context).primaryColor.withOpacity(0.3),
+              backgroundColor: MyTheme.colorTheme(context, colorLight: Colors.grey.shade300, colorDark: MyTheme.PrimaryColorLight.withOpacity(0.3)),//Theme.of(context).accentColor,
+              selectedColor: Theme.of(context).accentColor.withOpacity(0.5),
+              labelStyle: TextStyle(color: MyTheme.colorTheme(context)),
               onSelected: (selected) {
                 setState(() {
                   widget.selectedChoices.contains(item)

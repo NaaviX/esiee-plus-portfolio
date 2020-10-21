@@ -42,12 +42,18 @@ class CalendarState extends State<Calendar> {
     return FutureBuilder(
         future: getLocalCourses(),
         builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-          if (eventsJson.hasData) {
+          if (eventsJson.hasData && eventsJson.data != null && eventsJson.data != "null") {
             dynamic jsonData = jsonDecode(eventsJson.data);
             List<CourseModel> snapshot = CourseModel.allCoursesFromJson(jsonData).reversed.toList();
             return buildAgenda(snapshot);
           }
-          return Container();
+          return Center(child: Text(
+            "Aucun cours pour le moment",
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
+          ),);
         }
     );
   }

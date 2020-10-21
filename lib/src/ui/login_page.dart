@@ -2,6 +2,7 @@ import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     MyTheme.setStatusBarColor();
     super.initState();
   }
@@ -44,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                     Card(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      child: Image(image: AssetImage('assets/esieeplus/LogoFond.webp'), width: 150),
+                      child: Image(image: AssetImage('assets/esieeplus/LogoFond.png'), width: 150),
                       elevation: 5,
                     ),
                     Container(

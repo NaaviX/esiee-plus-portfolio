@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bde_esiee_mobile/src/App.dart';
+import 'package:bde_esiee_mobile/src/auth/sign_in.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_event.dart';
 import 'package:bde_esiee_mobile/src/blocs/event_state.dart';
 import 'package:bde_esiee_mobile/src/blocs/events_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:bde_esiee_mobile/src/ui/custom_widgets/ScrollPhy.dart';
 import 'package:bde_esiee_mobile/src/ui/event/event_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +36,7 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
     /*if(Base.thisUser != null) {
       BlocProvider.of<CoursesBloc>(context)
           .add(CoursesRequested());
@@ -141,10 +143,15 @@ class HomeState extends State<Home> {
                 return _topEventsList(tops);
               }
               if (state is EventsLoadFailure) {
-                return Text(
+                signOutGoogle();
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
+                  return App();
+                }));
+                /*return Text(
                   'Something went wrong!',
                   style: TextStyle(color: Colors.red),
-                );
+                );*/
               }
               return Container();
             })
@@ -184,7 +191,9 @@ class HomeState extends State<Home> {
                                   Base.allClubs.firstWhere((club) =>
                                   club.idClubRef ==
                                       tops[i].idClubRef),
-                                  eventsBloc: bloc,))), //FairPayClubManager(club)),
+                                  eventsBloc: bloc,
+                                  isFromTop: true,
+                                ))), //FairPayClubManager(club)),
                   ),
               child: Container(
                 margin: i == 0
@@ -310,7 +319,7 @@ class HomeState extends State<Home> {
       return FutureBuilder(
           future: getLocalCourses(),
           builder: (BuildContext context, AsyncSnapshot<String> eventsJson) {
-            if (eventsJson.hasData) {
+            if (eventsJson.hasData && eventsJson.data != "null" && eventsJson.data != null) {
               dynamic jsonData = jsonDecode(eventsJson.data);
               List<CourseModel> snapshot =
               CourseModel.allCoursesFromJson(jsonData).toList();
@@ -324,7 +333,15 @@ class HomeState extends State<Home> {
               now.isBefore(course.start) && now.isBefore(course.end));
               return _studentNextCursesCard(course);
             }
-            return Container();
+            return Container(
+                margin: EdgeInsets.only(left: 15),
+                child: Text(
+                  "Aucun cours à venir",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600),
+                ));
           });
     });
   }
@@ -354,7 +371,10 @@ class HomeState extends State<Home> {
         ? diff = "Dans " +
         diffTime.inHours.toString() +
         "h" +
-        (diffTime.inMinutes % 60).toString() +
+        (diffTime.inMinutes % 60 < 10
+            ? "0"+(diffTime.inMinutes % 60).toString()
+            : (diffTime.inMinutes % 60).toString()
+        ) +
         "min"
         : diff = "Dans " +
         (diffTime.inMinutes % 60).toString() +

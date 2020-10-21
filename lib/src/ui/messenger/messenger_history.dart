@@ -77,10 +77,15 @@ class MessengerHistoryState extends State<MessengerHistory> {
                     return getConvs();
                   }
                   if (state is ProfsLoadFailure) {
-                    return Text(
+                    signOutGoogle();
+                    Navigator.of(context)
+                        .pushReplacement(MaterialPageRoute(builder: (context) {
+                      return App();
+                    }));
+                    /*return Text(
                       'Something went wrong!',
                       style: TextStyle(color: Colors.red),
-                    );
+                    );*/
                   }
                   return Container();
                 });

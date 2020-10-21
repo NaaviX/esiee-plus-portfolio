@@ -152,11 +152,15 @@ class FairpayState extends State<Fairpay>{
           ],
         ),
         onPressed: () {
-          return BlocProvider<FairpayLogsBloc>.value(
-              value: widget.fairpayLogsBloc,
-              child: BlocProvider<ClubsBloc>.value(
-          value: widget.clubsBloc,
-          child: fairpayForm(this, text, widget.club, bloc: widget.clubsBloc, fairpayBloc: widget.fairpayLogsBloc)));
+          return showDialog<void>(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return  FairpayForm(text, widget.club,
+                            clubsBloc: widget.clubsBloc, fairpayBloc: widget.fairpayLogsBloc
+                        );
+              }
+          );
         }/*showDialog<void>(
             context: context,
             barrierDismissible: true,
@@ -235,8 +239,8 @@ class FairpayState extends State<Fairpay>{
           ],
         ),
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),

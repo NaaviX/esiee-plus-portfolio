@@ -232,6 +232,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
   }
 
   _lastEvent(context) {
+    _nbrEvent();
     return Container(
       width:  MediaQuery.of(context).size.width,
       child: Container(
@@ -247,7 +248,7 @@ class ClubInfoPageState extends State<ClubInfoPage> {
                 ),
                 Container(height: 12,),
                 nbrEvent == 0 ? Container(margin: EdgeInsets.fromLTRB(30, 0, 30, 30), child: AutoSizeText("Aucun événement cette année", style: TextStyle(fontSize: 15, ), maxLines:10, textAlign: TextAlign.justify,),)
-                    : Base.allEvents != null && Base.allEvents.length != 0 ? Container(height: 300,child: buildList())
+                    : Base.allEvents != null && Base.allEvents.length != 0 ? Container(height: 257,child: buildList())
                     : Container()
 
               ]

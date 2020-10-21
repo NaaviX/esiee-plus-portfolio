@@ -1168,19 +1168,22 @@ class _Base extends State<Base> {
         icon: Icon(
           FontAwesomeIcons.home,
         ),
-        label: 'Home',
+        title: Text('Home'),
+        //label: 'Home',
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.clock,
         ),
-        label: 'EDT',
+        title: Text('EDT')
+        //label: 'EDT',
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.calendarAlt,
         ),
-        label: 'Event',
+        title: Text('Event')
+        //label: 'Event',
       ),
     ];
     if (Base.thisUser == null) items.removeAt(1);

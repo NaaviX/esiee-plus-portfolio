@@ -12,20 +12,25 @@ final log = Logger('signin');
 FirebaseUser user;
 
 Future<FirebaseUser> signInWithGoogle() async {
-  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-  final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
-  final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleSignInAuthentication.accessToken,
-    idToken: googleSignInAuthentication.idToken,
-  );
-  final AuthResult authResult = await _auth.signInWithCredential(credential);
-  user = authResult.user;
-  assert(!user.isAnonymous);
-  assert(await user.getIdToken() != null);
-  final FirebaseUser currentUser = await _auth.currentUser();
-  assert(user.uid == currentUser.uid);
-  return user;
+  try {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    user = authResult.user;
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+    return user;
+  } catch (_) {
+    return null;
+  }
 }
 
 void signOutGoogle() async {

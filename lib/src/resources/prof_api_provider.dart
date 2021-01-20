@@ -13,7 +13,7 @@ import '../App.dart';
 class ProfApiProvider {
   final log = Logger('profAPI');
 
-  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  static const baseUrl = 'http://193.70.84.159:8080/api-1-SNAPSHOT';
   final Client client;
 
   ProfApiProvider({
@@ -21,7 +21,7 @@ class ProfApiProvider {
   }) : assert(client != null);
 
   Future<List<ProfModel>> fetchProfList() async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/prof/profs",
+    final response = await client.get("$baseUrl/prof/profs",
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -34,7 +34,7 @@ class ProfApiProvider {
     }
   }
   Future<ProfModel> fetchProfByMail(String mail) async {
-    final response = await client.get("http://137.74.197.140:8080/api-2-SNAPSHOT/prof/prof?mail_esiee="+Uri.encodeFull(mail),
+    final response = await client.get("$baseUrl/prof/prof?mail_esiee="+Uri.encodeFull(mail),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer "+Base.token
@@ -48,7 +48,7 @@ class ProfApiProvider {
   Future<ProfModel> addProf(ProfModel prof) async {
 
     String url = Uri.encodeFull(
-        "http://137.74.197.140:8080/api-2-SNAPSHOT/prof/add?id_prof=" +
+        "$baseUrl/prof/add?id_prof=" +
             prof.idProf.toString() +
             "&firstname=" +
             prof.firstname +

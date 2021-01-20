@@ -11,7 +11,7 @@ import '../App.dart';
 
 class EventApiProvider {
   final log = Logger('eventAPI');
-  static const baseUrl = 'http://137.74.197.140:8080/api-2-SNAPSHOT';
+  static const baseUrl = 'http://193.70.84.159:8080/api-1-SNAPSHOT';
   final Client client;
 
   EventApiProvider({

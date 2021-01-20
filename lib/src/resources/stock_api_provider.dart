@@ -12,7 +12,7 @@ import '../App.dart';
 
 class StockApiProvider {
   final log = Logger('stockAPI');
-  static const baseUrl = 'http://193.70.84.159:8080/api-2-SNAPSHOT';
+  static const baseUrl = 'http://193.70.84.159:8080/api-1-SNAPSHOT';
   final Client client;
 
   StockApiProvider({
